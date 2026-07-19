@@ -7,8 +7,39 @@ const sampleAnswer =
 
 const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
 
+const dimensionLabels = {
+  correctness: "准确性",
+  completeness: "完整性",
+  reasoning: "推理链路",
+  communication: "表达结构",
+};
+
+const errorLabels = {
+  concept_confusion: "概念混淆",
+  missing_key_point: "关键点遗漏",
+  hallucination: "不可靠结论",
+  no_answer: "回答不足",
+};
+
+const statusLabels = {
+  open: "待完成",
+  completed: "已完成",
+};
+
 function runtimeLabel(runtime) {
   return runtime.llm_enabled ? `真实 LLM 已启用：${runtime.llm_model}` : "本地基线模式";
+}
+
+function percent(value) {
+  return `${Math.round((value ?? 0) * 100)}%`;
+}
+
+function unique(items) {
+  return [...new Set(items.filter(Boolean))];
+}
+
+function apiErrorMessage(responseStatus, data) {
+  return data?.message ?? `请求失败：${responseStatus}`;
 }
 
 async function api(path, options = {}) {
@@ -22,7 +53,7 @@ async function api(path, options = {}) {
   const text = await response.text();
   const data = text ? JSON.parse(text) : null;
   if (!response.ok) {
-    throw new Error(data?.message ?? `请求失败：${response.status}`);
+    throw new Error(apiErrorMessage(response.status, data));
   }
   return data;
 }
@@ -359,53 +390,223 @@ function App() {
           )}
         </StepCard>
 
-        <StepCard number="04" title="可信评分报告" tone="orange">
-          <p>启用 DeepSeek 后由模型产出结构化评分，应用层继续校验引用、置信度和报告规则。</p>
-          {report ? (
-            <div className="score-card">
-              <div>
-                <span>{report.total_score}</span>
-                <small>/ {report.max_score}</small>
-              </div>
-              <MiniList items={report.next_steps} empty="暂无建议" />
-            </div>
-          ) : (
-            <Empty text="完成三题面试后生成报告" />
-          )}
-        </StepCard>
-
-        <StepCard number="05" title="本机用户画像" tone="cyan">
-          <p>当前不做多用户系统，画像固定绑定本机默认用户，刷新页面后会自动恢复。</p>
-          <MiniList
-            items={profile.abilities.map(
-              (item) => `${item.knowledge_point} · mastery ${item.mastery_score}`,
-            )}
-            empty="暂无能力画像"
-          />
-          <MiniList
-            items={profile.errors.map(
-              (item) => `${item.knowledge_point} · ${item.error_type} × ${item.occurrence_count}`,
-            )}
-            empty="暂无错误模式"
-          />
-        </StepCard>
-
-        <StepCard number="06" title="复习任务与下一轮计划" tone="pink">
-          <p>复习间隔按重复错误推进，下一轮训练优先选择到期任务和低掌握度知识点。</p>
-          <MiniList
-            items={profile.tasks.map(
-              (item) => `${item.knowledge_point} · ${item.status} · P${item.priority}`,
-            )}
-            empty="暂无复习任务"
-          />
-          <MiniList
-            items={profile.plan.map((item) => `${item.knowledge_point} · ${item.reason}`)}
-            empty="暂无推荐计划"
-          />
-        </StepCard>
+        <InterviewReportCard report={report} />
+        <ProfileCard profile={profile} />
+        <NextPlanCard profile={profile} />
       </section>
     </main>
   );
+}
+
+function buildReportView(report) {
+  if (!report) return null;
+  const scoreRatio = report.max_score ? report.total_score / report.max_score : 0;
+  const evaluations = report.evaluations ?? [];
+  const weakDimensions = Object.entries(report.dimension_summary ?? {})
+    .map(([key, value]) => ({
+      key,
+      label: dimensionLabels[key] ?? key,
+      average: Number(value?.average ?? 0),
+    }))
+    .filter((item) => item.average < 3)
+    .sort((a, b) => a.average - b.average);
+  const missingPoints = unique(evaluations.flatMap((item) => item.missing_points ?? [])).slice(
+    0,
+    4,
+  );
+  const feedback = unique(evaluations.map((item) => item.feedback)).slice(0, 3);
+  const lowConfidenceCount = report.low_confidence_items?.length ?? 0;
+  const verdict =
+    scoreRatio >= 0.8
+      ? "整体表现较稳定，可以开始增加场景化追问。"
+      : scoreRatio >= 0.55
+        ? "已经能覆盖部分要点，但工程细节和表达结构还需要补强。"
+        : "当前回答更像概念性描述，需要补充引用依据、工程边界和可验证细节。";
+  const issueSummary =
+    missingPoints.length > 0
+      ? `主要缺口集中在：${missingPoints.join("、")}。`
+      : weakDimensions.length > 0
+        ? `低分维度集中在：${weakDimensions.map((item) => item.label).join("、")}。`
+        : "本轮没有明显缺失点，建议提高回答的案例密度。";
+  const action =
+    weakDimensions.length > 0
+      ? `下一轮优先按「定义 → 流程 → 风险 → 工程方案」重答，并重点提升 ${weakDimensions[0].label}。`
+      : "下一轮可以尝试加入更具体的系统设计、指标和异常处理说明。";
+
+  return {
+    verdict,
+    issueSummary,
+    action,
+    feedback,
+    tags: [
+      `总分 ${report.total_score}/${report.max_score}`,
+      lowConfidenceCount ? `低置信 ${lowConfidenceCount} 项` : "置信度正常",
+      report.disputed_items?.length ? `争议 ${report.disputed_items.length} 项` : "无争议项",
+    ],
+  };
+}
+
+function buildProfileView(profile) {
+  const abilities = [...profile.abilities].sort((a, b) => b.mastery_score - a.mastery_score);
+  const strengths = abilities.filter((item) => item.mastery_score >= 0.6).slice(0, 3);
+  const weaknesses = abilities.filter((item) => item.mastery_score < 0.6).slice(0, 3);
+  const errors = [...profile.errors]
+    .sort((a, b) => b.occurrence_count - a.occurrence_count)
+    .slice(0, 3);
+
+  return {
+    strengths,
+    weaknesses,
+    errors,
+    summary:
+      abilities.length === 0
+        ? "完成一次面试报告后，这里会沉淀你的本机用户画像。"
+        : `已沉淀 ${abilities.length} 个知识点画像，${weaknesses.length} 个需要优先补强。`,
+  };
+}
+
+function buildPlanView(profile) {
+  const openTasks = profile.tasks
+    .filter((item) => item.status !== "completed")
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, 3);
+  const recommendations = [...profile.plan].sort((a, b) => b.priority - a.priority).slice(0, 3);
+  const completedCount = profile.tasks.filter((item) => item.status === "completed").length;
+
+  return {
+    openTasks,
+    recommendations,
+    completedCount,
+    summary:
+      openTasks.length > 0
+        ? `当前有 ${openTasks.length} 个待完成复习任务，建议先处理高优先级项。`
+        : recommendations.length > 0
+          ? "暂无到期复习任务，可根据下一轮推荐继续训练。"
+          : "完成评分和画像更新后，这里会生成下一轮训练计划。",
+  };
+}
+
+function InterviewReportCard({ report }) {
+  const view = buildReportView(report);
+  return (
+    <StepCard number="04" title="本轮面试报告" tone="orange">
+      <p>把模型评分转译成可执行反馈，不再直接堆叠重复的维度模板。</p>
+      {view ? (
+        <div className="score-card">
+          <div>
+            <span>{report.total_score}</span>
+            <small>/ {report.max_score}</small>
+          </div>
+          <TagRow tags={view.tags} />
+          <FeedbackItem title="总体结论">{view.verdict}</FeedbackItem>
+          <FeedbackItem title="主要问题">{view.issueSummary}</FeedbackItem>
+          <FeedbackItem title="下一步怎么练">{view.action}</FeedbackItem>
+          {view.feedback.length > 0 && (
+            <FeedbackItem title="模型反馈摘录">{view.feedback.join("；")}</FeedbackItem>
+          )}
+        </div>
+      ) : (
+        <Empty text="完成三题面试后生成报告；这里会展示总结、问题和下一步建议。" />
+      )}
+    </StepCard>
+  );
+}
+
+function ProfileCard({ profile }) {
+  const view = buildProfileView(profile);
+  return (
+    <StepCard number="05" title="能力画像摘要" tone="cyan">
+      <p>画像固定绑定本机默认用户，重点展示“擅长什么、薄弱什么、为什么”。</p>
+      <FeedbackItem title="画像结论">{view.summary}</FeedbackItem>
+      {view.strengths.length > 0 && (
+        <FeedbackGroup title="较熟悉">
+          {view.strengths.map((item) => (
+            <FeedbackItem
+              key={item.id}
+              title={item.knowledge_point}
+              tags={[`掌握度 ${percent(item.mastery_score)}`]}
+            >
+              最近回答能覆盖该知识点的主要内容，可在下一轮加入场景化追问。
+            </FeedbackItem>
+          ))}
+        </FeedbackGroup>
+      )}
+      {view.weaknesses.length > 0 && (
+        <FeedbackGroup title="需要加强">
+          {view.weaknesses.map((item) => (
+            <FeedbackItem
+              key={item.id}
+              title={item.knowledge_point}
+              tags={[`掌握度 ${percent(item.mastery_score)}`]}
+            >
+              掌握度偏低，建议用“定义、流程、风险、工程方案”重新组织一次回答。
+            </FeedbackItem>
+          ))}
+        </FeedbackGroup>
+      )}
+      {view.errors.length > 0 && (
+        <FeedbackGroup title="高频错误">
+          {view.errors.map((item) => (
+            <FeedbackItem
+              key={item.id}
+              title={errorLabels[item.error_type] ?? item.error_type}
+              tags={[`${item.occurrence_count} 次`, item.knowledge_point]}
+            >
+              这个错误会影响面试官对知识边界的判断，下一轮训练需要专门验证。
+            </FeedbackItem>
+          ))}
+        </FeedbackGroup>
+      )}
+    </StepCard>
+  );
+}
+
+function NextPlanCard({ profile }) {
+  const view = buildPlanView(profile);
+  return (
+    <StepCard number="06" title="下一轮训练计划" tone="pink">
+      <p>只展示待完成或推荐训练项，不再暴露 open、due_review_task 等内部字段。</p>
+      <FeedbackItem title="计划结论" tags={[`已完成 ${view.completedCount} 项`]}>
+        {view.summary}
+      </FeedbackItem>
+      {view.openTasks.length > 0 && (
+        <FeedbackGroup title="待完成复习">
+          {view.openTasks.map((item) => (
+            <FeedbackItem
+              key={item.id}
+              title={`补强：${item.knowledge_point}`}
+              tags={[
+                statusLabels[item.status] ?? item.status,
+                `优先级 P${item.priority}`,
+                errorLabels[item.error_type] ?? item.error_type,
+              ]}
+            >
+              来源于最近面试中的错误模式。建议重新回答相关题目，并主动补充引用依据和边界条件。
+            </FeedbackItem>
+          ))}
+        </FeedbackGroup>
+      )}
+      {view.recommendations.length > 0 && (
+        <FeedbackGroup title="推荐下一轮题目">
+          {view.recommendations.map((item) => (
+            <FeedbackItem
+              key={`${item.knowledge_point}-${item.reason}`}
+              title={item.knowledge_point}
+              tags={[`优先级 P${item.priority}`, item.mastery_score ? percent(item.mastery_score) : "新知识点"]}
+            >
+              {translateReason(item.reason)}
+            </FeedbackItem>
+          ))}
+        </FeedbackGroup>
+      )}
+    </StepCard>
+  );
+}
+
+function translateReason(reason) {
+  if (reason?.startsWith("due_review_task")) return "来自到期复习任务，说明这个知识点最近出错过，需要优先巩固。";
+  if (reason === "low_mastery") return "掌握度偏低，适合作为下一轮面试训练主题。";
+  return reason || "系统根据画像和复习任务推荐。";
 }
 
 function StatusPanel({ status, error, busy, runtime }) {
@@ -471,6 +672,38 @@ function Progress({ value }) {
     <div className="progress" aria-label={`面试进度 ${value}%`}>
       <span style={{ width: `${value}%` }} />
     </div>
+  );
+}
+
+function TagRow({ tags }) {
+  if (!tags?.length) return null;
+  return (
+    <div className="tag-row">
+      {tags.map((tag) => (
+        <span key={tag}>{tag}</span>
+      ))}
+    </div>
+  );
+}
+
+function FeedbackGroup({ title, children }) {
+  return (
+    <section className="feedback-group">
+      <h3>{title}</h3>
+      <div className="feedback-list">{children}</div>
+    </section>
+  );
+}
+
+function FeedbackItem({ title, tags, children }) {
+  return (
+    <article className="feedback-item">
+      <div className="feedback-item-head">
+        <strong>{title}</strong>
+        <TagRow tags={tags} />
+      </div>
+      <p>{children}</p>
+    </article>
   );
 }
 

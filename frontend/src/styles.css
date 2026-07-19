@@ -476,16 +476,87 @@ textarea::placeholder {
   padding: 18px;
 }
 
-.score-card span {
+.score-card > div > span {
   color: #f7fbff;
   font-size: 64px;
   font-weight: 950;
   letter-spacing: -0.08em;
 }
 
-.score-card small {
+.score-card > div > small {
   color: #95a6c3;
   font-size: 22px;
+}
+
+.tag-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag-row span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid rgba(190, 210, 255, 0.12);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #c7d7f2;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.feedback-group {
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+}
+
+.feedback-group h3 {
+  margin: 0 0 10px;
+  color: #f7fbff;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.feedback-list {
+  display: grid;
+  gap: 10px;
+}
+
+.feedback-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 13px 14px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.feedback-item-head {
+  display: grid;
+  gap: 6px;
+}
+
+.feedback-item strong {
+  color: #f7fbff;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.feedback-item p {
+  margin: 8px 0 0;
+  color: #aebbd0;
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+.score-card .tag-row {
+  margin-top: 12px;
 }
 
 @media (max-width: 1000px) {
