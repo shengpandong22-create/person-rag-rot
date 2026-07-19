@@ -611,7 +611,7 @@ function InterviewReportCard({ report }) {
       <p>把模型评分转译成可执行反馈，不再直接堆叠重复的维度模板。</p>
       {view ? (
         <div className="score-card">
-          <div>
+          <div className="score-total">
             <span>{report.total_score}</span>
             <small>/ {report.max_score}</small>
           </div>

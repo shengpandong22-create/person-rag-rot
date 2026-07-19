@@ -498,14 +498,14 @@ textarea::placeholder,
   padding: 18px;
 }
 
-.score-card > div > span {
+.score-total span {
   color: #f7fbff;
   font-size: 64px;
   font-weight: 950;
   letter-spacing: -0.08em;
 }
 
-.score-card > div > small {
+.score-total small {
   color: #95a6c3;
   font-size: 22px;
 }
