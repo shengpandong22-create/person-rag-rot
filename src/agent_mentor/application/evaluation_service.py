@@ -39,6 +39,8 @@ REVIEWER_MODEL_NAME = "deterministic-reviewer-v1"
 @dataclass(frozen=True, slots=True)
 class EvaluationItem:
     evaluation: EvaluationModel
+    question: InterviewQuestionModel
+    answer: UserAnswerModel
     reference_chunk_ids: tuple[UUID, ...]
 
 
@@ -406,6 +408,10 @@ class EvaluationService:
         ).all()
         items: list[EvaluationItem] = []
         for evaluation in evaluations:
+            question = await db.get(InterviewQuestionModel, evaluation.question_id)
+            answer = await db.get(UserAnswerModel, evaluation.answer_id)
+            if question is None or answer is None:
+                continue
             references = (
                 await db.scalars(
                     select(EvaluationReferenceModel.chunk_id)
@@ -414,7 +420,12 @@ class EvaluationService:
                 )
             ).all()
             items.append(
-                EvaluationItem(evaluation=evaluation, reference_chunk_ids=tuple(references))
+                EvaluationItem(
+                    evaluation=evaluation,
+                    question=question,
+                    answer=answer,
+                    reference_chunk_ids=tuple(references),
+                )
             )
         return tuple(items)
 

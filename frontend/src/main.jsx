@@ -34,12 +34,39 @@ function percent(value) {
   return `${Math.round((value ?? 0) * 100)}%`;
 }
 
+function profileScore(value) {
+  return `${Math.round((value ?? 0) * 100)} / 100`;
+}
+
 function unique(items) {
   return [...new Set(items.filter(Boolean))];
 }
 
 function apiErrorMessage(responseStatus, data) {
   return data?.message ?? `请求失败：${responseStatus}`;
+}
+
+function inferInterviewTopic(documents, profile) {
+  const readyDocuments = documents.filter((item) => item.status === "ready");
+  const fileTopic = readyDocuments
+    .map((item) => item.original_filename ?? "")
+    .map((name) =>
+      name
+        .replace(/\.[^.]+$/, "")
+        .replace(/[_-]+/g, " ")
+        .replace(/学习|总结|资料|文档|笔记/gi, "")
+        .trim(),
+    )
+    .find((name) => name.length >= 2);
+  if (fileTopic) return fileTopic.slice(0, 60);
+
+  const recommended = profile.plan?.[0]?.knowledge_point;
+  if (recommended) return recommended;
+
+  const weakAbility = [...(profile.abilities ?? [])].sort(
+    (a, b) => a.mastery_score - b.mastery_score,
+  )[0]?.knowledge_point;
+  return weakAbility || "AI Agent";
 }
 
 async function api(path, options = {}) {
@@ -67,6 +94,8 @@ function App() {
   const [documents, setDocuments] = useState([]);
   const [askQuestion, setAskQuestion] = useState("RAG 为什么能提升 AI 面试助手回答的可信度？");
   const [askResult, setAskResult] = useState(null);
+  const [interviewTopic, setInterviewTopic] = useState("AI Agent");
+  const [topicEdited, setTopicEdited] = useState(false);
   const [interview, setInterview] = useState(null);
   const [answerDraft, setAnswerDraft] = useState("");
   const [report, setReport] = useState(null);
@@ -88,6 +117,13 @@ function App() {
   useEffect(() => {
     bootstrap();
   }, []);
+
+  useEffect(() => {
+    const suggested = inferInterviewTopic(documents, profile);
+    if (!topicEdited) {
+      setInterviewTopic(suggested);
+    }
+  }, [documents, profile, topicEdited]);
 
   async function bootstrap() {
     setBusy(true);
@@ -186,6 +222,7 @@ function App() {
       setAskResult(null);
       setInterview(null);
       setReport(null);
+      setTopicEdited(false);
     });
 
   const refreshWorkspace = () =>
@@ -227,7 +264,7 @@ function App() {
         method: "POST",
         body: JSON.stringify({
           knowledge_base_id: knowledgeBase.id,
-          topic: "RAG",
+          topic: interviewTopic.trim() || inferInterviewTopic(documents, profile),
           difficulty: "medium",
           question_count: 3,
         }),
@@ -350,8 +387,32 @@ function App() {
         </StepCard>
 
         <StepCard number="03" title="可恢复模拟面试" tone="green">
-          <p>三题面试会保存 checkpoint；启用 DeepSeek 后会根据资料生成更真实的问题。</p>
-          <button onClick={startInterview} disabled={!canUseKnowledgeBase || busy}>
+          <p>三题面试会保存 checkpoint；主题默认根据已入库资料和画像推荐生成，也可以手动指定。</p>
+          <label className="field-label" htmlFor="interview-topic">
+            本轮面试主题
+          </label>
+          <input
+            id="interview-topic"
+            className="text-input"
+            value={interviewTopic}
+            onChange={(event) => {
+              setInterviewTopic(event.target.value);
+              setTopicEdited(true);
+            }}
+            placeholder="例如：LangGraph、Checkpoint、Human-in-the-loop"
+          />
+          <p className="hint">
+            当前推荐来源：
+            {documents.some((item) => item.status === "ready")
+              ? "已入库资料"
+              : profile.plan.length > 0
+                ? "用户画像与复习计划"
+                : "默认 AI Agent 主题"}
+          </p>
+          <button
+            onClick={startInterview}
+            disabled={!canUseKnowledgeBase || busy || !interviewTopic.trim()}
+          >
             启动三题面试
           </button>
           {interview && (
@@ -438,10 +499,57 @@ function buildReportView(report) {
     issueSummary,
     action,
     feedback,
+    questionAnalyses: evaluations.map(buildQuestionAnalysis),
     tags: [
       `总分 ${report.total_score}/${report.max_score}`,
       lowConfidenceCount ? `低置信 ${lowConfidenceCount} 项` : "置信度正常",
       report.disputed_items?.length ? `争议 ${report.disputed_items.length} 项` : "无争议项",
+    ],
+  };
+}
+
+function buildQuestionAnalysis(evaluation, index) {
+  const weakDimensions = [
+    ["correctness", evaluation.correctness],
+    ["completeness", evaluation.completeness],
+    ["reasoning", evaluation.reasoning],
+    ["communication", evaluation.communication],
+  ]
+    .filter(([, score]) => score < 3)
+    .map(([key]) => dimensionLabels[key] ?? key);
+  const missing = evaluation.missing_points ?? [];
+  const incorrect = evaluation.incorrect_claims ?? [];
+  const covered = evaluation.covered_points ?? [];
+  const reason =
+    missing.length > 0
+      ? `主要扣分来自遗漏：${missing.slice(0, 3).join("、")}。`
+      : weakDimensions.length > 0
+        ? `主要扣分维度：${weakDimensions.join("、")}。`
+        : "本题基础要点覆盖较好，扣分主要来自表达完整度或工程细节不足。";
+  const suggestion =
+    missing.length > 0
+      ? "建议按“概念定义 → 核心流程 → 工程边界 → 示例/指标”重新组织答案。"
+      : "建议进一步补充项目落地细节、异常处理和可观测指标。";
+
+  return {
+    id: evaluation.id,
+    sequence: evaluation.sequence ?? index + 1,
+    question: evaluation.question_text ?? `第 ${index + 1} 题`,
+    answer: evaluation.user_answer ?? "",
+    total: evaluation.total,
+    confidence: evaluation.confidence,
+    knowledgePoints: evaluation.knowledge_points ?? [],
+    covered,
+    missing,
+    incorrect,
+    reason,
+    suggestion,
+    feedback: evaluation.feedback,
+    dimensionTags: [
+      `准确 ${evaluation.correctness}/5`,
+      `完整 ${evaluation.completeness}/5`,
+      `推理 ${evaluation.reasoning}/5`,
+      `表达 ${evaluation.communication}/5`,
     ],
   };
 }
@@ -504,6 +612,13 @@ function InterviewReportCard({ report }) {
           {view.feedback.length > 0 && (
             <FeedbackItem title="模型反馈摘录">{view.feedback.join("；")}</FeedbackItem>
           )}
+          {view.questionAnalyses.length > 0 && (
+            <FeedbackGroup title="每题评分解析">
+              {view.questionAnalyses.map((item) => (
+                <QuestionAnalysisItem key={item.id} item={item} />
+              ))}
+            </FeedbackGroup>
+          )}
         </div>
       ) : (
         <Empty text="完成三题面试后生成报告；这里会展示总结、问题和下一步建议。" />
@@ -512,11 +627,54 @@ function InterviewReportCard({ report }) {
   );
 }
 
+function QuestionAnalysisItem({ item }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <article className="analysis-item">
+      <button
+        className="analysis-summary"
+        type="button"
+        onClick={() => setExpanded((value) => !value)}
+        aria-expanded={expanded}
+      >
+        <span>
+          第 {item.sequence} 题 · {item.total}/20
+        </span>
+        <small>{expanded ? "收起解析" : "展开解析"}</small>
+      </button>
+      <strong className="analysis-question">{item.question}</strong>
+      <TagRow
+        tags={[
+          `置信度 ${percent(item.confidence)}`,
+          ...item.dimensionTags,
+          ...item.knowledgePoints.slice(0, 2),
+        ]}
+      />
+      <p>{item.reason}</p>
+      {expanded && (
+        <div className="analysis-detail">
+          <FeedbackItem title="你的回答摘录">{item.answer || "暂无回答内容"}</FeedbackItem>
+          <FeedbackItem title="为什么这样评分">{item.feedback || item.reason}</FeedbackItem>
+          <FeedbackItem title="答对的点">
+            {item.covered.length ? item.covered.join("、") : "暂未识别到稳定覆盖的关键点。"}
+          </FeedbackItem>
+          <FeedbackItem title="遗漏或不准确">
+            {[...item.missing, ...item.incorrect].length
+              ? [...item.missing, ...item.incorrect].join("、")
+              : "没有明显事实错误，主要优化空间在表达结构和工程细节。"}
+          </FeedbackItem>
+          <FeedbackItem title="建议补强">{item.suggestion}</FeedbackItem>
+        </div>
+      )}
+    </article>
+  );
+}
+
 function ProfileCard({ profile }) {
   const view = buildProfileView(profile);
   return (
     <StepCard number="05" title="能力画像摘要" tone="cyan">
-      <p>画像固定绑定本机默认用户，重点展示“擅长什么、薄弱什么、为什么”。</p>
+      <p>画像固定绑定本机默认用户；画像分来自最近答题评分和错误累计，用于训练排序，不等同于真实能力百分比。</p>
       <FeedbackItem title="画像结论">{view.summary}</FeedbackItem>
       {view.strengths.length > 0 && (
         <FeedbackGroup title="较熟悉">
@@ -524,7 +682,7 @@ function ProfileCard({ profile }) {
             <FeedbackItem
               key={item.id}
               title={item.knowledge_point}
-              tags={[`掌握度 ${percent(item.mastery_score)}`]}
+              tags={[`画像分 ${profileScore(item.mastery_score)}`]}
             >
               最近回答能覆盖该知识点的主要内容，可在下一轮加入场景化追问。
             </FeedbackItem>
@@ -537,9 +695,9 @@ function ProfileCard({ profile }) {
             <FeedbackItem
               key={item.id}
               title={item.knowledge_point}
-              tags={[`掌握度 ${percent(item.mastery_score)}`]}
+              tags={[`画像分 ${profileScore(item.mastery_score)}`]}
             >
-              掌握度偏低，建议用“定义、流程、风险、工程方案”重新组织一次回答。
+              画像分偏低，说明最近回答在评分或错误模式上不稳定，建议用“定义、流程、风险、工程方案”重新组织一次回答。
             </FeedbackItem>
           ))}
         </FeedbackGroup>
@@ -592,7 +750,10 @@ function NextPlanCard({ profile }) {
             <FeedbackItem
               key={`${item.knowledge_point}-${item.reason}`}
               title={item.knowledge_point}
-              tags={[`优先级 P${item.priority}`, item.mastery_score ? percent(item.mastery_score) : "新知识点"]}
+              tags={[
+                `优先级 P${item.priority}`,
+                item.mastery_score ? `画像分 ${profileScore(item.mastery_score)}` : "新知识点",
+              ]}
             >
               {translateReason(item.reason)}
             </FeedbackItem>

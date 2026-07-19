@@ -380,11 +380,11 @@ code {
   display: none;
 }
 
-textarea {
+textarea,
+.text-input {
   position: relative;
   z-index: 1;
   width: 100%;
-  resize: vertical;
   margin: 12px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 18px;
@@ -396,13 +396,35 @@ textarea {
   outline: none;
 }
 
-textarea:focus {
+textarea {
+  resize: vertical;
+}
+
+textarea:focus,
+.text-input:focus {
   border-color: rgba(24, 210, 167, 0.7);
   box-shadow: 0 0 0 4px rgba(24, 210, 167, 0.1);
 }
 
-textarea::placeholder {
+textarea::placeholder,
+.text-input::placeholder {
   color: #7283a1;
+}
+
+.field-label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 16px;
+  color: #f7fbff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.hint {
+  margin-top: 8px;
+  color: #8fa0bd;
+  font-size: 13px;
 }
 
 .mini-list {
@@ -556,6 +578,62 @@ textarea::placeholder {
 }
 
 .score-card .tag-row {
+  margin-top: 12px;
+}
+
+.analysis-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 13px 14px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.analysis-summary {
+  display: flex;
+  width: 100%;
+  min-height: auto;
+  justify-content: space-between;
+  border-radius: 14px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #f7fbff;
+  text-align: left;
+}
+
+.analysis-summary:hover {
+  transform: none;
+}
+
+.analysis-summary span {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.analysis-summary small {
+  color: #18d2a7;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.analysis-question {
+  display: block;
+  margin-top: 10px;
+  color: #f7fbff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.analysis-item p {
+  margin: 10px 0 0;
+  color: #aebbd0;
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+.analysis-detail {
+  display: grid;
+  gap: 10px;
   margin-top: 12px;
 }
 

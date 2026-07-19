@@ -22,6 +22,12 @@ class EvaluationResponse(BaseModel):
     id: UUID
     question_id: UUID
     answer_id: UUID
+    sequence: int
+    question_text: str
+    question_type: str
+    difficulty: str
+    knowledge_points: list[str]
+    user_answer: str
     correctness: int
     completeness: int
     reasoning: int
@@ -64,10 +70,18 @@ def service(request: Request) -> EvaluationService:
 
 def evaluation_response(item: EvaluationItem) -> EvaluationResponse:
     evaluation = item.evaluation
+    question = item.question
+    answer = item.answer
     return EvaluationResponse(
         id=evaluation.id,
         question_id=evaluation.question_id,
         answer_id=evaluation.answer_id,
+        sequence=question.sequence,
+        question_text=question.question_text,
+        question_type=str(question.question_type),
+        difficulty=str(question.difficulty),
+        knowledge_points=question.knowledge_points,
+        user_answer=answer.answer_text,
         correctness=evaluation.correctness,
         completeness=evaluation.completeness,
         reasoning=evaluation.reasoning,
