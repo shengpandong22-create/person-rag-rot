@@ -66,6 +66,58 @@ function inferInterviewTopic(documents, profile) {
   return weakAbility || "AI Agent";
 }
 
+function normalizeKnowledgePoint(point) {
+  const text = String(point ?? "").trim();
+  const lower = text.toLowerCase();
+  if (!text) return { title: "未命名知识点", raw: "" };
+
+  if (lower.includes("compact") || lower.includes("micro_compact") || lower.includes("auto_compact")) {
+    return { title: "上下文压缩与记忆管理", raw: text };
+  }
+  if (lower.includes("checkpoint") || lower.includes("checkpointer")) {
+    return { title: "Checkpoint 与状态恢复", raw: text };
+  }
+  if (lower.includes("interrupt") || lower.includes("human-in-the-loop")) {
+    return { title: "人工介入与可恢复执行", raw: text };
+  }
+  if (lower.includes("rag") || lower.includes("retrieval")) {
+    return { title: "RAG 检索增强生成", raw: text };
+  }
+  if (lower.includes("tool") || lower.includes("function calling")) {
+    return { title: "工具调用与结果处理", raw: text };
+  }
+  return { title: text.length > 36 ? `${text.slice(0, 34)}...` : text, raw: text };
+}
+
+function mergeKnowledgeItems(items, scoreField = "mastery_score") {
+  const groups = new Map();
+  for (const item of items) {
+    const normalized = normalizeKnowledgePoint(item.knowledge_point);
+    const existing = groups.get(normalized.title) ?? {
+      ...item,
+      id: normalized.title,
+      display_title: normalized.title,
+      raw_points: [],
+      occurrence_count: 0,
+      source_count: 0,
+    };
+    existing.raw_points = unique([...existing.raw_points, normalized.raw]).slice(0, 3);
+    existing.source_count += 1;
+    if (scoreField in item) {
+      existing[scoreField] = Math.min(existing[scoreField] ?? item[scoreField], item[scoreField]);
+    }
+    if ("occurrence_count" in item) {
+      existing.occurrence_count += item.occurrence_count;
+    }
+    existing.priority = Math.max(existing.priority ?? 0, item.priority ?? 0);
+    existing.status = existing.status ?? item.status;
+    existing.error_type = existing.error_type ?? item.error_type;
+    existing.reason = existing.reason ?? item.reason;
+    groups.set(normalized.title, existing);
+  }
+  return [...groups.values()];
+}
+
 async function api(path, options = {}) {
   const response = await fetch(path, {
     ...options,
@@ -565,10 +617,12 @@ function buildQuestionAnalysis(evaluation, index) {
 }
 
 function buildProfileView(profile) {
-  const abilities = [...profile.abilities].sort((a, b) => b.mastery_score - a.mastery_score);
+  const abilities = mergeKnowledgeItems(profile.abilities).sort(
+    (a, b) => b.mastery_score - a.mastery_score,
+  );
   const strengths = abilities.filter((item) => item.mastery_score >= 0.6).slice(0, 3);
   const weaknesses = abilities.filter((item) => item.mastery_score < 0.6).slice(0, 3);
-  const errors = [...profile.errors]
+  const errors = mergeKnowledgeItems(profile.errors, "occurrence_count")
     .sort((a, b) => b.occurrence_count - a.occurrence_count)
     .slice(0, 3);
 
@@ -584,11 +638,15 @@ function buildProfileView(profile) {
 }
 
 function buildPlanView(profile) {
-  const openTasks = profile.tasks
-    .filter((item) => item.status !== "completed")
+  const openTasks = mergeKnowledgeItems(
+    profile.tasks.filter((item) => item.status !== "completed"),
+    "priority",
+  )
     .sort((a, b) => b.priority - a.priority)
     .slice(0, 3);
-  const recommendations = [...profile.plan].sort((a, b) => b.priority - a.priority).slice(0, 3);
+  const recommendations = mergeKnowledgeItems(profile.plan, "priority")
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, 3);
   const completedCount = profile.tasks.filter((item) => item.status === "completed").length;
 
   return {
@@ -691,8 +749,11 @@ function ProfileCard({ profile }) {
           {view.strengths.map((item) => (
             <FeedbackItem
               key={item.id}
-              title={item.knowledge_point}
-              tags={[`画像分 ${profileScore(item.mastery_score)}`]}
+              title={item.display_title}
+              tags={[
+                `画像分 ${profileScore(item.mastery_score)}`,
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
+              ]}
             >
               最近回答能覆盖该知识点的主要内容，可在下一轮加入场景化追问。
             </FeedbackItem>
@@ -704,8 +765,11 @@ function ProfileCard({ profile }) {
           {view.weaknesses.map((item) => (
             <FeedbackItem
               key={item.id}
-              title={item.knowledge_point}
-              tags={[`画像分 ${profileScore(item.mastery_score)}`]}
+              title={item.display_title}
+              tags={[
+                `画像分 ${profileScore(item.mastery_score)}`,
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
+              ]}
             >
               画像分偏低，说明最近回答在评分或错误模式上不稳定，建议用“定义、流程、风险、工程方案”重新组织一次回答。
             </FeedbackItem>
@@ -718,7 +782,7 @@ function ProfileCard({ profile }) {
             <FeedbackItem
               key={item.id}
               title={errorLabels[item.error_type] ?? item.error_type}
-              tags={[`${item.occurrence_count} 次`, item.knowledge_point]}
+              tags={[`${item.occurrence_count} 次`, item.display_title]}
             >
               这个错误会影响面试官对知识边界的判断，下一轮训练需要专门验证。
             </FeedbackItem>
@@ -742,11 +806,12 @@ function NextPlanCard({ profile }) {
           {view.openTasks.map((item) => (
             <FeedbackItem
               key={item.id}
-              title={`补强：${item.knowledge_point}`}
+              title={`补强：${item.display_title}`}
               tags={[
                 statusLabels[item.status] ?? item.status,
                 `优先级 P${item.priority}`,
                 errorLabels[item.error_type] ?? item.error_type,
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
               ]}
             >
               来源于最近面试中的错误模式。建议重新回答相关题目，并主动补充引用依据和边界条件。
@@ -758,11 +823,12 @@ function NextPlanCard({ profile }) {
         <FeedbackGroup title="推荐下一轮题目">
           {view.recommendations.map((item) => (
             <FeedbackItem
-              key={`${item.knowledge_point}-${item.reason}`}
-              title={item.knowledge_point}
+              key={`${item.id}-${item.reason}`}
+              title={item.display_title}
               tags={[
                 `优先级 P${item.priority}`,
                 item.mastery_score ? `画像分 ${profileScore(item.mastery_score)}` : "新知识点",
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
               ]}
             >
               {translateReason(item.reason)}
