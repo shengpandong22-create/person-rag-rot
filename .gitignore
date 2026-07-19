@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.pyright/
+.venv/
+venv/
+
+# Environment and local state
+.env
+.env.*
+!.env.example
+*.log
+
+# Build artifacts
+build/
+dist/
+frontend/dist/
+frontend/node_modules/
+*.egg-info/
+
+# Local data
+uploads/
+data/
+exam_data/
+
+# Existing prototype runtime data
+vector_store/
+
+# Legacy prototype scripts kept locally, not part of the clean V1 repository
+audio.py
+config.py
+document_loader.py
+knowledge_base.py
+langgraph_rag.py
+main.py
+multi_agent_exam.py
+rag_engine.py
+voice_assistant.py
+requirements.txt
+tests/test_multi_agent_exam.py
+
+# Codex/local workspace metadata
+.agents/
+.codex/
+.vscode/

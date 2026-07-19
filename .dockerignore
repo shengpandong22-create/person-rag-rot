@@ -1,0 +1,16 @@
+.git
+.agents
+.venv
+venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.pyright
+.env
+data
+exam_data
+vector_store
+frontend/node_modules
+docs
+tests
+*.pyc

@@ -1,0 +1,473 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from uuid import UUID, uuid4
+
+from sqlalchemy import delete, select
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+from agent_mentor.api.errors import AppError
+from agent_mentor.domain.evaluation import (
+    EvaluationOutput,
+    EvaluationRubric,
+    EvaluationStatus,
+    ReviewDecision,
+    initial_review_route,
+    review_reasons_for,
+    should_review,
+    total_score,
+)
+from agent_mentor.domain.interview import InterviewStatus
+from agent_mentor.infrastructure.database.models import (
+    EvaluationModel,
+    EvaluationReferenceModel,
+    InterviewQuestionModel,
+    InterviewReportModel,
+    InterviewSessionModel,
+    QuestionReferenceModel,
+    UserAnswerModel,
+)
+
+EVALUATION_PROMPT_VERSION = "evaluation_v1"
+REVIEW_PROMPT_VERSION = "review_v1"
+EVALUATION_MODEL_NAME = "deterministic-evaluator-v1"
+REVIEWER_MODEL_NAME = "deterministic-reviewer-v1"
+
+
+@dataclass(frozen=True, slots=True)
+class EvaluationItem:
+    evaluation: EvaluationModel
+    reference_chunk_ids: tuple[UUID, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ReportSnapshot:
+    report: InterviewReportModel
+    evaluations: tuple[EvaluationItem, ...]
+
+
+class EvaluationService:
+    def __init__(self, sessions: async_sessionmaker[AsyncSession]) -> None:
+        self._sessions = sessions
+
+    async def evaluate_interview(
+        self, interview_id: UUID, *, reviewer_available: bool = True
+    ) -> tuple[EvaluationItem, ...]:
+        async with self._sessions() as db:
+            interview = await self._get_completed_interview(db, interview_id)
+            questions = await self._questions(db, interview.id)
+            for question in questions:
+                await self._validate_rubric(question)
+                answer = await self._primary_answer(db, question.id)
+                if answer is None:
+                    continue
+                existing = await self._evaluation_by_answer(db, answer.id)
+                if existing is None:
+                    await self._evaluate_answer(
+                        db,
+                        question=question,
+                        answer=answer,
+                        reviewer_available=reviewer_available,
+                    )
+            await db.commit()
+            return await self._evaluation_items(db, interview.id)
+
+    async def list_evaluations(self, interview_id: UUID) -> tuple[EvaluationItem, ...]:
+        async with self._sessions() as db:
+            interview = await self._get_interview(db, interview_id)
+            return await self._evaluation_items(db, interview.id)
+
+    async def build_report(
+        self, interview_id: UUID, *, reviewer_available: bool = True
+    ) -> ReportSnapshot:
+        async with self._sessions() as db:
+            interview = await self._get_completed_interview(db, interview_id)
+            await db.execute(
+                delete(InterviewReportModel).where(InterviewReportModel.session_id == interview.id)
+            )
+            await db.commit()
+
+        evaluations = await self.evaluate_interview(
+            interview_id, reviewer_available=reviewer_available
+        )
+        async with self._sessions() as db:
+            interview = await self._get_completed_interview(db, interview_id)
+            report = self._create_report_model(interview, evaluations)
+            db.add(report)
+            await db.commit()
+            await db.refresh(report)
+            return ReportSnapshot(report=report, evaluations=evaluations)
+
+    async def get_report(self, interview_id: UUID) -> ReportSnapshot:
+        async with self._sessions() as db:
+            interview = await self._get_interview(db, interview_id)
+            report = await db.scalar(
+                select(InterviewReportModel).where(InterviewReportModel.session_id == interview.id)
+            )
+            if report is None:
+                raise AppError("REPORT_NOT_FOUND", "Interview report was not found.", 404)
+            evaluations = await self._evaluation_items(db, interview.id)
+            return ReportSnapshot(report=report, evaluations=evaluations)
+
+    async def _evaluate_answer(
+        self,
+        db: AsyncSession,
+        *,
+        question: InterviewQuestionModel,
+        answer: UserAnswerModel,
+        reviewer_available: bool,
+    ) -> EvaluationModel:
+        allowed_references = await self._question_reference_ids(db, question.id)
+        output = self._evaluate_deterministically(question, answer, allowed_references)
+        self._assert_allowed_references(output.reference_chunk_ids, allowed_references)
+        reasons = review_reasons_for(output)
+        needs_review = should_review(output)
+        reviewed = False
+        status, review_decision = initial_review_route(
+            output, reviewer_available=reviewer_available
+        )
+        model_name = EVALUATION_MODEL_NAME
+
+        if needs_review and reviewer_available:
+            reviewed_output = self._review_deterministically(output, answer)
+            self._assert_allowed_references(reviewed_output.reference_chunk_ids, allowed_references)
+            if abs(total_score(reviewed_output) - total_score(output)) >= 5:
+                review_decision = ReviewDecision.DISPUTED
+                status = EvaluationStatus.DISPUTED
+            else:
+                output = reviewed_output
+                reasons = review_reasons_for(output)
+                review_decision = ReviewDecision.USED_REVIEW
+                status = EvaluationStatus.FINAL
+            reviewed = True
+            model_name = f"{EVALUATION_MODEL_NAME}+{REVIEWER_MODEL_NAME}"
+
+        evaluation = EvaluationModel(
+            id=uuid4(),
+            question_id=question.id,
+            answer_id=answer.id,
+            correctness=output.correctness,
+            completeness=output.completeness,
+            reasoning=output.reasoning,
+            communication=output.communication,
+            total=total_score(output),
+            confidence=output.confidence,
+            covered_points=output.covered_points,
+            missing_points=output.missing_points,
+            incorrect_claims=output.incorrect_claims,
+            answer_evidence=output.answer_evidence,
+            feedback=output.feedback,
+            follow_up_recommended=output.follow_up_recommended,
+            needs_review=needs_review,
+            reviewed=reviewed,
+            review_reasons=reasons,
+            review_decision=review_decision,
+            status=status,
+            model_name=model_name,
+            prompt_version=EVALUATION_PROMPT_VERSION,
+            created_at=datetime.now(UTC),
+        )
+        db.add(evaluation)
+        await db.flush()
+        for position, chunk_id in enumerate(output.reference_chunk_ids, start=1):
+            db.add(
+                EvaluationReferenceModel(
+                    id=uuid4(),
+                    evaluation_id=evaluation.id,
+                    chunk_id=chunk_id,
+                    position=position,
+                    created_at=datetime.now(UTC),
+                )
+            )
+        return evaluation
+
+    def _evaluate_deterministically(
+        self,
+        question: InterviewQuestionModel,
+        answer: UserAnswerModel,
+        allowed_references: tuple[UUID, ...],
+    ) -> EvaluationOutput:
+        answer_text = answer.answer_text.strip()
+        answer_lower = answer_text.lower()
+        reference_answer = question.reference_answer.strip()
+        reference_lower = reference_answer.lower()
+        required_points = self._required_points(question)
+        covered = [
+            point
+            for point in required_points
+            if self._contains_meaning(answer_lower, point.lower())
+        ]
+        if not covered and reference_lower:
+            reference_terms = self._significant_terms(reference_lower)
+            covered = [term for term in reference_terms if term in answer_lower][:3]
+        missing = [point for point in required_points if point not in covered]
+        weak_markers = ("不知道", "不确定", "不会", "不清楚", "uncertain", "not sure")
+        incorrect_claims = [
+            marker for marker in weak_markers if marker in answer_lower or marker in answer_text
+        ]
+        term_overlap = self._term_overlap(answer_lower, reference_lower)
+        length_score = min(1.0, len(answer_text) / 220)
+        coverage_ratio = len(covered) / max(1, len(required_points))
+
+        correctness = self._score(0.65 * term_overlap + 0.35 * coverage_ratio)
+        completeness = self._score(0.55 * coverage_ratio + 0.45 * length_score)
+        reasoning = self._score(0.50 * length_score + 0.50 * self._reasoning_signal(answer_lower))
+        communication = self._score(self._communication_signal(answer_text))
+
+        if incorrect_claims:
+            correctness = min(correctness, 2)
+            confidence = 0.55
+        else:
+            confidence = min(0.92, 0.58 + 0.24 * term_overlap + 0.10 * length_score)
+        follow_up = bool(
+            missing
+            and 1
+            <= total_score(
+                EvaluationOutput(
+                    correctness=correctness,
+                    completeness=completeness,
+                    reasoning=reasoning,
+                    communication=communication,
+                    confidence=confidence,
+                    feedback="draft",
+                )
+            )
+            <= 14
+        )
+        references = list(allowed_references[:2]) if term_overlap > 0 or covered else []
+        return EvaluationOutput(
+            correctness=correctness,
+            completeness=completeness,
+            reasoning=reasoning,
+            communication=communication,
+            confidence=round(confidence, 2),
+            covered_points=covered,
+            missing_points=missing[:5],
+            incorrect_claims=incorrect_claims,
+            answer_evidence=self._answer_evidence(answer_text),
+            reference_chunk_ids=references,
+            feedback=self._feedback(correctness, completeness, reasoning, communication, missing),
+            follow_up_recommended=follow_up,
+        )
+
+    def _review_deterministically(
+        self, output: EvaluationOutput, answer: UserAnswerModel
+    ) -> EvaluationOutput:
+        if len(answer.answer_text.strip()) < 12:
+            return output.model_copy(
+                update={
+                    "confidence": min(output.confidence, 0.60),
+                    "review_reasons": [*output.review_reasons, "reviewer_confirms_weak_answer"],
+                }
+            )
+        return output.model_copy(
+            update={
+                "confidence": max(output.confidence, 0.72),
+                "feedback": f"{output.feedback} 复核后确认：评分依据与引用范围一致。",
+                "review_reasons": [*output.review_reasons, "reviewer_checked"],
+            }
+        )
+
+    def _create_report_model(
+        self, interview: InterviewSessionModel, evaluations: tuple[EvaluationItem, ...]
+    ) -> InterviewReportModel:
+        rows = [item.evaluation for item in evaluations]
+        total = sum(row.total for row in rows)
+        max_score = len(rows) * 20
+        dimension_summary = {
+            dimension: {
+                "total": sum(getattr(row, dimension) for row in rows),
+                "average": round(
+                    sum(getattr(row, dimension) for row in rows) / max(1, len(rows)), 2
+                ),
+            }
+            for dimension in ("correctness", "completeness", "reasoning", "communication")
+        }
+        low_confidence = [str(row.question_id) for row in rows if row.confidence < 0.70]
+        disputed = [str(row.question_id) for row in rows if row.status == EvaluationStatus.DISPUTED]
+        errors = sorted({claim for row in rows for claim in row.incorrect_claims})
+        weak_dimensions = [
+            name
+            for name, summary in dimension_summary.items()
+            if isinstance(summary["average"], float) and summary["average"] < 3.0
+        ]
+        next_steps = [
+            f"优先复习 {dimension} 相关能力：结合引用片段重新组织答案。"
+            for dimension in weak_dimensions
+        ] or ["保持当前练习节奏，下一轮增加场景化追问。"]
+        return InterviewReportModel(
+            id=uuid4(),
+            session_id=interview.id,
+            total_score=total,
+            max_score=max_score,
+            dimension_summary=dimension_summary,
+            knowledge_point_summary={"topic": interview.topic, "evaluated_questions": len(rows)},
+            error_summary=errors,
+            low_confidence_items=low_confidence,
+            disputed_items=disputed,
+            next_steps=next_steps,
+            created_at=datetime.now(UTC),
+        )
+
+    def _required_points(self, question: InterviewQuestionModel) -> list[str]:
+        try:
+            rubric = EvaluationRubric.model_validate(question.rubric)
+        except ValueError:
+            return list(question.knowledge_points)
+        points: list[str] = []
+        for item in rubric.items:
+            points.extend(item.required_points)
+        return points or list(question.knowledge_points)
+
+    async def _validate_rubric(self, question: InterviewQuestionModel) -> None:
+        try:
+            EvaluationRubric.model_validate(question.rubric)
+        except ValueError as exc:
+            raise AppError("RUBRIC_INVALID", "Question rubric is invalid.", 422, str(exc)) from exc
+
+    async def _evaluation_items(
+        self, db: AsyncSession, interview_id: UUID
+    ) -> tuple[EvaluationItem, ...]:
+        evaluations = (
+            await db.scalars(
+                select(EvaluationModel)
+                .join(
+                    InterviewQuestionModel, InterviewQuestionModel.id == EvaluationModel.question_id
+                )
+                .where(InterviewQuestionModel.session_id == interview_id)
+                .order_by(InterviewQuestionModel.sequence)
+            )
+        ).all()
+        items: list[EvaluationItem] = []
+        for evaluation in evaluations:
+            references = (
+                await db.scalars(
+                    select(EvaluationReferenceModel.chunk_id)
+                    .where(EvaluationReferenceModel.evaluation_id == evaluation.id)
+                    .order_by(EvaluationReferenceModel.position)
+                )
+            ).all()
+            items.append(
+                EvaluationItem(evaluation=evaluation, reference_chunk_ids=tuple(references))
+            )
+        return tuple(items)
+
+    async def _questions(
+        self, db: AsyncSession, interview_id: UUID
+    ) -> tuple[InterviewQuestionModel, ...]:
+        return tuple(
+            (
+                await db.scalars(
+                    select(InterviewQuestionModel)
+                    .where(InterviewQuestionModel.session_id == interview_id)
+                    .order_by(InterviewQuestionModel.sequence)
+                )
+            ).all()
+        )
+
+    async def _question_reference_ids(
+        self, db: AsyncSession, question_id: UUID
+    ) -> tuple[UUID, ...]:
+        return tuple(
+            (
+                await db.scalars(
+                    select(QuestionReferenceModel.chunk_id)
+                    .where(QuestionReferenceModel.question_id == question_id)
+                    .order_by(QuestionReferenceModel.position)
+                )
+            ).all()
+        )
+
+    async def _primary_answer(self, db: AsyncSession, question_id: UUID) -> UserAnswerModel | None:
+        return await db.scalar(
+            select(UserAnswerModel)
+            .where(UserAnswerModel.question_id == question_id)
+            .order_by(UserAnswerModel.submitted_at)
+        )
+
+    async def _evaluation_by_answer(
+        self, db: AsyncSession, answer_id: UUID
+    ) -> EvaluationModel | None:
+        return await db.scalar(
+            select(EvaluationModel).where(EvaluationModel.answer_id == answer_id)
+        )
+
+    async def _get_interview(self, db: AsyncSession, interview_id: UUID) -> InterviewSessionModel:
+        interview = await db.get(InterviewSessionModel, interview_id)
+        if interview is None:
+            raise AppError("INTERVIEW_NOT_FOUND", "Interview was not found.", 404)
+        return interview
+
+    async def _get_completed_interview(
+        self, db: AsyncSession, interview_id: UUID
+    ) -> InterviewSessionModel:
+        interview = await self._get_interview(db, interview_id)
+        if interview.status != InterviewStatus.COMPLETED:
+            raise AppError("INTERVIEW_NOT_COMPLETED", "Interview must be completed first.", 409)
+        return interview
+
+    def _assert_allowed_references(
+        self, reference_chunk_ids: list[UUID], allowed_references: tuple[UUID, ...]
+    ) -> None:
+        illegal = set(reference_chunk_ids) - set(allowed_references)
+        if illegal:
+            raise AppError(
+                "EVALUATION_CITATION_INVALID",
+                "Evaluation referenced chunks outside the question context.",
+                422,
+                ",".join(str(item) for item in sorted(illegal)),
+            )
+
+    def _term_overlap(self, answer: str, reference: str) -> float:
+        reference_terms = set(self._significant_terms(reference))
+        if not reference_terms:
+            return 0
+        answer_terms = set(self._significant_terms(answer))
+        return len(reference_terms & answer_terms) / len(reference_terms)
+
+    def _significant_terms(self, text: str) -> list[str]:
+        terms = [term.strip("，。,.()[]{}:：;；") for term in text.split()]
+        return [term for term in terms if len(term) >= 2][:40]
+
+    def _contains_meaning(self, answer: str, point: str) -> bool:
+        if point in answer:
+            return True
+        terms = self._significant_terms(point)
+        return bool(terms) and any(term in answer for term in terms)
+
+    def _score(self, ratio: float) -> int:
+        return max(0, min(5, round(ratio * 5)))
+
+    def _reasoning_signal(self, answer: str) -> float:
+        markers = ("因为", "所以", "首先", "其次", "例如", "如果", "therefore", "because")
+        return min(1.0, sum(1 for marker in markers if marker in answer) / 3)
+
+    def _communication_signal(self, answer: str) -> float:
+        if not answer.strip():
+            return 0
+        structure = 0.4 if any(marker in answer for marker in ("1.", "一", "首先", "\n")) else 0.1
+        length = min(0.6, len(answer) / 300)
+        return min(1.0, structure + length)
+
+    def _answer_evidence(self, answer: str) -> list[str]:
+        sentences = [
+            item.strip()
+            for item in answer.replace("。", "\n").replace("；", "\n").splitlines()
+            if item.strip()
+        ]
+        return sentences[:3]
+
+    def _feedback(
+        self,
+        correctness: int,
+        completeness: int,
+        reasoning: int,
+        communication: int,
+        missing: list[str],
+    ) -> str:
+        if min(correctness, completeness, reasoning, communication) >= 4:
+            return "回答覆盖较充分，结构和论证基本达标。"
+        if missing:
+            return f"回答需要补齐关键点：{', '.join(missing[:3])}。"
+        return "回答已有部分有效信息，但需要进一步明确概念、场景和推理链路。"

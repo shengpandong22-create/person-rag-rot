@@ -1,0 +1,30 @@
+{"id":"ret-001","question":"RAG 为什么能降低大模型无依据回答的概率？","expected_keywords":["RAG","证据","引用"],"answerable":true}
+{"id":"ret-002","question":"向量数据库在个人学习资料问答中承担什么角色？","expected_keywords":["向量","检索","学习资料"],"answerable":true}
+{"id":"ret-003","question":"为什么文档 chunk 要保留标题层级？","expected_keywords":["标题","章节","引用"],"answerable":true}
+{"id":"ret-004","question":"Java 后端转 AI Agent 开发为什么需要学习 RAG？","expected_keywords":["Java","AI Agent","RAG"],"answerable":true}
+{"id":"ret-005","question":"全文检索和向量检索分别适合什么问题？","expected_keywords":["全文","向量","混合检索"],"answerable":true}
+{"id":"ret-006","question":"RRF 融合解决了什么排序问题？","expected_keywords":["RRF","排序","融合"],"answerable":true}
+{"id":"ret-007","question":"资料未覆盖问题时系统应该如何回答？","expected_keywords":["证据不足","不伪造引用"],"answerable":true}
+{"id":"ret-008","question":"引用校验为什么只能使用本次检索到的 chunk_id？","expected_keywords":["chunk_id","检索上下文","校验"],"answerable":true}
+{"id":"ret-009","question":"可信等级可以怎样影响检索排序？","expected_keywords":["可信等级","排序","语义相关性"],"answerable":true}
+{"id":"ret-010","question":"为什么不能把 RAG 描述成保证答案绝对正确？","expected_keywords":["不能保证","证据","可追溯"],"answerable":true}
+{"id":"ret-011","question":"文档上传时为什么要计算 SHA-256？","expected_keywords":["SHA-256","重复","版本"],"answerable":true}
+{"id":"ret-012","question":"旧版本文档为什么要退出默认检索范围？","expected_keywords":["旧版本","默认检索","版本"],"answerable":true}
+{"id":"ret-013","question":"Prompt Injection 文档指令为什么不能覆盖系统规则？","expected_keywords":["Prompt Injection","系统规则","不可信数据"],"answerable":true}
+{"id":"ret-014","question":"SSE 问答流需要哪些终止事件？","expected_keywords":["SSE","answer.completed","answer.failed"],"answerable":true}
+{"id":"ret-015","question":"检索候选为什么需要记录融合分数？","expected_keywords":["候选","融合分数","追溯"],"answerable":true}
+{"id":"ret-016","question":"16GB 开发机资源约束对架构选型有什么影响？","expected_keywords":["16GB","Docker Compose","资源"],"answerable":true}
+{"id":"ret-017","question":"为什么 V1 不引入 Elasticsearch？","expected_keywords":["V1","PostgreSQL","复杂度"],"answerable":true}
+{"id":"ret-018","question":"为什么评测需要 Recall@K 和 MRR？","expected_keywords":["Recall","MRR","评测"],"answerable":true}
+{"id":"ret-019","question":"知识库证据不足时 allow_model_knowledge=false 有什么效果？","expected_keywords":["allow_model_knowledge","证据不足","禁止"],"answerable":true}
+{"id":"ret-020","question":"单文档占比控制想避免什么问题？","expected_keywords":["单文档","占比","多样性"],"answerable":true}
+{"id":"ret-021","question":"相邻 chunk 去重为什么有必要？","expected_keywords":["相邻","chunk","去重"],"answerable":true}
+{"id":"ret-022","question":"PostgreSQL pgvector 在这个项目中有什么好处？","expected_keywords":["PostgreSQL","pgvector","业务数据"],"answerable":true}
+{"id":"ret-023","question":"回答与引用关系为什么要持久化？","expected_keywords":["持久化","引用","追溯"],"answerable":true}
+{"id":"ret-024","question":"面试助手为什么要先做证据化问答？","expected_keywords":["面试助手","证据化","学习"],"answerable":true}
+{"id":"ret-025","question":"为什么测试环境不能误读真实 API Key？","expected_keywords":["测试环境","API Key","安全"],"answerable":true}
+{"id":"ret-026","question":"如何用 RAG 支撑之后的模拟面试出题？","expected_keywords":["RAG","出题","证据"],"answerable":true}
+{"id":"ret-027","question":"唐朝开元年间的具体盐税制度如何影响 RAG 系统设计？","expected_keywords":[],"answerable":false}
+{"id":"ret-028","question":"量子色动力学格点计算在本项目 Phase 1 怎么实现？","expected_keywords":[],"answerable":false}
+{"id":"ret-029","question":"我昨天午饭吃了什么？","expected_keywords":[],"answerable":false}
+{"id":"ret-030","question":"Docker Desktop 4.82 的所有发布说明逐条是什么？","expected_keywords":[],"answerable":false}
