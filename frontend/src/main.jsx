@@ -2,9 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
-const sampleAnswer =
-  "RAG 会先从知识库检索相关片段，再基于证据组织回答。它的关键价值是让答案可追溯，通过引用 chunk 降低幻觉风险；如果资料不足，系统应该明确说明证据不足，而不是伪造引用。";
-
 const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
 
 const dimensionLabels = {
@@ -113,6 +110,7 @@ function App() {
   }, [interview]);
   const isCompleted = interview?.status === "completed";
   const canUseKnowledgeBase = Boolean(knowledgeBase?.id);
+  const currentDefaultAnswer = currentQuestion?.reference_answer?.trim() ?? "";
 
   useEffect(() => {
     bootstrap();
@@ -277,12 +275,16 @@ function App() {
 
   const submitAnswer = () =>
     run("提交答案并推进工作流", async () => {
+      const finalAnswer =
+        answerDraft.trim() ||
+        currentDefaultAnswer ||
+        "我暂时无法完整回答这道题，需要结合参考资料继续学习。";
       const updated = await api(`/api/v1/interviews/${interview.id}/answers`, {
         method: "POST",
         headers: { "Idempotency-Key": crypto.randomUUID() },
         body: JSON.stringify({
           question_id: currentQuestion.id,
-          answer: answerDraft,
+          answer: finalAnswer,
         }),
       });
       setInterview(updated);
@@ -425,20 +427,28 @@ function App() {
                   <textarea
                     value={answerDraft}
                     onChange={(event) => setAnswerDraft(event.target.value)}
-                    placeholder="在这里输入你的真实回答..."
+                    placeholder="在这里输入你的真实回答；如果留空提交，会使用本题随题生成的参考答案。"
                     rows={7}
                   />
+                  {currentDefaultAnswer && (
+                    <p className="hint">
+                      本题已生成参考答案，可用于演示评分闭环；真实训练时建议先自己回答。
+                    </p>
+                  )}
                   <div className="inline-actions">
                     <button
                       className="secondary"
                       type="button"
-                      onClick={() => setAnswerDraft(sampleAnswer)}
-                      disabled={busy}
+                      onClick={() => setAnswerDraft(currentDefaultAnswer)}
+                      disabled={busy || !currentDefaultAnswer}
                     >
-                      填入示例
+                      使用本题参考答案
                     </button>
-                    <button onClick={submitAnswer} disabled={busy || !answerDraft.trim()}>
-                      提交我的答案
+                    <button
+                      onClick={submitAnswer}
+                      disabled={busy || (!answerDraft.trim() && !currentDefaultAnswer)}
+                    >
+                      {answerDraft.trim() ? "提交我的答案" : "使用默认答案提交"}
                     </button>
                   </div>
                 </ResultBox>
