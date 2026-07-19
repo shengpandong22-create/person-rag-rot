@@ -704,6 +704,47 @@ function buildPlanView(profile) {
   };
 }
 
+function strengthNarrative(item) {
+  if (item.display_title.includes("RAG")) {
+    return "最近回答已经能覆盖检索、生成和引用溯源的主链路，下一轮可以增加召回质量和证据不足场景的追问。";
+  }
+  if (item.display_title.includes("状态") || item.display_title.includes("Checkpoint")) {
+    return "你已经能说明状态保存或恢复的基本作用，下一轮可以补充失败恢复、并发隔离和状态一致性细节。";
+  }
+  return "最近回答能覆盖该主题的主要内容，下一轮可以加入更贴近项目实现的场景化追问。";
+}
+
+function weaknessNarrative(item) {
+  const score = Math.round((item.mastery_score ?? 0) * 100);
+  if (item.display_title.includes("状态")) {
+    return `画像分 ${score}，说明状态流转、节点边界或恢复链路还不够稳定。建议按“状态字段 → 节点职责 → 状态迁移 → 异常恢复”重答一次。`;
+  }
+  if (item.display_title.includes("RAG")) {
+    return `画像分 ${score}，说明检索、证据引用或答案生成边界还没讲扎实。建议补充 Query 改写、召回排序、引用校验和证据不足处理。`;
+  }
+  if (item.display_title.includes("压缩") || item.display_title.includes("Token")) {
+    return `画像分 ${score}，说明上下文裁剪、摘要保真或 token 成本控制还需要补强。建议说明触发条件、保留策略和信息丢失风险。`;
+  }
+  if (item.display_title.includes("流式")) {
+    return `画像分 ${score}，说明流式事件、writer 输出和前端消费链路还不够清晰。建议按“事件来源 → 通道协议 → UI 消费 → 错误处理”梳理。`;
+  }
+  return `画像分 ${score}，说明这个主题最近回答不够稳定。建议用“定义、流程、边界、工程方案”重新组织一次回答。`;
+}
+
+function errorNarrative(item) {
+  const label = errorLabels[item.error_type] ?? item.error_type;
+  if (item.error_type === "missing_detail" || label.includes("遗漏")) {
+    return `最近 ${item.occurrence_count} 次出现细节遗漏，重点补齐 ${item.display_title} 的关键步骤、边界条件和异常场景。`;
+  }
+  if (item.error_type === "concept_confusion" || label.includes("概念")) {
+    return `这里主要是概念边界混淆：需要区分 ${item.display_title} 中相近概念的职责、输入输出和适用场景。`;
+  }
+  if (item.error_type === "incorrect_reasoning") {
+    return `推理链路不够稳定，建议把结论拆成“前提、依据、推导、限制条件”，避免跳步。`;
+  }
+  return `该错误在 ${item.display_title} 上重复出现，下一轮训练应验证原因、修正表达，并观察是否再次复发。`;
+}
+
 function InterviewReportCard({ report }) {
   const view = buildReportView(report);
   return (
@@ -797,7 +838,7 @@ function ProfileCard({ profile }) {
                 item.source_count > 1 ? `合并 ${item.source_count} 个细项` : compactRawLabel(item.raw_points[0]),
               ]}
             >
-              最近回答能覆盖该知识点的主要内容，可在下一轮加入场景化追问。
+              {strengthNarrative(item)}
             </FeedbackItem>
           ))}
         </FeedbackGroup>
@@ -813,7 +854,7 @@ function ProfileCard({ profile }) {
                 item.source_count > 1 ? `合并 ${item.source_count} 个细项` : compactRawLabel(item.raw_points[0]),
               ]}
             >
-              画像分偏低，说明最近回答在评分或错误模式上不稳定，建议用“定义、流程、风险、工程方案”重新组织一次回答。
+              {weaknessNarrative(item)}
             </FeedbackItem>
           ))}
         </FeedbackGroup>
@@ -826,7 +867,7 @@ function ProfileCard({ profile }) {
               title={errorLabels[item.error_type] ?? item.error_type}
               tags={[`${item.occurrence_count} 次`, item.display_title]}
             >
-              这个错误会影响面试官对知识边界的判断，下一轮训练需要专门验证。
+              {errorNarrative(item)}
             </FeedbackItem>
           ))}
         </FeedbackGroup>
