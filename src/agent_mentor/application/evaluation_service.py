@@ -28,6 +28,7 @@ from agent_mentor.infrastructure.database.models import (
     QuestionReferenceModel,
     UserAnswerModel,
 )
+from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
 
 EVALUATION_PROMPT_VERSION = "evaluation_v1"
 REVIEW_PROMPT_VERSION = "review_v1"
@@ -48,8 +49,16 @@ class ReportSnapshot:
 
 
 class EvaluationService:
-    def __init__(self, sessions: async_sessionmaker[AsyncSession]) -> None:
+    def __init__(
+        self,
+        sessions: async_sessionmaker[AsyncSession],
+        llm: LLMGateway | None = None,
+        *,
+        default_model: str | None = None,
+    ) -> None:
         self._sessions = sessions
+        self._llm = llm
+        self._default_model = default_model
 
     async def evaluate_interview(
         self, interview_id: UUID, *, reviewer_available: bool = True
@@ -119,7 +128,7 @@ class EvaluationService:
         reviewer_available: bool,
     ) -> EvaluationModel:
         allowed_references = await self._question_reference_ids(db, question.id)
-        output = self._evaluate_deterministically(question, answer, allowed_references)
+        output = await self._evaluate_with_llm_or_fallback(question, answer, allowed_references)
         self._assert_allowed_references(output.reference_chunk_ids, allowed_references)
         reasons = review_reasons_for(output)
         needs_review = should_review(output)
@@ -127,7 +136,7 @@ class EvaluationService:
         status, review_decision = initial_review_route(
             output, reviewer_available=reviewer_available
         )
-        model_name = EVALUATION_MODEL_NAME
+        model_name = self._default_model or EVALUATION_MODEL_NAME
 
         if needs_review and reviewer_available:
             reviewed_output = self._review_deterministically(output, answer)
@@ -141,7 +150,7 @@ class EvaluationService:
                 review_decision = ReviewDecision.USED_REVIEW
                 status = EvaluationStatus.FINAL
             reviewed = True
-            model_name = f"{EVALUATION_MODEL_NAME}+{REVIEWER_MODEL_NAME}"
+            model_name = f"{model_name}+{REVIEWER_MODEL_NAME}"
 
         evaluation = EvaluationModel(
             id=uuid4(),
@@ -181,6 +190,62 @@ class EvaluationService:
                 )
             )
         return evaluation
+
+    async def _evaluate_with_llm_or_fallback(
+        self,
+        question: InterviewQuestionModel,
+        answer: UserAnswerModel,
+        allowed_references: tuple[UUID, ...],
+    ) -> EvaluationOutput:
+        fallback = self._evaluate_deterministically(question, answer, allowed_references)
+        if self._llm is None:
+            return fallback
+        try:
+            output = await self._llm.generate_structured(
+                operation="answer_evaluation",
+                messages=[
+                    Message(
+                        role="system",
+                        content=(
+                            "你是 AgentMentor 的面试评分器。"
+                            "必须输出 0-5 四维评分、置信度、反馈和引用 chunk_id。"
+                            "reference_chunk_ids 只能使用允许列表里的 ID，不允许编造引用。"
+                        ),
+                    ),
+                    Message(
+                        role="user",
+                        content=self._evaluation_prompt(question, answer, allowed_references),
+                    ),
+                ],
+                response_model=EvaluationOutput,
+                model_policy=ModelPolicy(model=self._default_model),
+                trace_context=TraceContext(trace_id=str(uuid4()), operation="answer_evaluation"),
+            )
+            self._assert_allowed_references(output.reference_chunk_ids, allowed_references)
+            return output
+        except Exception:
+            return fallback
+
+    def _evaluation_prompt(
+        self,
+        question: InterviewQuestionModel,
+        answer: UserAnswerModel,
+        allowed_references: tuple[UUID, ...],
+    ) -> str:
+        return (
+            f"题目：{question.question_text}\n"
+            f"题型：{question.question_type}\n"
+            f"难度：{question.difficulty}\n"
+            f"知识点：{', '.join(question.knowledge_points)}\n"
+            f"参考答案：{question.reference_answer[:3000]}\n"
+            f"评分 Rubric：{question.rubric}\n"
+            f"允许引用的 chunk_id：{', '.join(str(item) for item in allowed_references)}\n\n"
+            f"用户回答：{answer.answer_text}\n\n"
+            "请输出 JSON，字段必须符合 EvaluationOutput："
+            "correctness、completeness、reasoning、communication、confidence、"
+            "covered_points、missing_points、incorrect_claims、answer_evidence、"
+            "reference_chunk_ids、feedback、follow_up_recommended、review_reasons。"
+        )
 
     def _evaluate_deterministically(
         self,

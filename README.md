@@ -4,7 +4,7 @@ AgentMentor 是一个面向“Java 后端开发者转向 AI Agent 开发”的�
 
 项目把学习资料放入个人知识库，通过 RAG 提供可追溯回答，再结合可恢复的模拟面试、可信评分、能力画像和复习任务，形成“学习资料 → 问答验证 → 面试训练 → 评分反馈 → 画像更新 → 下一轮复习”的闭环。
 
-核心工程约束：可在 16GB 普通开发机上通过 Docker Compose 本地部署，无需独立 GPU。当前 V1 默认不依赖真实模型 Key，真实 LLM Gateway 将作为后续增强接入。
+核心工程约束：可在 16GB 普通开发机上通过 Docker Compose 本地部署，无需独立 GPU。V1 默认可在无模型 Key 的情况下用本地基线降级运行；配置 DeepSeek/OpenAI-compatible Key 后，会启用真实 LLM 参与 RAG 回答、面试出题和结构化评分。
 
 ## 核心能力
 
@@ -17,17 +17,17 @@ AgentMentor 是一个面向“Java 后端开发者转向 AI Agent 开发”的�
 
 ## 当前边界
 
-当前版本已经完成 RAG、工作流、评分、画像和 Docker 本地部署闭环，但尚未接入 DeepSeek/OpenAI 等真实大模型。
-
-代码中已预留 OpenAI-compatible LLM Gateway 配置项，后续可扩展为：
+当前版本已经完成 RAG、工作流、评分、画像和 Docker 本地部署闭环，并提供 OpenAI-compatible LLM Gateway。配置 DeepSeek 示例：
 
 ```env
-AGENT_MENTOR_LLM_BASE_URL=https://api.deepseek.com
+AGENT_MENTOR_LLM_BASE_URL=https://api.deepseek.com/v1
 AGENT_MENTOR_LLM_API_KEY=your_api_key
 AGENT_MENTOR_LLM_DEFAULT_MODEL=deepseek-chat
 ```
 
 建议不要把真实 Key 写入仓库；`.env` 已被 `.gitignore` 排除。
+
+如果不配置 Key，系统会自动回退到本地确定性基线，方便测试和离线演示。
 
 ## 快速启动
 

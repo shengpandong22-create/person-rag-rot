@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
@@ -19,6 +20,7 @@ from agent_mentor.ports.knowledge_retriever import (
     RetrievalQuery,
     RetrievedChunk,
 )
+from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
 from agent_mentor.rag.retrieval import validate_citations
 
 ENGLISH_STOPWORDS = {
@@ -52,21 +54,31 @@ class AnswerResult:
     evidence_sufficient: bool
 
 
+class GroundedAnswerOutput(BaseModel):
+    answer: str = Field(min_length=1, max_length=4000)
+    citation_chunk_ids: list[UUID] = Field(default_factory=list)
+    evidence_sufficient: bool
+
+
 class AnswerService:
     def __init__(
         self,
         sessions: async_sessionmaker[AsyncSession],
         retriever: KnowledgeRetriever,
+        llm: LLMGateway | None = None,
         *,
         default_top_k: int,
         default_candidate_k: int,
         min_evidence_score: float,
+        default_model: str | None = None,
     ) -> None:
         self._sessions = sessions
         self._retriever = retriever
+        self._llm = llm
         self._default_top_k = default_top_k
         self._default_candidate_k = default_candidate_k
         self._min_evidence_score = min_evidence_score
+        self._default_model = default_model
 
     async def answer(
         self,
@@ -105,8 +117,12 @@ class AnswerService:
             )
 
         citations = candidates[: min(3, len(candidates))]
-        answer = self._compose_grounded_answer(
-            question, citations, allow_model_knowledge and not sufficient
+        answer = await self._generate_answer(
+            question=question,
+            candidates=candidates,
+            citations=citations,
+            evidence_sufficient=sufficient,
+            allow_model_knowledge=allow_model_knowledge,
         )
         validate_citations([chunk.chunk_id for chunk in citations], candidates)
         return await self._persist(
@@ -135,6 +151,85 @@ class AnswerService:
             yield {"event": "answer.completed", "data": {"message_id": str(result.message_id)}}
         except Exception as error:
             yield {"event": "answer.failed", "data": {"error": str(error)}}
+
+    async def _generate_answer(
+        self,
+        *,
+        question: str,
+        candidates: list[RetrievedChunk],
+        citations: list[RetrievedChunk],
+        evidence_sufficient: bool,
+        allow_model_knowledge: bool,
+    ) -> str:
+        if self._llm is None:
+            return self._compose_grounded_answer(
+                question, citations, allow_model_knowledge and not evidence_sufficient
+            )
+        try:
+            output = await self._llm.generate_structured(
+                operation="rag_answer",
+                messages=[
+                    Message(
+                        role="system",
+                        content=(
+                            "你是 AgentMentor 的学习辅导助手。必须优先基于给定资料回答。"
+                            "如果引用资料，请只使用候选资料里的 chunk_id；不要编造引用。"
+                            "如果资料不足但允许模型补充，要明确写出“模型补充”。"
+                        ),
+                    ),
+                    Message(
+                        role="user",
+                        content=self._answer_prompt(
+                            question, candidates, evidence_sufficient, allow_model_knowledge
+                        ),
+                    ),
+                ],
+                response_model=GroundedAnswerOutput,
+                model_policy=ModelPolicy(model=self._default_model),
+                trace_context=TraceContext(trace_id=str(uuid4()), operation="rag_answer"),
+            )
+            ensure_citations_are_valid(output.citation_chunk_ids, candidates)
+            selected = [
+                chunk for chunk in candidates if chunk.chunk_id in output.citation_chunk_ids
+            ]
+            if output.evidence_sufficient and not selected and candidates:
+                selected = candidates[:1]
+            citations[:] = selected[:3]
+            return output.answer
+        except Exception:
+            return self._compose_grounded_answer(
+                question, citations, allow_model_knowledge and not evidence_sufficient
+            )
+
+    def _answer_prompt(
+        self,
+        question: str,
+        candidates: list[RetrievedChunk],
+        evidence_sufficient: bool,
+        allow_model_knowledge: bool,
+    ) -> str:
+        context = []
+        for index, chunk in enumerate(candidates[:6], start=1):
+            context.append(
+                "\n".join(
+                    [
+                        f"资料 {index}",
+                        f"chunk_id: {chunk.chunk_id}",
+                        f"document: {chunk.document_title}",
+                        f"heading: {' > '.join(chunk.heading_path)}",
+                        f"score: {chunk.score}",
+                        f"content: {chunk.content[:1200]}",
+                    ]
+                )
+            )
+        return (
+            f"用户问题：{question}\n"
+            f"证据是否足够：{evidence_sufficient}\n"
+            f"是否允许模型补充：{allow_model_knowledge}\n\n"
+            "候选资料：\n"
+            f"{chr(10).join(context) if context else '无'}\n\n"
+            "请输出 JSON：answer、citation_chunk_ids、evidence_sufficient。"
+        )
 
     def _compose_grounded_answer(
         self, question: str, citations: list[RetrievedChunk], uses_model_knowledge: bool
@@ -194,6 +289,7 @@ class AnswerService:
         diagnostics = {
             "candidate_count": len(candidates),
             "evidence_sufficient": evidence_sufficient,
+            "llm_enabled": self._llm is not None,
             "candidates": [
                 {
                     "chunk_id": str(chunk.chunk_id),

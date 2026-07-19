@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -29,6 +30,7 @@ from agent_mentor.ports.knowledge_retriever import (
     RetrievalQuery,
     RetrievedChunk,
 )
+from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
 from agent_mentor.rag.retrieval import validate_citations
 from agent_mentor.workflows.interview import (
     InterviewWorkflowState,
@@ -52,17 +54,27 @@ class InterviewSnapshot:
     answers: tuple[UserAnswerModel, ...]
 
 
+class InterviewQuestionOutput(BaseModel):
+    question_text: str = Field(min_length=1, max_length=1200)
+    reference_answer: str = Field(min_length=1, max_length=4000)
+    required_points: list[str] = Field(default_factory=list, max_length=8)
+
+
 class InterviewService:
     def __init__(
         self,
         sessions: async_sessionmaker[AsyncSession],
         retriever: KnowledgeRetriever,
+        llm: LLMGateway | None = None,
         *,
         retrieval_candidate_k: int,
+        default_model: str | None = None,
     ) -> None:
         self._sessions = sessions
         self._retriever = retriever
+        self._llm = llm
         self._retrieval_candidate_k = retrieval_candidate_k
+        self._default_model = default_model
 
     async def create_interview(
         self,
@@ -170,9 +182,7 @@ class InterviewService:
                     submitted_at=datetime.now(UTC),
                 )
             )
-            question.placeholder_feedback = (
-                "Phase 3 placeholder: answer received. Formal scoring starts in Phase 4."
-            )
+            question.placeholder_feedback = "Answer received; evaluation will run after completion."
             await self._checkpoint(db, persist_answer(self._state(interview, "persist_answer")))
 
             if interview.current_question_index + 1 >= interview.question_count:
@@ -241,24 +251,42 @@ class InterviewService:
         citation_ids = [chunk.chunk_id for chunk in chunks[:2]]
         validate_citations(citation_ids, chunks)
         question_type = self._question_type(sequence)
+        generated = await self._generate_question_output(interview, sequence, question_type, chunks)
         question = InterviewQuestionModel(
             id=uuid4(),
             session_id=interview.id,
             sequence=sequence,
-            question_text=self._question_text(interview, sequence, chunks),
+            question_text=generated.question_text,
             question_type=question_type,
             difficulty=interview.difficulty,
-            knowledge_points=[interview.topic],
-            reference_answer=self._reference_answer(chunks),
+            knowledge_points=generated.required_points or [interview.topic],
+            reference_answer=generated.reference_answer,
             rubric={
-                "phase": 3,
-                "placeholder": True,
                 "items": [
                     {
-                        "criterion": "received",
-                        "description": "Phase 3 only verifies answer lifecycle.",
-                        "weight": 100,
-                    }
+                        "criterion": "correctness",
+                        "description": "回答是否准确覆盖核心概念和资料依据。",
+                        "weight": 35,
+                        "required_points": generated.required_points or [interview.topic],
+                    },
+                    {
+                        "criterion": "completeness",
+                        "description": "回答是否覆盖场景、边界和工程注意事项。",
+                        "weight": 30,
+                        "required_points": generated.required_points[:3],
+                    },
+                    {
+                        "criterion": "reasoning",
+                        "description": "回答是否有清晰推理链路和取舍说明。",
+                        "weight": 20,
+                        "required_points": [],
+                    },
+                    {
+                        "criterion": "communication",
+                        "description": "表达是否结构化、适合面试交流。",
+                        "weight": 15,
+                        "required_points": [],
+                    },
                 ],
             },
             prompt_version=QUESTION_PROMPT_VERSION,
@@ -278,6 +306,79 @@ class InterviewService:
                 )
             )
         return question
+
+    async def _generate_question_output(
+        self,
+        interview: InterviewSessionModel,
+        sequence: int,
+        question_type: QuestionType,
+        chunks: list[RetrievedChunk],
+    ) -> InterviewQuestionOutput:
+        fallback = InterviewQuestionOutput(
+            question_text=self._question_text(interview, sequence, chunks),
+            reference_answer=self._reference_answer(chunks),
+            required_points=[interview.topic],
+        )
+        if self._llm is None:
+            return fallback
+        try:
+            return await self._llm.generate_structured(
+                operation="interview_question",
+                messages=[
+                    Message(
+                        role="system",
+                        content=(
+                            "你是资深 AI Agent 面试官，正在帮助 Java 后端开发者转型。"
+                            "请基于给定资料生成一道真实、有区分度、可追问的中文面试题。"
+                            "题目必须贴合资料，不要编造资料外结论。"
+                        ),
+                    ),
+                    Message(
+                        role="user",
+                        content=self._question_prompt(interview, sequence, question_type, chunks),
+                    ),
+                ],
+                response_model=InterviewQuestionOutput,
+                model_policy=ModelPolicy(model=self._default_model),
+                trace_context=TraceContext(trace_id=str(uuid4()), operation="interview_question"),
+            )
+        except Exception:
+            return fallback
+
+    def _question_prompt(
+        self,
+        interview: InterviewSessionModel,
+        sequence: int,
+        question_type: QuestionType,
+        chunks: list[RetrievedChunk],
+    ) -> str:
+        context = []
+        for index, chunk in enumerate(chunks[:3], start=1):
+            context.append(
+                "\n".join(
+                    [
+                        f"资料 {index}",
+                        f"document: {chunk.document_title}",
+                        f"heading: {' > '.join(chunk.heading_path)}",
+                        f"content: {chunk.content[:1200]}",
+                    ]
+                )
+            )
+        type_hint = {
+            QuestionType.CONCEPT: "概念理解题：考察核心概念、为什么需要、解决什么问题。",
+            QuestionType.SCENARIO: "场景落地题：考察工程设计、数据流、异常处理和边界。",
+            QuestionType.DESIGN: "设计复盘题：考察架构取舍、可观测性、成本和可量化效果。",
+            QuestionType.DEBUGGING: "排障题：考察定位问题、验证假设和修复方案。",
+        }[question_type]
+        return (
+            f"主题：{interview.topic}\n"
+            f"难度：{interview.difficulty}\n"
+            f"题号：{sequence}/{interview.question_count}\n"
+            f"题型要求：{type_hint}\n\n"
+            "检索资料：\n"
+            f"{chr(10).join(context) if context else '无'}\n\n"
+            "请输出 JSON：question_text、reference_answer、required_points。"
+        )
 
     def _question_type(self, sequence: int) -> QuestionType:
         types = (QuestionType.CONCEPT, QuestionType.SCENARIO, QuestionType.DESIGN)
@@ -305,23 +406,9 @@ class InterviewService:
             "边界条件和可量化效果分别是什么？"
         )
 
-        if chunks:
-            heading = " > ".join(chunks[0].heading_path) or chunks[0].document_title
-            return (
-                f"[{sequence}/{interview.question_count}] 请结合 {heading}，说明 "
-                f"{interview.topic} 的核心思路与工程注意点。"
-            )
-        return (
-            f"[{sequence}/{interview.question_count}] 请说明 {interview.topic} "
-            "的核心概念，并明确哪些部分需要后续用资料验证。"
-        )
-
     def _reference_answer(self, chunks: list[RetrievedChunk]) -> str:
         if not chunks:
-            return (
-                "Phase 3 placeholder reference: evidence was insufficient during "
-                "question generation."
-            )
+            return "当前题目生成时没有检索到足够资料，请基于通用学习经验回答并标记不确定性。"
         return chunks[0].content[:800]
 
     async def _checkpoint(

@@ -45,3 +45,4 @@ tests/test_multi_agent_exam.py
 .agents/
 .codex/
 .vscode/
+.idea/

@@ -31,6 +31,7 @@ from agent_mentor.infrastructure.database.session import (
     create_session_factory,
 )
 from agent_mentor.infrastructure.embedding import DevelopmentEmbeddingGateway
+from agent_mentor.infrastructure.llm import OpenAICompatibleLLMGateway
 from agent_mentor.infrastructure.retriever import PostgresHybridRetriever
 from agent_mentor.logging import configure_logging, trace_logging_middleware
 from agent_mentor.rag.documents import DocumentParser
@@ -57,6 +58,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.database_engine = engine
     session_factory = create_session_factory(engine)
     embedding = DevelopmentEmbeddingGateway(settings.embedding_dimension)
+    llm = None
+    if settings.llm_base_url and settings.llm_api_key and settings.llm_default_model:
+        llm = OpenAICompatibleLLMGateway(
+            base_url=settings.llm_base_url,
+            api_key=settings.llm_api_key.get_secret_value(),
+            default_model=settings.llm_default_model,
+        )
+    app.state.llm_gateway = llm
+    app.state.llm_enabled = llm is not None
+    app.state.llm_model = settings.llm_default_model if llm is not None else None
     app.state.database_health_checker = DatabaseHealthChecker(session_factory)
     app.state.knowledge_service = KnowledgeService(
         session_factory,
@@ -76,16 +87,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.answer_service = AnswerService(
         session_factory,
         app.state.knowledge_retriever,
+        llm,
         default_top_k=settings.retrieval_top_k,
         default_candidate_k=settings.retrieval_candidate_k,
         min_evidence_score=settings.retrieval_min_score,
+        default_model=settings.llm_default_model,
     )
     app.state.interview_service = InterviewService(
         session_factory,
         app.state.knowledge_retriever,
+        llm,
         retrieval_candidate_k=settings.retrieval_candidate_k,
+        default_model=settings.llm_default_model,
     )
-    app.state.evaluation_service = EvaluationService(session_factory)
+    app.state.evaluation_service = EvaluationService(
+        session_factory,
+        llm,
+        default_model=settings.llm_default_model,
+    )
     app.state.profile_service = ProfileService(session_factory)
 
     app.middleware("http")(trace_logging_middleware)

@@ -7,6 +7,10 @@ const sampleAnswer =
 
 const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
 
+function runtimeLabel(runtime) {
+  return runtime.llm_enabled ? `真实 LLM 已启用：${runtime.llm_model}` : "本地基线模式";
+}
+
 async function api(path, options = {}) {
   const response = await fetch(path, {
     ...options,
@@ -27,12 +31,13 @@ function App() {
   const [status, setStatus] = useState("正在连接本地服务...");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [runtime, setRuntime] = useState({ llm_enabled: false, llm_model: null });
   const [knowledgeBase, setKnowledgeBase] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [askQuestion, setAskQuestion] = useState("RAG 为什么能提升 AI 面试助手回答的可信度？");
   const [askResult, setAskResult] = useState(null);
   const [interview, setInterview] = useState(null);
-  const [answerDraft, setAnswerDraft] = useState(sampleAnswer);
+  const [answerDraft, setAnswerDraft] = useState("");
   const [report, setReport] = useState(null);
   const [profile, setProfile] = useState({
     abilities: [],
@@ -58,22 +63,24 @@ function App() {
     setError("");
     try {
       await api("/health/ready");
-      const [bases, abilities, errors, tasks, plan] = await Promise.all([
+      const [runtimeInfo, bases, abilities, errors, tasks, plan] = await Promise.all([
+        api("/health/runtime"),
         api("/api/v1/knowledge-bases"),
         api("/api/v1/profiles/me/abilities"),
         api("/api/v1/profiles/me/error-patterns"),
         api("/api/v1/review-tasks"),
         api("/api/v1/profiles/me/interview-plan"),
       ]);
+      setRuntime(runtimeInfo);
       setProfile({ abilities, errors, tasks, plan });
       const restored = await restoreKnowledgeWorkspace(bases);
       if (restored.base) {
         setKnowledgeBase(restored.base);
         setDocuments(restored.documents);
         const suffix = restored.documents.length ? `，资料 ${restored.documents.length} 份` : "";
-        setStatus(`已恢复知识库：${restored.base.name}${suffix}`);
+        setStatus(`${runtimeLabel(runtimeInfo)}，已恢复知识库：${restored.base.name}${suffix}`);
       } else {
-        setStatus("本地服务已就绪，请创建你的第一个知识库");
+        setStatus(`${runtimeLabel(runtimeInfo)}，请创建你的第一个知识库`);
       }
     } catch (err) {
       setStatus("本地服务未就绪");
@@ -257,23 +264,26 @@ function App() {
             </a>
           </div>
           <p className="model-note">
-            当前运行模式：本地确定性基线。RAG、画像、评分链路已跑通；真实 LLM Gateway
-            尚未启用，后续可接 OpenAI-compatible API。
+            当前运行模式：
+            {runtime.llm_enabled
+              ? `真实 LLM 已启用（${runtime.llm_model}）`
+              : "本地确定性基线，未启用真实 LLM"}
+            。RAG、面试出题和评分支持无 Key 自动降级。
           </p>
         </div>
-        <StatusPanel status={status} error={error} busy={busy} />
+        <StatusPanel status={status} error={error} busy={busy} runtime={runtime} />
       </section>
 
       <section className="metrics">
+        <Metric label="模型模式" value={runtime.llm_enabled ? "LLM" : "Local"} />
         <Metric label="知识库" value={knowledgeBase ? "Ready" : "Pending"} />
         <Metric label="已入库资料" value={documents.length} />
         <Metric label="面试进度" value={interview ? `${completion}%` : "0%"} />
-        <Metric label="报告总分" value={report ? `${report.total_score}/${report.max_score}` : "—"} />
       </section>
 
       <section className="workflow">
         <StepCard number="01" title="知识库与资料入库" tone="blue">
-          <p>刷新页面会自动恢复最近的知识库和资料列表；不需要每次重新创建。</p>
+          <p>刷新页面会自动恢复最近一个有资料的知识库、资料列表和本机用户画像。</p>
           <Info label="Knowledge Base" value={knowledgeBase?.id ?? "尚未创建"} />
           <label className={`upload ${!knowledgeBase || busy ? "disabled" : ""}`}>
             上传学习资料
@@ -286,7 +296,7 @@ function App() {
         </StepCard>
 
         <StepCard number="02" title="RAG 问答与引用溯源" tone="purple">
-          <p>你可以自己输入问题；系统会基于知识库检索证据并返回引用。</p>
+          <p>你可以自己输入问题；启用 DeepSeek 后会由真实 LLM 基于检索证据组织回答。</p>
           <textarea
             value={askQuestion}
             onChange={(event) => setAskQuestion(event.target.value)}
@@ -309,7 +319,7 @@ function App() {
         </StepCard>
 
         <StepCard number="03" title="可恢复模拟面试" tone="green">
-          <p>三题面试会保存 checkpoint；你可以输入自己的答案，示例答案只作为辅助。</p>
+          <p>三题面试会保存 checkpoint；启用 DeepSeek 后会根据资料生成更真实的问题。</p>
           <button onClick={startInterview} disabled={!canUseKnowledgeBase || busy}>
             启动三题面试
           </button>
@@ -350,7 +360,7 @@ function App() {
         </StepCard>
 
         <StepCard number="04" title="可信评分报告" tone="orange">
-          <p>总分由应用层规则计算，低置信与争议结果显式展示，不伪造确定结论。</p>
+          <p>启用 DeepSeek 后由模型产出结构化评分，应用层继续校验引用、置信度和报告规则。</p>
           {report ? (
             <div className="score-card">
               <div>
@@ -364,8 +374,8 @@ function App() {
           )}
         </StepCard>
 
-        <StepCard number="05" title="能力画像与错题模式" tone="cyan">
-          <p>画像保存在数据库中，刷新页面后会恢复；只有可信 Evaluation 才会更新画像。</p>
+        <StepCard number="05" title="本机用户画像" tone="cyan">
+          <p>当前不做多用户系统，画像固定绑定本机默认用户，刷新页面后会自动恢复。</p>
           <MiniList
             items={profile.abilities.map(
               (item) => `${item.knowledge_point} · mastery ${item.mastery_score}`,
@@ -398,14 +408,17 @@ function App() {
   );
 }
 
-function StatusPanel({ status, error, busy }) {
+function StatusPanel({ status, error, busy, runtime }) {
   return (
     <aside className="status-panel">
       <div className={`orb ${busy ? "loading" : ""}`} />
       <div>
         <span>Runtime Status</span>
         <strong>{status}</strong>
-        <p>{error || "本地 Docker Compose 运行；适合在 16GB 普通开发机演示完整闭环。"}</p>
+        <p>
+          {error ||
+            `${runtimeLabel(runtime)}；本地 Docker Compose 运行，适合 16GB 普通开发机演示。`}
+        </p>
       </div>
     </aside>
   );

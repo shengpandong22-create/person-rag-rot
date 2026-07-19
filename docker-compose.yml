@@ -19,6 +19,8 @@ services:
   api:
     build:
       context: .
+    env_file:
+      - .env
     environment:
       AGENT_MENTOR_APP_ENV: development
       AGENT_MENTOR_DATABASE_URL: postgresql+asyncpg://agentmentor:agentmentor@db:5432/agentmentor

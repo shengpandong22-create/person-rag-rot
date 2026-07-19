@@ -18,6 +18,12 @@ class HealthResponse(BaseModel):
     status: str
 
 
+class RuntimeResponse(BaseModel):
+    status: str
+    llm_enabled: bool
+    llm_model: str | None
+
+
 @router.get("/live", response_model=HealthResponse)
 async def live() -> HealthResponse:
     return HealthResponse(status="ok")
@@ -33,3 +39,12 @@ async def ready(request: Request) -> HealthResponse:
             status_code=503,
         )
     return HealthResponse(status="ok")
+
+
+@router.get("/runtime", response_model=RuntimeResponse)
+async def runtime(request: Request) -> RuntimeResponse:
+    return RuntimeResponse(
+        status="ok",
+        llm_enabled=bool(getattr(request.app.state, "llm_enabled", False)),
+        llm_model=getattr(request.app.state, "llm_model", None),
+    )
