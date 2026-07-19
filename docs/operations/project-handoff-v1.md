@@ -59,15 +59,21 @@ AgentMentor 是一个面向“Java 后端开发者转型 AI Agent 开发”的�
 
 ![AgentMentor V1 总体架构图](assets/agentmentor-architecture-v1.svg)
 
+如果当前 Markdown 预览器未渲染图片，可直接打开 [总体架构图 SVG](assets/agentmentor-architecture-v1.svg)。
+
 ## 5. 核心闭环流程图
 
 ![AgentMentor 核心业务闭环流程图](assets/agentmentor-core-flow-v1.svg)
+
+如果当前 Markdown 预览器未渲染图片，可直接打开 [核心闭环流程图 SVG](assets/agentmentor-core-flow-v1.svg)。
 
 ## 6. 面试工作流与状态流转
 
 面试工作流是 V1 中最像 Agent 的部分：它不是一次性请求，而是可恢复的多步骤状态机。
 
 ![AgentMentor 模拟面试工作流状态图](assets/agentmentor-interview-workflow-v1.svg)
+
+如果当前 Markdown 预览器未渲染图片，可直接打开 [模拟面试工作流状态图 SVG](assets/agentmentor-interview-workflow-v1.svg)。
 
 ## 7. 代码地图
 
