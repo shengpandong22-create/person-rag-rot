@@ -71,11 +71,41 @@ function normalizeKnowledgePoint(point) {
   const lower = text.toLowerCase();
   if (!text) return { title: "未命名知识点", raw: "" };
 
-  if (lower.includes("compact") || lower.includes("micro_compact") || lower.includes("auto_compact")) {
+  if (
+    lower.includes("compact") ||
+    lower.includes("micro_compact") ||
+    lower.includes("auto_compact") ||
+    lower.includes("摘要") ||
+    lower.includes("压缩")
+  ) {
     return { title: "上下文压缩与记忆管理", raw: text };
+  }
+  if (
+    lower.includes("token") ||
+    lower.includes("context window") ||
+    lower.includes("上下文窗口") ||
+    lower.includes("窗口有限") ||
+    lower.includes("超限")
+  ) {
+    return { title: "上下文窗口与 Token 管理", raw: text };
+  }
+  if (
+    lower.includes("stream") ||
+    lower.includes("writer") ||
+    lower.includes("custom") ||
+    lower.includes("流式") ||
+    lower.includes("自定义数据")
+  ) {
+    return { title: "流式输出与事件通道", raw: text };
   }
   if (lower.includes("checkpoint") || lower.includes("checkpointer")) {
     return { title: "Checkpoint 与状态恢复", raw: text };
+  }
+  if (lower.includes("state") || lower.includes("状态")) {
+    return { title: "状态建模与工作流控制", raw: text };
+  }
+  if (lower.includes("node") || lower.includes("edge") || lower.includes("graph") || lower.includes("langgraph")) {
+    return { title: "LangGraph 图编排基础", raw: text };
   }
   if (lower.includes("interrupt") || lower.includes("human-in-the-loop")) {
     return { title: "人工介入与可恢复执行", raw: text };
@@ -85,6 +115,9 @@ function normalizeKnowledgePoint(point) {
   }
   if (lower.includes("tool") || lower.includes("function calling")) {
     return { title: "工具调用与结果处理", raw: text };
+  }
+  if (lower.includes("memory") || lower.includes("记忆")) {
+    return { title: "长期记忆与用户画像", raw: text };
   }
   return { title: text.length > 36 ? `${text.slice(0, 34)}...` : text, raw: text };
 }
@@ -116,6 +149,12 @@ function mergeKnowledgeItems(items, scoreField = "mastery_score") {
     groups.set(normalized.title, existing);
   }
   return [...groups.values()];
+}
+
+function compactRawLabel(value) {
+  const text = String(value ?? "").trim();
+  if (!text) return "原始细项";
+  return text.length > 22 ? `${text.slice(0, 20)}...` : text;
 }
 
 async function api(path, options = {}) {
@@ -621,7 +660,10 @@ function buildProfileView(profile) {
     (a, b) => b.mastery_score - a.mastery_score,
   );
   const strengths = abilities.filter((item) => item.mastery_score >= 0.6).slice(0, 3);
-  const weaknesses = abilities.filter((item) => item.mastery_score < 0.6).slice(0, 3);
+  const weaknesses = abilities
+    .filter((item) => item.mastery_score < 0.6)
+    .sort((a, b) => b.source_count - a.source_count || a.mastery_score - b.mastery_score)
+    .slice(0, 3);
   const errors = mergeKnowledgeItems(profile.errors, "occurrence_count")
     .sort((a, b) => b.occurrence_count - a.occurrence_count)
     .slice(0, 3);
@@ -752,7 +794,7 @@ function ProfileCard({ profile }) {
               title={item.display_title}
               tags={[
                 `画像分 ${profileScore(item.mastery_score)}`,
-                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : compactRawLabel(item.raw_points[0]),
               ]}
             >
               最近回答能覆盖该知识点的主要内容，可在下一轮加入场景化追问。
@@ -768,7 +810,7 @@ function ProfileCard({ profile }) {
               title={item.display_title}
               tags={[
                 `画像分 ${profileScore(item.mastery_score)}`,
-                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : compactRawLabel(item.raw_points[0]),
               ]}
             >
               画像分偏低，说明最近回答在评分或错误模式上不稳定，建议用“定义、流程、风险、工程方案”重新组织一次回答。
@@ -811,7 +853,7 @@ function NextPlanCard({ profile }) {
                 statusLabels[item.status] ?? item.status,
                 `优先级 P${item.priority}`,
                 errorLabels[item.error_type] ?? item.error_type,
-                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : compactRawLabel(item.raw_points[0]),
               ]}
             >
               来源于最近面试中的错误模式。建议重新回答相关题目，并主动补充引用依据和边界条件。
@@ -828,7 +870,7 @@ function NextPlanCard({ profile }) {
               tags={[
                 `优先级 P${item.priority}`,
                 item.mastery_score ? `画像分 ${profileScore(item.mastery_score)}` : "新知识点",
-                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : item.raw_points[0],
+                item.source_count > 1 ? `合并 ${item.source_count} 个细项` : compactRawLabel(item.raw_points[0]),
               ]}
             >
               {translateReason(item.reason)}
