@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
@@ -28,6 +29,7 @@ from agent_mentor.infrastructure.database.models import (
     QuestionReferenceModel,
     UserAnswerModel,
 )
+from agent_mentor.logging import log_event
 from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
 
 EVALUATION_PROMPT_VERSION = "evaluation_v1"
@@ -225,7 +227,16 @@ class EvaluationService:
             )
             self._assert_allowed_references(output.reference_chunk_ids, allowed_references)
             return output
-        except Exception:
+        except Exception as error:
+            log_event(
+                logging.WARNING,
+                "answer_evaluation.llm_fallback",
+                error_type=type(error).__name__,
+                fallback="deterministic_evaluation",
+                question_id=str(question.id),
+                answer_id=str(answer.id),
+                allowed_reference_count=len(allowed_references),
+            )
             return fallback
 
     def _evaluation_prompt(

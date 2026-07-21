@@ -1,0 +1,147 @@
+<svg viewBox="0 0 680 590" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <style>
+    .lt { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 15px; font-weight: 700; fill: #1e293b; }
+    .ls { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 10.5px; fill: #475569; }
+    .lp { font-family: ui-monospace, 'SF Mono', Consolas, monospace; font-size: 9px; fill: #94a3b8; }
+    .ct { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px; font-weight: 700; fill: #334155; }
+    .tm { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 18px; font-weight: 700; fill: #0f172a; }
+    .ts { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    .st { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #1e293b; }
+    .ss { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 9.5px; fill: #64748b; }
+    .tag { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 9.5px; font-weight: 600; fill: #94a3b8; }
+  </style>
+
+  <!-- 标题（修正⑤） -->
+  <text x="340" y="28" text-anchor="middle" class="tm">系统总体架构</text>
+  <text x="340" y="46" text-anchor="middle" class="ts">分层架构 · 端口适配 · RAG 训练闭环 · Docker Compose 本地部署</text>
+
+  <!-- 左侧层级标识 -->
+  <text x="14" y="98" class="tag" transform="rotate(-90 14 98)">表现层</text>
+  <text x="14" y="194" class="tag" transform="rotate(-90 14 194)">接口层</text>
+  <text x="14" y="317" class="tag" transform="rotate(-90 14 317)">应用层</text>
+  <text x="14" y="448" class="tag" transform="rotate(-90 14 448)">支撑层</text>
+  <text x="14" y="544" class="tag" transform="rotate(-90 14 544)">部署层</text>
+
+  <!-- ===== Layer 1: Frontend（修正④：不暴露 main.jsx 技术债） ===== -->
+  <g filter="url(#sh)">
+    <rect x="170" y="60" width="340" height="76" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  </g>
+  <text x="340" y="82" text-anchor="middle" class="lt">React 前端工作台</text>
+  <text x="340" y="100" text-anchor="middle" class="ls">知识库 · RAG · 面试 · 报告 · 画像</text>
+  <text x="340" y="117" text-anchor="middle" class="lp">frontend/src</text>
+  <text x="340" y="131" text-anchor="middle" class="ss">当前 V1 单页工作台 · 后续可组件化</text>
+
+  <!-- Frontend → API -->
+  <path d="M 340 136 L 340 146 L 214 146 L 214 152" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+
+  <!-- ===== Layer 2: API + LLM ===== -->
+  <g filter="url(#sh)">
+    <rect x="24" y="154" width="380" height="80" rx="8" fill="#ecfeff" stroke="#06b6d4" stroke-width="2"/>
+  </g>
+  <text x="214" y="180" text-anchor="middle" class="lt">FastAPI 接口层</text>
+  <text x="214" y="198" text-anchor="middle" class="ls">参数校验 · 协议转换 · 依赖注入</text>
+  <text x="214" y="216" text-anchor="middle" class="lp">knowledge / chat / interviews / evaluations / profiles</text>
+
+  <!-- LLM（修正③：讲清楚降级策略） -->
+  <g filter="url(#sh)">
+    <rect x="436" y="154" width="220" height="80" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+  </g>
+  <text x="546" y="178" text-anchor="middle" class="lt">大模型服务</text>
+  <text x="546" y="195" text-anchor="middle" class="ls">DeepSeek / OpenAI 兼容</text>
+  <text x="546" y="211" text-anchor="middle" class="ls">有 Key：LLM 生成</text>
+  <text x="546" y="227" text-anchor="middle" class="ls">无 Key / 失败：本地规则降级</text>
+
+  <!-- API → LLM -->
+  <line x1="404" y1="194" x2="432" y2="194" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+
+  <!-- API → App -->
+  <path d="M 214 234 L 214 243 L 340 243 L 340 251" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+
+  <!-- ===== Layer 3: App container ===== -->
+  <rect x="24" y="252" width="632" height="130" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="340" y="272" text-anchor="middle" class="ct">应用服务层 · 业务编排 · 事务边界 · 端口调用</text>
+
+  <!-- 5 services -->
+  <g filter="url(#sh)">
+    <rect x="36" y="286" width="115" height="80" rx="7" fill="#eef2ff" stroke="#6366f1" stroke-width="1.8"/>
+  </g>
+  <text x="93.5" y="316" text-anchor="middle" class="st">KnowledgeService</text>
+  <text x="93.5" y="336" text-anchor="middle" class="ss">资料入库与索引</text>
+
+  <g filter="url(#sh)">
+    <rect x="159" y="286" width="115" height="80" rx="7" fill="#eef2ff" stroke="#6366f1" stroke-width="1.8"/>
+  </g>
+  <text x="216.5" y="316" text-anchor="middle" class="st">AnswerService</text>
+  <text x="216.5" y="336" text-anchor="middle" class="ss">RAG 回答与引用</text>
+
+  <g filter="url(#sh)">
+    <rect x="282" y="286" width="115" height="80" rx="7" fill="#eef2ff" stroke="#6366f1" stroke-width="1.8"/>
+  </g>
+  <text x="339.5" y="316" text-anchor="middle" class="st">InterviewService</text>
+  <text x="339.5" y="336" text-anchor="middle" class="ss">题目生成与工作流</text>
+
+  <g filter="url(#sh)">
+    <rect x="405" y="286" width="115" height="80" rx="7" fill="#eef2ff" stroke="#6366f1" stroke-width="1.8"/>
+  </g>
+  <text x="462.5" y="316" text-anchor="middle" class="st">EvaluationService</text>
+  <text x="462.5" y="336" text-anchor="middle" class="ss">Rubric 评分与报告</text>
+
+  <g filter="url(#sh)">
+    <rect x="528" y="286" width="115" height="80" rx="7" fill="#eef2ff" stroke="#6366f1" stroke-width="1.8"/>
+  </g>
+  <text x="585.5" y="316" text-anchor="middle" class="st">ProfileService</text>
+  <text x="585.5" y="336" text-anchor="middle" class="ss">画像与复习闭环</text>
+
+  <!-- App → 下层 (汇流) -->
+  <path d="M 340 382 L 340 392" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+  <path d="M 122 392 L 558 392" fill="none" stroke="#94a3b8" stroke-width="1.8"/>
+  <path d="M 122 392 L 122 400" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+  <path d="M 340 392 L 340 400" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+  <path d="M 558 392 L 558 400" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+
+  <!-- ===== Layer 4: Domain + RagPorts + Infra ===== -->
+  <!-- Domain（修正①：领域模型与规则层 · 尽量不依赖框架） -->
+  <g filter="url(#sh)">
+    <rect x="24" y="402" width="196" height="92" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  </g>
+  <text x="122" y="426" text-anchor="middle" class="lt">领域模型与规则层</text>
+  <text x="122" y="444" text-anchor="middle" class="lp">knowledge · interview</text>
+  <text x="122" y="458" text-anchor="middle" class="lp">evaluation · profile</text>
+  <text x="122" y="478" text-anchor="middle" class="ss">纯业务规则 · 尽量不依赖框架</text>
+
+  <!-- RagPorts（修正②：RAG 与 Agent 能力层） -->
+  <g filter="url(#sh)">
+    <rect x="242" y="402" width="196" height="92" rx="8" fill="#fff1f2" stroke="#f43f5e" stroke-width="2"/>
+  </g>
+  <text x="340" y="426" text-anchor="middle" class="lt">RAG 与 Agent 能力层</text>
+  <text x="340" y="444" text-anchor="middle" class="ss">文档解析 · 分块 · 检索 · 引用溯源</text>
+  <text x="340" y="460" text-anchor="middle" class="lp">LLM Gateway · Embedding Gateway</text>
+  <text x="340" y="478" text-anchor="middle" class="ss">面试工作流 · checkpoint</text>
+
+  <g filter="url(#sh)">
+    <rect x="460" y="402" width="196" height="92" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  </g>
+  <text x="558" y="426" text-anchor="middle" class="lt">基础设施层</text>
+  <text x="558" y="444" text-anchor="middle" class="ss">PostgreSQL · pgvector</text>
+  <text x="558" y="460" text-anchor="middle" class="ss">HTTP Client</text>
+  <text x="558" y="478" text-anchor="middle" class="lp">database / llm.py / retriever.py</text>
+
+  <!-- Infra → Docker -->
+  <path d="M 558 494 L 558 504 L 340 504 L 340 510" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ar)"/>
+
+  <!-- ===== Layer 5: Docker ===== -->
+  <g filter="url(#sh)">
+    <rect x="170" y="512" width="340" height="64" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  </g>
+  <text x="340" y="534" text-anchor="middle" class="lt">Docker Compose</text>
+  <text x="340" y="551" text-anchor="middle" class="ls">db + api + frontend 三容器编排</text>
+  <text x="340" y="567" text-anchor="middle" class="lp">适合 16GB 本地开发机演示</text>
+</svg>

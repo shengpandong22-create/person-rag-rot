@@ -12,6 +12,8 @@ AgentMentor 是一个面向“Java 后端开发者转型 AI Agent 开发”的�
 学习资料 -> 知识库入库 -> RAG 问答验证 -> 模拟面试 -> 评分报告 -> 能力画像 -> 复习计划 -> 下一轮训练
 ```
 
+<img src="project-handoff-v1.assets/image-20260721211046920.png" alt="image-20260721211046920" style="zoom: 50%;" />
+
 ## 2. 项目背景
 
 这个项目的出发点不是做一个通用题库，而是解决个人转型学习时的几个痛点：
@@ -55,121 +57,48 @@ AgentMentor 是一个面向“Java 后端开发者转型 AI Agent 开发”的�
 
 ## 4. 总体架构图
 
-下面是 V1 的完整结构。这里使用 Mermaid 图而不是外部 SVG 文件，避免 Windows 编码链路导致中文节点显示为乱码。
+**V1版本的总体架构图**:
 
-```mermaid
-flowchart TB
-    Frontend["React 前端工作台<br/>知识库 / RAG / 面试 / 报告 / 画像<br/>frontend/src/main.jsx"]
-    API["FastAPI 接口层<br/>参数校验 / 协议转换 / 依赖注入<br/>knowledge / chat / interviews / evaluations / profiles"]
-    LLM["大模型服务<br/>DeepSeek / OpenAI 兼容接口<br/>无 Key 时降级本地基线"]
+![image-20260721212705106](project-handoff-v1.assets/image-20260721212705106.png)
 
-    subgraph App["应用服务层：业务编排、事务边界、端口调用"]
-        Knowledge["KnowledgeService<br/>资料入库与索引"]
-        Answer["AnswerService<br/>RAG 回答与引用"]
-        Interview["InterviewService<br/>题目生成与工作流"]
-        Evaluation["EvaluationService<br/>Rubric 评分与报告"]
-        Profile["ProfileService<br/>画像与复习闭环"]
-    end
 
-    Domain["领域规则层<br/>knowledge / interview / evaluation / profile<br/>纯业务规则，不依赖框架"]
-    RagPorts["RAG / 工作流 / 端口<br/>文档解析 / 切分 / 检索 / LLM Gateway / Embedding Gateway"]
-    Infra["基础设施层<br/>PostgreSQL / pgvector / HTTP Client<br/>database / llm.py / embedding.py / retriever.py"]
-    Docker["Docker Compose<br/>db + api + frontend<br/>适合 16GB 本地开发机演示"]
-
-    Frontend --> API
-    API --> App
-    API --> LLM
-    App --> Domain
-    App --> RagPorts
-    App --> Infra
-    Infra --> Docker
-```
 
 图解说明：
 
-- 左侧是 React 前端工作台，负责把知识库、RAG 问答、面试、报告和画像组织成一个可演示界面。
-- 中间是 FastAPI 接口层，只做协议转换、参数校验和依赖注入，不承载核心业务规则。
-- 紫色区域是应用服务层，是接手时最需要关注的业务编排中心：资料入库、RAG 回答、面试流程、评分报告、画像闭环都在这里串联。
-- 底部三块分别是领域规则层、RAG/工作流/端口层、基础设施层。维护时要守住依赖方向：领域规则不要反向依赖 FastAPI、SQLAlchemy 或具体模型 SDK。
-- 右侧大模型服务通过 LLM Gateway 接入，当前支持 DeepSeek/OpenAI-compatible；无 Key 时可以降级到本地基线，方便测试和演示。
+-  React 前端工作台，负责把知识库、RAG 问答、面试、报告和画像组织成一个可演示界面。
+- FastAPI 接口层，只做协议转换、参数校验和依赖注入，不承载核心业务规则。
+- 应用服务层，是接手时最需要关注的业务编排中心：资料入库、RAG 回答、面试流程、评分报告、画像闭环都在这里串联。
+- 领域规则层、RAG与Agent能力层、基础设施层。维护时要守住依赖方向：领域规则不要反向依赖 FastAPI、SQLAlchemy 或具体模型 SDK。
+- 大模型服务通过 LLM Gateway 接入，当前支持 DeepSeek/OpenAI-compatible；无 Key 时可以降级到本地基线，方便测试和演示。
 - 最底部强调工程约束：V1 用 Docker Compose 启动 db、api、frontend，目标是在 16GB 普通开发机上稳定运行。
 
 ## 5. 核心闭环流程图
 
-```mermaid
-flowchart LR
-    Upload["1. 上传学习资料<br/>Markdown / TXT / PDF / DOCX"]
-    Parse["2. 解析与切分<br/>DocumentParser + 分块策略"]
-    Index["3. 存储与索引<br/>PostgreSQL + pgvector"]
-    Retrieve["4. 混合检索<br/>全文检索 + 向量检索 + RRF"]
-    RAG["5A. RAG 问答<br/>基于证据生成带引用回答<br/>证据不足时显式降级"]
-    Question["5B. 生成面试题<br/>主题 + 难度 + 检索片段<br/>题目 / 参考答案 / Rubric"]
-    Answer["6. 用户回答<br/>真实回答或本题参考答案<br/>幂等键避免重复提交"]
-    Evaluate["7. 可信评分<br/>四维 Rubric + 引用白名单<br/>低置信进入复核路由"]
-    Report["8. 面试报告<br/>总分与逐题解析<br/>最终分由应用层计算"]
-    Profile["9. 更新能力画像<br/>只消费可信评分<br/>能力 / 错误 / 复习任务 / 下轮计划"]
+![image-20260721214537186](project-handoff-v1.assets/image-20260721214537186.png)
 
-    Upload --> Parse --> Index --> Retrieve
-    Retrieve --> RAG
-    Retrieve --> Question --> Answer --> Evaluate --> Report --> Profile
-    Profile -. 反哺下一轮训练 .-> Question
-```
+- 图解说明：
 
-图解说明：
-
-- 上半部分是知识库链路：用户上传资料后，系统完成解析、切分、去重、向量化，并写入 PostgreSQL/pgvector。
-- 中间的“混合检索”是 RAG 和面试出题共同依赖的能力，包含全文检索、向量检索和 RRF 融合。
-- 检索结果有两条消费路径：一条进入 RAG 问答，生成带引用回答；另一条进入面试题生成，产出题目、参考答案和 Rubric。
-- 用户回答后进入可信评分链路，系统基于四维 Rubric、引用白名单和置信度生成评分。
-- 报告不仅有总分，还应展示逐题解析，说明为什么扣分、缺失哪些点、下一步怎么补。
-- 最后画像更新只消费可信评分结果，沉淀能力、错误、复习任务和下一轮训练计划，再反哺下一轮面试。
-
-
+  - 知识库链路：用户上传 Markdown、TXT、PDF、DOCX 等学习资料后，系统通过 DocumentParser 完成解析与切分，并将文本块写入 PostgreSQL/pgvector，形成后续检索基础。
+  - 检索召回是 RAG 问答和面试出题共同依赖的能力。当前 V1 以向量检索为主，同时预留全文检索和 RRF 融合扩展。
+  - 检索结果有两条消费路径：一条进入 RAG 问答，生成基于证据、带引用的回答；另一条进入面试题生成，产出题目、参考答案和 Rubric。
+  - 用户回答后进入可信评分链路，系统基于四维 Rubric 和引用白名单生成评分；当 LLM 不可用或调用失败时，降级为规则评分，保证流程可运行。
+  - 面试报告不仅展示总分，还展示逐题解析，用于说明为什么扣分、缺失哪些要点、下一步应该如何补强。
+  - 最后画像模块消费评分结果，沉淀能力掌握情况、错误模式、复习任务和下一轮训练计划，并反哺后续面试题生成。
 
 ## 6. 面试工作流与状态流转
 
 面试工作流是 V1 中最像 Agent 的部分：它不是一次性请求，而是可恢复的多步骤状态机。
 
-```mermaid
-stateDiagram-v2
-    [*] --> Created: 创建面试
-    Created --> LoadProfile: 启动面试 / 加载画像
-    LoadProfile --> PlanInterview: 规划面试
-    PlanInterview --> GenerateQuestion: 生成题目
-    GenerateQuestion --> WaitingForAnswer: 等待用户回答
-    WaitingForAnswer --> PersistAnswer: 提交答案 / 幂等写入
-    PersistAnswer --> GenerateQuestion: 未到最后一题，推进下一题
-    PersistAnswer --> Completed: 最后一题完成
-    Completed --> EvaluateReport: 生成评分和报告
-    EvaluateReport --> ProfileUpdate: 更新能力画像和复习任务
-    ProfileUpdate --> [*]
-
-    note right of GenerateQuestion
-      根据主题、难度和检索片段
-      生成题目、参考答案和 Rubric
-    end note
-
-    note right of PersistAnswer
-      使用 Idempotency-Key
-      避免重复提交同一题答案
-    end note
-
-    note right of ProfileUpdate
-      只消费可信 Evaluation
-      disputed / review_pending 不污染画像
-    end note
-```
+![image-20260721221744022](project-handoff-v1.assets/image-20260721221744022.png)
 
 图解说明：
 
-- 面试不是一次性请求，而是一个可恢复状态机：创建面试后加载画像、规划面试、生成题目、等待用户回答。
-- `generate_question` 会根据主题、难度和检索片段生成题目、参考答案和 Rubric；前端可以使用用户真实回答，也可以用本题参考答案演示闭环。
+- 面试不是一次性请求，而是一个可恢复工作流：创建面试后加载画像、规划面试、生成题目，并进入等待用户回答状态。
+- `generate_question` 会根据主题、难度和检索片段生成题目、参考答案和 Rubric；前端既可以提交用户真实回答，也可以用本题参考答案演示完整闭环。
 - `submit_answer` 使用幂等键，避免重复点击或网络重试导致同一题重复写入。
-- 每题提交后进入 `persist_answer`，然后判断是推进下一题还是完成整场面试。
-- `finish_interview` 之后才进入评分和报告阶段，再触发画像更新。
-- 每个关键节点都会写入 `WorkflowCheckpointModel`，这是“可恢复工作流”的核心证据，也是面试时讲 Agent 工程化能力的重点。
-
-
+- 每题提交后进入 `persist_answer`，然后判断是推进下一题，还是完成整场面试。
+- `finish_interview` 后面试进入 `completed` 状态；之后由前端或接口触发评分和报告生成，再进入画像更新链路。
+- 系统会在关键工作流节点写入 `WorkflowCheckpointModel`，例如加载画像、规划面试、等待回答、保存答案、推进题目和结束面试。这是“可恢复工作流”的核心证据，也是面试时讲 Agent 工程化能力的重点。
 
 ## 7. 代码地图
 
@@ -193,7 +122,7 @@ stateDiagram-v2
 | `AnswerService` | `src/agent_mentor/application/answer_service.py` | 混合检索、证据判断、LLM 回答、引用校验、聊天记录。 |
 | `InterviewService` | `src/agent_mentor/application/interview_service.py` | 创建面试、生成题目、保存 checkpoint、幂等提交答案。 |
 | `EvaluationService` | `src/agent_mentor/application/evaluation_service.py` | 评分、低置信复核、报告生成、逐题解析上下文。 |
-| `ProfileService` | `src/agent_mentor/application/profile_service.py` | 从可信评分生成能力画像、错误模式、复习任务和下一轮计划。 |
+| `ProfileService` | `src/agent_mentor/application/profile_service.py` | 消费 final 评分更新能力画像；disputed/review_pending 跳过，低置信 final 降权更新，并生成错误模式、复习任务和下一轮计划。 |
 
 ### 7.3 RAG 与外部能力
 
@@ -203,7 +132,7 @@ stateDiagram-v2
 | 分块 | `src/agent_mentor/rag/chunking.py` | 按 heading path 和长度切分。 |
 | 检索算法 | `src/agent_mentor/rag/retrieval.py` | 查询规范化、RRF、引用校验。 |
 | 检索实现 | `src/agent_mentor/infrastructure/retriever.py` | PostgreSQL 全文检索 + pgvector 检索。 |
-| Embedding | `src/agent_mentor/infrastructure/embedding.py` | Fake/轻量 embedding gateway。 |
+| Embedding | `src/agent_mentor/infrastructure/embedding.py` | 本地确定性 Embedding Gateway，用于 16GB 开发机离线可复现演示；后续可替换为真实 embedding 服务。 |
 | LLM Gateway | `src/agent_mentor/infrastructure/llm.py` | OpenAI-compatible HTTP 调用，DeepSeek 通过配置接入。 |
 | Fake 能力 | `src/agent_mentor/infrastructure/fakes.py` | 测试和无 Key 降级。 |
 

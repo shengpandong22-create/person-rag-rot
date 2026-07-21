@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -25,6 +26,7 @@ from agent_mentor.infrastructure.database.models import (
     UserAnswerModel,
     WorkflowCheckpointModel,
 )
+from agent_mentor.logging import log_event
 from agent_mentor.ports.knowledge_retriever import (
     KnowledgeRetriever,
     RetrievalQuery,
@@ -342,7 +344,16 @@ class InterviewService:
                 model_policy=ModelPolicy(model=self._default_model),
                 trace_context=TraceContext(trace_id=str(uuid4()), operation="interview_question"),
             )
-        except Exception:
+        except Exception as error:
+            log_event(
+                logging.WARNING,
+                "interview_question.llm_fallback",
+                error_type=type(error).__name__,
+                fallback="deterministic_question",
+                topic=interview.topic,
+                sequence=sequence,
+                candidate_count=len(chunks),
+            )
             return fallback
 
     def _question_prompt(

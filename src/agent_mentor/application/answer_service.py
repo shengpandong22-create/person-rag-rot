@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
@@ -15,6 +16,7 @@ from agent_mentor.infrastructure.database.models import (
     ChatMessageModel,
     ChatSessionModel,
 )
+from agent_mentor.logging import log_event
 from agent_mentor.ports.knowledge_retriever import (
     KnowledgeRetriever,
     RetrievalQuery,
@@ -150,6 +152,12 @@ class AnswerService:
             }
             yield {"event": "answer.completed", "data": {"message_id": str(result.message_id)}}
         except Exception as error:
+            log_event(
+                logging.WARNING,
+                "rag_answer.stream_failed",
+                error_type=type(error).__name__,
+                fallback="sse_error_event",
+            )
             yield {"event": "answer.failed", "data": {"error": str(error)}}
 
     async def _generate_answer(
@@ -196,7 +204,15 @@ class AnswerService:
                 selected = candidates[:1]
             citations[:] = selected[:3]
             return output.answer
-        except Exception:
+        except Exception as error:
+            log_event(
+                logging.WARNING,
+                "rag_answer.llm_fallback",
+                error_type=type(error).__name__,
+                fallback="deterministic_grounded_answer",
+                candidate_count=len(candidates),
+                evidence_sufficient=evidence_sufficient,
+            )
             return self._compose_grounded_answer(
                 question, citations, allow_model_knowledge and not evidence_sufficient
             )
