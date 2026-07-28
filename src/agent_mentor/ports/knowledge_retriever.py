@@ -32,9 +32,11 @@ class RetrievedChunk:
     trust_level: str
     heading_path: tuple[str, ...]
     page_number: int | None
+    block_type: str
     chunk_index: int
     content: str
     score: float
+    retrieval_explanation: str
     vector_rank: int | None = None
     text_rank: int | None = None
     vector_score: float | None = None

@@ -19,9 +19,11 @@ def chunk() -> RetrievedChunk:
         trust_level="curated",
         heading_path=("RAG",),
         page_number=None,
+        block_type="paragraph",
         chunk_index=0,
         content="RAG uses retrieved evidence and citations.",
         score=0.03,
+        retrieval_explanation="RRF=0.0300",
     )
 
 

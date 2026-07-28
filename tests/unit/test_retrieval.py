@@ -7,6 +7,10 @@ import pytest
 
 from agent_mentor.api.errors import AppError
 from agent_mentor.application.answer_service import AnswerService, ensure_citations_are_valid
+from agent_mentor.infrastructure.retriever import (
+    _infer_retrieved_block_type,
+    _retrieval_explanation,
+)
 from agent_mentor.ports.knowledge_retriever import RetrievedChunk
 from agent_mentor.rag.retrieval import normalize_query, reciprocal_rank_fusion, validate_citations
 
@@ -20,9 +24,11 @@ def chunk(chunk_id=None) -> RetrievedChunk:  # type: ignore[no-untyped-def]
         trust_level="curated",
         heading_path=("RAG",),
         page_number=None,
+        block_type="paragraph",
         chunk_index=0,
         content="RAG uses retrieved evidence.",
         score=0.03,
+        retrieval_explanation="RRF=0.0300",
     )
 
 
@@ -40,6 +46,21 @@ def test_rrf_is_deterministic_for_fixed_rankings() -> None:
 
     assert scores[second] > scores[first] > scores[third]
     assert scores == reciprocal_rank_fusion([[first, second], [second, third]])
+
+
+def test_retrieval_explanation_contains_rank_signals() -> None:
+    explanation = _retrieval_explanation(
+        fused_score=0.0325,
+        vector_rank=1,
+        text_rank=3,
+        vector_score=0.8123,
+        text_score=0.4567,
+    )
+
+    assert "RRF=0.0325" in explanation
+    assert "vector_rank=1" in explanation
+    assert "text_rank=3" in explanation
+    assert _infer_retrieved_block_type("| A | B |\n| - | - |\n| x | y |") == "table"
 
 
 def test_citation_validator_allows_only_current_context() -> None:

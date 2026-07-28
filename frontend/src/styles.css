@@ -613,6 +613,31 @@ textarea::placeholder,
   line-height: 1.68;
 }
 
+.citation-list {
+  display: grid;
+  gap: 10px;
+}
+
+.citation-card {
+  border: 1px solid rgba(190, 210, 255, 0.12);
+  border-radius: 18px;
+  padding: 12px;
+  background: rgba(11, 22, 39, 0.48);
+}
+
+.citation-card strong {
+  display: block;
+  color: #f7fbff;
+  font-size: 14px;
+}
+
+.citation-card small {
+  display: block;
+  margin-top: 8px;
+  color: #9aa9c2;
+  font-size: 12px;
+}
+
 .result-box button {
   margin-top: 0;
 }

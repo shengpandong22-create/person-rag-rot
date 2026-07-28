@@ -15,6 +15,7 @@ class ParsedSection:
     text: str
     heading_path: list[str]
     page_number: int | None = None
+    block_type: str = "paragraph"
 
 
 class DocumentParser:
@@ -45,7 +46,13 @@ class DocumentParser:
         for line in text.splitlines():
             if markdown and line.startswith("#") and line.lstrip("#").startswith(" "):
                 if buffer:
-                    sections.append(ParsedSection("\n".join(buffer).strip(), current_path.copy()))
+                    sections.append(
+                        ParsedSection(
+                            "\n".join(buffer).strip(),
+                            current_path.copy(),
+                            block_type=infer_block_type("\n".join(buffer)),
+                        )
+                    )
                     buffer = []
                 level = len(line) - len(line.lstrip("#"))
                 title = line[level:].strip()
@@ -53,7 +60,13 @@ class DocumentParser:
             else:
                 buffer.append(line)
         if buffer:
-            sections.append(ParsedSection("\n".join(buffer).strip(), current_path.copy()))
+            sections.append(
+                ParsedSection(
+                    "\n".join(buffer).strip(),
+                    current_path.copy(),
+                    block_type=infer_block_type("\n".join(buffer)),
+                )
+            )
         return [section for section in sections if section.text]
 
     def _parse_pdf(self, content: bytes) -> list[ParsedSection]:
@@ -61,7 +74,12 @@ class DocumentParser:
         if len(reader.pages) > self._max_pdf_pages:
             raise AppError("PDF_PAGE_LIMIT", f"PDF must have at most {self._max_pdf_pages} pages.")
         sections = [
-            ParsedSection((page.extract_text() or "").strip(), [], number + 1)
+            ParsedSection(
+                (page.extract_text() or "").strip(),
+                [],
+                number + 1,
+                infer_block_type(page.extract_text() or ""),
+            )
             for number, page in enumerate(reader.pages)
         ]
         sections = [section for section in sections if section.text]
@@ -84,7 +102,13 @@ class DocumentParser:
             style = ((paragraph.style.name if paragraph.style is not None else "") or "").lower()
             if style.startswith("heading"):
                 if buffer:
-                    sections.append(ParsedSection("\n".join(buffer), path.copy()))
+                    sections.append(
+                        ParsedSection(
+                            "\n".join(buffer),
+                            path.copy(),
+                            block_type=infer_block_type("\n".join(buffer)),
+                        )
+                    )
                     buffer = []
                 level_text = "".join(character for character in style if character.isdigit())
                 level = int(level_text or "1")
@@ -92,7 +116,39 @@ class DocumentParser:
             else:
                 buffer.append(text)
         if buffer:
-            sections.append(ParsedSection("\n".join(buffer), path.copy()))
+            sections.append(
+                ParsedSection(
+                    "\n".join(buffer),
+                    path.copy(),
+                    block_type=infer_block_type("\n".join(buffer)),
+                )
+            )
         if not sections:
             raise AppError("EMPTY_DOCUMENT", "The document does not contain extractable text.")
         return sections
+
+
+def infer_block_type(text: str) -> str:
+    stripped = text.strip()
+    lines = [line.strip() for line in stripped.splitlines() if line.strip()]
+    if not stripped:
+        return "unknown"
+    if stripped.startswith("```") or stripped.endswith("```"):
+        return "code"
+    if lines and all(line.startswith(("- ", "* ", "+ ")) for line in lines[: min(3, len(lines))]):
+        return "list"
+    if _looks_like_table(lines):
+        return "table"
+    if len(lines) == 1 and (lines[0].startswith("#") or len(lines[0]) <= 80):
+        return "heading" if lines[0].startswith("#") else "paragraph"
+    return "paragraph"
+
+
+def _looks_like_table(lines: list[str]) -> bool:
+    if len(lines) < 2:
+        return False
+    pipe_rows = [line for line in lines if line.count("|") >= 2]
+    if len(pipe_rows) >= 2:
+        return True
+    tab_rows = [line for line in lines if line.count("\t") >= 1]
+    return len(tab_rows) >= 2

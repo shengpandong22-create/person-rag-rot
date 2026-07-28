@@ -28,3 +28,28 @@ def test_docx_parser_and_chunker() -> None:
 
     assert chunks[0].heading_path == ["Agent"]
     assert chunks[0].content
+
+
+def test_markdown_table_block_type_is_carried_to_chunks() -> None:
+    sections = DocumentParser(200).parse(
+        "guide.md",
+        b"# Metrics\n| metric | meaning |\n| - | - |\n| recall | retrieved coverage |",
+    )
+
+    chunks = chunk_sections(sections, 200, 20)
+
+    assert sections[0].block_type == "table"
+    assert chunks[0].block_type == "table"
+
+
+def test_code_block_preserves_line_breaks_in_chunking() -> None:
+    sections = DocumentParser(200).parse(
+        "guide.md",
+        b"# Example\n```python\nprint('agent')\nprint('rag')\n```",
+    )
+
+    chunks = chunk_sections(sections, 200, 20)
+
+    assert sections[0].block_type == "code"
+    assert chunks[0].block_type == "code"
+    assert "print('agent')\nprint('rag')" in chunks[0].content

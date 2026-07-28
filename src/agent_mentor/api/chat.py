@@ -35,9 +35,11 @@ class RetrievedChunkResponse(BaseModel):
     trust_level: str
     heading_path: list[str]
     page_number: int | None
+    block_type: str
     chunk_index: int
     content: str
     score: float
+    retrieval_explanation: str
     vector_rank: int | None
     text_rank: int | None
     vector_score: float | None
@@ -66,9 +68,11 @@ def chunk_response(chunk: RetrievedChunk) -> RetrievedChunkResponse:
         trust_level=chunk.trust_level,
         heading_path=list(chunk.heading_path),
         page_number=chunk.page_number,
+        block_type=chunk.block_type,
         chunk_index=chunk.chunk_index,
         content=chunk.content,
         score=chunk.score,
+        retrieval_explanation=chunk.retrieval_explanation,
         vector_rank=chunk.vector_rank,
         text_rank=chunk.text_rank,
         vector_score=chunk.vector_score,

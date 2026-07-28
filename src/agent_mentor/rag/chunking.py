@@ -10,6 +10,7 @@ class ChunkDraft:
     content: str
     heading_path: list[str]
     page_number: int | None
+    block_type: str
     chunk_index: int
     token_count: int
 
@@ -17,7 +18,10 @@ class ChunkDraft:
 def chunk_sections(sections: list[ParsedSection], size: int, overlap: int) -> list[ChunkDraft]:
     chunks: list[ChunkDraft] = []
     for section in sections:
-        text = " ".join(section.text.split())
+        if section.block_type == "code":
+            text = section.text.strip()
+        else:
+            text = " ".join(section.text.split())
         start = 0
         while start < len(text):
             piece = text[start : start + size].strip()
@@ -27,6 +31,7 @@ def chunk_sections(sections: list[ParsedSection], size: int, overlap: int) -> li
                         piece,
                         section.heading_path,
                         section.page_number,
+                        section.block_type,
                         len(chunks),
                         len(piece.split()),
                     )

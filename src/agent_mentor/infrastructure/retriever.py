@@ -78,9 +78,17 @@ class PostgresHybridRetriever:
                     trust_level=str(candidate.document.trust_level),
                     heading_path=tuple(candidate.chunk.heading_path),
                     page_number=candidate.chunk.page_number,
+                    block_type=_infer_retrieved_block_type(candidate.chunk.content),
                     chunk_index=candidate.chunk.chunk_index,
                     content=candidate.chunk.content,
                     score=fused[chunk_id],
+                    retrieval_explanation=_retrieval_explanation(
+                        fused_score=fused[chunk_id],
+                        vector_rank=vector_ranks.get(chunk_id),
+                        text_rank=text_ranks.get(chunk_id),
+                        vector_score=vector_scores.get(chunk_id),
+                        text_score=text_scores.get(chunk_id),
+                    ),
                     vector_rank=vector_ranks.get(chunk_id),
                     text_rank=text_ranks.get(chunk_id),
                     vector_score=vector_scores.get(chunk_id),
@@ -156,3 +164,36 @@ class PostgresHybridRetriever:
             _Candidate(chunk=chunk, document=document, rank=rank, score=float(score))
             for rank, (chunk, document, score) in enumerate(rows, start=1)
         ]
+
+
+def _infer_retrieved_block_type(content: str) -> str:
+    stripped = content.strip()
+    if not stripped:
+        return "unknown"
+    if stripped.startswith("```") or stripped.endswith("```"):
+        return "code"
+    if stripped.count("|") >= 4:
+        return "table"
+    if stripped.startswith(("- ", "* ", "+ ")):
+        return "list"
+    return "paragraph"
+
+
+def _retrieval_explanation(
+    *,
+    fused_score: float,
+    vector_rank: int | None,
+    text_rank: int | None,
+    vector_score: float | None,
+    text_score: float | None,
+) -> str:
+    signals: list[str] = [f"RRF={fused_score:.4f}"]
+    if vector_rank is not None:
+        signals.append(f"vector_rank={vector_rank}")
+    if text_rank is not None:
+        signals.append(f"text_rank={text_rank}")
+    if vector_score is not None:
+        signals.append(f"vector_score={vector_score:.4f}")
+    if text_score is not None:
+        signals.append(f"text_score={text_score:.4f}")
+    return " | ".join(signals)
