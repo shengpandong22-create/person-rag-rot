@@ -9,7 +9,11 @@ from fastapi import APIRouter, Header, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from agent_mentor.application.interview_service import InterviewService, InterviewSnapshot
+from agent_mentor.application.interview_service import (
+    InterviewService,
+    InterviewSnapshot,
+    WorkflowTraceItem,
+)
 from agent_mentor.domain.interview import Difficulty
 from agent_mentor.infrastructure.database.models import InterviewQuestionModel, UserAnswerModel
 
@@ -54,6 +58,19 @@ class InterviewResponse(BaseModel):
     workflow_thread_id: str
     current_question: InterviewQuestionResponse | None
     answers: list[UserAnswerResponse]
+
+
+class WorkflowTraceResponse(BaseModel):
+    checkpoint_id: UUID
+    node: str
+    event: str
+    label: str
+    input_summary: str
+    output_summary: str
+    waiting_for_answer: bool
+    is_fallback: bool
+    error_message: str | None
+    created_at: str
 
 
 class AnswerSubmitRequest(BaseModel):
@@ -111,6 +128,21 @@ def interview_response(snapshot: InterviewSnapshot) -> InterviewResponse:
     )
 
 
+def workflow_trace_response(item: WorkflowTraceItem) -> WorkflowTraceResponse:
+    return WorkflowTraceResponse(
+        checkpoint_id=item.checkpoint_id,
+        node=item.node,
+        event=item.event,
+        label=item.label,
+        input_summary=item.input_summary,
+        output_summary=item.output_summary,
+        waiting_for_answer=item.waiting_for_answer,
+        is_fallback=item.is_fallback,
+        error_message=item.error_message,
+        created_at=item.created_at.isoformat(),
+    )
+
+
 @router.post("/interviews", response_model=InterviewResponse, status_code=201)
 async def create_interview(payload: InterviewCreateRequest, request: Request) -> InterviewResponse:
     session = await service(request).create_interview(
@@ -130,6 +162,12 @@ async def start_interview(interview_id: UUID, request: Request) -> InterviewResp
 @router.get("/interviews/{interview_id}", response_model=InterviewResponse)
 async def get_interview(interview_id: UUID, request: Request) -> InterviewResponse:
     return interview_response(await service(request).get(interview_id))
+
+
+@router.get("/interviews/{interview_id}/workflow-trace", response_model=list[WorkflowTraceResponse])
+async def get_workflow_trace(interview_id: UUID, request: Request) -> list[WorkflowTraceResponse]:
+    trace = await service(request).workflow_trace(interview_id)
+    return [workflow_trace_response(item) for item in trace]
 
 
 @router.post("/interviews/{interview_id}/answers", response_model=InterviewResponse)

@@ -37,12 +37,14 @@ from agent_mentor.rag.retrieval import validate_citations
 from agent_mentor.workflows.interview import (
     InterviewWorkflowState,
     advance_question,
+    checkpoint_summary,
     finish_interview,
     generate_question,
     load_profile,
     persist_answer,
     plan_interview,
     wait_for_answer,
+    workflow_node_spec,
 )
 
 QUESTION_PROMPT_VERSION = "interview_question_v1"
@@ -54,6 +56,20 @@ class InterviewSnapshot:
     current_question: InterviewQuestionModel | None
     current_reference_chunk_ids: tuple[UUID, ...]
     answers: tuple[UserAnswerModel, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class WorkflowTraceItem:
+    checkpoint_id: UUID
+    node: str
+    event: str
+    label: str
+    input_summary: str
+    output_summary: str
+    waiting_for_answer: bool
+    is_fallback: bool
+    error_message: str | None
+    created_at: datetime
 
 
 class InterviewQuestionOutput(BaseModel):
@@ -140,6 +156,18 @@ class InterviewService:
         async with self._sessions() as db:
             return await self._snapshot(db, await self._get_session(db, session_id))
 
+    async def workflow_trace(self, session_id: UUID) -> tuple[WorkflowTraceItem, ...]:
+        async with self._sessions() as db:
+            await self._get_session(db, session_id)
+            checkpoints = (
+                await db.scalars(
+                    select(WorkflowCheckpointModel)
+                    .where(WorkflowCheckpointModel.session_id == session_id)
+                    .order_by(WorkflowCheckpointModel.created_at, WorkflowCheckpointModel.id)
+                )
+            ).all()
+            return tuple(self._trace_item(checkpoint) for checkpoint in checkpoints)
+
     async def submit_answer(
         self,
         *,
@@ -211,14 +239,32 @@ class InterviewService:
 
     async def events(self, session_id: UUID) -> AsyncIterator[dict[str, object]]:
         snapshot = await self.get(session_id)
+        trace = await self.workflow_trace(session_id)
         yield {
             "event": "workflow.state",
             "data": {
                 "session_id": str(snapshot.session.id),
                 "status": str(snapshot.session.status),
                 "current_question_index": snapshot.session.current_question_index,
+                "waiting_for_answer": snapshot.session.status == InterviewStatus.WAITING_FOR_ANSWER,
             },
         }
+        for item in trace:
+            yield {
+                "event": item.event,
+                "data": {
+                    "checkpoint_id": str(item.checkpoint_id),
+                    "session_id": str(session_id),
+                    "node": item.node,
+                    "label": item.label,
+                    "input_summary": item.input_summary,
+                    "output_summary": item.output_summary,
+                    "waiting_for_answer": item.waiting_for_answer,
+                    "is_fallback": item.is_fallback,
+                    "error_message": item.error_message,
+                    "created_at": item.created_at.isoformat(),
+                },
+            }
         if snapshot.current_question is not None:
             yield {
                 "event": "question.current",
@@ -435,6 +481,23 @@ class InterviewService:
         )
         db.add(checkpoint)
         return checkpoint
+
+    def _trace_item(self, checkpoint: WorkflowCheckpointModel) -> WorkflowTraceItem:
+        state = checkpoint.state
+        spec = workflow_node_spec(checkpoint.node)
+        input_summary, output_summary = checkpoint_summary(state)
+        return WorkflowTraceItem(
+            checkpoint_id=checkpoint.id,
+            node=checkpoint.node,
+            event=spec.event,
+            label=spec.label,
+            input_summary=input_summary,
+            output_summary=output_summary,
+            waiting_for_answer=bool(state.get("waiting_for_answer", False)),
+            is_fallback=bool(state.get("fallback", False)),
+            error_message=state.get("error") if isinstance(state.get("error"), str) else None,
+            created_at=checkpoint.created_at,
+        )
 
     def _state(
         self, interview: InterviewSessionModel, node: str, *, waiting: bool = False

@@ -16,10 +16,12 @@ from agent_mentor.api.errors import (
 from agent_mentor.api.evaluations import router as evaluations_router
 from agent_mentor.api.health import router as health_router
 from agent_mentor.api.chat import router as chat_router
+from agent_mentor.api.demo import router as demo_router
 from agent_mentor.api.interviews import router as interviews_router
 from agent_mentor.api.knowledge import router as knowledge_router
 from agent_mentor.api.profiles import router as profiles_router
 from agent_mentor.application.answer_service import AnswerService
+from agent_mentor.application.demo_readiness_service import DemoReadinessService
 from agent_mentor.application.evaluation_service import EvaluationService
 from agent_mentor.application.interview_service import InterviewService
 from agent_mentor.application.knowledge_service import KnowledgeService
@@ -106,6 +108,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         default_model=settings.llm_default_model,
     )
     app.state.profile_service = ProfileService(session_factory)
+    app.state.demo_readiness_service = DemoReadinessService(session_factory)
 
     app.middleware("http")(trace_logging_middleware)
     app.add_exception_handler(AppError, app_error_handler)
@@ -117,6 +120,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(interviews_router)
     app.include_router(evaluations_router)
     app.include_router(profiles_router)
+    app.include_router(demo_router)
 
     return app
 

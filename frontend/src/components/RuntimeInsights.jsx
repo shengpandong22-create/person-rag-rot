@@ -1,4 +1,4 @@
-export function RuntimeInsights({ runtime, askResult, report }) {
+export function RuntimeInsights({ runtime, askResult, report, readiness }) {
   const llmMode = runtime?.llm_enabled
     ? `真实 LLM：${runtime.llm_model ?? "已配置"}`
     : "本地确定性降级";
@@ -24,6 +24,11 @@ export function RuntimeInsights({ runtime, askResult, report }) {
       <div>
         <span>最近评分</span>
         <strong>{reportLabel}</strong>
+      </div>
+      <div>
+        <span>演示就绪度</span>
+        <strong>{readiness ? `${readiness.score}% · ${readiness.status}` : "待自检"}</strong>
+        {readiness ? <small>{readiness.next_action}</small> : null}
       </div>
     </section>
   );

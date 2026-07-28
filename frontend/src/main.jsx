@@ -15,6 +15,7 @@ import { inferInterviewTopic } from "./utils/profile.js";
 import "./styles.css";
 
 const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
+const activeInterviewKey = "agentmentor.activeInterviewId";
 
 const emptyProfile = {
   abilities: [],
@@ -38,10 +39,12 @@ function App() {
   const [interviewTopic, setInterviewTopic] = useState("AI Agent");
   const [topicEdited, setTopicEdited] = useState(false);
   const [interview, setInterview] = useState(null);
+  const [workflowTrace, setWorkflowTrace] = useState([]);
   const [answerDraft, setAnswerDraft] = useState("");
   const [report, setReport] = useState(null);
   const [reportHistory, setReportHistory] = useState([]);
   const [scoreTrends, setScoreTrends] = useState([]);
+  const [readiness, setReadiness] = useState(null);
   const [profile, setProfile] = useState(emptyProfile);
 
   const currentQuestion = interview?.current_question;
@@ -79,6 +82,7 @@ function App() {
         focuses,
         history,
         trends,
+        demoReadiness,
       ] = await Promise.all([
         api("/health/runtime"),
         api("/api/v1/knowledge-bases"),
@@ -89,15 +93,18 @@ function App() {
         api("/api/v1/profiles/me/training-focuses"),
         api("/api/v1/reports/history"),
         api("/api/v1/reports/trends"),
+        api("/api/v1/demo/readiness"),
       ]);
       setRuntime(runtimeInfo);
       setProfile({ abilities, errors, tasks, plan, focuses });
       setReportHistory(history);
       setScoreTrends(trends);
+      setReadiness(demoReadiness);
       const restored = await restoreKnowledgeWorkspace(bases);
       if (restored.base) {
         setKnowledgeBase(restored.base);
         setDocuments(restored.documents);
+        await restoreActiveInterview();
         const suffix = restored.documents.length ? `，资料 ${restored.documents.length} 份` : "";
         setStatus(`${runtimeLabel(runtimeInfo)}，已恢复知识库：${restored.base.name}${suffix}`);
       } else {
@@ -123,6 +130,19 @@ function App() {
       }
     }
     return fallback;
+  }
+
+  async function restoreActiveInterview() {
+    const interviewId = window.localStorage.getItem(activeInterviewKey);
+    if (!interviewId) return;
+    try {
+      const restoredInterview = await api(`/api/v1/interviews/${interviewId}`);
+      setInterview(restoredInterview);
+      setWorkflowTrace(await loadWorkflowTrace(restoredInterview.id));
+      setAnswerDraft("");
+    } catch {
+      window.localStorage.removeItem(activeInterviewKey);
+    }
   }
 
   function replaceDocument(nextDocument) {
@@ -175,7 +195,9 @@ function App() {
       setDocuments([]);
       setAskResult(null);
       setInterview(null);
+      setWorkflowTrace([]);
       setReport(null);
+      setReadiness(await api("/api/v1/demo/readiness"));
       setTopicEdited(false);
     });
 
@@ -225,6 +247,8 @@ function App() {
       });
       const started = await api(`/api/v1/interviews/${created.id}/start`, { method: "POST" });
       setInterview(started);
+      window.localStorage.setItem(activeInterviewKey, started.id);
+      setWorkflowTrace(await loadWorkflowTrace(started.id));
       setAnswerDraft("");
       setReport(null);
     });
@@ -244,6 +268,8 @@ function App() {
         }),
       });
       setInterview(updated);
+      window.localStorage.setItem(activeInterviewKey, updated.id);
+      setWorkflowTrace(await loadWorkflowTrace(updated.id));
       setAnswerDraft("");
     });
 
@@ -268,9 +294,11 @@ function App() {
         api("/api/v1/reports/trends"),
       ]);
       setReport(builtReport);
+      setWorkflowTrace(await loadWorkflowTrace(interview.id));
       setProfile({ abilities, errors, tasks, plan, focuses });
       setReportHistory(history);
       setScoreTrends(trends);
+      setReadiness(await api("/api/v1/demo/readiness"));
     });
 
   const openHistoricalReport = (item) =>
@@ -289,6 +317,10 @@ function App() {
   function changeInterviewTopic(value) {
     setInterviewTopic(value);
     setTopicEdited(true);
+  }
+
+  async function loadWorkflowTrace(interviewId) {
+    return api(`/api/v1/interviews/${interviewId}/workflow-trace`);
   }
 
   return (
@@ -330,7 +362,12 @@ function App() {
         <Metric label="面试进度" value={interview ? `${completion}%` : "0%"} />
       </section>
 
-      <RuntimeInsights runtime={runtime} askResult={askResult} report={report} />
+      <RuntimeInsights
+        runtime={runtime}
+        askResult={askResult}
+        report={report}
+        readiness={readiness}
+      />
 
       <section className="workflow">
         <KnowledgePanel
@@ -364,6 +401,7 @@ function App() {
           isCompleted={isCompleted}
           currentQuestion={currentQuestion}
           currentDefaultAnswer={currentDefaultAnswer}
+          workflowTrace={workflowTrace}
           onTopicChange={changeInterviewTopic}
           onStartInterview={startInterview}
           onAnswerDraftChange={setAnswerDraft}

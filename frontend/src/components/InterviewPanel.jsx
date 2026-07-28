@@ -12,6 +12,7 @@ export function InterviewPanel({
   isCompleted,
   currentQuestion,
   currentDefaultAnswer,
+  workflowTrace,
   onTopicChange,
   onStartInterview,
   onAnswerDraftChange,
@@ -52,6 +53,18 @@ export function InterviewPanel({
         <div className="interview-box">
           <Progress value={completion} />
           <Info label="Workflow Status" value={interview.status} />
+          {workflowTrace.length > 0 ? (
+            <div className="workflow-trace">
+              <strong>Agent 工作流轨迹</strong>
+              {workflowTrace.map((item) => (
+                <article className="trace-item" key={item.checkpoint_id}>
+                  <span>{item.label}</span>
+                  <small>{item.event}</small>
+                  <p>{item.output_summary}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
           {currentQuestion ? (
             <ResultBox title={`第 ${currentQuestion.sequence} 题`} subtitle="当前等待回答">
               <strong>{currentQuestion.question_text}</strong>

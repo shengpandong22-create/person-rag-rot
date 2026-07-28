@@ -10,8 +10,10 @@ from agent_mentor.domain.interview import InterviewStatus, assert_transition, ca
 from agent_mentor.workflows.interview import (
     InterviewWorkflowState,
     advance_question,
+    checkpoint_summary,
     finish_interview,
     wait_for_answer,
+    workflow_node_spec,
 )
 
 
@@ -59,6 +61,17 @@ def test_workflow_advances_and_finishes_deterministically() -> None:
     assert next_state.current_node == "advance_question"
     assert finished.current_node == "finish_interview"
     assert not finished.waiting_for_answer
+
+
+def test_workflow_node_specs_expose_interview_agent_events() -> None:
+    generated = workflow_node_spec("generate_question")
+    waiting = wait_for_answer(state())
+    input_summary, output_summary = checkpoint_summary(waiting.checkpoint())
+
+    assert generated.event == "question.generated"
+    assert generated.label == "生成题目"
+    assert input_summary == "question_index=0/3"
+    assert output_summary == "等待用户回答，可刷新后恢复"
 
 
 def test_interview_questions_use_progressive_templates() -> None:
