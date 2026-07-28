@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -287,7 +288,23 @@ class InterviewService:
         )
         if existing is not None:
             return existing
-        query_text = f"{interview.topic} {interview.difficulty} interview question {sequence}"
+        question_type = self._question_type(sequence)
+        prior_questions = list(
+            (
+                await db.scalars(
+                    select(InterviewQuestionModel.question_text)
+                    .where(
+                        InterviewQuestionModel.session_id == interview.id,
+                        InterviewQuestionModel.sequence < sequence,
+                    )
+                    .order_by(InterviewQuestionModel.sequence)
+                )
+            ).all()
+        )
+        query_text = (
+            f"{interview.topic} {interview.difficulty} "
+            f"{self._question_type_search_hint(question_type)}"
+        )
         chunks = await self._retriever.retrieve(
             RetrievalQuery(
                 knowledge_base_id=interview.knowledge_base_id,
@@ -298,8 +315,15 @@ class InterviewService:
         )
         citation_ids = [chunk.chunk_id for chunk in chunks[:2]]
         validate_citations(citation_ids, chunks)
-        question_type = self._question_type(sequence)
-        generated = await self._generate_question_output(interview, sequence, question_type, chunks)
+        generated = await self._generate_question_output(
+            interview, sequence, question_type, chunks, prior_questions
+        )
+        if self._is_too_similar(generated.question_text, prior_questions):
+            generated = InterviewQuestionOutput(
+                question_text=self._question_text(interview, sequence, chunks),
+                reference_answer=generated.reference_answer,
+                required_points=generated.required_points,
+            )
         question = InterviewQuestionModel(
             id=uuid4(),
             session_id=interview.id,
@@ -361,6 +385,7 @@ class InterviewService:
         sequence: int,
         question_type: QuestionType,
         chunks: list[RetrievedChunk],
+        prior_questions: list[str],
     ) -> InterviewQuestionOutput:
         fallback = InterviewQuestionOutput(
             question_text=self._question_text(interview, sequence, chunks),
@@ -383,7 +408,9 @@ class InterviewService:
                     ),
                     Message(
                         role="user",
-                        content=self._question_prompt(interview, sequence, question_type, chunks),
+                        content=self._question_prompt(
+                            interview, sequence, question_type, chunks, prior_questions
+                        ),
                     ),
                 ],
                 response_model=InterviewQuestionOutput,
@@ -408,6 +435,7 @@ class InterviewService:
         sequence: int,
         question_type: QuestionType,
         chunks: list[RetrievedChunk],
+        prior_questions: list[str],
     ) -> str:
         context = []
         for index, chunk in enumerate(chunks[:3], start=1):
@@ -432,6 +460,8 @@ class InterviewService:
             f"难度：{interview.difficulty}\n"
             f"题号：{sequence}/{interview.question_count}\n"
             f"题型要求：{type_hint}\n\n"
+            f"本轮已出题目：{prior_questions or '无'}\n"
+            "不得重复已出题目的核心问法，应考察不同角度。\n\n"
             "检索资料：\n"
             f"{chr(10).join(context) if context else '无'}\n\n"
             "请输出 JSON：question_text、reference_answer、required_points。"
@@ -440,6 +470,31 @@ class InterviewService:
     def _question_type(self, sequence: int) -> QuestionType:
         types = (QuestionType.CONCEPT, QuestionType.SCENARIO, QuestionType.DESIGN)
         return types[(sequence - 1) % len(types)]
+
+    def _question_type_search_hint(self, question_type: QuestionType) -> str:
+        return {
+            QuestionType.CONCEPT: "定义 原理 核心概念",
+            QuestionType.SCENARIO: "工程落地 数据流 异常处理",
+            QuestionType.DESIGN: "架构取舍 边界 可观测性",
+            QuestionType.DEBUGGING: "故障定位 验证 修复",
+        }[question_type]
+
+    def _is_too_similar(self, question: str, prior_questions: list[str]) -> bool:
+        current = self._question_terms(question)
+        if not current:
+            return False
+        for prior in prior_questions:
+            previous = self._question_terms(prior)
+            union = current | previous
+            if union and len(current & previous) / len(union) >= 0.72:
+                return True
+        return False
+
+    def _question_terms(self, text: str) -> set[str]:
+        terms = set(re.findall(r"[a-z0-9_]{2,}", text.lower()))
+        for segment in re.findall(r"[\u4e00-\u9fff]{2,}", text):
+            terms.update(segment[index : index + 2] for index in range(len(segment) - 1))
+        return terms
 
     def _question_text(
         self, interview: InterviewSessionModel, sequence: int, chunks: list[RetrievedChunk]
@@ -486,6 +541,8 @@ class InterviewService:
         state = checkpoint.state
         spec = workflow_node_spec(checkpoint.node)
         input_summary, output_summary = checkpoint_summary(state)
+        raw_error = state.get("error")
+        error_message = raw_error if isinstance(raw_error, str) else None
         return WorkflowTraceItem(
             checkpoint_id=checkpoint.id,
             node=checkpoint.node,
@@ -495,7 +552,7 @@ class InterviewService:
             output_summary=output_summary,
             waiting_for_answer=bool(state.get("waiting_for_answer", False)),
             is_fallback=bool(state.get("fallback", False)),
-            error_message=state.get("error") if isinstance(state.get("error"), str) else None,
+            error_message=error_message,
             created_at=checkpoint.created_at,
         )
 

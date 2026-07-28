@@ -51,6 +51,9 @@ class AskResponse(BaseModel):
     message_id: UUID
     answer: str
     evidence_sufficient: bool
+    generation_mode: str
+    model_name: str | None
+    fallback_reason: str | None
     citations: list[RetrievedChunkResponse]
     candidates: list[RetrievedChunkResponse]
 
@@ -86,6 +89,9 @@ def ask_response(result: AnswerResult) -> AskResponse:
         message_id=result.message_id,
         answer=result.answer,
         evidence_sufficient=result.evidence_sufficient,
+        generation_mode=result.generation_mode,
+        model_name=result.model_name,
+        fallback_reason=result.fallback_reason,
         citations=[chunk_response(chunk) for chunk in result.citations],
         candidates=[chunk_response(chunk) for chunk in result.candidates],
     )

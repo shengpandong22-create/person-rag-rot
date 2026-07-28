@@ -680,6 +680,43 @@ textarea::placeholder,
   margin-top: 14px;
 }
 
+.workflow-trace > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0.8rem 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.toggle-row input {
+  width: auto;
+  accent-color: var(--accent);
+}
+
+.document-row {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(153, 174, 213, 0.18);
+}
+
+.document-row small {
+  color: var(--muted);
+}
+
+button.compact {
+  width: fit-content;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.82rem;
+}
+
 .workflow-trace > strong {
   color: #f7fbff;
   font-size: 14px;

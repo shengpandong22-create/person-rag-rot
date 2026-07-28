@@ -54,8 +54,8 @@ export function InterviewPanel({
           <Progress value={completion} />
           <Info label="Workflow Status" value={interview.status} />
           {workflowTrace.length > 0 ? (
-            <div className="workflow-trace">
-              <strong>Agent 工作流轨迹</strong>
+            <details className="workflow-trace">
+              <summary>Agent 工作流轨迹（{workflowTrace.length} 个 checkpoint）</summary>
               {workflowTrace.map((item) => (
                 <article className="trace-item" key={item.checkpoint_id}>
                   <span>{item.label}</span>
@@ -63,7 +63,7 @@ export function InterviewPanel({
                   <p>{item.output_summary}</p>
                 </article>
               ))}
-            </div>
+            </details>
           ) : null}
           {currentQuestion ? (
             <ResultBox title={`第 ${currentQuestion.sequence} 题`} subtitle="当前等待回答">

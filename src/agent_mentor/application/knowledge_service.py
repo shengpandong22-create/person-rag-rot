@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
@@ -183,24 +183,43 @@ class KnowledgeService:
                 document = await session.get(SourceDocumentModel, document_id)
                 if document is None:
                     return
-                await session.execute(
-                    delete(KnowledgeChunkModel).where(
-                        KnowledgeChunkModel.document_id == document_id
-                    )
-                )
+                existing_chunks = {
+                    chunk.chunk_index: chunk
+                    for chunk in (
+                        await session.scalars(
+                            select(KnowledgeChunkModel).where(
+                                KnowledgeChunkModel.document_id == document_id
+                            )
+                        )
+                    ).all()
+                }
                 for draft, vector in zip(drafts, vectors, strict=True):
-                    session.add(
-                        KnowledgeChunkModel(
-                            id=uuid4(),
-                            document_id=document_id,
-                            content=draft.content,
-                            heading_path=draft.heading_path,
-                            page_number=draft.page_number,
-                            chunk_index=draft.chunk_index,
-                            token_count=draft.token_count,
-                            embedding=vector,
-                            search_text=None,
-                            created_at=datetime.now(UTC),
+                    chunk = existing_chunks.pop(draft.chunk_index, None)
+                    if chunk is None:
+                        session.add(
+                            KnowledgeChunkModel(
+                                id=uuid4(),
+                                document_id=document_id,
+                                content=draft.content,
+                                heading_path=draft.heading_path,
+                                page_number=draft.page_number,
+                                chunk_index=draft.chunk_index,
+                                token_count=draft.token_count,
+                                embedding=vector,
+                                search_text=None,
+                                created_at=datetime.now(UTC),
+                            )
+                        )
+                    else:
+                        chunk.content = draft.content
+                        chunk.heading_path = draft.heading_path
+                        chunk.page_number = draft.page_number
+                        chunk.token_count = draft.token_count
+                        chunk.embedding = vector
+                if existing_chunks:
+                    await session.execute(
+                        delete(KnowledgeChunkModel).where(
+                            KnowledgeChunkModel.id.in_(tuple(existing_chunks))
                         )
                     )
                 await session.flush()
@@ -225,6 +244,29 @@ class KnowledgeService:
                         str(error)[:1000],
                     )
                     await session.commit()
+
+    async def recover_interrupted_ingestions(self, *, stale_after_minutes: int = 10) -> int:
+        """Mark abandoned local background jobs retryable after an API restart."""
+        cutoff = datetime.now(UTC) - timedelta(minutes=stale_after_minutes)
+        async with self._sessions() as session:
+            result = await session.execute(
+                update(SourceDocumentModel)
+                .where(
+                    SourceDocumentModel.status.in_(
+                        (DocumentStatus.PENDING, DocumentStatus.PROCESSING)
+                    ),
+                    SourceDocumentModel.updated_at < cutoff,
+                )
+                .values(
+                    status=DocumentStatus.FAILED,
+                    error_message="文档处理被服务重启中断，请点击重新索引。",
+                    updated_at=datetime.now(UTC),
+                )
+                .returning(SourceDocumentModel.id)
+            )
+            recovered_ids = result.scalars().all()
+            await session.commit()
+            return len(recovered_ids)
 
     async def get_document(self, document_id: UUID) -> SourceDocumentModel:
         async with self._sessions() as session:

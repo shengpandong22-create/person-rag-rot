@@ -127,7 +127,7 @@ def rank_training_focuses(
     return ranked[:limit]
 
 
-def _focus_sort_key(candidate: TrainingFocusCandidate) -> tuple[int, float, str]:
+def _focus_sort_key(candidate: TrainingFocusCandidate) -> tuple[int, int, float, str]:
     source_rank = 0 if candidate.source_type == "review_task" else 1
     mastery = candidate.mastery_score if candidate.mastery_score is not None else 1.0
     return (source_rank, -candidate.priority, mastery, candidate.knowledge_point)

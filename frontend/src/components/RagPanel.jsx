@@ -5,7 +5,9 @@ export function RagPanel({
   askResult,
   canUseKnowledgeBase,
   busy,
+  allowModelKnowledge,
   onQuestionChange,
+  onAllowModelKnowledgeChange,
   onAsk,
 }) {
   return (
@@ -17,6 +19,14 @@ export function RagPanel({
         placeholder="输入你想问知识库的问题..."
         rows={4}
       />
+      <label className="toggle-row">
+        <input
+          type="checkbox"
+          checked={allowModelKnowledge}
+          onChange={(event) => onAllowModelKnowledgeChange(event.target.checked)}
+        />
+        证据不足时允许模型补充（补充内容会明确标识）
+      </label>
       <button onClick={onAsk} disabled={!canUseKnowledgeBase || busy || !askQuestion.trim()}>
         提交 RAG 问题
       </button>
@@ -25,6 +35,16 @@ export function RagPanel({
           title={askResult.evidence_sufficient ? "证据充分" : "证据不足"}
           subtitle={`引用数量：${askResult.citations.length}`}
         >
+          <div className="tag-row">
+            <span>
+              {askResult.generation_mode === "llm"
+                ? `LLM：${askResult.model_name ?? "已配置模型"}`
+                : askResult.generation_mode === "evidence_guard"
+                  ? "证据保护降级"
+                  : "确定性规则降级"}
+            </span>
+            {askResult.fallback_reason ? <span>{askResult.fallback_reason}</span> : null}
+          </div>
           <p>{askResult.answer}</p>
           {askResult.citations.length > 0 ? (
             <div className="citation-list" aria-label="引用证据列表">

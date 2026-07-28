@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
@@ -113,20 +113,28 @@ class EvaluationService:
     async def build_report(
         self, interview_id: UUID, *, reviewer_available: bool = True
     ) -> ReportSnapshot:
-        async with self._sessions() as db:
-            interview = await self._get_completed_interview(db, interview_id)
-            await db.execute(
-                delete(InterviewReportModel).where(InterviewReportModel.session_id == interview.id)
-            )
-            await db.commit()
-
         evaluations = await self.evaluate_interview(
             interview_id, reviewer_available=reviewer_available
         )
         async with self._sessions() as db:
             interview = await self._get_completed_interview(db, interview_id)
-            report = self._create_report_model(interview, evaluations)
-            db.add(report)
+            generated = self._create_report_model(interview, evaluations)
+            report = await db.scalar(
+                select(InterviewReportModel).where(InterviewReportModel.session_id == interview.id)
+            )
+            if report is None:
+                report = generated
+                db.add(report)
+            else:
+                report.total_score = generated.total_score
+                report.max_score = generated.max_score
+                report.dimension_summary = generated.dimension_summary
+                report.knowledge_point_summary = generated.knowledge_point_summary
+                report.error_summary = generated.error_summary
+                report.low_confidence_items = generated.low_confidence_items
+                report.disputed_items = generated.disputed_items
+                report.next_steps = generated.next_steps
+                report.created_at = generated.created_at
             await db.commit()
             await db.refresh(report)
             return ReportSnapshot(report=report, evaluations=evaluations)

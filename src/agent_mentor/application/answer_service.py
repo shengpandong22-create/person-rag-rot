@@ -54,6 +54,9 @@ class AnswerResult:
     citations: tuple[RetrievedChunk, ...]
     candidates: tuple[RetrievedChunk, ...]
     evidence_sufficient: bool
+    generation_mode: str
+    model_name: str | None
+    fallback_reason: str | None
 
 
 class GroundedAnswerOutput(BaseModel):
@@ -116,10 +119,13 @@ class AnswerService:
                 candidates=candidates,
                 citations=[],
                 evidence_sufficient=False,
+                generation_mode="evidence_guard",
+                model_name=None,
+                fallback_reason="insufficient_evidence",
             )
 
         citations = candidates[: min(3, len(candidates))]
-        answer = await self._generate_answer(
+        answer, generation_mode, fallback_reason = await self._generate_answer(
             question=question,
             candidates=candidates,
             citations=citations,
@@ -134,6 +140,9 @@ class AnswerService:
             candidates=candidates,
             citations=citations,
             evidence_sufficient=sufficient,
+            generation_mode=generation_mode,
+            model_name=self._default_model if generation_mode == "llm" else None,
+            fallback_reason=fallback_reason,
         )
 
     async def answer_events(self, **kwargs: object) -> AsyncIterator[dict[str, object]]:
@@ -168,10 +177,14 @@ class AnswerService:
         citations: list[RetrievedChunk],
         evidence_sufficient: bool,
         allow_model_knowledge: bool,
-    ) -> str:
+    ) -> tuple[str, str, str | None]:
         if self._llm is None:
-            return self._compose_grounded_answer(
-                question, citations, allow_model_knowledge and not evidence_sufficient
+            return (
+                self._compose_grounded_answer(
+                    question, citations, allow_model_knowledge and not evidence_sufficient
+                ),
+                "deterministic",
+                "llm_not_configured",
             )
         try:
             output = await self._llm.generate_structured(
@@ -203,7 +216,7 @@ class AnswerService:
             if output.evidence_sufficient and not selected and candidates:
                 selected = candidates[:1]
             citations[:] = selected[:3]
-            return output.answer
+            return output.answer, "llm", None
         except Exception as error:
             log_event(
                 logging.WARNING,
@@ -213,8 +226,12 @@ class AnswerService:
                 candidate_count=len(candidates),
                 evidence_sufficient=evidence_sufficient,
             )
-            return self._compose_grounded_answer(
-                question, citations, allow_model_knowledge and not evidence_sufficient
+            return (
+                self._compose_grounded_answer(
+                    question, citations, allow_model_knowledge and not evidence_sufficient
+                ),
+                "deterministic",
+                type(error).__name__,
             )
 
     def _answer_prompt(
@@ -298,6 +315,9 @@ class AnswerService:
         candidates: list[RetrievedChunk],
         citations: list[RetrievedChunk],
         evidence_sufficient: bool,
+        generation_mode: str,
+        model_name: str | None,
+        fallback_reason: str | None,
     ) -> AnswerResult:
         now = datetime.now(UTC)
         session_id = uuid4()
@@ -306,6 +326,9 @@ class AnswerService:
             "candidate_count": len(candidates),
             "evidence_sufficient": evidence_sufficient,
             "llm_enabled": self._llm is not None,
+            "generation_mode": generation_mode,
+            "model_name": model_name,
+            "fallback_reason": fallback_reason,
             "candidates": [
                 {
                     "chunk_id": str(chunk.chunk_id),
@@ -365,6 +388,9 @@ class AnswerService:
             citations=tuple(citations),
             candidates=tuple(candidates),
             evidence_sufficient=evidence_sufficient,
+            generation_mode=generation_mode,
+            model_name=model_name,
+            fallback_reason=fallback_reason,
         )
 
 

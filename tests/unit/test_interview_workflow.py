@@ -87,3 +87,16 @@ def test_interview_questions_use_progressive_templates() -> None:
     assert questions[0].startswith("[1/3] 请说明")
     assert "落地到自己的 AI 面试助手项目" in questions[1]
     assert "面试官视角复盘" in questions[2]
+
+
+def test_interview_question_similarity_guard_rejects_repeated_core_question() -> None:
+    service = object.__new__(InterviewService)
+
+    assert service._is_too_similar(  # pyright: ignore[reportPrivateUsage]
+        "请说明 RAG 检索增强生成的核心概念和主要流程。",
+        ["请说明 RAG 检索增强生成的核心概念以及主要流程。"],
+    )
+    assert not service._is_too_similar(  # pyright: ignore[reportPrivateUsage]
+        "请设计 RAG 服务超时时的降级、监控和故障恢复方案。",
+        ["请说明 RAG 检索增强生成的核心概念以及主要流程。"],
+    )

@@ -42,7 +42,7 @@ async def test_answer_service_logs_when_llm_answer_falls_back(
     )
 
     with caplog.at_level("WARNING", logger="agent_mentor"):
-        answer = await service._generate_answer(  # pyright: ignore[reportPrivateUsage]
+        answer, mode, reason = await service._generate_answer(  # pyright: ignore[reportPrivateUsage]
             question="RAG 如何提升回答可信度？",
             candidates=[evidence],
             citations=[evidence],
@@ -51,5 +51,7 @@ async def test_answer_service_logs_when_llm_answer_falls_back(
         )
 
     assert answer
+    assert mode == "deterministic"
+    assert reason == "RuntimeError"
     assert "rag_answer.llm_fallback" in caplog.text
     assert "deterministic_grounded_answer" in caplog.text

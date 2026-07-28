@@ -3,7 +3,11 @@ export function RuntimeInsights({ runtime, askResult, report, readiness }) {
     ? `真实 LLM：${runtime.llm_model ?? "已配置"}`
     : "本地确定性降级";
   const evidenceLabel =
-    askResult == null ? "尚未执行 RAG" : askResult.evidence_sufficient ? "证据充足" : "证据不足";
+    askResult == null
+      ? "尚未执行 RAG"
+      : `${askResult.evidence_sufficient ? "证据充足" : "证据不足"} · ${
+          askResult.generation_mode === "llm" ? "LLM" : "已降级"
+        }`;
   const reportLabel =
     report == null
       ? "尚未生成评分"
@@ -27,7 +31,15 @@ export function RuntimeInsights({ runtime, askResult, report, readiness }) {
       </div>
       <div>
         <span>演示就绪度</span>
-        <strong>{readiness ? `${readiness.score}% · ${readiness.status}` : "待自检"}</strong>
+        <strong>
+          {readiness
+            ? `${readiness.checks.filter((item) => item.passed).length}/${readiness.checks.length} · ${
+                { ready: "可完整演示", partial: "部分就绪", not_ready: "尚未就绪" }[
+                  readiness.status
+                ] ?? readiness.status
+              }`
+            : "待自检"}
+        </strong>
         {readiness ? <small>{readiness.next_action}</small> : null}
       </div>
     </section>

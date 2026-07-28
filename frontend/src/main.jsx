@@ -16,6 +16,8 @@ import "./styles.css";
 
 const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
 const activeInterviewKey = "agentmentor.activeInterviewId";
+const activeKnowledgeBaseKey = "agentmentor.activeKnowledgeBaseId";
+const answerIdempotencyPrefix = "agentmentor.answerIdempotency";
 
 const emptyProfile = {
   abilities: [],
@@ -24,6 +26,14 @@ const emptyProfile = {
   plan: [],
   focuses: [],
 };
+
+async function optionalApi(path, fallback) {
+  try {
+    return await api(path);
+  } catch {
+    return fallback;
+  }
+}
 
 function App() {
   const [status, setStatus] = useState("正在连接本地服务...");
@@ -36,6 +46,7 @@ function App() {
     "RAG 为什么能提升 AI 面试助手回答的可信度？",
   );
   const [askResult, setAskResult] = useState(null);
+  const [allowModelKnowledge, setAllowModelKnowledge] = useState(false);
   const [interviewTopic, setInterviewTopic] = useState("AI Agent");
   const [topicEdited, setTopicEdited] = useState(false);
   const [interview, setInterview] = useState(null);
@@ -72,9 +83,9 @@ function App() {
     setError("");
     try {
       await api("/health/ready");
+      const runtimeInfo = await api("/health/runtime");
+      const bases = await api("/api/v1/knowledge-bases");
       const [
-        runtimeInfo,
-        bases,
         abilities,
         errors,
         tasks,
@@ -84,16 +95,14 @@ function App() {
         trends,
         demoReadiness,
       ] = await Promise.all([
-        api("/health/runtime"),
-        api("/api/v1/knowledge-bases"),
-        api("/api/v1/profiles/me/abilities"),
-        api("/api/v1/profiles/me/error-patterns"),
-        api("/api/v1/review-tasks"),
-        api("/api/v1/profiles/me/interview-plan"),
-        api("/api/v1/profiles/me/training-focuses"),
-        api("/api/v1/reports/history"),
-        api("/api/v1/reports/trends"),
-        api("/api/v1/demo/readiness"),
+        optionalApi("/api/v1/profiles/me/abilities", []),
+        optionalApi("/api/v1/profiles/me/error-patterns", []),
+        optionalApi("/api/v1/review-tasks", []),
+        optionalApi("/api/v1/profiles/me/interview-plan", []),
+        optionalApi("/api/v1/profiles/me/training-focuses", []),
+        optionalApi("/api/v1/reports/history", []),
+        optionalApi("/api/v1/reports/trends", []),
+        optionalApi("/api/v1/demo/readiness", null),
       ]);
       setRuntime(runtimeInfo);
       setProfile({ abilities, errors, tasks, plan, focuses });
@@ -119,13 +128,20 @@ function App() {
   }
 
   async function restoreKnowledgeWorkspace(bases) {
-    let fallback = { base: bases[0] ?? null, documents: [] };
-    for (const base of bases) {
+    const preferredId = window.localStorage.getItem(activeKnowledgeBaseKey);
+    const orderedBases = [...bases].sort((left, right) => {
+      if (left.id === preferredId) return -1;
+      if (right.id === preferredId) return 1;
+      return 0;
+    });
+    let fallback = { base: orderedBases[0] ?? null, documents: [] };
+    for (const base of orderedBases) {
       const persistedDocuments = await api(`/api/v1/knowledge-bases/${base.id}/documents`);
-      if (base === bases[0]) {
+      if (base === orderedBases[0]) {
         fallback = { base, documents: persistedDocuments };
       }
-      if (persistedDocuments.length > 0) {
+      if (base.id === preferredId || persistedDocuments.length > 0) {
+        window.localStorage.setItem(activeKnowledgeBaseKey, base.id);
         return { base, documents: persistedDocuments };
       }
     }
@@ -192,6 +208,7 @@ function App() {
         }),
       });
       setKnowledgeBase(kb);
+      window.localStorage.setItem(activeKnowledgeBaseKey, kb.id);
       setDocuments([]);
       setAskResult(null);
       setInterview(null);
@@ -222,13 +239,22 @@ function App() {
       event.target.value = "";
     });
 
+  const reindexDocument = (documentId) =>
+    run("重新索引资料", async () => {
+      const document = await api(`/api/v1/documents/${documentId}/reindex`, {
+        method: "POST",
+      });
+      replaceDocument(document);
+      await pollDocumentStatus(document.id);
+    });
+
   const ask = () =>
     run("执行带引用 RAG 问答", async () => {
       const result = await api(`/api/v1/knowledge-bases/${knowledgeBase.id}/ask`, {
         method: "POST",
         body: JSON.stringify({
           question: askQuestion,
-          allow_model_knowledge: true,
+          allow_model_knowledge: allowModelKnowledge,
         }),
       });
       setAskResult(result);
@@ -259,14 +285,21 @@ function App() {
         answerDraft.trim() ||
         currentDefaultAnswer ||
         "我暂时无法完整回答这道题，需要结合参考资料继续学习。";
+      const storageKey = `${answerIdempotencyPrefix}.${interview.id}.${currentQuestion.id}`;
+      let idempotencyKey = window.localStorage.getItem(storageKey);
+      if (!idempotencyKey) {
+        idempotencyKey = crypto.randomUUID();
+        window.localStorage.setItem(storageKey, idempotencyKey);
+      }
       const updated = await api(`/api/v1/interviews/${interview.id}/answers`, {
         method: "POST",
-        headers: { "Idempotency-Key": crypto.randomUUID() },
+        headers: { "Idempotency-Key": idempotencyKey },
         body: JSON.stringify({
           question_id: currentQuestion.id,
           answer: finalAnswer,
         }),
       });
+      window.localStorage.removeItem(storageKey);
       setInterview(updated);
       window.localStorage.setItem(activeInterviewKey, updated.id);
       setWorkflowTrace(await loadWorkflowTrace(updated.id));
@@ -375,13 +408,16 @@ function App() {
           documents={documents}
           busy={busy}
           onUpload={uploadDocument}
+          onReindex={reindexDocument}
         />
         <RagPanel
           askQuestion={askQuestion}
           askResult={askResult}
+          allowModelKnowledge={allowModelKnowledge}
           canUseKnowledgeBase={canUseKnowledgeBase}
           busy={busy}
           onQuestionChange={setAskQuestion}
+          onAllowModelKnowledgeChange={setAllowModelKnowledge}
           onAsk={ask}
         />
         <TrainingFocusPanel
