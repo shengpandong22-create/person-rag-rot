@@ -52,6 +52,25 @@ class ReportSnapshot:
     evaluations: tuple[EvaluationItem, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class ReportHistoryItem:
+    report: InterviewReportModel
+    interview: InterviewSessionModel
+
+
+@dataclass(frozen=True, slots=True)
+class ScoreTrendPoint:
+    report_id: UUID
+    session_id: UUID
+    topic: str
+    difficulty: str
+    total_score: int
+    max_score: int
+    score_ratio: float
+    dimension_averages: dict[str, float]
+    created_at: datetime
+
+
 class EvaluationService:
     def __init__(
         self,
@@ -122,6 +141,30 @@ class EvaluationService:
                 raise AppError("REPORT_NOT_FOUND", "Interview report was not found.", 404)
             evaluations = await self._evaluation_items(db, interview.id)
             return ReportSnapshot(report=report, evaluations=evaluations)
+
+    async def list_report_history(
+        self, user_id: UUID, *, limit: int = 10
+    ) -> tuple[ReportHistoryItem, ...]:
+        async with self._sessions() as db:
+            result = await db.execute(
+                select(InterviewReportModel, InterviewSessionModel)
+                .join(
+                    InterviewSessionModel,
+                    InterviewSessionModel.id == InterviewReportModel.session_id,
+                )
+                .where(InterviewSessionModel.user_id == user_id)
+                .order_by(InterviewReportModel.created_at.desc())
+                .limit(limit)
+            )
+            return tuple(
+                ReportHistoryItem(report=report, interview=interview)
+                for report, interview in result.all()
+            )
+
+    async def score_trends(self, user_id: UUID, *, limit: int = 10) -> tuple[ScoreTrendPoint, ...]:
+        history = await self.list_report_history(user_id, limit=limit)
+        chronological = reversed(history)
+        return tuple(self._trend_point(item) for item in chronological)
 
     async def _evaluate_answer(
         self,
@@ -386,6 +429,24 @@ class EvaluationService:
             disputed_items=disputed,
             next_steps=next_steps,
             created_at=datetime.now(UTC),
+        )
+
+    def _trend_point(self, item: ReportHistoryItem) -> ScoreTrendPoint:
+        report = item.report
+        dimensions: dict[str, float] = {}
+        for name, value in report.dimension_summary.items():
+            if isinstance(value, dict):
+                dimensions[name] = float(value.get("average", 0))
+        return ScoreTrendPoint(
+            report_id=report.id,
+            session_id=report.session_id,
+            topic=item.interview.topic,
+            difficulty=item.interview.difficulty,
+            total_score=report.total_score,
+            max_score=report.max_score,
+            score_ratio=round(report.total_score / max(1, report.max_score), 4),
+            dimension_averages=dimensions,
+            created_at=report.created_at,
         )
 
     def _required_points(self, question: InterviewQuestionModel) -> list[str]:

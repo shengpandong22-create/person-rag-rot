@@ -5,10 +5,12 @@ from datetime import UTC, datetime, timedelta
 from agent_mentor.domain.evaluation import EvaluationStatus
 from agent_mentor.domain.profile import (
     ErrorType,
+    TrainingFocusCandidate,
     classify_error,
     next_review_due,
     normalized_score,
     profile_update_decision,
+    rank_training_focuses,
     task_priority,
     updated_mastery,
 )
@@ -67,3 +69,37 @@ def test_review_task_priority_combines_repetition_and_mastery() -> None:
     assert task_priority(1, 0.8) == 1
     assert task_priority(2, 0.6) == 3
     assert task_priority(3, 0.3) == 5
+
+
+def test_training_focuses_prefer_review_tasks_and_lower_mastery() -> None:
+    ranked = rank_training_focuses(
+        [
+            TrainingFocusCandidate(
+                knowledge_point="RAG 检索增强生成",
+                reason="low_mastery",
+                priority=2,
+                mastery_score=0.4,
+                source_type="ability",
+            ),
+            TrainingFocusCandidate(
+                knowledge_point="状态建模与工作流控制",
+                reason="due_review_task:concept_confusion",
+                priority=3,
+                mastery_score=0.55,
+                source_type="review_task",
+            ),
+            TrainingFocusCandidate(
+                knowledge_point="RAG 检索增强生成",
+                reason="due_review_task:missing_detail",
+                priority=4,
+                mastery_score=0.4,
+                source_type="review_task",
+            ),
+        ]
+    )
+
+    assert [item.knowledge_point for item in ranked] == [
+        "RAG 检索增强生成",
+        "状态建模与工作流控制",
+    ]
+    assert ranked[0].source_type == "review_task"

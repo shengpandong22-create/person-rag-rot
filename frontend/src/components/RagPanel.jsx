@@ -1,0 +1,35 @@
+import { Empty, ResultBox, StepCard } from "./common.jsx";
+
+export function RagPanel({
+  askQuestion,
+  askResult,
+  canUseKnowledgeBase,
+  busy,
+  onQuestionChange,
+  onAsk,
+}) {
+  return (
+    <StepCard number="02" title="RAG 问答与引用溯源" tone="purple">
+      <p>你可以自己输入问题；启用 DeepSeek 后会由真实 LLM 基于检索证据组织回答。</p>
+      <textarea
+        value={askQuestion}
+        onChange={(event) => onQuestionChange(event.target.value)}
+        placeholder="输入你想问知识库的问题..."
+        rows={4}
+      />
+      <button onClick={onAsk} disabled={!canUseKnowledgeBase || busy || !askQuestion.trim()}>
+        提交 RAG 问题
+      </button>
+      {askResult ? (
+        <ResultBox
+          title={askResult.evidence_sufficient ? "证据充分" : "证据不足"}
+          subtitle={`引用数量：${askResult.citations.length}`}
+        >
+          {askResult.answer}
+        </ResultBox>
+      ) : (
+        <Empty text="先选择或创建知识库，再执行一次 RAG 问答" />
+      )}
+    </StepCard>
+  );
+}

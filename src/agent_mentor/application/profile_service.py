@@ -10,10 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from agent_mentor.api.errors import AppError
 from agent_mentor.domain.profile import (
     ReviewTaskStatus,
+    TrainingFocusCandidate,
     classify_error,
     next_review_due,
     normalized_score,
     profile_update_decision,
+    rank_training_focuses,
     task_priority,
     updated_mastery,
 )
@@ -42,6 +44,7 @@ class RecommendedKnowledgePoint:
     reason: str
     priority: int
     mastery_score: float | None
+    source_type: str = "profile"
 
 
 class ProfileService:
@@ -91,6 +94,7 @@ class ProfileService:
                     reason=f"due_review_task:{task.error_type}",
                     priority=task.priority,
                     mastery_score=mastery_by_point.get(task.knowledge_point),
+                    source_type="review_task",
                 )
             )
         recommended_points = {item.knowledge_point for item in recommendations}
@@ -104,9 +108,53 @@ class ProfileService:
                     reason="low_mastery",
                     priority=2 if ability.mastery_score < 0.7 else 1,
                     mastery_score=ability.mastery_score,
+                    source_type="ability",
                 )
             )
         return tuple(recommendations[:limit])
+
+    async def training_focuses(
+        self, user_id: UUID, *, limit: int = 5
+    ) -> tuple[RecommendedKnowledgePoint, ...]:
+        snapshot = await self.get_snapshot(user_id)
+        mastery_by_point = {
+            ability.knowledge_point: ability.mastery_score for ability in snapshot.abilities
+        }
+        candidates: list[TrainingFocusCandidate] = []
+        for task in snapshot.review_tasks:
+            if task.status != ReviewTaskStatus.OPEN:
+                continue
+            candidates.append(
+                TrainingFocusCandidate(
+                    knowledge_point=task.knowledge_point,
+                    reason=f"专项复习任务：{task.error_type}",
+                    priority=task.priority,
+                    mastery_score=mastery_by_point.get(task.knowledge_point),
+                    source_type="review_task",
+                )
+            )
+        for ability in snapshot.abilities:
+            if ability.mastery_score >= 0.72:
+                continue
+            candidates.append(
+                TrainingFocusCandidate(
+                    knowledge_point=ability.knowledge_point,
+                    reason="能力画像掌握度偏低",
+                    priority=3 if ability.mastery_score < 0.45 else 2,
+                    mastery_score=ability.mastery_score,
+                    source_type="ability",
+                )
+            )
+        return tuple(
+            RecommendedKnowledgePoint(
+                knowledge_point=item.knowledge_point,
+                reason=item.reason,
+                priority=item.priority,
+                mastery_score=item.mastery_score,
+                source_type=item.source_type,
+            )
+            for item in rank_training_focuses(candidates, limit=limit)
+        )
 
     async def complete_review_task(self, task_id: UUID) -> ReviewTaskModel:
         async with self._sessions() as db:

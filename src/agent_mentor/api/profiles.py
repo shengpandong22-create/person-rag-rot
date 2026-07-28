@@ -63,6 +63,7 @@ class RecommendedKnowledgePointResponse(BaseModel):
     reason: str
     priority: int
     mastery_score: float | None
+    source_type: str = "profile"
 
 
 def service(request: Request) -> ProfileService:
@@ -122,6 +123,7 @@ def recommendation_response(
         reason=recommendation.reason,
         priority=recommendation.priority,
         mastery_score=recommendation.mastery_score,
+        source_type=recommendation.source_type,
     )
 
 
@@ -158,6 +160,17 @@ async def recommend_interview_plan(request: Request) -> list[RecommendedKnowledg
     return [
         recommendation_response(item)
         for item in await service(request).recommend_interview_plan(DEFAULT_USER_ID)
+    ]
+
+
+@router.get(
+    "/profiles/me/training-focuses",
+    response_model=list[RecommendedKnowledgePointResponse],
+)
+async def list_training_focuses(request: Request) -> list[RecommendedKnowledgePointResponse]:
+    return [
+        recommendation_response(item)
+        for item in await service(request).training_focuses(DEFAULT_USER_ID)
     ]
 
 

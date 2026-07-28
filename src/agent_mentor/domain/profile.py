@@ -28,6 +28,14 @@ class ProfileUpdateDecision(BaseModel):
     confidence_weight: float = Field(ge=0, le=1)
 
 
+class TrainingFocusCandidate(BaseModel):
+    knowledge_point: str
+    reason: str
+    priority: int = Field(ge=1, le=5)
+    mastery_score: float | None = Field(default=None, ge=0, le=1)
+    source_type: str
+
+
 def profile_update_decision(status: str, confidence: float) -> ProfileUpdateDecision:
     if status in {EvaluationStatus.DISPUTED, EvaluationStatus.REVIEW_PENDING}:
         return ProfileUpdateDecision(
@@ -97,3 +105,29 @@ def task_priority(occurrence_count: int, mastery_score: float) -> int:
     severity = 3 if mastery_score < 0.45 else 2 if mastery_score < 0.7 else 1
     repetition = 2 if occurrence_count >= 3 else 1 if occurrence_count == 2 else 0
     return min(5, severity + repetition)
+
+
+def rank_training_focuses(
+    candidates: list[TrainingFocusCandidate], *, limit: int = 5
+) -> list[TrainingFocusCandidate]:
+    """Rank profile-derived topics for the next interview round.
+
+    Review tasks are stronger signals than passive low-mastery abilities because they represent
+    concrete mistakes observed in recent interviews. Lower mastery should also move a topic up.
+    """
+    best_by_point: dict[str, TrainingFocusCandidate] = {}
+    for candidate in candidates:
+        point = candidate.knowledge_point.strip()
+        if not point:
+            continue
+        existing = best_by_point.get(point)
+        if existing is None or _focus_sort_key(candidate) < _focus_sort_key(existing):
+            best_by_point[point] = candidate
+    ranked = sorted(best_by_point.values(), key=_focus_sort_key)
+    return ranked[:limit]
+
+
+def _focus_sort_key(candidate: TrainingFocusCandidate) -> tuple[int, float, str]:
+    source_rank = 0 if candidate.source_type == "review_task" else 1
+    mastery = candidate.mastery_score if candidate.mastery_score is not None else 1.0
+    return (source_rank, -candidate.priority, mastery, candidate.knowledge_point)

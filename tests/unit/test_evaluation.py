@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Any, cast
 from uuid import uuid4
 
@@ -7,7 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from agent_mentor.api.errors import AppError
-from agent_mentor.application.evaluation_service import EvaluationService
+from agent_mentor.application.evaluation_service import EvaluationService, ReportHistoryItem
 from agent_mentor.domain.evaluation import (
     EvaluationOutput,
     EvaluationRubric,
@@ -18,7 +19,12 @@ from agent_mentor.domain.evaluation import (
     should_review,
     total_score,
 )
-from agent_mentor.infrastructure.database.models import InterviewQuestionModel, UserAnswerModel
+from agent_mentor.infrastructure.database.models import (
+    InterviewQuestionModel,
+    InterviewReportModel,
+    InterviewSessionModel,
+    UserAnswerModel,
+)
 
 
 def valid_rubric() -> EvaluationRubric:
@@ -153,3 +159,43 @@ def test_deterministic_evaluator_uses_only_question_references() -> None:
 
     assert first == second
     assert set(first.reference_chunk_ids).issubset(set(allowed))
+
+
+def test_report_trend_point_uses_application_calculated_ratio() -> None:
+    service = EvaluationService(cast(Any, None))
+    session_id = uuid4()
+    report = InterviewReportModel(
+        id=uuid4(),
+        session_id=session_id,
+        total_score=42,
+        max_score=60,
+        dimension_summary={
+            "correctness": {"average": 3.5},
+            "completeness": {"average": 3.0},
+        },
+        knowledge_point_summary={},
+        error_summary=[],
+        low_confidence_items=[],
+        disputed_items=[],
+        next_steps=[],
+        created_at=datetime(2026, 7, 28, tzinfo=UTC),
+    )
+    interview = InterviewSessionModel(
+        id=session_id,
+        user_id=uuid4(),
+        knowledge_base_id=uuid4(),
+        topic="LangGraph",
+        difficulty="medium",
+        question_count=3,
+        status="completed",
+        current_question_index=3,
+        workflow_thread_id="thread-1",
+    )
+
+    point = service._trend_point(  # pyright: ignore[reportPrivateUsage]
+        ReportHistoryItem(report=report, interview=interview)
+    )
+
+    assert point.score_ratio == 0.7
+    assert point.dimension_averages["correctness"] == 3.5
+    assert point.topic == "LangGraph"
