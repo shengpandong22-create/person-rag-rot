@@ -7,6 +7,8 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
+from agent_mentor.api.chat import router as chat_router
+from agent_mentor.api.demo import router as demo_router
 from agent_mentor.api.errors import (
     AppError,
     app_error_handler,
@@ -15,8 +17,6 @@ from agent_mentor.api.errors import (
 )
 from agent_mentor.api.evaluations import router as evaluations_router
 from agent_mentor.api.health import router as health_router
-from agent_mentor.api.chat import router as chat_router
-from agent_mentor.api.demo import router as demo_router
 from agent_mentor.api.interviews import router as interviews_router
 from agent_mentor.api.knowledge import router as knowledge_router
 from agent_mentor.api.profiles import router as profiles_router
@@ -24,7 +24,7 @@ from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.application.demo_readiness_service import DemoReadinessService
 from agent_mentor.application.evaluation_service import EvaluationService
 from agent_mentor.application.interview_service import InterviewService
-from agent_mentor.application.knowledge_service import KnowledgeService
+from agent_mentor.application.knowledge_service import DEFAULT_USER_ID, KnowledgeService
 from agent_mentor.application.profile_service import ProfileService
 from agent_mentor.config import Settings, get_settings
 from agent_mentor.infrastructure.database.session import (
@@ -42,6 +42,7 @@ from agent_mentor.rag.documents import DocumentParser
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await app.state.knowledge_service.recover_interrupted_ingestions()
+    await app.state.profile_service.backfill_two_layer_profiles(DEFAULT_USER_ID)
     yield
     await app.state.database_engine.dispose()
 

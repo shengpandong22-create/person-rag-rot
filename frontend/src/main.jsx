@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { api } from "./api/client.js";
+import { AppLayout, OverviewDashboard } from "./components/AppLayout.jsx";
 import { EvaluationPanel } from "./components/EvaluationPanel.jsx";
 import { InterviewPanel } from "./components/InterviewPanel.jsx";
 import { KnowledgePanel } from "./components/KnowledgePanel.jsx";
@@ -9,7 +10,7 @@ import { RagPanel } from "./components/RagPanel.jsx";
 import { ReportHistoryPanel } from "./components/ReportHistoryPanel.jsx";
 import { RuntimeInsights } from "./components/RuntimeInsights.jsx";
 import { TrainingFocusPanel } from "./components/TrainingFocusPanel.jsx";
-import { Metric, StatusPanel } from "./components/common.jsx";
+import { StatusPanel } from "./components/common.jsx";
 import { runtimeLabel } from "./utils/formatters.js";
 import { inferInterviewTopic } from "./utils/profile.js";
 import "./styles.css";
@@ -57,6 +58,7 @@ function App() {
   const [scoreTrends, setScoreTrends] = useState([]);
   const [readiness, setReadiness] = useState(null);
   const [profile, setProfile] = useState(emptyProfile);
+  const [activeView, setActiveView] = useState("overview");
 
   const currentQuestion = interview?.current_question;
   const completion = useMemo(() => {
@@ -216,6 +218,7 @@ function App() {
       setReport(null);
       setReadiness(await api("/api/v1/demo/readiness"));
       setTopicEdited(false);
+      setActiveView("knowledge");
     });
 
   const refreshWorkspace = () =>
@@ -277,6 +280,7 @@ function App() {
       setWorkflowTrace(await loadWorkflowTrace(started.id));
       setAnswerDraft("");
       setReport(null);
+      setActiveView("interview");
     });
 
   const submitAnswer = () =>
@@ -332,6 +336,7 @@ function App() {
       setReportHistory(history);
       setScoreTrends(trends);
       setReadiness(await api("/api/v1/demo/readiness"));
+      setActiveView("reports");
     });
 
   const openHistoricalReport = (item) =>
@@ -339,6 +344,7 @@ function App() {
       const historicalReport = await api(`/api/v1/interviews/${item.session_id}/report`);
       setReport(historicalReport);
       setStatus(`已打开历史报告：${item.topic}`);
+      setActiveView("reports");
     });
 
   function selectTrainingFocus(item) {
@@ -357,104 +363,122 @@ function App() {
   }
 
   return (
-    <main className="shell">
-      <section className="hero">
-        <div className="hero-copy">
-          <div className="pill">AI Agent Interview Coach · Local V2</div>
-          <h1>把学习资料变成可追溯、可复盘的 AI 面试训练。</h1>
-          <p>
-            AgentMentor 聚合 RAG、可恢复工作流、可信评分和能力画像，帮助 Java
-            后端开发者向 AI Agent 开发转型。
-          </p>
-          <div className="hero-actions">
-            <button onClick={createKnowledgeBase} disabled={busy}>
-              创建新知识库
-            </button>
-            <button className="secondary" onClick={refreshWorkspace} disabled={busy}>
-              刷新已有状态
-            </button>
-            <a href="/api/v1/docs" target="_blank" rel="noreferrer">
-              OpenAPI 文档
-            </a>
-          </div>
-          <p className="model-note">
-            当前运行模式：
-            {runtime.llm_enabled
-              ? `真实 LLM 已启用（${runtime.llm_model}）`
-              : "本地确定性基线，未启用真实 LLM"}
-            。RAG、面试出题和评分支持无 Key 自动降级。
-          </p>
-        </div>
-        <StatusPanel status={status} error={error} busy={busy} runtime={runtime} />
-      </section>
-
-      <section className="metrics">
-        <Metric label="模型模式" value={runtime.llm_enabled ? "LLM" : "Local"} />
-        <Metric label="知识库" value={knowledgeBase ? "Ready" : "Pending"} />
-        <Metric label="已入库资料" value={documents.length} />
-        <Metric label="面试进度" value={interview ? `${completion}%` : "0%"} />
-      </section>
-
-      <RuntimeInsights
-        runtime={runtime}
-        askResult={askResult}
-        report={report}
-        readiness={readiness}
-      />
-
-      <section className="workflow">
-        <KnowledgePanel
-          knowledgeBase={knowledgeBase}
+    <AppLayout
+      activeView={activeView}
+      onNavigate={setActiveView}
+      runtime={runtime}
+      knowledgeBase={knowledgeBase}
+      interview={interview}
+      actions={
+        <>
+          <button className="secondary" onClick={refreshWorkspace} disabled={busy}>
+            刷新状态
+          </button>
+          <button onClick={createKnowledgeBase} disabled={busy}>
+            新建知识库
+          </button>
+          <a href="/api/v1/docs" target="_blank" rel="noreferrer">
+            OpenAPI
+          </a>
+        </>
+      }
+    >
+      {activeView === "overview" ? (
+        <OverviewDashboard
+          runtime={runtime}
           documents={documents}
-          busy={busy}
-          onUpload={uploadDocument}
-          onReindex={reindexDocument}
-        />
-        <RagPanel
-          askQuestion={askQuestion}
-          askResult={askResult}
-          allowModelKnowledge={allowModelKnowledge}
-          canUseKnowledgeBase={canUseKnowledgeBase}
-          busy={busy}
-          onQuestionChange={setAskQuestion}
-          onAllowModelKnowledgeChange={setAllowModelKnowledge}
-          onAsk={ask}
-        />
-        <TrainingFocusPanel
-          focuses={profile.focuses}
-          disabled={busy || !canUseKnowledgeBase}
-          onSelect={selectTrainingFocus}
-        />
-        <InterviewPanel
-          documents={documents}
-          profile={profile}
-          interviewTopic={interviewTopic}
           interview={interview}
-          answerDraft={answerDraft}
-          busy={busy}
-          canUseKnowledgeBase={canUseKnowledgeBase}
           completion={completion}
-          isCompleted={isCompleted}
-          currentQuestion={currentQuestion}
-          currentDefaultAnswer={currentDefaultAnswer}
-          workflowTrace={workflowTrace}
-          onTopicChange={changeInterviewTopic}
-          onStartInterview={startInterview}
-          onAnswerDraftChange={setAnswerDraft}
-          onUseDefaultAnswer={() => setAnswerDraft(currentDefaultAnswer)}
-          onSubmitAnswer={submitAnswer}
-          onEvaluateAndReport={evaluateAndReport}
-        />
-        <EvaluationPanel report={report} />
-        <ProfilePanel profile={profile} />
-        <NextPlanPanel profile={profile} />
-        <ReportHistoryPanel
-          history={reportHistory}
-          trends={scoreTrends}
+          readiness={readiness}
+          profile={profile}
+          reportHistory={reportHistory}
+          onNavigate={setActiveView}
+          onSelectFocus={selectTrainingFocus}
           onOpenReport={openHistoricalReport}
         />
-      </section>
-    </main>
+      ) : null}
+      {activeView === "knowledge" ? (
+        <div className="task-stage">
+          <KnowledgePanel
+            knowledgeBase={knowledgeBase}
+            documents={documents}
+            busy={busy}
+            onUpload={uploadDocument}
+            onReindex={reindexDocument}
+          />
+        </div>
+      ) : null}
+      {activeView === "rag" ? (
+        <div className="task-stage">
+          <RagPanel
+            askQuestion={askQuestion}
+            askResult={askResult}
+            allowModelKnowledge={allowModelKnowledge}
+            canUseKnowledgeBase={canUseKnowledgeBase}
+            busy={busy}
+            onQuestionChange={setAskQuestion}
+            onAllowModelKnowledgeChange={setAllowModelKnowledge}
+            onAsk={ask}
+          />
+        </div>
+      ) : null}
+      {activeView === "interview" ? (
+        <div className="task-split interview-layout">
+          <TrainingFocusPanel
+            focuses={profile.focuses}
+            disabled={busy || !canUseKnowledgeBase}
+            onSelect={selectTrainingFocus}
+          />
+          <InterviewPanel
+            documents={documents}
+            profile={profile}
+            interviewTopic={interviewTopic}
+            interview={interview}
+            answerDraft={answerDraft}
+            busy={busy}
+            canUseKnowledgeBase={canUseKnowledgeBase}
+            completion={completion}
+            isCompleted={isCompleted}
+            currentQuestion={currentQuestion}
+            currentDefaultAnswer={currentDefaultAnswer}
+            workflowTrace={workflowTrace}
+            onTopicChange={changeInterviewTopic}
+            onStartInterview={startInterview}
+            onAnswerDraftChange={setAnswerDraft}
+            onUseDefaultAnswer={() => setAnswerDraft(currentDefaultAnswer)}
+            onSubmitAnswer={submitAnswer}
+            onEvaluateAndReport={evaluateAndReport}
+          />
+        </div>
+      ) : null}
+      {activeView === "reports" ? (
+        <div className="report-layout">
+          <EvaluationPanel report={report} />
+          <ReportHistoryPanel
+            history={reportHistory}
+            trends={scoreTrends}
+            onOpenReport={openHistoricalReport}
+          />
+        </div>
+      ) : null}
+      {activeView === "profile" ? (
+        <div className="task-split profile-layout">
+          <ProfilePanel profile={profile} />
+          <NextPlanPanel profile={profile} />
+        </div>
+      ) : null}
+      {activeView === "system" ? (
+        <div className="system-layout">
+          <StatusPanel status={status} error={error} busy={busy} runtime={runtime} />
+          <RuntimeInsights
+            runtime={runtime}
+            askResult={askResult}
+            report={report}
+            readiness={readiness}
+          />
+        </div>
+      ) : null}
+    </AppLayout>
   );
 }
 

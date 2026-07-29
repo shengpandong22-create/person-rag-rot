@@ -160,6 +160,16 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
 
         first_profile = await profiles.apply_interview_evaluations(interview.id)
         second_profile = await profiles.apply_interview_evaluations(interview.id)
+        topic_profiles = [item for item in first_profile.abilities if item.profile_level == "topic"]
+        subtopic_profiles = [
+            item for item in first_profile.abilities if item.profile_level == "subtopic"
+        ]
+        assert len(topic_profiles) == 1
+        assert topic_profiles[0].topic_key == "langgraph"
+        assert topic_profiles[0].knowledge_point == "topic::langgraph"
+        assert subtopic_profiles
+        assert all(item.topic_key == "langgraph" for item in subtopic_profiles)
+        assert all(item.knowledge_point != item.subtopic_title for item in subtopic_profiles)
         first_versions = {
             item.knowledge_point: (item.version, item.confidence_weighted_count)
             for item in first_profile.abilities
@@ -170,5 +180,6 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
         }
         assert first_versions
         assert first_versions == second_versions
+        assert await profiles.backfill_two_layer_profiles(interview.user_id) == 0
     finally:
         await engine.dispose()

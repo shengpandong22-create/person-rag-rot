@@ -27,6 +27,14 @@ export function ProfilePanel({ profile }) {
               tags={[profileScore(item.mastery_score)]}
             >
               {strengthNarrative(item)}
+              {item.subtopics?.length > 0 && (
+                <TagRow
+                  tags={item.subtopics.map(
+                    (point) =>
+                      `${point.subtopic_title} ${Math.round(point.mastery_score * 100)}`,
+                  )}
+                />
+              )}
             </FeedbackItem>
           ))}
         </FeedbackGroup>
@@ -45,6 +53,14 @@ export function ProfilePanel({ profile }) {
               {weaknessNarrative(item)}
               {item.raw_points?.length > 0 && (
                 <TagRow tags={item.raw_points.map((point) => compactRawLabel(point))} />
+              )}
+              {item.subtopics?.length > 0 && (
+                <TagRow
+                  tags={item.subtopics.map(
+                    (point) =>
+                      `${point.subtopic_title} ${Math.round(point.mastery_score * 100)}`,
+                  )}
+                />
               )}
             </FeedbackItem>
           ))}
@@ -87,6 +103,7 @@ export function NextPlanPanel({ profile }) {
                 statusLabels[item.status] ?? item.status,
                 `优先级 P${item.priority}`,
                 errorLabels[item.error_type] ?? item.error_type,
+                `验证 ${Math.min(item.verification_streak ?? 0, 2)}/2`,
               ]}
             >
               来源于最近面试中的错误模式。建议重新回答相关题目，并主动补充引用依据和边界条件。

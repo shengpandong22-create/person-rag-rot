@@ -97,7 +97,11 @@ export function normalizeKnowledgePoint(point) {
 export function mergeKnowledgeItems(items, scoreField = "mastery_score") {
   const groups = new Map();
   for (const item of items) {
-    const normalized = normalizeKnowledgePoint(item.knowledge_point);
+    const hierarchyTitle =
+      item.subtopic_title || item.topic_title || item.knowledge_point;
+    const normalized = item.profile_level && item.profile_level !== "legacy"
+      ? { title: hierarchyTitle, raw: hierarchyTitle }
+      : normalizeKnowledgePoint(item.knowledge_point);
     const existing = groups.get(normalized.title) ?? {
       ...item,
       id: normalized.title,
@@ -130,7 +134,26 @@ export function compactRawLabel(value) {
 }
 
 export function buildProfileView(profile) {
-  const abilities = mergeKnowledgeItems(profile.abilities).sort(
+  const topicAbilities = (profile.abilities ?? [])
+    .filter((item) => item.profile_level === "topic")
+    .map((item) => ({
+      ...item,
+      id: item.topic_key,
+      display_title: item.topic_title || item.knowledge_point,
+      source_count: item.confidence_weighted_count,
+      subtopics: (profile.abilities ?? [])
+        .filter(
+          (child) =>
+            child.profile_level === "subtopic" &&
+            child.topic_key === item.topic_key,
+        )
+        .sort((a, b) => a.mastery_score - b.mastery_score),
+    }));
+  const abilities = (
+    topicAbilities.length > 0
+      ? topicAbilities
+      : mergeKnowledgeItems(profile.abilities ?? [])
+  ).sort(
     (a, b) => b.mastery_score - a.mastery_score,
   );
   const strengths = abilities.filter((item) => item.mastery_score >= 0.6).slice(0, 3);
@@ -149,7 +172,7 @@ export function buildProfileView(profile) {
     summary:
       abilities.length === 0
         ? "完成一次面试报告后，这里会沉淀你的本机用户画像。"
-        : `已沉淀 ${abilities.length} 个知识点画像，${weaknesses.length} 个需要优先补强。`,
+        : `已沉淀 ${abilities.length} 个稳定主题画像，${weaknesses.length} 个需要优先补强；子知识点仅作为诊断证据。`,
   };
 }
 

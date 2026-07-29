@@ -107,6 +107,18 @@ def task_priority(occurrence_count: int, mastery_score: float) -> int:
     return min(5, severity + repetition)
 
 
+def review_verification_progress(
+    current_streak: int,
+    priority: int,
+    *,
+    trusted_high_score: bool,
+) -> tuple[int, int, bool]:
+    if not trusted_high_score:
+        return 0, priority, False
+    next_streak = min(2, current_streak + 1)
+    return next_streak, max(1, priority - 1), next_streak >= 2
+
+
 def rank_training_focuses(
     candidates: list[TrainingFocusCandidate], *, limit: int = 5
 ) -> list[TrainingFocusCandidate]:

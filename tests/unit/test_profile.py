@@ -11,9 +11,28 @@ from agent_mentor.domain.profile import (
     normalized_score,
     profile_update_decision,
     rank_training_focuses,
+    review_verification_progress,
     task_priority,
     updated_mastery,
 )
+
+
+def test_review_task_requires_two_consecutive_trusted_high_scores() -> None:
+    streak, priority, completed = review_verification_progress(0, 4, trusted_high_score=True)
+    assert (streak, priority, completed) == (1, 3, False)
+
+    streak, priority, completed = review_verification_progress(
+        streak, priority, trusted_high_score=False
+    )
+    assert (streak, priority, completed) == (0, 3, False)
+
+    streak, priority, completed = review_verification_progress(
+        streak, priority, trusted_high_score=True
+    )
+    streak, priority, completed = review_verification_progress(
+        streak, priority, trusted_high_score=True
+    )
+    assert (streak, priority, completed) == (2, 1, True)
 
 
 def test_disputed_and_pending_evaluations_do_not_update_profile() -> None:

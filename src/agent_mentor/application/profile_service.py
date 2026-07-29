@@ -16,8 +16,14 @@ from agent_mentor.domain.profile import (
     normalized_score,
     profile_update_decision,
     rank_training_focuses,
+    review_verification_progress,
     task_priority,
     updated_mastery,
+)
+from agent_mentor.domain.profile_taxonomy import (
+    ProfileNode,
+    canonical_subtopics,
+    canonical_topic,
 )
 from agent_mentor.infrastructure.database.models import (
     AbilityProfileModel,
@@ -47,6 +53,10 @@ class RecommendedKnowledgePoint:
     source_type: str = "profile"
 
 
+def _display_point(item: AbilityProfileModel | ReviewTaskModel) -> str:
+    return item.subtopic_title or item.topic_title or item.knowledge_point
+
+
 class ProfileService:
     def __init__(self, sessions: async_sessionmaker[AsyncSession]) -> None:
         self._sessions = sessions
@@ -68,9 +78,54 @@ class ProfileService:
                         evaluation=evaluation,
                         question=question,
                         answer=answer,
+                        interview_topic=interview.topic,
                     )
             await db.commit()
             return await self._snapshot(db, interview.user_id)
+
+    async def backfill_two_layer_profiles(self, user_id: UUID) -> int:
+        """Replay historical trusted evaluations once into the V2 hierarchy."""
+        async with self._sessions() as db:
+            result = await db.execute(
+                select(
+                    EvaluationModel,
+                    InterviewQuestionModel,
+                    UserAnswerModel,
+                    InterviewSessionModel,
+                    ProfileUpdateEventModel,
+                )
+                .join(
+                    InterviewQuestionModel,
+                    InterviewQuestionModel.id == EvaluationModel.question_id,
+                )
+                .join(UserAnswerModel, UserAnswerModel.id == EvaluationModel.answer_id)
+                .join(
+                    InterviewSessionModel,
+                    InterviewSessionModel.id == InterviewQuestionModel.session_id,
+                )
+                .join(
+                    ProfileUpdateEventModel,
+                    ProfileUpdateEventModel.evaluation_id == EvaluationModel.id,
+                )
+                .where(InterviewSessionModel.user_id == user_id)
+                .order_by(EvaluationModel.created_at, InterviewQuestionModel.sequence)
+            )
+            replayed = 0
+            for evaluation, question, answer, interview, event in result.all():
+                if event.changes.get("hierarchy_version") == 2:
+                    continue
+                await self._apply_evaluation(
+                    db,
+                    user_id=user_id,
+                    evaluation=evaluation,
+                    question=question,
+                    answer=answer,
+                    interview_topic=interview.topic,
+                    existing_event=event,
+                )
+                replayed += 1
+            await db.commit()
+            return replayed
 
     async def get_snapshot(self, user_id: UUID) -> ProfileSnapshot:
         async with self._sessions() as db:
@@ -90,21 +145,24 @@ class ProfileService:
         for task in sorted(open_tasks, key=lambda item: (-item.priority, item.due_at)):
             recommendations.append(
                 RecommendedKnowledgePoint(
-                    knowledge_point=task.knowledge_point,
+                    knowledge_point=_display_point(task),
                     reason=f"due_review_task:{task.error_type}",
                     priority=task.priority,
                     mastery_score=mastery_by_point.get(task.knowledge_point),
                     source_type="review_task",
                 )
             )
-        recommended_points = {item.knowledge_point for item in recommendations}
-        weak_abilities = sorted(snapshot.abilities, key=lambda item: item.mastery_score)
+        recommended_points = {task.knowledge_point for task in open_tasks}
+        weak_abilities = sorted(
+            (item for item in snapshot.abilities if item.profile_level == "topic"),
+            key=lambda item: item.mastery_score,
+        )
         for ability in weak_abilities:
             if ability.knowledge_point in recommended_points:
                 continue
             recommendations.append(
                 RecommendedKnowledgePoint(
-                    knowledge_point=ability.knowledge_point,
+                    knowledge_point=_display_point(ability),
                     reason="low_mastery",
                     priority=2 if ability.mastery_score < 0.7 else 1,
                     mastery_score=ability.mastery_score,
@@ -126,7 +184,7 @@ class ProfileService:
                 continue
             candidates.append(
                 TrainingFocusCandidate(
-                    knowledge_point=task.knowledge_point,
+                    knowledge_point=_display_point(task),
                     reason=f"专项复习任务：{task.error_type}",
                     priority=task.priority,
                     mastery_score=mastery_by_point.get(task.knowledge_point),
@@ -134,11 +192,13 @@ class ProfileService:
                 )
             )
         for ability in snapshot.abilities:
+            if ability.profile_level != "topic":
+                continue
             if ability.mastery_score >= 0.72:
                 continue
             candidates.append(
                 TrainingFocusCandidate(
-                    knowledge_point=ability.knowledge_point,
+                    knowledge_point=_display_point(ability),
                     reason="能力画像掌握度偏低",
                     priority=3 if ability.mastery_score < 0.45 else 2,
                     mastery_score=ability.mastery_score,
@@ -178,25 +238,39 @@ class ProfileService:
         evaluation: EvaluationModel,
         question: InterviewQuestionModel,
         answer: UserAnswerModel,
+        interview_topic: str,
+        existing_event: ProfileUpdateEventModel | None = None,
     ) -> None:
         decision = profile_update_decision(evaluation.status, evaluation.confidence)
+        topic = canonical_topic(interview_topic)
+        subtopics = canonical_subtopics(
+            topic,
+            question.knowledge_points,
+            question_type=question.question_type,
+        )
         changes: dict[str, object] = {
             "evaluation_id": str(evaluation.id),
-            "knowledge_points": question.knowledge_points,
+            "hierarchy_version": 2,
+            "raw_knowledge_points": question.knowledge_points,
+            "topic": topic.topic_key,
+            "subtopics": [item.subtopic_key for item in subtopics],
             "decision": decision.reason,
         }
         if not decision.should_update:
-            db.add(
-                ProfileUpdateEventModel(
-                    id=uuid4(),
-                    evaluation_id=evaluation.id,
-                    user_id=user_id,
-                    decision=decision.reason,
-                    applied=False,
-                    changes=changes,
-                    created_at=datetime.now(UTC),
+            if existing_event is None:
+                db.add(
+                    ProfileUpdateEventModel(
+                        id=uuid4(),
+                        evaluation_id=evaluation.id,
+                        user_id=user_id,
+                        decision=decision.reason,
+                        applied=False,
+                        changes=changes,
+                        created_at=datetime.now(UTC),
+                    )
                 )
-            )
+            else:
+                existing_event.changes = changes
             return
 
         score = normalized_score(evaluation.total)
@@ -208,8 +282,9 @@ class ProfileService:
         }
         changed_profiles: list[dict[str, object]] = []
         changed_errors: list[dict[str, object]] = []
-        for point in question.knowledge_points or ["general"]:
-            profile = await self._profile_for(db, user_id, point)
+        nodes = (topic, *subtopics)
+        for node in nodes:
+            profile = await self._profile_for(db, user_id, node)
             old_mastery = profile.mastery_score
             profile.mastery_score = updated_mastery(
                 profile.mastery_score,
@@ -225,25 +300,26 @@ class ProfileService:
             profile.updated_at = datetime.now(UTC)
             changed_profiles.append(
                 {
-                    "knowledge_point": point,
+                    "knowledge_point": node.display_title,
+                    "profile_level": node.profile_level,
                     "old_mastery": old_mastery,
                     "new_mastery": profile.mastery_score,
                     "version": profile.version,
                 }
             )
             error_type = classify_error(evaluation.total, dimensions, answer.answer_text)
-            if error_type is not None:
+            if error_type is not None and node.profile_level == "subtopic":
                 pattern = await self._record_error_pattern(
                     db,
                     user_id=user_id,
-                    knowledge_point=point,
+                    node=node,
                     error_type=error_type,
                     evaluation=evaluation,
                 )
                 await self._upsert_review_task(
                     db,
                     user_id=user_id,
-                    knowledge_point=point,
+                    node=node,
                     error_type=error_type,
                     evaluation=evaluation,
                     occurrence_count=pattern.occurrence_count,
@@ -251,32 +327,45 @@ class ProfileService:
                 )
                 changed_errors.append(
                     {
-                        "knowledge_point": point,
+                        "knowledge_point": node.display_title,
                         "error_type": str(error_type),
                         "occurrence_count": pattern.occurrence_count,
                     }
                 )
+        await self._advance_review_tasks(
+            db,
+            user_id=user_id,
+            topic=topic,
+            subtopics=subtopics,
+            evaluation=evaluation,
+            decision_should_update=decision.should_update,
+        )
         changes["profiles"] = changed_profiles
         changes["errors"] = changed_errors
-        db.add(
-            ProfileUpdateEventModel(
-                id=uuid4(),
-                evaluation_id=evaluation.id,
-                user_id=user_id,
-                decision=decision.reason,
-                applied=True,
-                changes=changes,
-                created_at=datetime.now(UTC),
+        if existing_event is None:
+            db.add(
+                ProfileUpdateEventModel(
+                    id=uuid4(),
+                    evaluation_id=evaluation.id,
+                    user_id=user_id,
+                    decision=decision.reason,
+                    applied=True,
+                    changes=changes,
+                    created_at=datetime.now(UTC),
+                )
             )
-        )
+        else:
+            existing_event.decision = decision.reason
+            existing_event.applied = True
+            existing_event.changes = changes
 
     async def _profile_for(
-        self, db: AsyncSession, user_id: UUID, knowledge_point: str
+        self, db: AsyncSession, user_id: UUID, node: ProfileNode
     ) -> AbilityProfileModel:
         profile = await db.scalar(
             select(AbilityProfileModel).where(
                 AbilityProfileModel.user_id == user_id,
-                AbilityProfileModel.knowledge_point == knowledge_point,
+                AbilityProfileModel.knowledge_point == node.storage_key,
             )
         )
         if profile is not None:
@@ -285,7 +374,12 @@ class ProfileService:
         profile = AbilityProfileModel(
             id=uuid4(),
             user_id=user_id,
-            knowledge_point=knowledge_point,
+            knowledge_point=node.storage_key,
+            profile_level=node.profile_level,
+            topic_key=node.topic_key,
+            topic_title=node.topic_title,
+            subtopic_key=node.subtopic_key,
+            subtopic_title=node.subtopic_title,
             mastery_score=0.5,
             confidence_weighted_count=0,
             last_evaluation_id=None,
@@ -302,14 +396,14 @@ class ProfileService:
         db: AsyncSession,
         *,
         user_id: UUID,
-        knowledge_point: str,
+        node: ProfileNode,
         error_type: str,
         evaluation: EvaluationModel,
     ) -> ErrorPatternModel:
         pattern = await db.scalar(
             select(ErrorPatternModel).where(
                 ErrorPatternModel.user_id == user_id,
-                ErrorPatternModel.knowledge_point == knowledge_point,
+                ErrorPatternModel.knowledge_point == node.storage_key,
                 ErrorPatternModel.error_type == error_type,
             )
         )
@@ -318,7 +412,12 @@ class ProfileService:
             pattern = ErrorPatternModel(
                 id=uuid4(),
                 user_id=user_id,
-                knowledge_point=knowledge_point,
+                knowledge_point=node.storage_key,
+                profile_level=node.profile_level,
+                topic_key=node.topic_key,
+                topic_title=node.topic_title,
+                subtopic_key=node.subtopic_key,
+                subtopic_title=node.subtopic_title,
                 error_type=error_type,
                 occurrence_count=1,
                 first_seen_at=now,
@@ -338,7 +437,7 @@ class ProfileService:
         db: AsyncSession,
         *,
         user_id: UUID,
-        knowledge_point: str,
+        node: ProfileNode,
         error_type: str,
         evaluation: EvaluationModel,
         occurrence_count: int,
@@ -347,7 +446,7 @@ class ProfileService:
         task = await db.scalar(
             select(ReviewTaskModel).where(
                 ReviewTaskModel.user_id == user_id,
-                ReviewTaskModel.knowledge_point == knowledge_point,
+                ReviewTaskModel.knowledge_point == node.storage_key,
                 ReviewTaskModel.error_type == error_type,
                 ReviewTaskModel.status == ReviewTaskStatus.OPEN,
             )
@@ -359,11 +458,17 @@ class ProfileService:
             task = ReviewTaskModel(
                 id=uuid4(),
                 user_id=user_id,
-                knowledge_point=knowledge_point,
+                knowledge_point=node.storage_key,
+                profile_level=node.profile_level,
+                topic_key=node.topic_key,
+                topic_title=node.topic_title,
+                subtopic_key=node.subtopic_key,
+                subtopic_title=node.subtopic_title,
                 error_type=error_type,
                 source_evaluation_id=evaluation.id,
                 status=ReviewTaskStatus.OPEN,
                 priority=priority,
+                verification_streak=0,
                 due_at=due_at,
                 completed_at=None,
                 created_at=now,
@@ -374,9 +479,49 @@ class ProfileService:
             return task
         task.source_evaluation_id = evaluation.id
         task.priority = max(task.priority, priority)
+        task.verification_streak = 0
         task.due_at = due_at
         task.updated_at = now
         return task
+
+    async def _advance_review_tasks(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: UUID,
+        topic: ProfileNode,
+        subtopics: tuple[ProfileNode, ...],
+        evaluation: EvaluationModel,
+        decision_should_update: bool,
+    ) -> None:
+        if not decision_should_update:
+            return
+        matching_subtopics = {item.subtopic_key for item in subtopics}
+        tasks = (
+            await db.scalars(
+                select(ReviewTaskModel).where(
+                    ReviewTaskModel.user_id == user_id,
+                    ReviewTaskModel.topic_key == topic.topic_key,
+                    ReviewTaskModel.status == ReviewTaskStatus.OPEN,
+                )
+            )
+        ).all()
+        is_trusted_high = evaluation.confidence >= 0.70 and evaluation.total >= 16
+        now = datetime.now(UTC)
+        for task in tasks:
+            if task.subtopic_key and task.subtopic_key not in matching_subtopics:
+                continue
+            streak, priority, completed = review_verification_progress(
+                task.verification_streak,
+                task.priority,
+                trusted_high_score=is_trusted_high,
+            )
+            task.verification_streak = streak
+            task.priority = priority
+            task.updated_at = now
+            if completed:
+                task.status = ReviewTaskStatus.COMPLETED
+                task.completed_at = now
 
     async def _evaluation_rows(
         self, db: AsyncSession, interview_id: UUID
@@ -398,7 +543,10 @@ class ProfileService:
             (
                 await db.scalars(
                     select(AbilityProfileModel)
-                    .where(AbilityProfileModel.user_id == user_id)
+                    .where(
+                        AbilityProfileModel.user_id == user_id,
+                        AbilityProfileModel.profile_level.in_(("topic", "subtopic")),
+                    )
                     .order_by(AbilityProfileModel.knowledge_point)
                 )
             ).all()
@@ -407,7 +555,10 @@ class ProfileService:
             (
                 await db.scalars(
                     select(ErrorPatternModel)
-                    .where(ErrorPatternModel.user_id == user_id)
+                    .where(
+                        ErrorPatternModel.user_id == user_id,
+                        ErrorPatternModel.profile_level == "subtopic",
+                    )
                     .order_by(ErrorPatternModel.last_seen_at.desc())
                 )
             ).all()
@@ -416,7 +567,10 @@ class ProfileService:
             (
                 await db.scalars(
                     select(ReviewTaskModel)
-                    .where(ReviewTaskModel.user_id == user_id)
+                    .where(
+                        ReviewTaskModel.user_id == user_id,
+                        ReviewTaskModel.profile_level.in_(("topic", "subtopic")),
+                    )
                     .order_by(ReviewTaskModel.status, ReviewTaskModel.due_at)
                 )
             ).all()

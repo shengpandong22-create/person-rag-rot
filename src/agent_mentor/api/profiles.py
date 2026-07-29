@@ -24,6 +24,11 @@ router = APIRouter(prefix="/api/v1", tags=["profiles"])
 class AbilityResponse(BaseModel):
     id: UUID
     knowledge_point: str
+    profile_level: str
+    topic_key: str | None
+    topic_title: str | None
+    subtopic_key: str | None
+    subtopic_title: str | None
     mastery_score: float
     confidence_weighted_count: float
     last_evaluation_id: UUID | None
@@ -34,6 +39,11 @@ class AbilityResponse(BaseModel):
 class ErrorPatternResponse(BaseModel):
     id: UUID
     knowledge_point: str
+    profile_level: str
+    topic_key: str | None
+    topic_title: str | None
+    subtopic_key: str | None
+    subtopic_title: str | None
     error_type: str
     occurrence_count: int
     first_seen_at: datetime
@@ -44,10 +54,16 @@ class ErrorPatternResponse(BaseModel):
 class ReviewTaskResponse(BaseModel):
     id: UUID
     knowledge_point: str
+    profile_level: str
+    topic_key: str | None
+    topic_title: str | None
+    subtopic_key: str | None
+    subtopic_title: str | None
     error_type: str
     source_evaluation_id: UUID
     status: str
     priority: int
+    verification_streak: int
     due_at: datetime
     completed_at: datetime | None
 
@@ -74,6 +90,11 @@ def ability_response(profile: AbilityProfileModel) -> AbilityResponse:
     return AbilityResponse(
         id=profile.id,
         knowledge_point=profile.knowledge_point,
+        profile_level=profile.profile_level,
+        topic_key=profile.topic_key,
+        topic_title=profile.topic_title,
+        subtopic_key=profile.subtopic_key,
+        subtopic_title=profile.subtopic_title,
         mastery_score=profile.mastery_score,
         confidence_weighted_count=profile.confidence_weighted_count,
         last_evaluation_id=profile.last_evaluation_id,
@@ -86,6 +107,11 @@ def error_response(pattern: ErrorPatternModel) -> ErrorPatternResponse:
     return ErrorPatternResponse(
         id=pattern.id,
         knowledge_point=pattern.knowledge_point,
+        profile_level=pattern.profile_level,
+        topic_key=pattern.topic_key,
+        topic_title=pattern.topic_title,
+        subtopic_key=pattern.subtopic_key,
+        subtopic_title=pattern.subtopic_title,
         error_type=str(pattern.error_type),
         occurrence_count=pattern.occurrence_count,
         first_seen_at=pattern.first_seen_at,
@@ -98,10 +124,16 @@ def task_response(task: ReviewTaskModel) -> ReviewTaskResponse:
     return ReviewTaskResponse(
         id=task.id,
         knowledge_point=task.knowledge_point,
+        profile_level=task.profile_level,
+        topic_key=task.topic_key,
+        topic_title=task.topic_title,
+        subtopic_key=task.subtopic_key,
+        subtopic_title=task.subtopic_title,
         error_type=str(task.error_type),
         source_evaluation_id=task.source_evaluation_id,
         status=str(task.status),
         priority=task.priority,
+        verification_streak=task.verification_streak,
         due_at=task.due_at,
         completed_at=task.completed_at,
     )
