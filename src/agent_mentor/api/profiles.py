@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from agent_mentor.application.knowledge_service import DEFAULT_USER_ID
 from agent_mentor.application.profile_service import (
+    CoverageSnapshot,
     ProfileService,
     ProfileSnapshot,
     RecommendedKnowledgePoint,
@@ -23,6 +24,7 @@ router = APIRouter(prefix="/api/v1", tags=["profiles"])
 
 class AbilityResponse(BaseModel):
     id: UUID
+    knowledge_base_id: UUID
     knowledge_point: str
     profile_level: str
     topic_key: str | None
@@ -38,6 +40,7 @@ class AbilityResponse(BaseModel):
 
 class ErrorPatternResponse(BaseModel):
     id: UUID
+    knowledge_base_id: UUID
     knowledge_point: str
     profile_level: str
     topic_key: str | None
@@ -53,6 +56,7 @@ class ErrorPatternResponse(BaseModel):
 
 class ReviewTaskResponse(BaseModel):
     id: UUID
+    knowledge_base_id: UUID
     knowledge_point: str
     profile_level: str
     topic_key: str | None
@@ -76,10 +80,32 @@ class ProfileSnapshotResponse(BaseModel):
 
 class RecommendedKnowledgePointResponse(BaseModel):
     knowledge_point: str
+    topic_key: str | None
+    topic_title: str | None
+    subtopic_key: str | None
+    subtopic_title: str | None
     reason: str
     priority: int
     mastery_score: float | None
     source_type: str = "profile"
+
+
+class CoveragePointResponse(BaseModel):
+    id: UUID
+    title: str
+    status: str
+    source_count: int
+    attempt_count: int
+    trusted_evaluation_count: int
+    average_score: float | None
+
+
+class CoverageSnapshotResponse(BaseModel):
+    total: int
+    uncovered: int
+    attempted: int
+    verified: int
+    points: list[CoveragePointResponse]
 
 
 def service(request: Request) -> ProfileService:
@@ -89,6 +115,7 @@ def service(request: Request) -> ProfileService:
 def ability_response(profile: AbilityProfileModel) -> AbilityResponse:
     return AbilityResponse(
         id=profile.id,
+        knowledge_base_id=profile.knowledge_base_id,
         knowledge_point=profile.knowledge_point,
         profile_level=profile.profile_level,
         topic_key=profile.topic_key,
@@ -106,6 +133,7 @@ def ability_response(profile: AbilityProfileModel) -> AbilityResponse:
 def error_response(pattern: ErrorPatternModel) -> ErrorPatternResponse:
     return ErrorPatternResponse(
         id=pattern.id,
+        knowledge_base_id=pattern.knowledge_base_id,
         knowledge_point=pattern.knowledge_point,
         profile_level=pattern.profile_level,
         topic_key=pattern.topic_key,
@@ -123,6 +151,7 @@ def error_response(pattern: ErrorPatternModel) -> ErrorPatternResponse:
 def task_response(task: ReviewTaskModel) -> ReviewTaskResponse:
     return ReviewTaskResponse(
         id=task.id,
+        knowledge_base_id=task.knowledge_base_id,
         knowledge_point=task.knowledge_point,
         profile_level=task.profile_level,
         topic_key=task.topic_key,
@@ -152,10 +181,35 @@ def recommendation_response(
 ) -> RecommendedKnowledgePointResponse:
     return RecommendedKnowledgePointResponse(
         knowledge_point=recommendation.knowledge_point,
+        topic_key=recommendation.topic_key,
+        topic_title=recommendation.topic_title,
+        subtopic_key=recommendation.subtopic_key,
+        subtopic_title=recommendation.subtopic_title,
         reason=recommendation.reason,
         priority=recommendation.priority,
         mastery_score=recommendation.mastery_score,
         source_type=recommendation.source_type,
+    )
+
+
+def coverage_response(snapshot: CoverageSnapshot) -> CoverageSnapshotResponse:
+    return CoverageSnapshotResponse(
+        total=snapshot.total,
+        uncovered=snapshot.uncovered,
+        attempted=snapshot.attempted,
+        verified=snapshot.verified,
+        points=[
+            CoveragePointResponse(
+                id=item.id,
+                title=item.title,
+                status=item.status,
+                source_count=item.source_count,
+                attempt_count=item.attempt_count,
+                trusted_evaluation_count=item.trusted_evaluation_count,
+                average_score=item.average_score,
+            )
+            for item in snapshot.points
+        ],
     )
 
 
@@ -166,46 +220,78 @@ async def apply_interview_profile_updates(
     return snapshot_response(await service(request).apply_interview_evaluations(interview_id))
 
 
-@router.get("/profiles/me/abilities", response_model=list[AbilityResponse])
-async def list_my_abilities(request: Request) -> list[AbilityResponse]:
-    snapshot = await service(request).get_snapshot(DEFAULT_USER_ID)
+@router.get(
+    "/knowledge-bases/{knowledge_base_id}/profile/abilities",
+    response_model=list[AbilityResponse],
+)
+async def list_my_abilities(knowledge_base_id: UUID, request: Request) -> list[AbilityResponse]:
+    snapshot = await service(request).get_snapshot(DEFAULT_USER_ID, knowledge_base_id)
     return [ability_response(item) for item in snapshot.abilities]
 
 
-@router.get("/profiles/me/error-patterns", response_model=list[ErrorPatternResponse])
-async def list_my_error_patterns(request: Request) -> list[ErrorPatternResponse]:
-    snapshot = await service(request).get_snapshot(DEFAULT_USER_ID)
+@router.get(
+    "/knowledge-bases/{knowledge_base_id}/profile/error-patterns",
+    response_model=list[ErrorPatternResponse],
+)
+async def list_my_error_patterns(
+    knowledge_base_id: UUID, request: Request
+) -> list[ErrorPatternResponse]:
+    snapshot = await service(request).get_snapshot(DEFAULT_USER_ID, knowledge_base_id)
     return [error_response(item) for item in snapshot.errors]
 
 
-@router.get("/review-tasks", response_model=list[ReviewTaskResponse])
-async def list_review_tasks(request: Request) -> list[ReviewTaskResponse]:
-    snapshot = await service(request).get_snapshot(DEFAULT_USER_ID)
+@router.get(
+    "/knowledge-bases/{knowledge_base_id}/review-tasks",
+    response_model=list[ReviewTaskResponse],
+)
+async def list_review_tasks(knowledge_base_id: UUID, request: Request) -> list[ReviewTaskResponse]:
+    snapshot = await service(request).get_snapshot(DEFAULT_USER_ID, knowledge_base_id)
     return [task_response(item) for item in snapshot.review_tasks]
 
 
 @router.get(
-    "/profiles/me/interview-plan",
+    "/knowledge-bases/{knowledge_base_id}/interview-plan",
     response_model=list[RecommendedKnowledgePointResponse],
 )
-async def recommend_interview_plan(request: Request) -> list[RecommendedKnowledgePointResponse]:
+async def recommend_interview_plan(
+    knowledge_base_id: UUID, request: Request
+) -> list[RecommendedKnowledgePointResponse]:
     return [
         recommendation_response(item)
-        for item in await service(request).recommend_interview_plan(DEFAULT_USER_ID)
+        for item in await service(request).recommend_interview_plan(
+            DEFAULT_USER_ID, knowledge_base_id
+        )
     ]
 
 
 @router.get(
-    "/profiles/me/training-focuses",
+    "/knowledge-bases/{knowledge_base_id}/coverage",
+    response_model=CoverageSnapshotResponse,
+)
+async def get_knowledge_coverage(
+    knowledge_base_id: UUID, request: Request
+) -> CoverageSnapshotResponse:
+    return coverage_response(await service(request).get_coverage(knowledge_base_id))
+
+
+@router.get(
+    "/knowledge-bases/{knowledge_base_id}/training-focuses",
     response_model=list[RecommendedKnowledgePointResponse],
 )
-async def list_training_focuses(request: Request) -> list[RecommendedKnowledgePointResponse]:
+async def list_training_focuses(
+    knowledge_base_id: UUID, request: Request
+) -> list[RecommendedKnowledgePointResponse]:
     return [
         recommendation_response(item)
-        for item in await service(request).training_focuses(DEFAULT_USER_ID)
+        for item in await service(request).training_focuses(DEFAULT_USER_ID, knowledge_base_id)
     ]
 
 
-@router.post("/review-tasks/{task_id}/complete", response_model=ReviewTaskResponse)
-async def complete_review_task(task_id: UUID, request: Request) -> ReviewTaskResponse:
-    return task_response(await service(request).complete_review_task(task_id))
+@router.post(
+    "/knowledge-bases/{knowledge_base_id}/review-tasks/{task_id}/complete",
+    response_model=ReviewTaskResponse,
+)
+async def complete_review_task(
+    knowledge_base_id: UUID, task_id: UUID, request: Request
+) -> ReviewTaskResponse:
+    return task_response(await service(request).complete_review_task(task_id, knowledge_base_id))

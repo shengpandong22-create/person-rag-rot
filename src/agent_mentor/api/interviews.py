@@ -23,6 +23,10 @@ router = APIRouter(prefix="/api/v1", tags=["interviews"])
 class InterviewCreateRequest(BaseModel):
     knowledge_base_id: UUID
     topic: str = Field(min_length=1, max_length=160)
+    profile_topic_key: str | None = Field(default=None, max_length=80)
+    profile_topic_title: str | None = Field(default=None, max_length=120)
+    profile_subtopic_key: str | None = Field(default=None, max_length=80)
+    profile_subtopic_title: str | None = Field(default=None, max_length=120)
     difficulty: Difficulty = Difficulty.MEDIUM
     question_count: int = Field(default=3, ge=1, le=10)
 
@@ -51,6 +55,10 @@ class InterviewResponse(BaseModel):
     id: UUID
     knowledge_base_id: UUID
     topic: str
+    profile_topic_key: str | None
+    profile_topic_title: str | None
+    profile_subtopic_key: str | None
+    profile_subtopic_title: str | None
     difficulty: str
     question_count: int
     status: str
@@ -116,6 +124,10 @@ def interview_response(snapshot: InterviewSnapshot) -> InterviewResponse:
         id=session.id,
         knowledge_base_id=session.knowledge_base_id,
         topic=session.topic,
+        profile_topic_key=session.profile_topic_key,
+        profile_topic_title=session.profile_topic_title,
+        profile_subtopic_key=session.profile_subtopic_key,
+        profile_subtopic_title=session.profile_subtopic_title,
         difficulty=str(session.difficulty),
         question_count=session.question_count,
         status=str(session.status),
@@ -148,6 +160,10 @@ async def create_interview(payload: InterviewCreateRequest, request: Request) ->
     session = await service(request).create_interview(
         knowledge_base_id=payload.knowledge_base_id,
         topic=payload.topic,
+        profile_topic_key=payload.profile_topic_key,
+        profile_topic_title=payload.profile_topic_title,
+        profile_subtopic_key=payload.profile_subtopic_key,
+        profile_subtopic_title=payload.profile_subtopic_title,
         difficulty=payload.difficulty,
         question_count=payload.question_count,
     )

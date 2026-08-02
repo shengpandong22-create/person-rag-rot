@@ -243,6 +243,12 @@ export function errorNarrative(item) {
 }
 
 export function translateReason(reason) {
+  if (reason?.startsWith("coverage_gap:uncovered"))
+    return "该知识点来自已入库资料，但尚未被面试题实际覆盖，建议优先查漏。";
+  if (reason?.startsWith("coverage_gap:attempted"))
+    return "该知识点已经出题，但还没有可信评分，需要继续完成验证。";
+  if (reason?.startsWith("coverage_gap:insufficient_evidence"))
+    return "该知识点只有一次可信评分，证据不足，建议再验证一轮。";
   if (reason?.startsWith("due_review_task")) return "来自到期复习任务，说明这个知识点最近出错过，需要优先巩固。";
   if (reason === "low_mastery") return "掌握度偏低，适合作为下一轮面试训练主题。";
   return reason || "系统根据画像和复习任务推荐。";

@@ -30,6 +30,10 @@ class ProfileUpdateDecision(BaseModel):
 
 class TrainingFocusCandidate(BaseModel):
     knowledge_point: str
+    topic_key: str | None = None
+    topic_title: str | None = None
+    subtopic_key: str | None = None
+    subtopic_title: str | None = None
     reason: str
     priority: int = Field(ge=1, le=5)
     mastery_score: float | None = Field(default=None, ge=0, le=1)
@@ -132,9 +136,10 @@ def rank_training_focuses(
         point = candidate.knowledge_point.strip()
         if not point:
             continue
-        existing = best_by_point.get(point)
+        routing_key = f"{candidate.topic_key or ''}:{candidate.subtopic_key or ''}:{point}"
+        existing = best_by_point.get(routing_key)
         if existing is None or _focus_sort_key(candidate) < _focus_sort_key(existing):
-            best_by_point[point] = candidate
+            best_by_point[routing_key] = candidate
     ranked = sorted(best_by_point.values(), key=_focus_sort_key)
     return ranked[:limit]
 

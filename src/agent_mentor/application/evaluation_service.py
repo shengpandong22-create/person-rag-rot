@@ -151,7 +151,7 @@ class EvaluationService:
             return ReportSnapshot(report=report, evaluations=evaluations)
 
     async def list_report_history(
-        self, user_id: UUID, *, limit: int = 10
+        self, user_id: UUID, knowledge_base_id: UUID, *, limit: int = 10
     ) -> tuple[ReportHistoryItem, ...]:
         async with self._sessions() as db:
             result = await db.execute(
@@ -160,7 +160,10 @@ class EvaluationService:
                     InterviewSessionModel,
                     InterviewSessionModel.id == InterviewReportModel.session_id,
                 )
-                .where(InterviewSessionModel.user_id == user_id)
+                .where(
+                    InterviewSessionModel.user_id == user_id,
+                    InterviewSessionModel.knowledge_base_id == knowledge_base_id,
+                )
                 .order_by(InterviewReportModel.created_at.desc())
                 .limit(limit)
             )
@@ -169,8 +172,10 @@ class EvaluationService:
                 for report, interview in result.all()
             )
 
-    async def score_trends(self, user_id: UUID, *, limit: int = 10) -> tuple[ScoreTrendPoint, ...]:
-        history = await self.list_report_history(user_id, limit=limit)
+    async def score_trends(
+        self, user_id: UUID, knowledge_base_id: UUID, *, limit: int = 10
+    ) -> tuple[ScoreTrendPoint, ...]:
+        history = await self.list_report_history(user_id, knowledge_base_id, limit=limit)
         chronological = reversed(history)
         return tuple(self._trend_point(item) for item in chronological)
 

@@ -42,6 +42,7 @@ from agent_mentor.rag.documents import DocumentParser
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await app.state.knowledge_service.recover_interrupted_ingestions()
+    await app.state.knowledge_service.rebuild_coverage_catalogs()
     await app.state.profile_service.backfill_two_layer_profiles(DEFAULT_USER_ID)
     yield
     await app.state.database_engine.dispose()

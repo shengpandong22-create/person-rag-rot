@@ -12,6 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
+from agent_mentor.application.coverage_catalog import map_question_coverage
 from agent_mentor.application.knowledge_service import DEFAULT_USER_ID
 from agent_mentor.domain.interview import (
     AnswerKind,
@@ -100,6 +101,10 @@ class InterviewService:
         *,
         knowledge_base_id: UUID,
         topic: str,
+        profile_topic_key: str | None = None,
+        profile_topic_title: str | None = None,
+        profile_subtopic_key: str | None = None,
+        profile_subtopic_title: str | None = None,
         difficulty: Difficulty,
         question_count: int,
     ) -> InterviewSessionModel:
@@ -110,6 +115,10 @@ class InterviewService:
             user_id=DEFAULT_USER_ID,
             knowledge_base_id=knowledge_base_id,
             topic=topic,
+            profile_topic_key=profile_topic_key,
+            profile_topic_title=profile_topic_title,
+            profile_subtopic_key=profile_subtopic_key,
+            profile_subtopic_title=profile_subtopic_title,
             difficulty=difficulty,
             question_count=question_count,
             status=InterviewStatus.CREATED,
@@ -377,6 +386,7 @@ class InterviewService:
                     created_at=datetime.now(UTC),
                 )
             )
+        await map_question_coverage(db, question_id=question.id, chunk_ids=citation_ids)
         return question
 
     async def _generate_question_output(

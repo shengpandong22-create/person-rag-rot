@@ -180,19 +180,33 @@ def trend_response(item: ScoreTrendPoint) -> ScoreTrendResponse:
     )
 
 
-@router.get("/reports/history", response_model=list[ReportHistoryResponse])
-async def list_report_history(request: Request, limit: int = 10) -> list[ReportHistoryResponse]:
+@router.get(
+    "/knowledge-bases/{knowledge_base_id}/reports/history",
+    response_model=list[ReportHistoryResponse],
+)
+async def list_report_history(
+    knowledge_base_id: UUID, request: Request, limit: int = 10
+) -> list[ReportHistoryResponse]:
     return [
         history_response(item)
-        for item in await service(request).list_report_history(DEFAULT_USER_ID, limit=limit)
+        for item in await service(request).list_report_history(
+            DEFAULT_USER_ID, knowledge_base_id, limit=limit
+        )
     ]
 
 
-@router.get("/reports/trends", response_model=list[ScoreTrendResponse])
-async def list_score_trends(request: Request, limit: int = 10) -> list[ScoreTrendResponse]:
+@router.get(
+    "/knowledge-bases/{knowledge_base_id}/reports/trends",
+    response_model=list[ScoreTrendResponse],
+)
+async def list_score_trends(
+    knowledge_base_id: UUID, request: Request, limit: int = 10
+) -> list[ScoreTrendResponse]:
     return [
         trend_response(item)
-        for item in await service(request).score_trends(DEFAULT_USER_ID, limit=limit)
+        for item in await service(request).score_trends(
+            DEFAULT_USER_ID, knowledge_base_id, limit=limit
+        )
     ]
 
 

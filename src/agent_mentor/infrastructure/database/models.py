@@ -121,6 +121,49 @@ class KnowledgeChunkModel(Base):
     document: Mapped[SourceDocumentModel] = relationship(back_populates="chunks")
 
 
+class KnowledgeCatalogPointModel(Base):
+    """A stable, knowledge-base-scoped point used to measure interview coverage."""
+
+    __tablename__ = "knowledge_catalog_points"
+    __table_args__ = (
+        UniqueConstraint("knowledge_base_id", "point_key", name="uq_catalog_base_point"),
+    )
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_bases.id"), nullable=False, index=True
+    )
+    point_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+
+class KnowledgeCatalogSourceModel(Base):
+    __tablename__ = "knowledge_catalog_sources"
+    __table_args__ = (
+        UniqueConstraint("knowledge_point_id", "chunk_id", name="uq_catalog_point_chunk"),
+    )
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    knowledge_point_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_catalog_points.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    document_id: Mapped[UUID] = mapped_column(
+        ForeignKey("source_documents.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    chunk_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_chunks.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
 class KnowledgePointModel(Base):
     __tablename__ = "knowledge_points"
 
@@ -201,6 +244,10 @@ class InterviewSessionModel(Base):
         ForeignKey("knowledge_bases.id"), nullable=False, index=True
     )
     topic: Mapped[str] = mapped_column(String(160), nullable=False)
+    profile_topic_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    profile_topic_title: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    profile_subtopic_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    profile_subtopic_title: Mapped[str | None] = mapped_column(String(120), nullable=True)
     difficulty: Mapped[str] = mapped_column(String(32), nullable=False)
     question_count: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
@@ -272,6 +319,26 @@ class QuestionReferenceModel(Base):
     )
 
     question: Mapped[InterviewQuestionModel] = relationship(back_populates="references")
+
+
+class QuestionCoverageModel(Base):
+    """Connect a question to catalog points through the chunks it actually cited."""
+
+    __tablename__ = "question_coverage_points"
+    __table_args__ = (
+        UniqueConstraint("question_id", "knowledge_point_id", name="uq_question_coverage_point"),
+    )
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    question_id: Mapped[UUID] = mapped_column(
+        ForeignKey("interview_questions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    knowledge_point_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_catalog_points.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
 
 class UserAnswerModel(Base):
@@ -390,10 +457,20 @@ class InterviewReportModel(Base):
 
 class AbilityProfileModel(Base):
     __tablename__ = "ability_profiles"
-    __table_args__ = (UniqueConstraint("user_id", "knowledge_point", name="uq_ability_user_point"),)
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "knowledge_base_id",
+            "knowledge_point",
+            name="uq_ability_user_base_point",
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_bases.id"), nullable=False, index=True
+    )
     knowledge_point: Mapped[str] = mapped_column(String(160), nullable=False)
     profile_level: Mapped[str] = mapped_column(String(20), nullable=False, default="legacy")
     topic_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
@@ -414,12 +491,19 @@ class ErrorPatternModel(Base):
     __tablename__ = "error_patterns"
     __table_args__ = (
         UniqueConstraint(
-            "user_id", "knowledge_point", "error_type", name="uq_error_user_point_type"
+            "user_id",
+            "knowledge_base_id",
+            "knowledge_point",
+            "error_type",
+            name="uq_error_user_base_point_type",
         ),
     )
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_bases.id"), nullable=False, index=True
+    )
     knowledge_point: Mapped[str] = mapped_column(String(160), nullable=False)
     profile_level: Mapped[str] = mapped_column(String(20), nullable=False, default="legacy")
     topic_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
@@ -438,6 +522,9 @@ class ReviewTaskModel(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_bases.id"), nullable=False, index=True
+    )
     knowledge_point: Mapped[str] = mapped_column(String(160), nullable=False)
     profile_level: Mapped[str] = mapped_column(String(20), nullable=False, default="legacy")
     topic_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
@@ -462,6 +549,9 @@ class ProfileUpdateEventModel(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     evaluation_id: Mapped[UUID] = mapped_column(ForeignKey("evaluations.id"), nullable=False)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_bases.id"), nullable=False, index=True
+    )
     decision: Mapped[str] = mapped_column(String(80), nullable=False)
     applied: Mapped[bool] = mapped_column(Boolean, nullable=False)
     changes: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False)

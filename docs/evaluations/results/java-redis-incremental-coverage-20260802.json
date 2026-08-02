@@ -1,0 +1,925 @@
+{
+  "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+  "topic": "Redis 缓存工程化",
+  "coverage_before_rounds": {
+    "total": 15,
+    "uncovered": 7,
+    "attempted": 0,
+    "verified": 8,
+    "points": [
+      {
+        "id": "cdedae79-e513-4530-810e-3b57ba1dfaac",
+        "title": "Cache-Aside 一致性模式",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "77d1a7ed-c06f-4645-bfc2-7c3475cf88fd",
+        "title": "Happens-before",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ee52d04f-a174-4fc0-ade6-741c4c747793",
+        "title": "缓存击穿与热点互斥",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d4f0fdd9-9664-4a84-9c07-12d89337c748",
+        "title": "缓存穿透与空值治理",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "85903c83-1d0a-49ba-b74d-a91452829fc3",
+        "title": "缓存雪崩与多层保护",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "8c9ecda1-94b2-4a07-b08e-ff6583baa539",
+        "title": "面试题：volatile 能否保证线程安全？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "5ef58dcf-d87c-42e7-b96d-8421dda78588",
+        "title": "面试题：线上频繁 Full GC 如何排查？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "4f99b4e5-6d08-4c40-9018-bd8fcef1bce3",
+        "title": "GC 诊断",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 9,
+        "trusted_evaluation_count": 9,
+        "average_score": 0.9667
+      },
+      {
+        "id": "3f3f383b-5fda-40e7-8550-aee32fa18d0f",
+        "title": "Java 后端面试知识体系",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 27,
+        "trusted_evaluation_count": 27,
+        "average_score": 0.9519
+      },
+      {
+        "id": "bbc20d10-b578-4b05-aa92-6a700a41cebe",
+        "title": "事务边界",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 4,
+        "trusted_evaluation_count": 4,
+        "average_score": 1.0
+      },
+      {
+        "id": "eee0e31e-0ba3-4017-98cc-02a18422ea1a",
+        "title": "生产可观测性",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 2,
+        "trusted_evaluation_count": 2,
+        "average_score": 0.9
+      },
+      {
+        "id": "77687aeb-f548-4e1a-b434-5c330b45a80d",
+        "title": "运行时区域",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 3,
+        "trusted_evaluation_count": 3,
+        "average_score": 1.0
+      },
+      {
+        "id": "1ff33c17-a1e9-46f4-8c03-ef12edcfecfc",
+        "title": "面试题：`@Transactional` 为什么可能不生效？",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 7,
+        "trusted_evaluation_count": 7,
+        "average_score": 0.9143
+      },
+      {
+        "id": "14a2797c-30c7-4790-ab95-a79d32ffb313",
+        "title": "面试题：如何设计 Java 服务健康检查？",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 2,
+        "trusted_evaluation_count": 2,
+        "average_score": 0.9
+      },
+      {
+        "id": "00dd89a7-bb6a-41ba-9d56-0cf244b6f81f",
+        "title": "面试题：如何设计生产线程池？",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 12,
+        "trusted_evaluation_count": 12,
+        "average_score": 0.9667
+      }
+    ]
+  },
+  "profile_before_rounds": [
+    {
+      "id": "ef324887-cc20-49b9-a01f-47be3c719466",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::concept",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "concept",
+      "subtopic_title": "核心概念",
+      "mastery_score": 0.6458,
+      "confidence_weighted_count": 2.0,
+      "last_evaluation_id": "435319f1-8a7d-4ddb-b332-1df0c0fdaa1f",
+      "version": 2,
+      "updated_at": "2026-08-02T03:13:53.599980Z"
+    },
+    {
+      "id": "af77880a-cdfc-4c7e-98fb-a46758135c7d",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::concurrency",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "concurrency",
+      "subtopic_title": "Java 并发",
+      "mastery_score": 0.8709,
+      "confidence_weighted_count": 9.0,
+      "last_evaluation_id": "c5c8df13-d00d-45f7-8f55-0e66f612f369",
+      "version": 9,
+      "updated_at": "2026-08-02T03:33:29.237001Z"
+    },
+    {
+      "id": "946863ee-5604-44da-801b-721a9b04d769",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::engineering",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "engineering",
+      "subtopic_title": "工程落地",
+      "mastery_score": 0.572,
+      "confidence_weighted_count": 1.0,
+      "last_evaluation_id": "da318e9e-cb06-47b7-87f0-9303f29aa43a",
+      "version": 1,
+      "updated_at": "2026-08-02T03:13:53.592605Z"
+    },
+    {
+      "id": "0a2e14e1-68ef-48f1-8074-3aab9eb9a616",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::jvm",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "jvm",
+      "subtopic_title": "JVM 与 GC",
+      "mastery_score": 0.8937,
+      "confidence_weighted_count": 9.0,
+      "last_evaluation_id": "c236e14f-5015-4975-84cc-8b4f822198b0",
+      "version": 9,
+      "updated_at": "2026-08-02T03:31:44.823226Z"
+    },
+    {
+      "id": "edc8a360-15e3-4d55-815c-28ee43c645bc",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::production",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "production",
+      "subtopic_title": "Java 服务生产化",
+      "mastery_score": 0.8001,
+      "confidence_weighted_count": 6.0,
+      "last_evaluation_id": "ec2a7b3a-180d-42f9-8a75-790e865cc8d5",
+      "version": 6,
+      "updated_at": "2026-08-02T03:35:39.550350Z"
+    },
+    {
+      "id": "94729cbb-8a04-4929-80c1-0f952ba06e8b",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::transaction",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "transaction",
+      "subtopic_title": "事务与一致性",
+      "mastery_score": 0.82,
+      "confidence_weighted_count": 6.0,
+      "last_evaluation_id": "52df35c8-abe2-4b16-9dee-7cac5b2aad44",
+      "version": 6,
+      "updated_at": "2026-08-02T03:34:21.288275Z"
+    },
+    {
+      "id": "adfa6cb3-c91a-4539-bc73-753a98932efc",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "topic::java_backend",
+      "profile_level": "topic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": null,
+      "subtopic_title": null,
+      "mastery_score": 0.9383,
+      "confidence_weighted_count": 33.0,
+      "last_evaluation_id": "ec2a7b3a-180d-42f9-8a75-790e865cc8d5",
+      "version": 33,
+      "updated_at": "2026-08-02T03:35:39.549065Z"
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "session_id": "f84fe58c-6423-4e15-bae4-02f816dcf606",
+      "score": 57,
+      "max_score": 60,
+      "questions": [
+        {
+          "text": "在 Redis 缓存工程化中，Cache-Aside 模式是常用的缓存读写策略。请解释为什么在 Cache-Aside 模式中，写入时通常采用“先更新数据库，再删除缓存”的顺序，而不是“先删除缓存，再更新数据库”？并说明在删除缓存失败时，有哪些补偿机制可以保证最终一致性？",
+          "reference_chunk_ids": [
+            "09669e68-5560-488e-ab17-513078f6e732",
+            "30df193a-0980-4512-8e54-6bf4f03fb824"
+          ]
+        },
+        {
+          "text": "在 Redis 缓存工程化中，缓存雪崩和缓存击穿是两类典型的故障场景。请结合工程实践，分别阐述缓存雪崩和缓存击穿的成因、典型表现，并针对每种场景给出至少两种有效的治理或防护方案。同时，请说明在治理过程中，如何通过监控指标（如命中率、回源量、延迟等）来提前发现和定位这两类问题。",
+          "reference_chunk_ids": [
+            "30df193a-0980-4512-8e54-6bf4f03fb824",
+            "09669e68-5560-488e-ab17-513078f6e732"
+          ]
+        },
+        {
+          "text": "[3/3] 请从面试官视角复盘 Redis 缓存工程化（参考资料：Redis 缓存工程化 > 缓存击穿与热点互斥）：它最容易被追问的工程取舍、边界条件和可量化效果分别是什么？",
+          "reference_chunk_ids": [
+            "ef1e9f14-bfaf-433a-8319-da09d25e8ba3",
+            "c5a14f14-475d-42da-be7f-9dfb9a71f484"
+          ]
+        }
+      ],
+      "coverage_after": {
+        "total": 15,
+        "uncovered": 4,
+        "attempted": 1,
+        "verified": 10,
+        "points": [
+          {
+            "id": "77d1a7ed-c06f-4645-bfc2-7c3475cf88fd",
+            "title": "Happens-before",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "d4f0fdd9-9664-4a84-9c07-12d89337c748",
+            "title": "缓存穿透与空值治理",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "8c9ecda1-94b2-4a07-b08e-ff6583baa539",
+            "title": "面试题：volatile 能否保证线程安全？",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "5ef58dcf-d87c-42e7-b96d-8421dda78588",
+            "title": "面试题：线上频繁 Full GC 如何排查？",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "ee52d04f-a174-4fc0-ade6-741c4c747793",
+            "title": "缓存击穿与热点互斥",
+            "status": "insufficient_evidence",
+            "source_count": 1,
+            "attempt_count": 1,
+            "trusted_evaluation_count": 1,
+            "average_score": 1.0
+          },
+          {
+            "id": "cdedae79-e513-4530-810e-3b57ba1dfaac",
+            "title": "Cache-Aside 一致性模式",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.925
+          },
+          {
+            "id": "4f99b4e5-6d08-4c40-9018-bd8fcef1bce3",
+            "title": "GC 诊断",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 9,
+            "trusted_evaluation_count": 9,
+            "average_score": 0.9667
+          },
+          {
+            "id": "3f3f383b-5fda-40e7-8550-aee32fa18d0f",
+            "title": "Java 后端面试知识体系",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 28,
+            "trusted_evaluation_count": 28,
+            "average_score": 0.9536
+          },
+          {
+            "id": "bbc20d10-b578-4b05-aa92-6a700a41cebe",
+            "title": "事务边界",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 4,
+            "trusted_evaluation_count": 4,
+            "average_score": 1.0
+          },
+          {
+            "id": "eee0e31e-0ba3-4017-98cc-02a18422ea1a",
+            "title": "生产可观测性",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.9
+          },
+          {
+            "id": "85903c83-1d0a-49ba-b74d-a91452829fc3",
+            "title": "缓存雪崩与多层保护",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.925
+          },
+          {
+            "id": "77687aeb-f548-4e1a-b434-5c330b45a80d",
+            "title": "运行时区域",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 3,
+            "trusted_evaluation_count": 3,
+            "average_score": 1.0
+          },
+          {
+            "id": "1ff33c17-a1e9-46f4-8c03-ef12edcfecfc",
+            "title": "面试题：`@Transactional` 为什么可能不生效？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 7,
+            "trusted_evaluation_count": 7,
+            "average_score": 0.9143
+          },
+          {
+            "id": "14a2797c-30c7-4790-ab95-a79d32ffb313",
+            "title": "面试题：如何设计 Java 服务健康检查？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.9
+          },
+          {
+            "id": "00dd89a7-bb6a-41ba-9d56-0cf244b6f81f",
+            "title": "面试题：如何设计生产线程池？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 12,
+            "trusted_evaluation_count": 12,
+            "average_score": 0.9667
+          }
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "session_id": "64168cd1-1643-420d-b1dd-2a424c3ed734",
+      "score": 56,
+      "max_score": 60,
+      "questions": [
+        {
+          "text": "在 Redis 缓存工程化中，Cache-Aside 模式是常用的缓存读写策略。请解释为什么在写入时通常采用“先更新数据库，再删除缓存”的顺序，而不是“先删除缓存，再更新数据库”？并说明如果删除缓存失败，有哪些补偿机制可以保证最终一致性？",
+          "reference_chunk_ids": [
+            "09669e68-5560-488e-ab17-513078f6e732",
+            "30df193a-0980-4512-8e54-6bf4f03fb824"
+          ]
+        },
+        {
+          "text": "在 Redis 缓存工程化中，缓存雪崩和缓存击穿是两类典型的故障场景。请分别说明它们的成因，并结合工程实践，阐述针对这两类问题你会如何设计多级保护方案？重点说明如何通过监控指标（如命中率、回源量）来提前发现风险，以及当缓存服务整体不可用时，如何通过服务降级和限流熔断保护数据库。",
+          "reference_chunk_ids": [
+            "30df193a-0980-4512-8e54-6bf4f03fb824",
+            "09669e68-5560-488e-ab17-513078f6e732"
+          ]
+        },
+        {
+          "text": "[3/3] 请从面试官视角复盘 Redis 缓存工程化（参考资料：Redis 缓存工程化 > 缓存击穿与热点互斥）：它最容易被追问的工程取舍、边界条件和可量化效果分别是什么？",
+          "reference_chunk_ids": [
+            "ef1e9f14-bfaf-433a-8319-da09d25e8ba3",
+            "c5a14f14-475d-42da-be7f-9dfb9a71f484"
+          ]
+        }
+      ],
+      "coverage_after": {
+        "total": 15,
+        "uncovered": 4,
+        "attempted": 0,
+        "verified": 11,
+        "points": [
+          {
+            "id": "77d1a7ed-c06f-4645-bfc2-7c3475cf88fd",
+            "title": "Happens-before",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "d4f0fdd9-9664-4a84-9c07-12d89337c748",
+            "title": "缓存穿透与空值治理",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "8c9ecda1-94b2-4a07-b08e-ff6583baa539",
+            "title": "面试题：volatile 能否保证线程安全？",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "5ef58dcf-d87c-42e7-b96d-8421dda78588",
+            "title": "面试题：线上频繁 Full GC 如何排查？",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "cdedae79-e513-4530-810e-3b57ba1dfaac",
+            "title": "Cache-Aside 一致性模式",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 4,
+            "trusted_evaluation_count": 4,
+            "average_score": 0.9125
+          },
+          {
+            "id": "4f99b4e5-6d08-4c40-9018-bd8fcef1bce3",
+            "title": "GC 诊断",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 9,
+            "trusted_evaluation_count": 9,
+            "average_score": 0.9667
+          },
+          {
+            "id": "3f3f383b-5fda-40e7-8550-aee32fa18d0f",
+            "title": "Java 后端面试知识体系",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 29,
+            "trusted_evaluation_count": 29,
+            "average_score": 0.9552
+          },
+          {
+            "id": "bbc20d10-b578-4b05-aa92-6a700a41cebe",
+            "title": "事务边界",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 4,
+            "trusted_evaluation_count": 4,
+            "average_score": 1.0
+          },
+          {
+            "id": "eee0e31e-0ba3-4017-98cc-02a18422ea1a",
+            "title": "生产可观测性",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.9
+          },
+          {
+            "id": "ee52d04f-a174-4fc0-ade6-741c4c747793",
+            "title": "缓存击穿与热点互斥",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 1.0
+          },
+          {
+            "id": "85903c83-1d0a-49ba-b74d-a91452829fc3",
+            "title": "缓存雪崩与多层保护",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 4,
+            "trusted_evaluation_count": 4,
+            "average_score": 0.9125
+          },
+          {
+            "id": "77687aeb-f548-4e1a-b434-5c330b45a80d",
+            "title": "运行时区域",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 3,
+            "trusted_evaluation_count": 3,
+            "average_score": 1.0
+          },
+          {
+            "id": "1ff33c17-a1e9-46f4-8c03-ef12edcfecfc",
+            "title": "面试题：`@Transactional` 为什么可能不生效？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 7,
+            "trusted_evaluation_count": 7,
+            "average_score": 0.9143
+          },
+          {
+            "id": "14a2797c-30c7-4790-ab95-a79d32ffb313",
+            "title": "面试题：如何设计 Java 服务健康检查？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.9
+          },
+          {
+            "id": "00dd89a7-bb6a-41ba-9d56-0cf244b6f81f",
+            "title": "面试题：如何设计生产线程池？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 12,
+            "trusted_evaluation_count": 12,
+            "average_score": 0.9667
+          }
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "session_id": "36f40ce1-65d0-446f-afb3-ffa93df99355",
+      "score": 58,
+      "max_score": 60,
+      "questions": [
+        {
+          "text": "在 Redis 缓存工程化中，Cache-Aside 模式是常用的缓存一致性方案。请解释为什么该模式通常采用“先更新数据库，再删除缓存”的顺序，而不是“先删除缓存，再更新数据库”？如果删除缓存失败，有哪些补偿手段？",
+          "reference_chunk_ids": [
+            "09669e68-5560-488e-ab17-513078f6e732",
+            "30df193a-0980-4512-8e54-6bf4f03fb824"
+          ]
+        },
+        {
+          "text": "在 Redis 缓存工程化中，缓存雪崩和缓存击穿是两类典型的缓存异常。请从触发原因、影响范围、治理策略三个维度对比这两种异常，并结合实际场景说明：当热点 Key 即将过期时，如何通过互斥重建和逻辑过期两种方案避免缓存击穿？这两种方案各自的优缺点是什么？",
+          "reference_chunk_ids": [
+            "30df193a-0980-4512-8e54-6bf4f03fb824",
+            "09669e68-5560-488e-ab17-513078f6e732"
+          ]
+        },
+        {
+          "text": "在 Redis 缓存工程化中，Cache-Aside 模式追求最终一致性，但实际生产环境仍需关注缓存命中率、成本与可观测性。请设计一个缓存监控与成本优化方案：你会监控哪些指标？如何通过监控发现缓存击穿或缓存雪崩的迹象？在保证性能的前提下，如何降低 Redis 内存成本？请结合具体场景说明。",
+          "reference_chunk_ids": [
+            "ef1e9f14-bfaf-433a-8319-da09d25e8ba3",
+            "c5a14f14-475d-42da-be7f-9dfb9a71f484"
+          ]
+        }
+      ],
+      "coverage_after": {
+        "total": 15,
+        "uncovered": 4,
+        "attempted": 0,
+        "verified": 11,
+        "points": [
+          {
+            "id": "77d1a7ed-c06f-4645-bfc2-7c3475cf88fd",
+            "title": "Happens-before",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "d4f0fdd9-9664-4a84-9c07-12d89337c748",
+            "title": "缓存穿透与空值治理",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "8c9ecda1-94b2-4a07-b08e-ff6583baa539",
+            "title": "面试题：volatile 能否保证线程安全？",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "5ef58dcf-d87c-42e7-b96d-8421dda78588",
+            "title": "面试题：线上频繁 Full GC 如何排查？",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "cdedae79-e513-4530-810e-3b57ba1dfaac",
+            "title": "Cache-Aside 一致性模式",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 6,
+            "trusted_evaluation_count": 6,
+            "average_score": 0.9417
+          },
+          {
+            "id": "4f99b4e5-6d08-4c40-9018-bd8fcef1bce3",
+            "title": "GC 诊断",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 9,
+            "trusted_evaluation_count": 9,
+            "average_score": 0.9667
+          },
+          {
+            "id": "3f3f383b-5fda-40e7-8550-aee32fa18d0f",
+            "title": "Java 后端面试知识体系",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 30,
+            "trusted_evaluation_count": 30,
+            "average_score": 0.9533
+          },
+          {
+            "id": "bbc20d10-b578-4b05-aa92-6a700a41cebe",
+            "title": "事务边界",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 4,
+            "trusted_evaluation_count": 4,
+            "average_score": 1.0
+          },
+          {
+            "id": "eee0e31e-0ba3-4017-98cc-02a18422ea1a",
+            "title": "生产可观测性",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.9
+          },
+          {
+            "id": "ee52d04f-a174-4fc0-ade6-741c4c747793",
+            "title": "缓存击穿与热点互斥",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 3,
+            "trusted_evaluation_count": 3,
+            "average_score": 0.9667
+          },
+          {
+            "id": "85903c83-1d0a-49ba-b74d-a91452829fc3",
+            "title": "缓存雪崩与多层保护",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 6,
+            "trusted_evaluation_count": 6,
+            "average_score": 0.9417
+          },
+          {
+            "id": "77687aeb-f548-4e1a-b434-5c330b45a80d",
+            "title": "运行时区域",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 3,
+            "trusted_evaluation_count": 3,
+            "average_score": 1.0
+          },
+          {
+            "id": "1ff33c17-a1e9-46f4-8c03-ef12edcfecfc",
+            "title": "面试题：`@Transactional` 为什么可能不生效？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 7,
+            "trusted_evaluation_count": 7,
+            "average_score": 0.9143
+          },
+          {
+            "id": "14a2797c-30c7-4790-ab95-a79d32ffb313",
+            "title": "面试题：如何设计 Java 服务健康检查？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.9
+          },
+          {
+            "id": "00dd89a7-bb6a-41ba-9d56-0cf244b6f81f",
+            "title": "面试题：如何设计生产线程池？",
+            "status": "mastered",
+            "source_count": 1,
+            "attempt_count": 12,
+            "trusted_evaluation_count": 12,
+            "average_score": 0.9667
+          }
+        ]
+      }
+    }
+  ],
+  "profile_after_rounds": [
+    {
+      "id": "ef324887-cc20-49b9-a01f-47be3c719466",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::concept",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "concept",
+      "subtopic_title": "核心概念",
+      "mastery_score": 0.6458,
+      "confidence_weighted_count": 2.0,
+      "last_evaluation_id": "435319f1-8a7d-4ddb-b332-1df0c0fdaa1f",
+      "version": 2,
+      "updated_at": "2026-08-02T03:13:53.599980Z"
+    },
+    {
+      "id": "af77880a-cdfc-4c7e-98fb-a46758135c7d",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::concurrency",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "concurrency",
+      "subtopic_title": "Java 并发",
+      "mastery_score": 0.8709,
+      "confidence_weighted_count": 9.0,
+      "last_evaluation_id": "c5c8df13-d00d-45f7-8f55-0e66f612f369",
+      "version": 9,
+      "updated_at": "2026-08-02T03:33:29.237001Z"
+    },
+    {
+      "id": "946863ee-5604-44da-801b-721a9b04d769",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::engineering",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "engineering",
+      "subtopic_title": "工程落地",
+      "mastery_score": 0.572,
+      "confidence_weighted_count": 1.0,
+      "last_evaluation_id": "da318e9e-cb06-47b7-87f0-9303f29aa43a",
+      "version": 1,
+      "updated_at": "2026-08-02T03:13:53.592605Z"
+    },
+    {
+      "id": "0a2e14e1-68ef-48f1-8074-3aab9eb9a616",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::jvm",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "jvm",
+      "subtopic_title": "JVM 与 GC",
+      "mastery_score": 0.8937,
+      "confidence_weighted_count": 9.0,
+      "last_evaluation_id": "c236e14f-5015-4975-84cc-8b4f822198b0",
+      "version": 9,
+      "updated_at": "2026-08-02T03:31:44.823226Z"
+    },
+    {
+      "id": "edc8a360-15e3-4d55-815c-28ee43c645bc",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::production",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "production",
+      "subtopic_title": "Java 服务生产化",
+      "mastery_score": 0.9277,
+      "confidence_weighted_count": 15.0,
+      "last_evaluation_id": "4e033894-3207-431d-a1e5-8361c049b554",
+      "version": 15,
+      "updated_at": "2026-08-02T04:16:25.586359Z"
+    },
+    {
+      "id": "94729cbb-8a04-4929-80c1-0f952ba06e8b",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "subtopic::java_backend::transaction",
+      "profile_level": "subtopic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": "transaction",
+      "subtopic_title": "事务与一致性",
+      "mastery_score": 0.82,
+      "confidence_weighted_count": 6.0,
+      "last_evaluation_id": "52df35c8-abe2-4b16-9dee-7cac5b2aad44",
+      "version": 6,
+      "updated_at": "2026-08-02T03:34:21.288275Z"
+    },
+    {
+      "id": "adfa6cb3-c91a-4539-bc73-753a98932efc",
+      "knowledge_base_id": "2c6f2730-852e-4d94-8bc8-3de1b840ed95",
+      "knowledge_point": "topic::java_backend",
+      "profile_level": "topic",
+      "topic_key": "java_backend",
+      "topic_title": "Java 后端",
+      "subtopic_key": null,
+      "subtopic_title": null,
+      "mastery_score": 0.9509,
+      "confidence_weighted_count": 42.0,
+      "last_evaluation_id": "4e033894-3207-431d-a1e5-8361c049b554",
+      "version": 42,
+      "updated_at": "2026-08-02T04:16:25.583535Z"
+    }
+  ],
+  "plan_after_rounds": [
+    {
+      "knowledge_point": "Happens-before",
+      "topic_key": null,
+      "topic_title": "Happens-before",
+      "subtopic_key": null,
+      "subtopic_title": null,
+      "reason": "coverage_gap:uncovered",
+      "priority": 3,
+      "mastery_score": null,
+      "source_type": "coverage_gap"
+    },
+    {
+      "knowledge_point": "缓存穿透与空值治理",
+      "topic_key": null,
+      "topic_title": "缓存穿透与空值治理",
+      "subtopic_key": null,
+      "subtopic_title": null,
+      "reason": "coverage_gap:uncovered",
+      "priority": 3,
+      "mastery_score": null,
+      "source_type": "coverage_gap"
+    },
+    {
+      "knowledge_point": "面试题：volatile 能否保证线程安全？",
+      "topic_key": null,
+      "topic_title": "面试题：volatile 能否保证线程安全？",
+      "subtopic_key": null,
+      "subtopic_title": null,
+      "reason": "coverage_gap:uncovered",
+      "priority": 3,
+      "mastery_score": null,
+      "source_type": "coverage_gap"
+    },
+    {
+      "knowledge_point": "面试题：线上频繁 Full GC 如何排查？",
+      "topic_key": null,
+      "topic_title": "面试题：线上频繁 Full GC 如何排查？",
+      "subtopic_key": null,
+      "subtopic_title": null,
+      "reason": "coverage_gap:uncovered",
+      "priority": 3,
+      "mastery_score": null,
+      "source_type": "coverage_gap"
+    }
+  ]
+}

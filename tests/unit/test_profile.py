@@ -122,3 +122,33 @@ def test_training_focuses_prefer_review_tasks_and_lower_mastery() -> None:
         "状态建模与工作流控制",
     ]
     assert ranked[0].source_type == "review_task"
+
+
+def test_training_focuses_do_not_merge_same_title_from_different_parents() -> None:
+    ranked = rank_training_focuses(
+        [
+            TrainingFocusCandidate(
+                knowledge_point="评估与可靠性",
+                topic_key="rag",
+                subtopic_key="evaluation",
+                reason="due_review_task:concept_confusion",
+                priority=3,
+                mastery_score=0.44,
+                source_type="review_task",
+            ),
+            TrainingFocusCandidate(
+                knowledge_point="评估与可靠性",
+                topic_key="agent_engineering",
+                subtopic_key="evaluation",
+                reason="low_mastery",
+                priority=2,
+                mastery_score=0.60,
+                source_type="ability",
+            ),
+        ]
+    )
+
+    assert [(item.topic_key, item.subtopic_key) for item in ranked] == [
+        ("rag", "evaluation"),
+        ("agent_engineering", "evaluation"),
+    ]

@@ -9,10 +9,14 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
+from agent_mentor.application.coverage_catalog import sync_document_catalog
 from agent_mentor.domain.knowledge import DocumentStatus, TrustLevel
 from agent_mentor.infrastructure.database.models import (
     KnowledgeBaseModel,
+    KnowledgeCatalogSourceModel,
     KnowledgeChunkModel,
+    QuestionCoverageModel,
+    QuestionReferenceModel,
     SourceDocumentModel,
 )
 from agent_mentor.ports.embedding_gateway import EmbeddingGateway
@@ -233,6 +237,11 @@ class KnowledgeService:
                     ),
                     {"document_id": document_id},
                 )
+                await sync_document_catalog(
+                    session,
+                    knowledge_base_id=document.knowledge_base_id,
+                    document_id=document.id,
+                )
                 document.status = DocumentStatus.READY
                 await session.commit()
         except Exception as error:
@@ -268,6 +277,59 @@ class KnowledgeService:
             await session.commit()
             return len(recovered_ids)
 
+    async def rebuild_coverage_catalogs(self) -> int:
+        """Idempotently backfill catalog links for documents ingested before Phase 13."""
+        async with self._sessions() as session:
+            documents = list(
+                (
+                    await session.scalars(
+                        select(SourceDocumentModel).where(
+                            SourceDocumentModel.status == DocumentStatus.READY,
+                            SourceDocumentModel.is_active.is_(True),
+                        )
+                    )
+                ).all()
+            )
+            linked = 0
+            for document in documents:
+                linked += await sync_document_catalog(
+                    session,
+                    knowledge_base_id=document.knowledge_base_id,
+                    document_id=document.id,
+                )
+            existing_pairs = set(
+                (
+                    await session.execute(
+                        select(
+                            QuestionCoverageModel.question_id,
+                            QuestionCoverageModel.knowledge_point_id,
+                        )
+                    )
+                ).all()
+            )
+            historical_pairs = (
+                await session.execute(
+                    select(
+                        QuestionReferenceModel.question_id,
+                        KnowledgeCatalogSourceModel.knowledge_point_id,
+                    ).join(
+                        KnowledgeCatalogSourceModel,
+                        KnowledgeCatalogSourceModel.chunk_id == QuestionReferenceModel.chunk_id,
+                    )
+                )
+            ).all()
+            for question_id, point_id in set(historical_pairs) - existing_pairs:
+                session.add(
+                    QuestionCoverageModel(
+                        id=uuid4(),
+                        question_id=question_id,
+                        knowledge_point_id=point_id,
+                        created_at=datetime.now(UTC),
+                    )
+                )
+            await session.commit()
+            return linked
+
     async def get_document(self, document_id: UUID) -> SourceDocumentModel:
         async with self._sessions() as session:
             document = await session.get(SourceDocumentModel, document_id)
@@ -281,4 +343,11 @@ class KnowledgeService:
             if document is None:
                 raise AppError("DOCUMENT_NOT_FOUND", "Document was not found.", 404)
             document.status, document.is_active = DocumentStatus.ARCHIVED, False
+            from agent_mentor.infrastructure.database.models import KnowledgeCatalogSourceModel
+
+            await session.execute(
+                delete(KnowledgeCatalogSourceModel).where(
+                    KnowledgeCatalogSourceModel.document_id == document_id
+                )
+            )
             await session.commit()

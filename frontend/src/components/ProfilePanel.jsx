@@ -14,10 +14,24 @@ import { Empty, FeedbackGroup, FeedbackItem, StepCard, TagRow } from "./common.j
 
 export function ProfilePanel({ profile }) {
   const view = buildProfileView(profile);
+  const coverage = profile.coverage;
   return (
     <StepCard number="05" title="能力画像摘要" tone="cyan">
       <p>画像固定绑定本机默认用户；画像分来自最近答题评分和错误累计，用于训练排序，不等同于真实能力百分比。</p>
       <FeedbackItem title="画像结论">{view.summary}</FeedbackItem>
+      {coverage && (
+        <FeedbackItem
+          title="知识查漏覆盖"
+          tags={[
+            `总计 ${coverage.total}`,
+            `待覆盖 ${coverage.uncovered}`,
+            `验证中 ${coverage.attempted}`,
+            `已验证 ${coverage.verified}`,
+          ]}
+        >
+          新导入资料只会增加待覆盖知识点，不会降低已有能力分。只有题目实际引用资料切片并取得可信评分后，知识点才会进入已验证状态。
+        </FeedbackItem>
+      )}
       {view.strengths.length > 0 && (
         <FeedbackGroup title="相对稳定">
           {view.strengths.map((item) => (

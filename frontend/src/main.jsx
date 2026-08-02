@@ -34,6 +34,7 @@ const emptyProfile = {
   tasks: [],
   plan: [],
   focuses: [],
+  coverage: null,
 };
 
 async function optionalApi(path, fallback) {
@@ -61,6 +62,7 @@ function App() {
   const [askResult, setAskResult] = useState(null);
   const [allowModelKnowledge, setAllowModelKnowledge] = useState(false);
   const [interviewTopic, setInterviewTopic] = useState("AI Agent");
+  const [selectedTrainingFocus, setSelectedTrainingFocus] = useState(null);
   const [topicEdited, setTopicEdited] = useState(false);
   const [interview, setInterview] = useState(null);
   const [workflowTrace, setWorkflowTrace] = useState([]);
@@ -118,29 +120,6 @@ function App() {
           };
         }),
       );
-      const [
-        abilities,
-        errors,
-        tasks,
-        plan,
-        focuses,
-        history,
-        trends,
-        demoReadiness,
-      ] = await Promise.all([
-        optionalApi("/api/v1/profiles/me/abilities", []),
-        optionalApi("/api/v1/profiles/me/error-patterns", []),
-        optionalApi("/api/v1/review-tasks", []),
-        optionalApi("/api/v1/profiles/me/interview-plan", []),
-        optionalApi("/api/v1/profiles/me/training-focuses", []),
-        optionalApi("/api/v1/reports/history", []),
-        optionalApi("/api/v1/reports/trends", []),
-        optionalApi("/api/v1/demo/readiness", null),
-      ]);
-      setProfile({ abilities, errors, tasks, plan, focuses });
-      setReportHistory(history);
-      setScoreTrends(trends);
-      setReadiness(demoReadiness);
       const restored = await restoreKnowledgeWorkspace(catalog);
       // An empty knowledge base is still a real workspace. Keep the full catalog so
       // creating one can never make an older workspace disappear from the selector.
@@ -148,10 +127,12 @@ function App() {
       if (restored.base) {
         setKnowledgeBase(restored.base);
         setDocuments(restored.documents);
+        await loadKnowledgeBaseLearningState(restored.base.id);
         await restoreActiveInterview(restored.base.id);
         const suffix = restored.documents.length ? `，资料 ${restored.documents.length} 份` : "";
         setStatus(`${runtimeLabel(runtimeInfo)}，已恢复知识库：${restored.base.name}${suffix}`);
       } else {
+        clearKnowledgeBaseLearningState();
         setStatus(`${runtimeLabel(runtimeInfo)}，请创建你的第一个知识库`);
       }
     } catch (err) {
@@ -183,6 +164,34 @@ function App() {
       }
     }
     return fallback;
+  }
+
+  function clearKnowledgeBaseLearningState() {
+    setProfile(emptyProfile);
+    setReportHistory([]);
+    setScoreTrends([]);
+    setReport(null);
+  }
+
+  async function loadKnowledgeBaseLearningState(knowledgeBaseId) {
+    clearKnowledgeBaseLearningState();
+    const basePath = `/api/v1/knowledge-bases/${knowledgeBaseId}`;
+    const [abilities, errors, tasks, plan, focuses, coverage, history, trends, demoReadiness] =
+      await Promise.all([
+        optionalApi(`${basePath}/profile/abilities`, []),
+        optionalApi(`${basePath}/profile/error-patterns`, []),
+        optionalApi(`${basePath}/review-tasks`, []),
+        optionalApi(`${basePath}/interview-plan`, []),
+        optionalApi(`${basePath}/training-focuses`, []),
+        optionalApi(`${basePath}/coverage`, null),
+        optionalApi(`${basePath}/reports/history`, []),
+        optionalApi(`${basePath}/reports/trends`, []),
+        optionalApi("/api/v1/demo/readiness", null),
+      ]);
+    setProfile({ abilities, errors, tasks, plan, focuses, coverage });
+    setReportHistory(history);
+    setScoreTrends(trends);
+    setReadiness(demoReadiness);
   }
 
   async function restoreActiveInterview(knowledgeBaseId) {
@@ -262,7 +271,9 @@ function App() {
     window.localStorage.setItem(activeKnowledgeBaseKey, base.id);
     setAskResult(null);
     setReport(null);
+    setSelectedTrainingFocus(null);
     setTopicEdited(false);
+    await loadKnowledgeBaseLearningState(base.id);
     await restoreActiveInterview(base.id);
     setReadiness(await api("/api/v1/demo/readiness"));
   }
@@ -374,11 +385,23 @@ function App() {
 
   const startInterview = () =>
     run("创建并启动三题面试", async () => {
+      const routedTopic = selectedTrainingFocus
+        ? [
+            selectedTrainingFocus.topic_title,
+            selectedTrainingFocus.subtopic_title,
+          ]
+            .filter(Boolean)
+            .join(" · ")
+        : interviewTopic.trim();
       const created = await api("/api/v1/interviews", {
         method: "POST",
         body: JSON.stringify({
           knowledge_base_id: knowledgeBase.id,
-          topic: interviewTopic.trim() || inferInterviewTopic(documents, profile),
+          topic: routedTopic || inferInterviewTopic(documents, profile),
+          profile_topic_key: selectedTrainingFocus?.topic_key ?? null,
+          profile_topic_title: selectedTrainingFocus?.topic_title ?? null,
+          profile_subtopic_key: selectedTrainingFocus?.subtopic_key ?? null,
+          profile_subtopic_title: selectedTrainingFocus?.subtopic_title ?? null,
           difficulty: "medium",
           question_count: 3,
         }),
@@ -430,21 +453,9 @@ function App() {
         body: JSON.stringify({ reviewer_available: true }),
       });
       await api(`/api/v1/interviews/${interview.id}/profile-updates`, { method: "POST" });
-      const [abilities, errors, tasks, plan, focuses, history, trends] = await Promise.all([
-        api("/api/v1/profiles/me/abilities"),
-        api("/api/v1/profiles/me/error-patterns"),
-        api("/api/v1/review-tasks"),
-        api("/api/v1/profiles/me/interview-plan"),
-        api("/api/v1/profiles/me/training-focuses"),
-        api("/api/v1/reports/history"),
-        api("/api/v1/reports/trends"),
-      ]);
-      setReport(builtReport);
       setWorkflowTrace(await loadWorkflowTrace(interview.id));
-      setProfile({ abilities, errors, tasks, plan, focuses });
-      setReportHistory(history);
-      setScoreTrends(trends);
-      setReadiness(await api("/api/v1/demo/readiness"));
+      await loadKnowledgeBaseLearningState(knowledgeBase.id);
+      setReport(builtReport);
       setActiveView("reports");
     });
 
@@ -458,12 +469,14 @@ function App() {
 
   function selectTrainingFocus(item) {
     setInterviewTopic(item.knowledge_point);
+    setSelectedTrainingFocus(item);
     setTopicEdited(true);
     setStatus(`已选择专项训练主题：${item.knowledge_point}`);
   }
 
   function changeInterviewTopic(value) {
     setInterviewTopic(value);
+    setSelectedTrainingFocus(null);
     setTopicEdited(true);
   }
 

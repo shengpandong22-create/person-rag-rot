@@ -113,6 +113,20 @@ def test_answer_service_rejects_incidental_chinese_overlap() -> None:
     )
 
 
+def test_answer_service_rejects_cross_domain_question_with_generic_safety_terms() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = chunk()
+    evidence = replace(evidence, content="Agent 工具调用需要权限校验、预算控制和安全边界。")
+
+    assert not service._has_lexical_support("volatile 是否能保证 count++ 的线程安全？", [evidence])
+
+
 def test_answer_service_expands_rrf_retrieval_aliases() -> None:
     service = AnswerService(
         cast(Any, None),

@@ -24,6 +24,7 @@ frontend/node_modules/
 uploads/
 data/
 exam_data/
+backups/
 
 # Existing prototype runtime data
 vector_store/

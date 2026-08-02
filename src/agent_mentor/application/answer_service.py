@@ -59,6 +59,7 @@ CHINESE_STOP_BIGRAMS = {
     "中的",
     "怎么",
     "哪些",
+    "是否",
 }
 
 

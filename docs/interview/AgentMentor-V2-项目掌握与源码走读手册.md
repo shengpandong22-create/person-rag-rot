@@ -53,12 +53,12 @@
 
 ### 1.1 一句话版本
 
-AgentMentor 是一个面向个人学习者的 AI 面试训练系统：它将学习资料构建为可引用知识库，通过 RAG 生成问题和答案，再使用可信评分更新两层能力画像与复习任务，形成下一轮训练闭环。
+AgentMentor 是一个面向个人学习者的 AI 面试训练系统：它将学习资料构建为可引用知识库，通过 RAG 生成问题和答案，再使用可信评分更新两层能力画像、知识覆盖状态与复习任务，形成“补缺 + 查漏”的下一轮训练闭环。
 
 ### 1.2 一分钟版本
 
 > 我开发 AgentMentor 的背景是从 Java 后端转向 AI Agent 开发。我发现单纯让大模型充当面试官存在两个问题：回答是否正确难以验证，一次会话结束后也无法形成长期能力记录。  
-> 因此这个项目先将 Markdown、TXT、PDF 和 DOCX 学习资料解析、切分并写入 PostgreSQL/pgvector，通过全文检索、向量检索和 RRF 生成可溯源上下文；在此基础上生成面试题、参考答案和 Rubric。用户回答后，系统进行正确性、完整性、推理和表达四维评分，并通过引用白名单和置信状态控制哪些评分可以进入画像。可信结果会更新“稳定主题 + 动态诊断子知识点”两层画像，生成复习任务并反哺下一轮训练。  
+> 因此这个项目先将 Markdown、TXT、PDF 和 DOCX 学习资料解析、切分并写入 PostgreSQL/pgvector，通过全文检索、向量检索和 RRF 生成可溯源上下文；在此基础上生成面试题、参考答案和 Rubric。用户回答后，系统进行正确性、完整性、推理和表达四维评分，并通过引用白名单和置信状态控制哪些评分可以进入画像。可信结果会更新“稳定主题 + 动态诊断子知识点”两层画像，题目实际引用的资料切片还会更新独立的知识覆盖状态，从而区分“回答得不好”和“尚未考到”，再生成复习任务与查漏计划反哺下一轮训练。
 > 工程上重点实现了幂等答题、checkpoint、失败降级、报告历史和本机用户长期画像，并约束系统可在 16GB 普通开发机通过 Docker Compose 运行。
 
 ### 1.3 三分钟版本的讲述结构
@@ -80,6 +80,7 @@ AgentMentor 是一个面向个人学习者的 AI 面试训练系统：它将学�
 | 面试状态机 | 连续调用三次接口 | 人机中断、checkpoint、幂等推进 |
 | 可信评分 | LLM 随便给一个分 | Rubric、应用层重算、复核路由 |
 | 两层画像 | 展示几个百分比 | 稳定统计节点与动态诊断证据分离 |
+| 知识查漏 | 上传新资料后统一降分 | 增量知识目录、切片来源与可信覆盖证据分离 |
 | 复习闭环 | 固定推荐列表 | 错误驱动任务、连续验证后完成 |
 | 本地资源约束 | 少装几个组件 | 对成本、复杂度和可替换边界的控制 |
 
@@ -149,21 +150,27 @@ React RagPanel
 ## 3. 核心数据模型：只理解关系，不背表结构
 
 ```mermaid
-erDiagram
-    KNOWLEDGE_BASE ||--o{ SOURCE_DOCUMENT : 包含
-    SOURCE_DOCUMENT ||--o{ KNOWLEDGE_CHUNK : 切分
-    KNOWLEDGE_BASE ||--o{ INTERVIEW_SESSION : 支撑
-    INTERVIEW_SESSION ||--o{ INTERVIEW_QUESTION : 生成
-    INTERVIEW_SESSION ||--o{ WORKFLOW_CHECKPOINT : 记录
-    INTERVIEW_QUESTION ||--o{ QUESTION_REFERENCE : 引用
-    KNOWLEDGE_CHUNK ||--o{ QUESTION_REFERENCE : 被引用
-    INTERVIEW_QUESTION ||--o{ USER_ANSWER : 回答
-    USER_ANSWER ||--|| EVALUATION : 评分
-    EVALUATION ||--o{ EVALUATION_REFERENCE : 使用证据
-    INTERVIEW_SESSION ||--o| INTERVIEW_REPORT : 汇总
-    EVALUATION ||--o{ PROFILE_UPDATE_EVENT : 驱动
-    ABILITY_PROFILE ||--o{ ERROR_PATTERN : 产生
-    ERROR_PATTERN ||--o{ REVIEW_TASK : 触发
+flowchart LR
+    KNOWLEDGE_BASE -- 一对多 --> SOURCE_DOCUMENT
+    SOURCE_DOCUMENT -- 一对多 --> KNOWLEDGE_CHUNK
+    KNOWLEDGE_BASE -- 一对多 --> KNOWLEDGE_CATALOG_POINT
+    KNOWLEDGE_CATALOG_POINT -- 一对多 --> KNOWLEDGE_CATALOG_SOURCE
+    KNOWLEDGE_CHUNK -- 一对多 --> KNOWLEDGE_CATALOG_SOURCE
+    KNOWLEDGE_BASE -- 一对多 --> INTERVIEW_SESSION
+    INTERVIEW_SESSION -- 一对多 --> INTERVIEW_QUESTION
+    INTERVIEW_SESSION -- 一对多 --> WORKFLOW_CHECKPOINT
+    INTERVIEW_QUESTION -- 一对多 --> QUESTION_REFERENCE
+    KNOWLEDGE_CHUNK -- 一对多 --> QUESTION_REFERENCE
+    INTERVIEW_QUESTION -- 一对多 --> QUESTION_COVERAGE_POINT
+    KNOWLEDGE_CATALOG_POINT -- 一对多 --> QUESTION_COVERAGE_POINT
+    INTERVIEW_QUESTION -- 一对多 --> USER_ANSWER
+    USER_ANSWER -- 一对一 --> EVALUATION
+    EVALUATION -- 一对多 --> EVALUATION_REFERENCE
+    INTERVIEW_SESSION -- 一对一或零 --> INTERVIEW_REPORT
+    EVALUATION -- 一对多 --> PROFILE_UPDATE_EVENT
+    ABILITY_PROFILE -- 一对多 --> ERROR_PATTERN
+    ERROR_PATTERN -- 一对多 --> REVIEW_TASK
+
 ```
 
 ### 3.1 三组核心实体
@@ -174,6 +181,9 @@ erDiagram
 KnowledgeBase
 └── SourceDocument：原始文件、版本、可信等级、状态
     └── KnowledgeChunk：分块文本、标题路径、页码、向量、全文索引
+
+KnowledgeCatalogPoint：知识库内稳定的待验证知识点
+└── KnowledgeCatalogSource：知识点与 Document/Chunk 的来源关系
 ```
 
 #### 面试和评分数据
@@ -182,6 +192,7 @@ KnowledgeBase
 InterviewSession
 ├── InterviewQuestion
 │   ├── QuestionReference → KnowledgeChunk
+│   ├── QuestionCoveragePoint → KnowledgeCatalogPoint
 │   └── UserAnswer
 │       └── Evaluation
 │           └── EvaluationReference → KnowledgeChunk
@@ -214,6 +225,7 @@ Evaluation
 1. Chunk 是知识引用的最小单位，不能随便删除重建 ID。
 2. Evaluation 是报告和画像之间的可信门禁。
 3. Checkpoint 记录工作流轨迹，Idempotency-Key 保护答题副作用。
+4. 掌握度描述回答质量，覆盖度描述资料中的知识是否被真实考查，二者不能混为一个分数。
 
 ---
 
@@ -302,6 +314,8 @@ POST /knowledge-bases/{id}/documents
 → EmbeddingGateway.embed_documents
 → KnowledgeChunkModel
 → PostgreSQL tsvector + pgvector
+→ sync_document_catalog
+→ KnowledgeCatalogPoint + KnowledgeCatalogSource
 ```
 
 ### 5.3 上传阶段做了什么
@@ -394,7 +408,39 @@ stateDiagram-v2
 
 系统启动时还会检查长时间遗留的 `pending/processing` 文档，避免界面永远显示处理中。但这属于中断检测和状态修复，不是从解析中间步骤自动续跑。
 
-### 5.7 当前能力边界
+### 5.7 新文档如何进入查漏目录
+
+摄入完成后，`application/coverage_catalog.py::sync_document_catalog` 会从结构化 `heading_path` 提取稳定知识点，并建立知识点到文档、切片的来源关系：
+
+```text
+SourceDocument
+→ KnowledgeChunk.heading_path
+→ KnowledgeCatalogPoint
+→ KnowledgeCatalogSource(document_id, chunk_id)
+```
+
+关键约束：
+
+- 当文档存在二级标题时，一级标题只作为主题容器，不作为待考子知识点；
+- 同一知识库内标题规范化后生成稳定 `point_key`，重新索引不会重复创建节点；
+- 新文档只增加 `uncovered` 知识点，不写入 Evaluation，也不修改既有画像；
+- 文档归档时删除有效来源关系，失去活动来源的知识点不会继续参与覆盖统计；
+- 服务启动会为旧文档回填目录，并通过历史 `QuestionReference` 回填题目覆盖关系。
+
+因此，重新导入资料不是“清空画像重新训练”，而是给已有知识边界增加新的待验证集合。
+
+代码路线：
+
+```text
+KnowledgeService.ingest
+→ sync_document_catalog
+→ InterviewService._create_question
+→ map_question_coverage
+→ ProfileService.get_coverage
+→ ProfileService.recommend_interview_plan
+```
+
+### 5.8 当前能力边界
 
 已经实现：
 
@@ -412,12 +458,14 @@ stateDiagram-v2
 - 图片和图表理解；
 - 企业文档 ACL 与生命周期同步。
 
-### 5.8 自测题
+### 5.9 自测题
 
 1. 为什么同名文件不能直接覆盖？
 2. 为什么 Chunk ID 稳定会影响历史报告？
 3. BackgroundTasks 与可靠消息队列有什么区别？
 4. 扫描 PDF 为什么不是换一个 Loader 就能彻底解决？
+5. 为什么新文档增加知识点时不应该降低已有画像分？
+6. 为什么题目只有实际引用对应 Chunk 才能计入知识覆盖？
 
 ---
 
@@ -947,14 +995,55 @@ def review_verification_progress(current_streak, priority, *, trusted_high_score
 
 ### 9.7 训练焦点如何排序
 
-复习任务比普通低掌握度画像优先，因为它代表近期已经观察到的具体错误；同类候选中再考虑优先级、掌握度和知识点名称，最终形成下一轮推荐。
+复习任务比普通低掌握度画像优先，因为它代表近期已经观察到的具体错误；之后补充知识覆盖缺口，再考虑低掌握度能力。高掌握度能力不会再使用 `low_mastery` 作为推荐理由。
 
-### 9.8 自测题
+当前推荐语义是：
+
+```text
+近期明确错误（补缺）
+→ 未覆盖或证据不足的目录点（查漏）
+→ 低掌握度稳定主题
+→ 后续维护或扩展训练
+```
+
+### 9.8 掌握度和覆盖度为什么必须分开
+
+两层画像回答的是“用户在已经回答过的问题上表现如何”；知识覆盖回答的是“知识库中的内容是否被实际验证”。未考到不能解释为不会，也不能默认解释为掌握。
+
+覆盖状态由 `ProfileService.get_coverage` 根据真实数据计算：
+
+| 状态 | 含义 |
+|---|---|
+| `uncovered` | 已有活动资料来源，但没有题目实际引用 |
+| `attempted` | 已经出题，但还没有可信评分 |
+| `insufficient_evidence` | 只有一次可信验证，证据不足 |
+| `verified` | 已有多次可信证据，表现中等 |
+| `mastered` | 至少两次可信验证，平均分达到阈值 |
+| `weak` | 已有多次可信验证，但平均表现较弱 |
+
+可信覆盖要求 Evaluation 为 `final` 且 `confidence >= 0.70`。`review_pending`、`disputed` 和低置信结果不会让目录点变成已验证。
+
+完整证据链是：
+
+```text
+SourceDocument
+→ KnowledgeChunk
+→ KnowledgeCatalogSource
+→ QuestionReference
+→ QuestionCoveragePoint
+→ Evaluation
+```
+
+这条链路防止系统仅因为题目文本提到了某个名词，就错误声称已经考查了对应资料。
+
+### 9.9 自测题
 
 1. 为什么画像分不等于最近一次面试分？
 2. 主题与子知识点分别解决什么问题？
 3. 为什么低置信 final 可以降权更新，而 pending 必须阻断？
 4. 连续两次验证比一次高分有什么价值？
+5. 为什么 `uncovered` 是“未知”而不是“低掌握度”？
+6. 上传新文档后，覆盖数和画像分分别应该如何变化？
 
 ---
 
@@ -1108,6 +1197,7 @@ flowchart LR
 - 四维评分、应用层总分和复核状态；
 - 报告历史和趋势；
 - 两层画像、错误模式、复习任务和训练焦点；
+- 知识库增量目录、历史引用回填和可信覆盖状态；
 - 多知识库切换；
 - Docker Compose 三容器和真实数据库集成测试。
 
@@ -1117,6 +1207,7 @@ flowchart LR
 |---|---|
 | Agent 工作流 | 显式节点、checkpoint、人机中断；当前由 Service 编排 |
 | 画像驱动出题 | 画像推荐训练焦点，用户选择后注入主题 |
+| 查漏驱动出题 | 目录缺口进入推荐计划，仍由用户选择后启动面试 |
 | Embedding | 特征哈希开发基线，非生产语义模型 |
 | 复杂文档 | 基础文本解析，不包含 OCR 与复杂版面 |
 | 去重 | 文档内容去重 + 本轮题目规避，非全历史语义去重 |
@@ -1152,6 +1243,10 @@ flowchart LR
 | 评分和报告 | `application/evaluation_service.py` | `domain/evaluation.py` |
 | 两层画像 | `application/profile_service.py` | `domain/profile_taxonomy.py` |
 | 画像更新权重 | `domain/profile.py` | `application/profile_service.py` |
+| 增量知识目录 | `application/coverage_catalog.py` | `application/knowledge_service.py` |
+| 题目如何形成覆盖证据 | `application/interview_service.py` | `database/models.py` |
+| 覆盖状态和查漏推荐 | `application/profile_service.py` | `api/profiles.py` |
+| 前端覆盖摘要 | `frontend/src/components/ProfilePanel.jsx` | `frontend/src/main.jsx` |
 | 运行态与演示检查 | `api/health.py` | `application/demo_readiness_service.py` |
 | 完整集成证明 | `tests/integration/test_learning_loop.py` | `tests/unit/` |
 
@@ -1270,6 +1365,7 @@ flowchart LR
 | `docs/interview/agentmentor-v2-interview-qa.md` | 13 组深度面试问答 |
 | `docs/design/v2-two-layer-ability-profile.md` | 两层画像专项设计 |
 | `docs/planning/V2开发路线与验收标准.md` | Phase 7～12 路线与验收 |
+| `docs/evaluations/incremental-document-coverage-acceptance-20260802.md` | 新文档、查漏覆盖与三轮真实面试验收 |
 | `docs/acceptance/` | 每阶段的实现证据和验证结果 |
 | `tests/integration/test_learning_loop.py` | 完整闭环的真实数据库证据 |
 
@@ -1279,7 +1375,7 @@ flowchart LR
 
 学习完这份手册后，你不需要成为每一行代码的作者，但必须能形成下面这段判断：
 
-> AgentMentor 的核心价值不是“用大模型生成三道题”，而是把学习资料、可溯源检索、人机工作流、可信评分和长期画像连接成一个受约束的训练闭环。系统通过应用层规则限制 LLM 的权力，通过 checkpoint 和幂等保证流程状态，通过两层画像控制长期记忆粒度，并在 16GB 本地约束下选择 PostgreSQL、轻量 Embedding 和模块化单体。它已经是一个真实可运行的个人学习系统，但还不是企业级终态；复杂文档、生产检索评测、租户权限和可靠异步任务是明确的演进方向。
+> AgentMentor 的核心价值不是“用大模型生成三道题”，而是把学习资料、可溯源检索、人机工作流、可信评分和长期画像连接成一个受约束的训练闭环。系统通过应用层规则限制 LLM 的权力，通过 checkpoint 和幂等保证流程状态，通过两层画像控制长期记忆粒度，再通过增量知识目录区分“回答得怎么样”和“资料是否考到”，形成补缺与查漏两类训练信号；并在 16GB 本地约束下选择 PostgreSQL、轻量 Embedding 和模块化单体。它已经是一个真实可运行的个人学习系统，但还不是企业级终态；跨场题目去重、复杂文档、生产检索评测、租户权限和可靠异步任务是明确的演进方向。
 
 当你能够不用原文复述这段话，并能为每个结论指出一段关键代码或一条测试证据时，就已经达到项目面试所需的掌握程度。
 
@@ -1498,7 +1594,38 @@ Windows 应用控制可能阻止 Ruff 或 Pyright 可执行文件。遇到这种
 | 前端构建 | React 依赖、组件导入和生产 Bundle |
 | Docker 验收 | 三容器、迁移、代理和真实运行环境 |
 
-当前仓库在本文补充时可发现 47 个测试函数，但测试数量不是质量结论；重点是关键风险是否被覆盖。正式面试前应重新运行测试，并使用当次结果回答。
+本文完成增量查漏改造后的最近一次回归结果为：Ruff 全项目通过、Pytest `56 passed / 1 skipped`、React 生产构建通过、Docker Compose 迁移和启动通过。跳过项是未配置隔离 PostgreSQL 测试库的集成测试，不应描述为已经执行通过。
+
+测试数量不是质量结论；重点是关键风险是否被覆盖。正式面试前仍应重新运行测试，并使用当次结果回答。
+
+### 21.6 新文档与查漏闭环真实验收
+
+2026-08-02 向已有 Java 知识库增量导入 `04-Redis缓存工程化.md`，没有清空既有历史和画像，然后完成三轮真实 DeepSeek 面试：
+
+| 阶段 | 待覆盖 | 验证中 | 已验证 |
+|---|---:|---:|---:|
+| Redis 文档导入后 | 7 | 0 | 8 |
+| 第 1 轮（57/60） | 4 | 1 | 10 |
+| 第 2 轮（56/60） | 4 | 0 | 11 |
+| 第 3 轮（58/60） | 4 | 0 | 11 |
+
+最终 Redis 目录状态：
+
+- Cache-Aside：`mastered`，6 次可信验证，平均 94.17%；
+- 缓存击穿：`mastered`，3 次可信验证，平均 96.67%；
+- 缓存雪崩：`mastered`，6 次可信验证，平均 94.17%；
+- 缓存穿透：`uncovered`，没有引用和可信评分。
+
+导入文档时 Java 主画像保持 `0.9383`；完成三轮后，由可信评分渐进更新为 `0.9509`。未参与本轮训练的 JVM、并发、事务子主题保持原值。
+
+数据库进一步核验了三轮 18 条题目引用，其中 15 条来自新增 Redis 文档。缓存穿透没有因为整场高分而被误判为掌握，证明覆盖状态不是由总分或关键词猜测得到。
+
+详细证据：
+
+- `docs/evaluations/incremental-document-coverage-acceptance-20260802.md`
+- `docs/evaluations/results/java-redis-incremental-coverage-20260802.json`
+
+验收同时确认一个遗留 P1：三轮 Redis 题目的结构和引用组合较为相似。当前只有单场内去重，尚未实现同知识库跨场历史题目的语义去重。这个问题不影响覆盖证据正确性，但影响长期训练多样性。
 
 ---
 
@@ -1668,7 +1795,7 @@ application/demo_readiness_service.py
 ### 25.1 简历项目描述参考
 
 > **AgentMentor｜个人 RAG 面试训练助手**  
-> 面向 Java 后端向 AI Agent 转型的个人学习场景，设计并实现资料入库、混合检索、可恢复模拟面试、可信评分和两层能力画像闭环。使用 FastAPI、PostgreSQL/pgvector、React 和 Docker Compose，在 16GB 普通开发机完成本地部署。通过全文 + 向量召回及 RRF、引用白名单和证据不足降级增强回答可信性；使用 checkpoint、Idempotency-Key 和数据库约束保证面试状态恢复与重复提交安全；以四维 Rubric、应用层总分和置信门禁驱动稳定主题/动态子知识点画像与复习任务。
+> 面向 Java 后端向 AI Agent 转型的个人学习场景，设计并实现资料入库、混合检索、可恢复模拟面试、可信评分和两层能力画像闭环。使用 FastAPI、PostgreSQL/pgvector、React 和 Docker Compose，在 16GB 普通开发机完成本地部署。通过全文 + 向量召回及 RRF、引用白名单和证据不足降级增强回答可信性；使用 checkpoint、Idempotency-Key 和数据库约束保证面试状态恢复与重复提交安全；以四维 Rubric、应用层总分和置信门禁驱动稳定主题/动态子知识点画像，并通过增量知识目录与真实切片引用区分“掌握度”和“覆盖度”，形成补缺与查漏训练计划。
 
 简历中不要写当前未实现的 LangGraph Runtime、生产 OCR、企业多租户或生产级 Embedding。
 
@@ -1690,12 +1817,14 @@ application/demo_readiness_service.py
 - 通过 checkpoint 和 Idempotency-Key 处理人机中断与重复请求；
 - 使用四维 Rubric、应用层总分和复核状态控制画像更新；
 - 将画像调整为稳定主题 + 动态子知识点，并要求连续两次可信高分完成复习任务；
+- 将增量文档提取为稳定知识目录，以题目真实引用和可信评分更新覆盖状态；
 - 使用 Docker Compose、单元测试和真实数据库集成测试验收。
 
 #### Result
 
 - 完成从资料上传到下一轮训练的端到端闭环；
 - 支持报告历史、多轮趋势、复习任务和多知识库；
+- 支持新增资料不重置画像，并持续识别尚未考查的知识点；
 - 在历史本地基准中三容器稳定态约 146 MiB；
 - 明确保留生产 Embedding、复杂文档、权限和可靠任务的演进边界。
 
