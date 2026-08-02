@@ -6,7 +6,6 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from agent_mentor.domain.users import User
 from agent_mentor.ports.embedding_gateway import EmbeddingGateway
 from agent_mentor.ports.knowledge_retriever import (
     KnowledgeRetriever,
@@ -14,7 +13,6 @@ from agent_mentor.ports.knowledge_retriever import (
     RetrievedChunk,
 )
 from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
-from agent_mentor.ports.repositories import UserRepository
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,14 +91,3 @@ class FakeKnowledgeRetriever(KnowledgeRetriever):
     async def retrieve(self, query: RetrievalQuery) -> list[RetrievedChunk]:
         self.calls.append(query)
         return self.results[: query.top_k]
-
-
-@dataclass(slots=True)
-class InMemoryUserRepository(UserRepository):
-    users_by_email: dict[str, User] = field(default_factory=dict)
-
-    async def add(self, user: User) -> None:
-        self.users_by_email[user.email] = user
-
-    async def get_by_email(self, email: str) -> User | None:
-        return self.users_by_email.get(email)

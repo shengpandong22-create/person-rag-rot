@@ -45,19 +45,6 @@ pythonpath = ["src"]
 target-version = "py312"
 line-length = 100
 src = ["src", "tests"]
-extend-exclude = [
-  "audio.py",
-  "config.py",
-  "document_loader.py",
-  "knowledge_base.py",
-  "langgraph_rag.py",
-  "main.py",
-  "multi_agent_exam.py",
-  "rag_engine.py",
-  "voice_assistant.py",
-  "tests/test_multi_agent_exam.py",
-]
-
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 

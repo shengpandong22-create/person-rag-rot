@@ -239,23 +239,24 @@ class ProfileService:
 
     async def get_coverage(self, knowledge_base_id: UUID) -> CoverageSnapshot:
         async with self._sessions() as db:
-            source_counts = dict(
-                (
-                    await db.execute(
-                        select(
-                            KnowledgeCatalogSourceModel.knowledge_point_id,
-                            func.count(KnowledgeCatalogSourceModel.id),
-                        )
-                        .join(
-                            KnowledgeCatalogPointModel,
-                            KnowledgeCatalogPointModel.id
-                            == KnowledgeCatalogSourceModel.knowledge_point_id,
-                        )
-                        .where(KnowledgeCatalogPointModel.knowledge_base_id == knowledge_base_id)
-                        .group_by(KnowledgeCatalogSourceModel.knowledge_point_id)
+            source_rows = (
+                await db.execute(
+                    select(
+                        KnowledgeCatalogSourceModel.knowledge_point_id,
+                        func.count(KnowledgeCatalogSourceModel.id),
                     )
-                ).all()
-            )
+                    .join(
+                        KnowledgeCatalogPointModel,
+                        KnowledgeCatalogPointModel.id
+                        == KnowledgeCatalogSourceModel.knowledge_point_id,
+                    )
+                    .where(KnowledgeCatalogPointModel.knowledge_base_id == knowledge_base_id)
+                    .group_by(KnowledgeCatalogSourceModel.knowledge_point_id)
+                )
+            ).all()
+            source_counts: dict[UUID, int] = {
+                point_id: int(count) for point_id, count in source_rows
+            }
             points = list(
                 (
                     await db.scalars(

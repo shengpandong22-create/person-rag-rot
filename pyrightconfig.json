@@ -1,17 +1,5 @@
 {
   "include": ["src", "tests/unit", "tests/integration", "migrations"],
-  "exclude": [
-    "audio.py",
-    "config.py",
-    "document_loader.py",
-    "knowledge_base.py",
-    "langgraph_rag.py",
-    "main.py",
-    "multi_agent_exam.py",
-    "rag_engine.py",
-    "voice_assistant.py",
-    "tests/test_multi_agent_exam.py"
-  ],
   "venvPath": ".",
   "venv": ".venv",
   "executionEnvironments": [

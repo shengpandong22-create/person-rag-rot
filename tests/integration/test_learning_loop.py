@@ -186,15 +186,15 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
             "画像隔离对照知识库", "不应读取另一知识库的画像和报告"
         )
         isolated_profile = await profiles.get_snapshot(interview.user_id, isolated_base.id)
-        assert isolated_profile.abilities == []
-        assert isolated_profile.error_patterns == []
-        assert isolated_profile.review_tasks == []
+        assert isolated_profile.abilities == ()
+        assert isolated_profile.errors == ()
+        assert isolated_profile.review_tasks == ()
         assert await evaluations.list_report_history(interview.user_id, isolated_base.id) == []
 
         scoped_profile = await profiles.get_snapshot(interview.user_id, base.id)
         scoped_history = await evaluations.list_report_history(interview.user_id, base.id)
         assert scoped_profile.abilities
         assert len(scoped_history) == 1
-        assert scoped_history[0].session_id == interview.id
+        assert scoped_history[0].report.session_id == interview.id
     finally:
         await engine.dispose()

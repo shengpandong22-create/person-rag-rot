@@ -8,8 +8,6 @@ __pycache__
 .pyright
 .env
 data
-exam_data
-vector_store
 frontend/node_modules
 docs
 tests
