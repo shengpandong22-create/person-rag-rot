@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any, cast
 from uuid import uuid4
 
@@ -94,3 +95,36 @@ def test_answer_service_requires_lexical_support_for_evidence() -> None:
 
     assert service._has_lexical_support("RAG 如何使用 evidence?", [evidence])
     assert not service._has_lexical_support("我昨天午饭吃了什么?", [evidence])
+
+
+def test_answer_service_rejects_incidental_chinese_overlap() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = chunk()
+    evidence = replace(evidence, content="评估实验需要根据资料说明模型输出是否可靠。")
+
+    assert not service._has_lexical_support(
+        "请根据知识库解释量子纠缠实验中的贝尔不等式。", [evidence]
+    )
+
+
+def test_answer_service_expands_rrf_retrieval_aliases() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = chunk()
+    evidence = replace(
+        evidence,
+        content="Reciprocal Rank Fusion combines lexical and vector retrieval rankings.",
+    )
+
+    assert service._has_lexical_support("全文检索和向量检索为什么需要 RRF 融合？", [evidence])

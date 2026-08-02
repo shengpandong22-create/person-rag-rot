@@ -1,0 +1,664 @@
+﻿[
+    {
+        "session_id":  "d0678845-45b3-4444-a63b-f9c843323822",
+        "message_id":  "f7f33c27-bd89-4aab-be62-de9a1e93e756",
+        "answer":  "å½åç¥è¯åºè¯æ®ä¸è¶³ï¼æä¸è½ææ¨¡åå¸¸è¯ä¼ªè£\u0085æèµæç»è®ºãä½ å¯ä»¥è¡¥å\u0085\u0085èµæååé®ï¼æå\u0085è®¸æ¨¡åè¡¥å\u0085\u0085å¹¶æç¡®æ è®°ã",
+        "evidence_sufficient":  false,
+        "generation_mode":  "evidence_guard",
+        "model_name":  null,
+        "fallback_reason":  "insufficient_evidence",
+        "citations":  [
+
+                      ],
+        "candidates":  [
+                           {
+                               "chunk_id":  "446fb6ea-34dd-48ec-8185-9dd3907c909b",
+                               "document_id":  "8bd9c1b7-4e79-40ad-a393-ba30b96fcb5a",
+                               "document_title":  "01-agent-workflow-and-persistence",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent å·¥ä½æµãæä¹\u0085åä¸äººæºä¸­æ­å­¦ä¹ ç¬è®°",
+                                                    "7. é¢è¯åç­ç»æ"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  10,
+                               "content":  "åç­ Agent å·¥ä½æµé®é¢æ¶ï¼å¯ä»¥æâç®æ ãç¶æãèç¹ãä¸­æ­ãå¯ä½ç¨ãæ¢å¤ãè§æµãè¾¹çâç»ç»ãä¸è¦åªè¯´ä½¿ç¨äºæä¸ªæ¡æ¶ï¼è¦è§£éæ¡æ¶å¸®å©è§£å³äºä»ä¹å¯é æ§é®é¢ã",
+                               "score":  0.01639344262295082,
+                               "retrieval_explanation":  "RRF=0.0164 | vector_rank=1 | vector_score=0.0000",
+                               "vector_rank":  1,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "cdbdff88-bea8-461f-bb65-f2a5b7ddab03",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "1. ä¸ºä»ä¹ Agent æ¯åè½®é®ç­æ´é¾è¯æµ"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  1,
+                               "content":  "Agent ä¼è·¨å¤è½®è°ç¨å·¥å\u0085·ãä¿®æ¹ç¶æå¹¶æ ¹æ®ä¸­é´ç»æè°æ´è¡ä¸ºãæç»ç­æ¡æ­£ç¡®å¹¶ä¸è½è¯æè¿ç¨å¯é ï¼å ä¸ºè¿ç¨ä¸­å¯è½åçæ æè°ç¨ãè¶ææä½ãéå¤å¯ä½ç¨æé«ææ¬ç»è·¯ã Agent è¯æµåºåæ¶èèï¼ - ä»»å¡æ¯å¦å®æï¼ - æ¯å¦éµå®çº¦æï¼ - ä¸­é´è¿ç¨æ¯å¦åçï¼ - å·¥å\u0085·åæ°æ¯å¦æ­£ç¡®ï¼ - ç¶ææ¯å¦ä¸è´ï¼ - å¤±è´¥åæ¯å¦å®å\u0085¨æ¢å¤ï¼ - å»¶è¿åææ¬æ¯å¦å¯æ¥åã",
+                               "score":  0.016129032258064516,
+                               "retrieval_explanation":  "RRF=0.0161 | vector_rank=2 | vector_score=0.0000",
+                               "vector_rank":  2,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "f9bc870e-79d2-4bc9-a784-66465e07ec4b",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "3. å¤ç§ Grader ç»å"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  3,
+                               "content":  "ä¸åé®é¢éè¦ä¸åè¯æµå¨ï¼ - ç¡®å®æ§è§åï¼ç¶æãæ ¼å¼ãå¼ç¨ç½ååãæ°æ®åºå¯ä½ç¨ï¼ - éæåææä»£ç æ§è¡ï¼ä»£ç è´¨éåæµè¯æ¯å¦éè¿ï¼ - LLM-as-judgeï¼è¯­ä¹è´¨éãå®æ´æ§åè¡¨è¾¾ï¼ - äººå·¥ä¸å®¶ï¼é«é£é©ãäºè®®åæ ¡åæ ·æ¬ï¼ - ç¨æ·åé¦ï¼å®é\u0085ä»»å¡ä»·å¼ã ä¸è½æææè¯æµé½äº¤ç» LLM Judgeãç¡®å®æ§è§åè½å¤å¤æ­çé®é¢åºä¼å\u0085ä½¿ç¨ä»£ç å¤æ­ã",
+                               "score":  0.015625,
+                               "retrieval_explanation":  "RRF=0.0156 | vector_rank=4 | vector_score=0.0000",
+                               "vector_rank":  4,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "d4822060-74e5-4b06-80f7-68bc4a15d287",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "5. ç½®ä¿¡ä¸å¤æ ¸"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  5,
+                               "content":  "ä½ç½®ä¿¡ç»æä¸åºç´æ¥äº§çé¿æå¯ä½ç¨ãå¯ä»¥å°ç»æè·¯ç±ä¸ºï¼ - finalï¼å¯ä¿¡ï¼å¯è¿å\u0085¥æ¥ååç»åï¼ - review_pendingï¼ç­å¾\u0085å¤æ ¸ï¼æä¸æ´æ°ç»åï¼ - disputedï¼åè¯åå¤æ ¸å·®å¼æ¾èï¼é»æ­ç»åï¼ - low-confidence finalï¼å\u0085è®¸ä¿å­ï¼ä½ä»¥æ´ä½æéæ´æ°ã å¤æ ¸æ¨¡åä¸åè¯æ¨¡åç¸åä¼äº§çç¸å\u0085³æ§åå·®ãé«é£é©åºæ¯åºä½¿ç¨ä¸åæ¨¡åãä¸åæç¤ºç­ç¥æäººå·¥ä¸å®¶æ ¡åã",
+                               "score":  0.015151515151515152,
+                               "retrieval_explanation":  "RRF=0.0152 | vector_rank=6 | vector_score=0.0000",
+                               "vector_rank":  6,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "69fd4833-703d-43b7-aa72-fc70b276b4c6",
+                               "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                               "document_title":  "02-enterprise-rag-retrieval",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                    "èµææ¥æº"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "list",
+                               "chunk_index":  0,
+                               "content":  "- Microsoft Learn, Build Advanced Retrieval-Augmented Generation Systems: https://learn.microsoft.com/en-us/azure/developer/ai/advanced-retrieval-augmented-generation - Microsoft Learn, RAG and Generative AI in Azure AI Search: https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview æ¬æä¸ºåºäºå®æ¹èµææ´ççå­¦ä¹ ç¬è®°ï¼ä¸æ¯åæè½¬è½½ã",
+                               "score":  0.014285714285714285,
+                               "retrieval_explanation":  "RRF=0.0143 | vector_rank=10 | vector_score=0.0000",
+                               "vector_rank":  10,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           }
+                       ]
+    },
+    {
+        "session_id":  "16a045ad-9a36-4efc-b7c5-1e0602e14db6",
+        "message_id":  "64fb8983-0c0e-4d6d-9ef8-9c1290d7149c",
+        "answer":  "Checkpoint æ¯ Agent å·¥ä½æµä¸­çä¸ç§æºå¶ï¼ç¨äºä¿å­å·¥ä½æµå¨æä¸æ¶å»çç¶æå¿«ç\u0085§ãå®éå¸¸ä¸ thread æ session å\u0085³èï¼ä½¿åç»­è¯·æ±å¯ä»¥è¯»ååå²ç¶æå¹¶ä»ä¸å¡èç¹ç»§ç»­ãCheckpoint æ¯æçå\u0085³é®è½åå\u0085æ¬ï¼å¤è½®ç¶æä¿æãå·¥ä½æµåå²æ¥çãäººå·¥å®¡æ¹æç¨æ·è¾å\u0085¥åæåãæ\u0085éåçç¶ææ¢å¤ï¼ä»¥åå¯¹èç¹è¾å\u0085¥åè¾åºè¿è¡è°è¯ãä½ Checkpoint ä¸ç­äºä»»æä»£ç è¯­å¥çº§æ¢å¤ï¼è¦å®ç°å¯é æ¢å¤ï¼èç¹æ¬èº«è¿éè¦å¹ç­ï¼å¤é¨å¯ä½ç¨ä¹éè¦ç¨³å®ä¸å¡é®åäºå¡ä¿æ¤ãæ­¤å¤ï¼Checkpoint ä¹å­å¨ä¸äºå·¥ç¨é£é©ï¼å¦ç¶ææ éå¢é¿å¯¼è´å­å¨åä¸ä¸æææ¬ä¸åãcheckpoint ä¸ä¸å¡æ°æ®åå«æäº¤é æä¸ä¸è´ç­ãå¨è¯æµè¿ç¨ä¸­ï¼è®°å½ checkpoint æå©äºå¤æ­å¤±è´¥æ¥æºã",
+        "evidence_sufficient":  true,
+        "generation_mode":  "llm",
+        "model_name":  "deepseek-chat",
+        "fallback_reason":  null,
+        "citations":  [
+                          {
+                              "chunk_id":  "651bc1ca-47ad-4d52-82ac-90e1eea09f3f",
+                              "document_id":  "8bd9c1b7-4e79-40ad-a393-ba30b96fcb5a",
+                              "document_title":  "01-agent-workflow-and-persistence",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent å·¥ä½æµãæä¹\u0085åä¸äººæºä¸­æ­å­¦ä¹ ç¬è®°",
+                                                   "3. Checkpoint çèè´£"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  6,
+                              "content":  "Checkpoint ä¿å­å·¥ä½æµå¨æä¸æ¶å»çç¶æå¿«ç\u0085§ãå®éå¸¸ä¸ thread æ session å\u0085³èï¼ä½¿åç»­è¯·æ±å¯ä»¥è¯»ååå²ç¶æå¹¶ä»ä¸å¡èç¹ç»§ç»­ã Checkpoint æ¯æçå\u0085³é®è½åå\u0085æ¬ï¼ - å¤è½®ç¶æä¿æï¼ - å·¥ä½æµåå²æ¥çï¼ - äººå·¥å®¡æ¹æç¨æ·è¾å\u0085¥åæåï¼ - æ\u0085éåçç¶ææ¢å¤ï¼ - å¯¹èç¹è¾å\u0085¥åè¾åºè¿è¡è°è¯ã Checkpoint ä¸ç­äºä»»æä»£ç è¯­å¥çº§æ¢å¤ãè¦å®ç°å¯é æ¢å¤ï¼èç¹æ¬èº«è¿éè¦å¹ç­ï¼å¤é¨å¯ä½ç¨ä¹éè¦ç¨³å®ä¸å¡é®åäºå¡ä¿æ¤ã",
+                              "score":  0.03278688524590164,
+                              "retrieval_explanation":  "RRF=0.0328 | vector_rank=1 | text_rank=1 | vector_score=0.1759 | text_score=0.3000",
+                              "vector_rank":  1,
+                              "text_rank":  1,
+                              "vector_score":  0.17586310649734127,
+                              "text_score":  0.30000001192092896
+                          },
+                          {
+                              "chunk_id":  "8caba10c-a821-4163-96f9-bc3b7787dc6b",
+                              "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                              "document_title":  "03-agent-evaluation",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                   "6. è¿ç¨è¯æµ"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  6,
+                              "content":  "å¯¹å·¥ä½æµå¯ä»¥è®°å½ï¼ - èç¹åºåï¼ - æ¯ä¸ªèç¹è¾å\u0085¥åè¾åºæè¦ï¼ - å·¥å\u0085·è°ç¨ååæ°ï¼ - checkpointï¼ - éè¯å fallback åå ï¼ - Tokenãå»¶è¿åææ¬ï¼ - æç»å¯ä½ç¨ã åªæä¿çè¿ç¨ Traceï¼æè½å¤æ­å¤±è´¥æ¥èªè§åãå·¥å\u0085·ãæ£ç´¢ãæ¨¡åè¿æ¯ç¶æç®¡çã",
+                              "score":  0.03200204813108039,
+                              "retrieval_explanation":  "RRF=0.0320 | vector_rank=3 | text_rank=2 | vector_score=0.0909 | text_score=0.1000",
+                              "vector_rank":  3,
+                              "text_rank":  2,
+                              "vector_score":  0.09090909632769517,
+                              "text_score":  0.10000000149011612
+                          },
+                          {
+                              "chunk_id":  "e727afd0-4cfa-4fa2-b9dc-4dee98aad084",
+                              "document_id":  "8bd9c1b7-4e79-40ad-a393-ba30b96fcb5a",
+                              "document_title":  "01-agent-workflow-and-persistence",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent å·¥ä½æµãæä¹\u0085åä¸äººæºä¸­æ­å­¦ä¹ ç¬è®°",
+                                                   "6. å·¥ç¨é£é©"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "list",
+                              "chunk_index":  9,
+                              "content":  "- ç¶ææ éå¢é¿å¯¼è´å­å¨åä¸ä¸æææ¬ä¸åï¼ - checkpoint ä¸ä¸å¡æ°æ®åå«æäº¤é æä¸ä¸è´ï¼ - èç¹éè¯éå¤è°ç¨å¤é¨æå¡ï¼ - äººå·¥ä¸­æ­é¿æä¸æ¢å¤å½¢ææ¬æä»»å¡ï¼ - è¿åº¦èªä¸»å¯¼è´è·¯å¾é¾ä»¥å¤ç°åè¯æµã",
+                              "score":  0.03125763125763126,
+                              "retrieval_explanation":  "RRF=0.0313 | vector_rank=5 | text_rank=3 | vector_score=0.0845 | text_score=0.1000",
+                              "vector_rank":  5,
+                              "text_rank":  3,
+                              "vector_score":  0.08451542762013853,
+                              "text_score":  0.10000000149011612
+                          }
+                      ],
+        "candidates":  [
+                           {
+                               "chunk_id":  "651bc1ca-47ad-4d52-82ac-90e1eea09f3f",
+                               "document_id":  "8bd9c1b7-4e79-40ad-a393-ba30b96fcb5a",
+                               "document_title":  "01-agent-workflow-and-persistence",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent å·¥ä½æµãæä¹\u0085åä¸äººæºä¸­æ­å­¦ä¹ ç¬è®°",
+                                                    "3. Checkpoint çèè´£"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  6,
+                               "content":  "Checkpoint ä¿å­å·¥ä½æµå¨æä¸æ¶å»çç¶æå¿«ç\u0085§ãå®éå¸¸ä¸ thread æ session å\u0085³èï¼ä½¿åç»­è¯·æ±å¯ä»¥è¯»ååå²ç¶æå¹¶ä»ä¸å¡èç¹ç»§ç»­ã Checkpoint æ¯æçå\u0085³é®è½åå\u0085æ¬ï¼ - å¤è½®ç¶æä¿æï¼ - å·¥ä½æµåå²æ¥çï¼ - äººå·¥å®¡æ¹æç¨æ·è¾å\u0085¥åæåï¼ - æ\u0085éåçç¶ææ¢å¤ï¼ - å¯¹èç¹è¾å\u0085¥åè¾åºè¿è¡è°è¯ã Checkpoint ä¸ç­äºä»»æä»£ç è¯­å¥çº§æ¢å¤ãè¦å®ç°å¯é æ¢å¤ï¼èç¹æ¬èº«è¿éè¦å¹ç­ï¼å¤é¨å¯ä½ç¨ä¹éè¦ç¨³å®ä¸å¡é®åäºå¡ä¿æ¤ã",
+                               "score":  0.03278688524590164,
+                               "retrieval_explanation":  "RRF=0.0328 | vector_rank=1 | text_rank=1 | vector_score=0.1759 | text_score=0.3000",
+                               "vector_rank":  1,
+                               "text_rank":  1,
+                               "vector_score":  0.17586310649734127,
+                               "text_score":  0.30000001192092896
+                           },
+                           {
+                               "chunk_id":  "8caba10c-a821-4163-96f9-bc3b7787dc6b",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "6. è¿ç¨è¯æµ"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  6,
+                               "content":  "å¯¹å·¥ä½æµå¯ä»¥è®°å½ï¼ - èç¹åºåï¼ - æ¯ä¸ªèç¹è¾å\u0085¥åè¾åºæè¦ï¼ - å·¥å\u0085·è°ç¨ååæ°ï¼ - checkpointï¼ - éè¯å fallback åå ï¼ - Tokenãå»¶è¿åææ¬ï¼ - æç»å¯ä½ç¨ã åªæä¿çè¿ç¨ Traceï¼æè½å¤æ­å¤±è´¥æ¥èªè§åãå·¥å\u0085·ãæ£ç´¢ãæ¨¡åè¿æ¯ç¶æç®¡çã",
+                               "score":  0.03200204813108039,
+                               "retrieval_explanation":  "RRF=0.0320 | vector_rank=3 | text_rank=2 | vector_score=0.0909 | text_score=0.1000",
+                               "vector_rank":  3,
+                               "text_rank":  2,
+                               "vector_score":  0.09090909632769517,
+                               "text_score":  0.10000000149011612
+                           },
+                           {
+                               "chunk_id":  "e727afd0-4cfa-4fa2-b9dc-4dee98aad084",
+                               "document_id":  "8bd9c1b7-4e79-40ad-a393-ba30b96fcb5a",
+                               "document_title":  "01-agent-workflow-and-persistence",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent å·¥ä½æµãæä¹\u0085åä¸äººæºä¸­æ­å­¦ä¹ ç¬è®°",
+                                                    "6. å·¥ç¨é£é©"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "list",
+                               "chunk_index":  9,
+                               "content":  "- ç¶ææ éå¢é¿å¯¼è´å­å¨åä¸ä¸æææ¬ä¸åï¼ - checkpoint ä¸ä¸å¡æ°æ®åå«æäº¤é æä¸ä¸è´ï¼ - èç¹éè¯éå¤è°ç¨å¤é¨æå¡ï¼ - äººå·¥ä¸­æ­é¿æä¸æ¢å¤å½¢ææ¬æä»»å¡ï¼ - è¿åº¦èªä¸»å¯¼è´è·¯å¾é¾ä»¥å¤ç°åè¯æµã",
+                               "score":  0.03125763125763126,
+                               "retrieval_explanation":  "RRF=0.0313 | vector_rank=5 | text_rank=3 | vector_score=0.0845 | text_score=0.1000",
+                               "vector_rank":  5,
+                               "text_rank":  3,
+                               "vector_score":  0.08451542762013853,
+                               "text_score":  0.10000000149011612
+                           },
+                           {
+                               "chunk_id":  "5ffaa722-e4ce-4ca8-9caa-23b8746d49b4",
+                               "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                               "document_title":  "02-enterprise-rag-retrieval",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                    "5. ç´¢å¼ä¸ææ¡£çæ¬"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  5,
+                               "content":  "ä¼ä¸ç¥è¯æç»­æ´æ°ãç´¢å¼éè¦ä¿å­ï¼ - ææ¡£çæ¬åå\u0085å®¹ Hashï¼ - æ¥æºãè´£ä»»äººåæå¨ç­çº§ï¼ - çææ¶é´ä¸å¤±ææ¶é´ï¼ - ç§æ·å ACLï¼ - è§£æå¨ãååå Embedding çæ¬ï¼ - Chunk å°åæä½ç½®çæ°æ®è¡ç¼ã æ´æ°ææ¤åææ¡£æ¶ï¼æ§åéãå\u0085¨æç´¢å¼ãç¼å­åæ´¾çåç­åºåæ­¥å¤±æãåå²æ¥åè¥å¼ç¨æ§çæ¬ï¼åºä¿çå¯å®¡è®¡ççæ¬æ è¯ï¼èä¸æ¯éé»æåæ°å\u0085å®¹ã",
+                               "score":  0.016129032258064516,
+                               "retrieval_explanation":  "RRF=0.0161 | vector_rank=2 | vector_score=0.1319",
+                               "vector_rank":  2,
+                               "text_rank":  null,
+                               "vector_score":  0.13187610005963157,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "28cfa6fd-2675-490c-9280-40464e52130f",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "8. å¸¸è§è¯¯åº"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "list",
+                               "chunk_index":  8,
+                               "content":  "- åªçæç»åç­ï¼ä¸çå¯ä½ç¨ï¼ - ç¨çææ¨¡åç»èªå·±çç­æ¡æåï¼å´æ²¡ææ ¡åï¼ - æµè¯æ ·æ¬å\u0085¨é¨æ¥èªå¼åè\u0085é¢æï¼ - åªæ¥åå¹³ååï¼æ©çé«é£é©å¤±è´¥ï¼ - ä¿®æ¹ Prompt åæ²¡æåºå®éåå½ï¼ - å°ä½ç½®ä¿¡ç»æç´æ¥åå\u0085¥é¿æç»åã",
+                               "score":  0.015625,
+                               "retrieval_explanation":  "RRF=0.0156 | vector_rank=4 | vector_score=0.0880",
+                               "vector_rank":  4,
+                               "text_rank":  null,
+                               "vector_score":  0.08804509568483221,
+                               "text_score":  null
+                           }
+                       ]
+    },
+    {
+        "session_id":  "876cd314-a61c-4461-a312-769770d07747",
+        "message_id":  "e93a29a4-9231-41d0-8d96-38fd095a4a8f",
+        "answer":  "æ ¹æ®èµæï¼RAGï¼æ£ç´¢å¢å¼ºçæï¼çæ ¸å¿èè´£æ¯ä»å¤§éç¥è¯ä¸­å¬åå°éãç¸å\u0085³ãå¯éªè¯çè¯æ®ï¼åè®©æ¨¡ååºäºè¿äºè¯æ®çæç­æ¡ï¼èä¸æ¯ææ´ç¯ææ¡£å¡ç»æ¨¡åãé«è´¨é RAG çæµç¨å\u0085æ¬ï¼æ°æ®æå\u0085¥ãè§£æãæ¸\u0085æ´ãååãç´¢å¼ãQuery å¤çãåéå¬åãæåºãä¸ä¸ææé ãçæãå¼ç¨ä¸äºå®æ ¡éªãåé¦ä¸è¯æµãæ­¤å¤ï¼è¯æµéå¯ä»¥æ¥èªäº§åéæ±ãçäº§å¤±è´¥æ¥å¿ãç¨æ·åé¦ãä¸å®¶æé çè¾¹çæ¡ä»¶ãå®å\u0085¨çº¢éåºæ¯ååå²åå½é®é¢ï¼ä¸åºè¦çæ ç­æ¡ãå·¥å\u0085·å¤±è´¥ãæéä¸è¶³ãè¾å\u0085¥å«ç³åéå¤è¯·æ±ç­åºæ¯ãRubric è®¾è®¡åºæè¿°å¯è§å¯çæåæ åï¼å¦ correctnessãcompletenessãreasoningãcommunication ç­ç»´åº¦ï¼å¹¶æç¡®åå¼èå´åæ£åæ¡ä»¶ãè¿ç¨è¯æµéè®°å½èç¹åºåãè¾å\u0085¥è¾åºãå·¥å\u0085·è°ç¨ãcheckpointãéè¯åå ãToken åå»¶è¿ç­ï¼ä»¥å¤æ­å¤±è´¥æ¥æºã",
+        "evidence_sufficient":  true,
+        "generation_mode":  "llm",
+        "model_name":  "deepseek-chat",
+        "fallback_reason":  null,
+        "citations":  [
+                          {
+                              "chunk_id":  "83b8c64b-abd6-49c2-87db-a6a04ade99f5",
+                              "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                              "document_title":  "02-enterprise-rag-retrieval",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                   "1. RAG çæ ¸å¿ä¸æ¯ææ´ç¯ææ¡£å¡ç»æ¨¡å"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "code",
+                              "chunk_index":  1,
+                              "content":  "ä¼ä¸ææ¡£æ°éå¯è½è¿è¶\u0085æ¨¡åä¸ä¸æçªå£ãRAG çèè´£æ¯ä»å¤§éç¥è¯ä¸­å¬åå°éãç¸å\u0085³ãå¯éªè¯çè¯æ®ï¼åè®©æ¨¡ååºäºè¿äºè¯æ®çæç­æ¡ã\n\né«è´¨é RAG è³å°å\u0085å«ï¼\n\n```text\næ°æ®æå\u0085¥ â è§£æ â æ¸\u0085æ´ â åå â ç´¢å¼\nâ Query å¤ç â åéå¬å â æåº â ä¸ä¸ææé \nâ çæ â å¼ç¨ä¸äºå®æ ¡éª â åé¦ä¸è¯æµ\n```",
+                              "score":  0.03278688524590164,
+                              "retrieval_explanation":  "RRF=0.0328 | vector_rank=1 | text_rank=1 | vector_score=0.1606 | text_score=0.2000",
+                              "vector_rank":  1,
+                              "text_rank":  1,
+                              "vector_score":  0.16064386069774628,
+                              "text_score":  0.20000000298023224
+                          },
+                          {
+                              "chunk_id":  "c7290910-a641-48d9-bee5-393a2d8fde1e",
+                              "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                              "document_title":  "03-agent-evaluation",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                   "2. è¯æµéä»åªéæ¥"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  2,
+                              "content":  "è¯æµéå¯ä»¥æ¥èªï¼ - äº§åéæ±åéªæ¶æ¡ä¾ï¼ - çäº§å¤±è´¥æ¥å¿ï¼ - ç¨æ·åé¦ï¼ - ä¸å®¶æé çè¾¹çæ¡ä»¶ï¼ - å®å\u0085¨çº¢éåºæ¯ï¼ - åå²åå½é®é¢ã é«ä»·å¼è¯æµä¸æ¯åªè¦çå¸¸è§æåè·¯å¾ï¼è¿åºè¦çæ ç­æ¡ãå·¥å\u0085·å¤±è´¥ãæéä¸è¶³ãè¾å\u0085¥å«ç³åéå¤è¯·æ±ã",
+                              "score":  0.015873015873015872,
+                              "retrieval_explanation":  "RRF=0.0159 | vector_rank=3 | vector_score=0.0000",
+                              "vector_rank":  3,
+                              "text_rank":  null,
+                              "vector_score":  0.0,
+                              "text_score":  null
+                          },
+                          {
+                              "chunk_id":  "e30c80c8-1d79-4991-bff4-7cde6f591270",
+                              "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                              "document_title":  "03-agent-evaluation",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                   "4. Rubric è®¾è®¡"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  4,
+                              "content":  "Rubric åºæè¿°å¯è§å¯çæåæ åï¼èä¸æ¯æ½è±¡å°åâåç­ä¼ç§âãä¾å¦ææ¯é¢è¯ç­æ¡å¯ä»¥æä¸ºï¼ - correctnessï¼äºå®ä¸ç»è®ºï¼ - completenessï¼å\u0085³é®ç¹è¦çï¼ - reasoningï¼å æä¸æè¡¡ï¼ - communicationï¼ç»æä¸æ¸\u0085æ°åº¦ã æ¯ä¸ªç»´åº¦åºææç¡®åå¼èå´ãæ£åæ¡ä»¶åå¿\u0085ç­ç¹ãæç»æ»åç±åºç¨å±æ ¹æ®ç»´åº¦åè®¡ç®ï¼å¯ä»¥é²æ­¢æ¨¡åè¿åèªç¸çç¾çæ»åã",
+                              "score":  0.015384615384615385,
+                              "retrieval_explanation":  "RRF=0.0154 | vector_rank=5 | vector_score=0.0000",
+                              "vector_rank":  5,
+                              "text_rank":  null,
+                              "vector_score":  0.0,
+                              "text_score":  null
+                          }
+                      ],
+        "candidates":  [
+                           {
+                               "chunk_id":  "83b8c64b-abd6-49c2-87db-a6a04ade99f5",
+                               "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                               "document_title":  "02-enterprise-rag-retrieval",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                    "1. RAG çæ ¸å¿ä¸æ¯ææ´ç¯ææ¡£å¡ç»æ¨¡å"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "code",
+                               "chunk_index":  1,
+                               "content":  "ä¼ä¸ææ¡£æ°éå¯è½è¿è¶\u0085æ¨¡åä¸ä¸æçªå£ãRAG çèè´£æ¯ä»å¤§éç¥è¯ä¸­å¬åå°éãç¸å\u0085³ãå¯éªè¯çè¯æ®ï¼åè®©æ¨¡ååºäºè¿äºè¯æ®çæç­æ¡ã\n\né«è´¨é RAG è³å°å\u0085å«ï¼\n\n```text\næ°æ®æå\u0085¥ â è§£æ â æ¸\u0085æ´ â åå â ç´¢å¼\nâ Query å¤ç â åéå¬å â æåº â ä¸ä¸ææé \nâ çæ â å¼ç¨ä¸äºå®æ ¡éª â åé¦ä¸è¯æµ\n```",
+                               "score":  0.03278688524590164,
+                               "retrieval_explanation":  "RRF=0.0328 | vector_rank=1 | text_rank=1 | vector_score=0.1606 | text_score=0.2000",
+                               "vector_rank":  1,
+                               "text_rank":  1,
+                               "vector_score":  0.16064386069774628,
+                               "text_score":  0.20000000298023224
+                           },
+                           {
+                               "chunk_id":  "69fd4833-703d-43b7-aa72-fc70b276b4c6",
+                               "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                               "document_title":  "02-enterprise-rag-retrieval",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                    "èµææ¥æº"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "list",
+                               "chunk_index":  0,
+                               "content":  "- Microsoft Learn, Build Advanced Retrieval-Augmented Generation Systems: https://learn.microsoft.com/en-us/azure/developer/ai/advanced-retrieval-augmented-generation - Microsoft Learn, RAG and Generative AI in Azure AI Search: https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview æ¬æä¸ºåºäºå®æ¹èµææ´ççå­¦ä¹ ç¬è®°ï¼ä¸æ¯åæè½¬è½½ã",
+                               "score":  0.03225806451612903,
+                               "retrieval_explanation":  "RRF=0.0323 | vector_rank=2 | text_rank=2 | vector_score=0.0808 | text_score=0.1000",
+                               "vector_rank":  2,
+                               "text_rank":  2,
+                               "vector_score":  0.08084520938531192,
+                               "text_score":  0.10000000149011612
+                           },
+                           {
+                               "chunk_id":  "c7290910-a641-48d9-bee5-393a2d8fde1e",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "2. è¯æµéä»åªéæ¥"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  2,
+                               "content":  "è¯æµéå¯ä»¥æ¥èªï¼ - äº§åéæ±åéªæ¶æ¡ä¾ï¼ - çäº§å¤±è´¥æ¥å¿ï¼ - ç¨æ·åé¦ï¼ - ä¸å®¶æé çè¾¹çæ¡ä»¶ï¼ - å®å\u0085¨çº¢éåºæ¯ï¼ - åå²åå½é®é¢ã é«ä»·å¼è¯æµä¸æ¯åªè¦çå¸¸è§æåè·¯å¾ï¼è¿åºè¦çæ ç­æ¡ãå·¥å\u0085·å¤±è´¥ãæéä¸è¶³ãè¾å\u0085¥å«ç³åéå¤è¯·æ±ã",
+                               "score":  0.015873015873015872,
+                               "retrieval_explanation":  "RRF=0.0159 | vector_rank=3 | vector_score=0.0000",
+                               "vector_rank":  3,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "e30c80c8-1d79-4991-bff4-7cde6f591270",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "4. Rubric è®¾è®¡"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  4,
+                               "content":  "Rubric åºæè¿°å¯è§å¯çæåæ åï¼èä¸æ¯æ½è±¡å°åâåç­ä¼ç§âãä¾å¦ææ¯é¢è¯ç­æ¡å¯ä»¥æä¸ºï¼ - correctnessï¼äºå®ä¸ç»è®ºï¼ - completenessï¼å\u0085³é®ç¹è¦çï¼ - reasoningï¼å æä¸æè¡¡ï¼ - communicationï¼ç»æä¸æ¸\u0085æ°åº¦ã æ¯ä¸ªç»´åº¦åºææç¡®åå¼èå´ãæ£åæ¡ä»¶åå¿\u0085ç­ç¹ãæç»æ»åç±åºç¨å±æ ¹æ®ç»´åº¦åè®¡ç®ï¼å¯ä»¥é²æ­¢æ¨¡åè¿åèªç¸çç¾çæ»åã",
+                               "score":  0.015384615384615385,
+                               "retrieval_explanation":  "RRF=0.0154 | vector_rank=5 | vector_score=0.0000",
+                               "vector_rank":  5,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "8caba10c-a821-4163-96f9-bc3b7787dc6b",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "6. è¿ç¨è¯æµ"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  6,
+                               "content":  "å¯¹å·¥ä½æµå¯ä»¥è®°å½ï¼ - èç¹åºåï¼ - æ¯ä¸ªèç¹è¾å\u0085¥åè¾åºæè¦ï¼ - å·¥å\u0085·è°ç¨ååæ°ï¼ - checkpointï¼ - éè¯å fallback åå ï¼ - Tokenãå»¶è¿åææ¬ï¼ - æç»å¯ä½ç¨ã åªæä¿çè¿ç¨ Traceï¼æè½å¤æ­å¤±è´¥æ¥èªè§åãå·¥å\u0085·ãæ£ç´¢ãæ¨¡åè¿æ¯ç¶æç®¡çã",
+                               "score":  0.014925373134328358,
+                               "retrieval_explanation":  "RRF=0.0149 | vector_rank=7 | vector_score=0.0000",
+                               "vector_rank":  7,
+                               "text_rank":  null,
+                               "vector_score":  0.0,
+                               "text_score":  null
+                           }
+                       ]
+    },
+    {
+        "session_id":  "77b5b8b5-9397-4fe9-a663-9116a3f6a16d",
+        "message_id":  "34cb7d0d-3b86-4563-997d-0061895dbd06",
+        "answer":  "æ ¹æ®æä¾çèµæï¼å\u0085³äºAgentè¯æµä¸å¯ä¿¡è¯åï¼è¯æµéå¯ä»¥æ¥èªäº§åéæ±åéªæ¶æ¡ä¾ãçäº§å¤±è´¥æ¥å¿ãç¨æ·åé¦ãä¸å®¶æé çè¾¹çæ¡ä»¶ãå®å\u0085¨çº¢éåºæ¯ãåå²åå½é®é¢ï¼å¹¶ä¸é«ä»·å¼è¯æµè¿åºè¦çæ ç­æ¡ãå·¥å\u0085·å¤±è´¥ãæéä¸è¶³ãè¾å\u0085¥å«ç³åéå¤è¯·æ±ç­åºæ¯ãRubricè®¾è®¡åºæè¿°å¯è§å¯çæåæ åï¼ä¾å¦ææ¯é¢è¯ç­æ¡å¯æåä¸ºcorrectnessãcompletenessãreasoningãcommunicationç­ç»´åº¦ï¼æ¯ä¸ªç»´åº¦åºææç¡®åå¼èå´ãæ£åæ¡ä»¶åå¿\u0085ç­ç¹ï¼æç»æ»åç±åºç¨å±æ ¹æ®ç»´åº¦åè®¡ç®ãå\u0085³äºä¼ä¸RAGï¼å\u0085¨ææ£ç´¢éåç²¾ç¡®å\u0085³é®è¯ãç¼å·ãå¼å¸¸åãAPIåäº§åä»£å·ï¼åéæ£ç´¢éååä¹è¡¨è¾¾åè¯­ä¹æ¹åï¼Hybrid Searchç»åä¸¤è·¯å¬åéä½ç²åºï¼å¹¶ä½¿ç¨åºäºæåçèåårerankerè¿è¡ç²¾ç»æåºã",
+        "evidence_sufficient":  true,
+        "generation_mode":  "llm",
+        "model_name":  "deepseek-chat",
+        "fallback_reason":  null,
+        "citations":  [
+                          {
+                              "chunk_id":  "c7290910-a641-48d9-bee5-393a2d8fde1e",
+                              "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                              "document_title":  "03-agent-evaluation",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                   "2. è¯æµéä»åªéæ¥"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  2,
+                              "content":  "è¯æµéå¯ä»¥æ¥èªï¼ - äº§åéæ±åéªæ¶æ¡ä¾ï¼ - çäº§å¤±è´¥æ¥å¿ï¼ - ç¨æ·åé¦ï¼ - ä¸å®¶æé çè¾¹çæ¡ä»¶ï¼ - å®å\u0085¨çº¢éåºæ¯ï¼ - åå²åå½é®é¢ã é«ä»·å¼è¯æµä¸æ¯åªè¦çå¸¸è§æåè·¯å¾ï¼è¿åºè¦çæ ç­æ¡ãå·¥å\u0085·å¤±è´¥ãæéä¸è¶³ãè¾å\u0085¥å«ç³åéå¤è¯·æ±ã",
+                              "score":  0.015873015873015872,
+                              "retrieval_explanation":  "RRF=0.0159 | vector_rank=3 | vector_score=nan",
+                              "vector_rank":  3,
+                              "text_rank":  null,
+                              "vector_score":  null,
+                              "text_score":  null
+                          },
+                          {
+                              "chunk_id":  "e30c80c8-1d79-4991-bff4-7cde6f591270",
+                              "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                              "document_title":  "03-agent-evaluation",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                   "4. Rubric è®¾è®¡"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  4,
+                              "content":  "Rubric åºæè¿°å¯è§å¯çæåæ åï¼èä¸æ¯æ½è±¡å°åâåç­ä¼ç§âãä¾å¦ææ¯é¢è¯ç­æ¡å¯ä»¥æä¸ºï¼ - correctnessï¼äºå®ä¸ç»è®ºï¼ - completenessï¼å\u0085³é®ç¹è¦çï¼ - reasoningï¼å æä¸æè¡¡ï¼ - communicationï¼ç»æä¸æ¸\u0085æ°åº¦ã æ¯ä¸ªç»´åº¦åºææç¡®åå¼èå´ãæ£åæ¡ä»¶åå¿\u0085ç­ç¹ãæç»æ»åç±åºç¨å±æ ¹æ®ç»´åº¦åè®¡ç®ï¼å¯ä»¥é²æ­¢æ¨¡åè¿åèªç¸çç¾çæ»åã",
+                              "score":  0.015384615384615385,
+                              "retrieval_explanation":  "RRF=0.0154 | vector_rank=5 | vector_score=nan",
+                              "vector_rank":  5,
+                              "text_rank":  null,
+                              "vector_score":  null,
+                              "text_score":  null
+                          },
+                          {
+                              "chunk_id":  "79804305-942a-4714-994c-335939e3b106",
+                              "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                              "document_title":  "02-enterprise-rag-retrieval",
+                              "source_url":  null,
+                              "trust_level":  "unknown",
+                              "heading_path":  [
+                                                   "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                   "3. å\u0085¨ææ£ç´¢ååéæ£ç´¢"
+                                               ],
+                              "page_number":  null,
+                              "block_type":  "paragraph",
+                              "chunk_index":  3,
+                              "content":  "å\u0085¨ææ£ç´¢éåç²¾ç¡®å\u0085³é®è¯ãç¼å·ãå¼å¸¸åãAPI åäº§åä»£å·ãåéæ£ç´¢éååä¹è¡¨è¾¾åè¯­ä¹æ¹åã Hybrid Search å°ä¸¤è·¯å¬åç»åï¼å¯ä»¥éä½åä¸æ£ç´¢å¨çç²åºãç±äºä¸¤ç§åæ°å°ºåº¦ä¸åï¼å¯ä»¥ä½¿ç¨åºäºæåçèåï¼åä½¿ç¨ reranker å¯¹åéè¿è¡æ´ç²¾ç»æåºã",
+                              "score":  0.014084507042253521,
+                              "retrieval_explanation":  "RRF=0.0141 | vector_rank=11 | vector_score=nan",
+                              "vector_rank":  11,
+                              "text_rank":  null,
+                              "vector_score":  null,
+                              "text_score":  null
+                          }
+                      ],
+        "candidates":  [
+                           {
+                               "chunk_id":  "374c22bc-f007-4650-bf07-ef4c54114433",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "èµææ¥æº"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "list",
+                               "chunk_index":  0,
+                               "content":  "- Anthropic Engineering, Demystifying Evals for AI Agents: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents - Anthropic, Building Effective Agents: https://www.anthropic.com/engineering/building-effective-agents æ¬æä¸ºåºäºå®æ¹èµææ´ççå­¦ä¹ ç¬è®°ï¼ä¸æ¯åæè½¬è½½ã",
+                               "score":  0.01639344262295082,
+                               "retrieval_explanation":  "RRF=0.0164 | vector_rank=1 | vector_score=nan",
+                               "vector_rank":  1,
+                               "text_rank":  null,
+                               "vector_score":  null,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "c7290910-a641-48d9-bee5-393a2d8fde1e",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "2. è¯æµéä»åªéæ¥"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  2,
+                               "content":  "è¯æµéå¯ä»¥æ¥èªï¼ - äº§åéæ±åéªæ¶æ¡ä¾ï¼ - çäº§å¤±è´¥æ¥å¿ï¼ - ç¨æ·åé¦ï¼ - ä¸å®¶æé çè¾¹çæ¡ä»¶ï¼ - å®å\u0085¨çº¢éåºæ¯ï¼ - åå²åå½é®é¢ã é«ä»·å¼è¯æµä¸æ¯åªè¦çå¸¸è§æåè·¯å¾ï¼è¿åºè¦çæ ç­æ¡ãå·¥å\u0085·å¤±è´¥ãæéä¸è¶³ãè¾å\u0085¥å«ç³åéå¤è¯·æ±ã",
+                               "score":  0.015873015873015872,
+                               "retrieval_explanation":  "RRF=0.0159 | vector_rank=3 | vector_score=nan",
+                               "vector_rank":  3,
+                               "text_rank":  null,
+                               "vector_score":  null,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "e30c80c8-1d79-4991-bff4-7cde6f591270",
+                               "document_id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                               "document_title":  "03-agent-evaluation",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "Agent è¯æµä¸å¯ä¿¡è¯åå­¦ä¹ ç¬è®°",
+                                                    "4. Rubric è®¾è®¡"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  4,
+                               "content":  "Rubric åºæè¿°å¯è§å¯çæåæ åï¼èä¸æ¯æ½è±¡å°åâåç­ä¼ç§âãä¾å¦ææ¯é¢è¯ç­æ¡å¯ä»¥æä¸ºï¼ - correctnessï¼äºå®ä¸ç»è®ºï¼ - completenessï¼å\u0085³é®ç¹è¦çï¼ - reasoningï¼å æä¸æè¡¡ï¼ - communicationï¼ç»æä¸æ¸\u0085æ°åº¦ã æ¯ä¸ªç»´åº¦åºææç¡®åå¼èå´ãæ£åæ¡ä»¶åå¿\u0085ç­ç¹ãæç»æ»åç±åºç¨å±æ ¹æ®ç»´åº¦åè®¡ç®ï¼å¯ä»¥é²æ­¢æ¨¡åè¿åèªç¸çç¾çæ»åã",
+                               "score":  0.015384615384615385,
+                               "retrieval_explanation":  "RRF=0.0154 | vector_rank=5 | vector_score=nan",
+                               "vector_rank":  5,
+                               "text_rank":  null,
+                               "vector_score":  null,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "69fd4833-703d-43b7-aa72-fc70b276b4c6",
+                               "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                               "document_title":  "02-enterprise-rag-retrieval",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                    "èµææ¥æº"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "list",
+                               "chunk_index":  0,
+                               "content":  "- Microsoft Learn, Build Advanced Retrieval-Augmented Generation Systems: https://learn.microsoft.com/en-us/azure/developer/ai/advanced-retrieval-augmented-generation - Microsoft Learn, RAG and Generative AI in Azure AI Search: https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview æ¬æä¸ºåºäºå®æ¹èµææ´ççå­¦ä¹ ç¬è®°ï¼ä¸æ¯åæè½¬è½½ã",
+                               "score":  0.014285714285714285,
+                               "retrieval_explanation":  "RRF=0.0143 | vector_rank=10 | vector_score=nan",
+                               "vector_rank":  10,
+                               "text_rank":  null,
+                               "vector_score":  null,
+                               "text_score":  null
+                           },
+                           {
+                               "chunk_id":  "79804305-942a-4714-994c-335939e3b106",
+                               "document_id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                               "document_title":  "02-enterprise-rag-retrieval",
+                               "source_url":  null,
+                               "trust_level":  "unknown",
+                               "heading_path":  [
+                                                    "ä¼ä¸ RAGï¼ååãæ··åæ£ç´¢ä¸çæ¬æ²»çå­¦ä¹ ç¬è®°",
+                                                    "3. å\u0085¨ææ£ç´¢ååéæ£ç´¢"
+                                                ],
+                               "page_number":  null,
+                               "block_type":  "paragraph",
+                               "chunk_index":  3,
+                               "content":  "å\u0085¨ææ£ç´¢éåç²¾ç¡®å\u0085³é®è¯ãç¼å·ãå¼å¸¸åãAPI åäº§åä»£å·ãåéæ£ç´¢éååä¹è¡¨è¾¾åè¯­ä¹æ¹åã Hybrid Search å°ä¸¤è·¯å¬åç»åï¼å¯ä»¥éä½åä¸æ£ç´¢å¨çç²åºãç±äºä¸¤ç§åæ°å°ºåº¦ä¸åï¼å¯ä»¥ä½¿ç¨åºäºæåçèåï¼åä½¿ç¨ reranker å¯¹åéè¿è¡æ´ç²¾ç»æåºã",
+                               "score":  0.014084507042253521,
+                               "retrieval_explanation":  "RRF=0.0141 | vector_rank=11 | vector_score=nan",
+                               "vector_rank":  11,
+                               "text_rank":  null,
+                               "vector_score":  null,
+                               "text_score":  null
+                           }
+                       ]
+    }
+]

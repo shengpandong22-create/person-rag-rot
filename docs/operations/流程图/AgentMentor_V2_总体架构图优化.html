@@ -1,0 +1,149 @@
+<svg viewBox="0 0 680 940" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<title>AgentMentor V2 总体架构图</title>
+<desc>六层分层架构：交互层、接口层、应用服务层、领域/工作流/RAG与端口层、基础设施实现层、部署层</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#F97316"/></marker>
+<marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/></marker>
+</defs>
+<rect width="680" height="940" fill="#F8FAFC"/>
+<text x="340" y="22" font-size="15" font-weight="500" fill="#0F172A" text-anchor="middle">AgentMentor V2 总体架构</text>
+<text x="340" y="38" font-size="11" fill="#64748B" text-anchor="middle">分层架构 · 端口适配 · RAG 训练闭环 · Docker Compose 本地部署</text>
+<rect x="20" y="46" width="640" height="74" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1"/>
+<text x="34" y="64" font-size="13" font-weight="500" fill="#1E40AF">交互层</text>
+<rect x="28" y="72" width="84" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="70" y="88" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">React 工作台</text>
+<rect x="120" y="72" width="62" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="151" y="88" font-size="12" font-weight="500" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">知识库</text>
+<rect x="190" y="72" width="72" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="226" y="88" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">RAG 问答</text>
+<rect x="270" y="72" width="72" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="306" y="88" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">模拟面试</text>
+<rect x="350" y="72" width="72" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="386" y="88" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">训练报告</text>
+<rect x="430" y="72" width="72" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="466" y="88" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">能力画像</text>
+<rect x="510" y="72" width="72" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="546" y="88" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">系统状态</text>
+<text x="151" y="112" font-size="11" fill="#64748B" text-anchor="middle">选择·新建·切换·资料管理</text>
+<line x1="340" y1="120" x2="340" y2="134" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="352" y="130" font-size="11" fill="#64748B">HTTP / SSE</text>
+<rect x="20" y="136" width="640" height="72" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1"/>
+<text x="34" y="154" font-size="13" font-weight="500" fill="#1E40AF">FastAPI 接口层</text>
+<text x="145" y="154" font-size="11" fill="#64748B">参数校验·协议转换·依赖注入·不承载核心业务规则</text>
+<rect x="28" y="164" width="78" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="67" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">knowledge</text>
+<rect x="114" y="164" width="50" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="139" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">chat</text>
+<rect x="172" y="164" width="78" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="211" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">interviews</text>
+<rect x="258" y="164" width="84" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="300" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">evaluations</text>
+<rect x="350" y="164" width="68" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="384" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">profiles</text>
+<rect x="426" y="164" width="52" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="452" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">demo</text>
+<rect x="486" y="164" width="56" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+<text x="514" y="180" font-size="12" fill="#1E3A8A" text-anchor="middle" dominant-baseline="central">health</text>
+<line x1="340" y1="208" x2="340" y2="222" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="20" y="224" width="640" height="95" rx="10" fill="#F0F9FF" stroke="#0EA5E9" stroke-width="1"/>
+<text x="34" y="242" font-size="13" font-weight="500" fill="#0369A1">应用服务层</text>
+<text x="118" y="242" font-size="11" fill="#64748B">业务编排·事务边界·端口调用</text>
+<rect x="36" y="252" width="196" height="26" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="0.5"/>
+<text x="134" y="268" font-size="12" fill="#075985" text-anchor="middle" dominant-baseline="central">KnowledgeService</text>
+<rect x="242" y="252" width="196" height="26" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="0.5"/>
+<text x="340" y="268" font-size="12" fill="#075985" text-anchor="middle" dominant-baseline="central">AnswerService</text>
+<rect x="448" y="252" width="196" height="26" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="0.5"/>
+<text x="546" y="268" font-size="12" fill="#075985" text-anchor="middle" dominant-baseline="central">InterviewService</text>
+<rect x="36" y="284" width="196" height="26" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="0.5"/>
+<text x="134" y="300" font-size="12" fill="#075985" text-anchor="middle" dominant-baseline="central">EvaluationService</text>
+<rect x="242" y="284" width="196" height="26" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="0.5"/>
+<text x="340" y="300" font-size="12" fill="#075985" text-anchor="middle" dominant-baseline="central">ProfileService</text>
+<rect x="448" y="284" width="196" height="26" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="0.5"/>
+<text x="546" y="300" font-size="12" fill="#075985" text-anchor="middle" dominant-baseline="central">DemoReadinessService</text>
+<line x1="340" y1="319" x2="340" y2="333" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="20" y="335" width="640" height="200" rx="10" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1"/>
+<text x="34" y="353" font-size="13" font-weight="500" fill="#6D28D9">领域 / 工作流 / RAG 与端口层</text>
+<rect x="36" y="363" width="196" height="162" rx="8" fill="#FAF5FF" stroke="#A78BFA" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text x="134" y="379" font-size="12" font-weight="500" fill="#6D28D9" text-anchor="middle">领域规则</text>
+<text x="134" y="393" font-size="11" fill="#7C3AED" text-anchor="middle">文档状态·面试状态·评分规则</text>
+<text x="134" y="406" font-size="11" fill="#7C3AED" text-anchor="middle">两层画像·复习任务规则</text>
+<rect x="46" y="416" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="134" y="429" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">knowledge</text>
+<rect x="46" y="438" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="134" y="451" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">interview</text>
+<rect x="46" y="460" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="134" y="473" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">evaluation</text>
+<rect x="46" y="482" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="134" y="495" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">profile</text>
+<rect x="46" y="504" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="134" y="517" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">profile_taxonomy</text>
+<rect x="242" y="363" width="196" height="162" rx="8" fill="#FAF5FF" stroke="#A78BFA" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text x="340" y="379" font-size="12" font-weight="500" fill="#6D28D9" text-anchor="middle">工作流</text>
+<text x="340" y="393" font-size="11" fill="#7C3AED" text-anchor="middle">显式节点·事件名称</text>
+<text x="340" y="406" font-size="11" fill="#7C3AED" text-anchor="middle">中断恢复·重复提交保护</text>
+<rect x="252" y="418" width="176" height="26" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="340" y="434" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">Workflow Node Specs</text>
+<rect x="252" y="448" width="176" height="26" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="340" y="464" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">Checkpoint State</text>
+<rect x="252" y="478" width="176" height="26" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="340" y="494" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">Idempotency Rules</text>
+<rect x="448" y="363" width="196" height="162" rx="8" fill="#FAF5FF" stroke="#A78BFA" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text x="546" y="379" font-size="12" font-weight="500" fill="#6D28D9" text-anchor="middle">RAG 与端口</text>
+<text x="546" y="393" font-size="11" fill="#7C3AED" text-anchor="middle">文档解析·结构化分块·检索协议</text>
+<text x="546" y="406" font-size="11" fill="#7C3AED" text-anchor="middle">Embedding 抽象·大模型调用抽象</text>
+<rect x="458" y="416" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="546" y="429" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">DocumentParser</text>
+<rect x="458" y="438" width="176" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="0.5"/>
+<text x="546" y="451" font-size="11" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">Chunking</text>
+<rect x="458" y="460" width="176" height="20" rx="5" fill="#DDD6FE" stroke="#8B5CF6" stroke-width="1"/>
+<text x="546" y="473" font-size="11" font-weight="500" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">KnowledgeRetriever Port</text>
+<rect x="458" y="482" width="176" height="20" rx="5" fill="#DDD6FE" stroke="#8B5CF6" stroke-width="1"/>
+<text x="546" y="495" font-size="11" font-weight="500" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">EmbeddingGateway Port</text>
+<rect x="458" y="504" width="176" height="20" rx="5" fill="#DDD6FE" stroke="#8B5CF6" stroke-width="1"/>
+<text x="546" y="517" font-size="11" font-weight="500" fill="#5B21B6" text-anchor="middle" dominant-baseline="central">LLMGateway Port</text>
+<line x1="340" y1="535" x2="340" y2="549" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="20" y="551" width="640" height="105" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="1"/>
+<text x="34" y="569" font-size="13" font-weight="500" fill="#047857">基础设施实现层</text>
+<rect x="36" y="579" width="196" height="26" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="0.5"/>
+<text x="134" y="595" font-size="12" font-weight="500" fill="#065F46" text-anchor="middle" dominant-baseline="central">PostgresHybridRetriever</text>
+<rect x="242" y="579" width="196" height="26" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="0.5"/>
+<text x="340" y="592" font-size="12" font-weight="500" fill="#065F46" text-anchor="middle" dominant-baseline="central">DevelopmentEmbeddingGateway</text>
+<text x="340" y="610" font-size="11" fill="#059669" text-anchor="middle">本地 feature hashing 基线</text>
+<rect x="448" y="579" width="196" height="26" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="0.5"/>
+<text x="546" y="592" font-size="12" font-weight="500" fill="#065F46" text-anchor="middle" dominant-baseline="central">OpenAICompatibleLLMGateway</text>
+<text x="546" y="610" font-size="11" fill="#059669" text-anchor="middle">DeepSeek / OpenAI-compatible 适配器</text>
+<rect x="36" y="620" width="196" height="26" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="0.5"/>
+<text x="134" y="636" font-size="12" fill="#065F46" text-anchor="middle" dominant-baseline="central">PostgreSQL（pgvector 扩展）</text>
+<rect x="242" y="620" width="196" height="26" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="0.5"/>
+<text x="340" y="636" font-size="12" fill="#065F46" text-anchor="middle" dominant-baseline="central">HTTP Client</text>
+<rect x="448" y="620" width="196" height="26" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="0.5"/>
+<text x="546" y="636" font-size="12" fill="#065F46" text-anchor="middle" dominant-baseline="central">本地文件卷</text>
+<line x1="340" y1="656" x2="340" y2="670" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="20" y="672" width="640" height="100" rx="10" fill="#F0FDF4" stroke="#34D399" stroke-width="1"/>
+<text x="34" y="690" font-size="13" font-weight="500" fill="#047857">Docker Compose 部署层</text>
+<rect x="36" y="700" width="196" height="40" rx="6" fill="#ECFDF5" stroke="#34D399" stroke-width="0.5"/>
+<text x="134" y="715" font-size="12" font-weight="500" fill="#065F46" text-anchor="middle" dominant-baseline="central">db</text>
+<text x="134" y="732" font-size="11" fill="#059669" text-anchor="middle">PostgreSQL + pgvector</text>
+<rect x="242" y="700" width="196" height="40" rx="6" fill="#ECFDF5" stroke="#34D399" stroke-width="0.5"/>
+<text x="340" y="715" font-size="12" font-weight="500" fill="#065F46" text-anchor="middle" dominant-baseline="central">api</text>
+<text x="340" y="732" font-size="11" fill="#059669" text-anchor="middle">FastAPI + Application Services</text>
+<rect x="448" y="700" width="196" height="40" rx="6" fill="#ECFDF5" stroke="#34D399" stroke-width="0.5"/>
+<text x="546" y="713" font-size="12" font-weight="500" fill="#065F46" text-anchor="middle" dominant-baseline="central">frontend</text>
+<text x="546" y="729" font-size="11" fill="#059669" text-anchor="middle">React 构建产物</text>
+<text x="546" y="742" font-size="11" fill="#059669" text-anchor="middle">+ Python 静态代理</text>
+<rect x="200" y="750" width="280" height="16" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="0.5"/>
+<text x="340" y="761" font-size="11" font-weight="500" fill="#92400E" text-anchor="middle" dominant-baseline="central">适合 16GB 普通本地开发机运行</text>
+<path d="M 644 592 L 668 592 L 668 790 L 170 790 L 170 798" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>
+<rect x="20" y="798" width="300" height="62" rx="10" fill="#FFF7ED" stroke="#F97316" stroke-width="1"/>
+<text x="170" y="818" font-size="13" font-weight="500" fill="#9A3412" text-anchor="middle">外部大模型服务</text>
+<line x1="40" y1="826" x2="300" y2="826" stroke="#FDBA74" stroke-width="0.5"/>
+<text x="170" y="840" font-size="12" fill="#9A3412" text-anchor="middle" dominant-baseline="central">DeepSeek · OpenAI-compatible API</text>
+<rect x="340" y="798" width="320" height="48" rx="8" fill="#FFF7ED" stroke="#F97316" stroke-width="0.5" stroke-dasharray="5 3"/>
+<text x="500" y="815" font-size="11" font-weight="500" fill="#9A3412" text-anchor="middle">降级路径 1：模型不可用</text>
+<text x="500" y="833" font-size="11" fill="#9A3412" text-anchor="middle">无 Key / 模型调用失败 → 确定性本地降级</text>
+<rect x="340" y="854" width="320" height="56" rx="8" fill="#F0F9FF" stroke="#0EA5E9" stroke-width="0.5" stroke-dasharray="5 3"/>
+<text x="500" y="872" font-size="11" font-weight="500" fill="#075985" text-anchor="middle">降级路径 2：证据不足</text>
+<text x="500" y="889" font-size="11" fill="#075985" text-anchor="middle">检索证据不足 → Evidence Guard</text>
+<text x="500" y="904" font-size="11" fill="#075985" text-anchor="middle">→ 明确提示资料不足</text>
+</svg>

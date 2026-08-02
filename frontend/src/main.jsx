@@ -4,6 +4,10 @@ import { api } from "./api/client.js";
 import { AppLayout, OverviewDashboard } from "./components/AppLayout.jsx";
 import { EvaluationPanel } from "./components/EvaluationPanel.jsx";
 import { InterviewPanel } from "./components/InterviewPanel.jsx";
+import {
+  CreateKnowledgeBaseDialog,
+  KnowledgeBaseSelector,
+} from "./components/KnowledgeBaseControls.jsx";
 import { KnowledgePanel } from "./components/KnowledgePanel.jsx";
 import { NextPlanPanel, ProfilePanel } from "./components/ProfilePanel.jsx";
 import { RagPanel } from "./components/RagPanel.jsx";
@@ -19,6 +23,10 @@ const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
 const activeInterviewKey = "agentmentor.activeInterviewId";
 const activeKnowledgeBaseKey = "agentmentor.activeKnowledgeBaseId";
 const answerIdempotencyPrefix = "agentmentor.answerIdempotency";
+
+function interviewStorageKey(knowledgeBaseId) {
+  return `${activeInterviewKey}.${knowledgeBaseId}`;
+}
 
 const emptyProfile = {
   abilities: [],
@@ -42,7 +50,11 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [runtime, setRuntime] = useState({ llm_enabled: false, llm_model: null });
   const [knowledgeBase, setKnowledgeBase] = useState(null);
+  const [knowledgeBases, setKnowledgeBases] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newKnowledgeBaseName, setNewKnowledgeBaseName] = useState("");
+  const [newKnowledgeBaseDescription, setNewKnowledgeBaseDescription] = useState("");
   const [askQuestion, setAskQuestion] = useState(
     "RAG 为什么能提升 AI 面试助手回答的可信度？",
   );
@@ -85,8 +97,27 @@ function App() {
     setError("");
     try {
       await api("/health/ready");
-      const runtimeInfo = await api("/health/runtime");
+      const runtimeInfo = await optionalApi("/health/runtime", {
+        llm_enabled: false,
+        llm_model: null,
+        status_unavailable: true,
+      });
+      setRuntime(runtimeInfo);
       const bases = await api("/api/v1/knowledge-bases");
+      const catalog = await Promise.all(
+        bases.map(async (base) => {
+          const baseDocuments = await optionalApi(
+            `/api/v1/knowledge-bases/${base.id}/documents`,
+            null,
+          );
+          return {
+            ...base,
+            document_count: baseDocuments?.length ?? null,
+            documents: baseDocuments,
+            documents_unavailable: baseDocuments === null,
+          };
+        }),
+      );
       const [
         abilities,
         errors,
@@ -106,16 +137,18 @@ function App() {
         optionalApi("/api/v1/reports/trends", []),
         optionalApi("/api/v1/demo/readiness", null),
       ]);
-      setRuntime(runtimeInfo);
       setProfile({ abilities, errors, tasks, plan, focuses });
       setReportHistory(history);
       setScoreTrends(trends);
       setReadiness(demoReadiness);
-      const restored = await restoreKnowledgeWorkspace(bases);
+      const restored = await restoreKnowledgeWorkspace(catalog);
+      // An empty knowledge base is still a real workspace. Keep the full catalog so
+      // creating one can never make an older workspace disappear from the selector.
+      setKnowledgeBases(catalog);
       if (restored.base) {
         setKnowledgeBase(restored.base);
         setDocuments(restored.documents);
-        await restoreActiveInterview();
+        await restoreActiveInterview(restored.base.id);
         const suffix = restored.documents.length ? `，资料 ${restored.documents.length} 份` : "";
         setStatus(`${runtimeLabel(runtimeInfo)}，已恢复知识库：${restored.base.name}${suffix}`);
       } else {
@@ -138,7 +171,9 @@ function App() {
     });
     let fallback = { base: orderedBases[0] ?? null, documents: [] };
     for (const base of orderedBases) {
-      const persistedDocuments = await api(`/api/v1/knowledge-bases/${base.id}/documents`);
+      const persistedDocuments =
+        base.documents ??
+        (await optionalApi(`/api/v1/knowledge-bases/${base.id}/documents`, []));
       if (base === orderedBases[0]) {
         fallback = { base, documents: persistedDocuments };
       }
@@ -150,16 +185,29 @@ function App() {
     return fallback;
   }
 
-  async function restoreActiveInterview() {
-    const interviewId = window.localStorage.getItem(activeInterviewKey);
-    if (!interviewId) return;
+  async function restoreActiveInterview(knowledgeBaseId) {
+    setInterview(null);
+    setWorkflowTrace([]);
+    setAnswerDraft("");
+    const scopedKey = interviewStorageKey(knowledgeBaseId);
+    const interviewId =
+      window.localStorage.getItem(scopedKey) ??
+      window.localStorage.getItem(activeInterviewKey);
+    if (!interviewId) return null;
     try {
       const restoredInterview = await api(`/api/v1/interviews/${interviewId}`);
+      if (restoredInterview.knowledge_base_id !== knowledgeBaseId) {
+        window.localStorage.removeItem(scopedKey);
+        return null;
+      }
       setInterview(restoredInterview);
       setWorkflowTrace(await loadWorkflowTrace(restoredInterview.id));
-      setAnswerDraft("");
-    } catch {
+      window.localStorage.setItem(scopedKey, restoredInterview.id);
       window.localStorage.removeItem(activeInterviewKey);
+      return restoredInterview;
+    } catch {
+      window.localStorage.removeItem(scopedKey);
+      return null;
     }
   }
 
@@ -200,24 +248,68 @@ function App() {
     }
   }
 
+  async function activateKnowledgeBase(base) {
+    const baseDocuments = await api(`/api/v1/knowledge-bases/${base.id}/documents`);
+    setKnowledgeBase(base);
+    setDocuments(baseDocuments);
+    setKnowledgeBases((items) =>
+      items.map((item) =>
+        item.id === base.id
+          ? { ...item, document_count: baseDocuments.length, documents: baseDocuments }
+          : item,
+      ),
+    );
+    window.localStorage.setItem(activeKnowledgeBaseKey, base.id);
+    setAskResult(null);
+    setReport(null);
+    setTopicEdited(false);
+    await restoreActiveInterview(base.id);
+    setReadiness(await api("/api/v1/demo/readiness"));
+  }
+
+  const switchKnowledgeBase = (knowledgeBaseId) => {
+    if (
+      answerDraft.trim() &&
+      !window.confirm("当前输入的答案尚未提交，切换知识库会清空本地草稿，是否继续？")
+    ) {
+      return;
+    }
+    return run("切换知识库", async () => {
+      if (!knowledgeBaseId || knowledgeBaseId === knowledgeBase?.id) return;
+      const nextBase = knowledgeBases.find((item) => item.id === knowledgeBaseId);
+      if (!nextBase) throw new Error("选择的知识库不存在，请刷新后重试。");
+      await activateKnowledgeBase(nextBase);
+      setStatus(`已切换知识库：${nextBase.name}`);
+      setActiveView("knowledge");
+    });
+  };
+
+  function openCreateKnowledgeBaseDialog() {
+    setNewKnowledgeBaseName("");
+    setNewKnowledgeBaseDescription("");
+    setCreateDialogOpen(true);
+  }
+
+  function closeCreateKnowledgeBaseDialog() {
+    if (busy) return;
+    setCreateDialogOpen(false);
+  }
+
   const createKnowledgeBase = () =>
     run("创建知识库", async () => {
+      const name = newKnowledgeBaseName.trim();
+      if (!name) throw new Error("请输入知识库名称。");
       const kb = await api("/api/v1/knowledge-bases", {
         method: "POST",
         body: JSON.stringify({
-          name: "AgentMentor 学习知识库",
-          description: "用于沉淀学习资料、RAG 问答、模拟面试和能力画像的个人知识库。",
+          name,
+          description: newKnowledgeBaseDescription.trim() || null,
         }),
       });
-      setKnowledgeBase(kb);
-      window.localStorage.setItem(activeKnowledgeBaseKey, kb.id);
-      setDocuments([]);
-      setAskResult(null);
-      setInterview(null);
-      setWorkflowTrace([]);
-      setReport(null);
-      setReadiness(await api("/api/v1/demo/readiness"));
-      setTopicEdited(false);
+      const created = { ...kb, document_count: 0, documents: [] };
+      setKnowledgeBases((items) => [...items, created]);
+      await activateKnowledgeBase(created);
+      setCreateDialogOpen(false);
       setActiveView("knowledge");
     });
 
@@ -238,6 +330,23 @@ function App() {
         body: form,
       });
       setDocuments((items) => [document, ...items.filter((item) => item.id !== document.id)]);
+      setKnowledgeBases((items) =>
+        items.map((item) =>
+          item.id === knowledgeBase.id
+            ? {
+                ...item,
+                document_count:
+                  (item.documents ?? []).some((existing) => existing.id === document.id)
+                    ? item.document_count
+                    : (item.document_count ?? 0) + 1,
+                documents: [
+                  document,
+                  ...(item.documents ?? []).filter((existing) => existing.id !== document.id),
+                ],
+              }
+            : item,
+        ),
+      );
       await pollDocumentStatus(document.id);
       event.target.value = "";
     });
@@ -276,7 +385,7 @@ function App() {
       });
       const started = await api(`/api/v1/interviews/${created.id}/start`, { method: "POST" });
       setInterview(started);
-      window.localStorage.setItem(activeInterviewKey, started.id);
+      window.localStorage.setItem(interviewStorageKey(knowledgeBase.id), started.id);
       setWorkflowTrace(await loadWorkflowTrace(started.id));
       setAnswerDraft("");
       setReport(null);
@@ -305,7 +414,7 @@ function App() {
       });
       window.localStorage.removeItem(storageKey);
       setInterview(updated);
-      window.localStorage.setItem(activeInterviewKey, updated.id);
+      window.localStorage.setItem(interviewStorageKey(knowledgeBase.id), updated.id);
       setWorkflowTrace(await loadWorkflowTrace(updated.id));
       setAnswerDraft("");
     });
@@ -371,11 +480,15 @@ function App() {
       interview={interview}
       actions={
         <>
+          <KnowledgeBaseSelector
+            bases={knowledgeBases}
+            currentId={knowledgeBase?.id}
+            busy={busy}
+            onSelect={switchKnowledgeBase}
+            onCreate={openCreateKnowledgeBaseDialog}
+          />
           <button className="secondary" onClick={refreshWorkspace} disabled={busy}>
             刷新状态
-          </button>
-          <button onClick={createKnowledgeBase} disabled={busy}>
-            新建知识库
           </button>
           <a href="/api/v1/docs" target="_blank" rel="noreferrer">
             OpenAPI
@@ -405,9 +518,23 @@ function App() {
             busy={busy}
             onUpload={uploadDocument}
             onReindex={reindexDocument}
+            onOpenSelector={() => {
+              document.querySelector(".knowledge-base-controls select")?.focus();
+              setStatus("请从顶部“当前知识库”选择器切换知识库");
+            }}
           />
         </div>
       ) : null}
+      <CreateKnowledgeBaseDialog
+        open={createDialogOpen}
+        busy={busy}
+        name={newKnowledgeBaseName}
+        description={newKnowledgeBaseDescription}
+        onNameChange={setNewKnowledgeBaseName}
+        onDescriptionChange={setNewKnowledgeBaseDescription}
+        onCancel={closeCreateKnowledgeBaseDialog}
+        onConfirm={createKnowledgeBase}
+      />
       {activeView === "rag" ? (
         <div className="task-stage">
           <RagPanel

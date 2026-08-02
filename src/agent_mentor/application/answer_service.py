@@ -45,6 +45,22 @@ ENGLISH_STOPWORDS = {
     "with",
 }
 
+CHINESE_STOP_BIGRAMS = {
+    "为什么",
+    "什么问",
+    "问题",
+    "如何",
+    "需要",
+    "同时",
+    "使用",
+    "说明",
+    "根据",
+    "资料",
+    "中的",
+    "怎么",
+    "哪些",
+}
+
 
 @dataclass(frozen=True, slots=True)
 class AnswerResult:
@@ -102,10 +118,9 @@ class AnswerService:
                 candidate_k=candidate_k or self._default_candidate_k,
             )
         )
+        supported_candidates = self._supported_candidates(question, candidates)
         sufficient = (
-            bool(candidates)
-            and candidates[0].score >= self._min_evidence_score
-            and self._has_lexical_support(question, candidates)
+            bool(supported_candidates) and supported_candidates[0].score >= self._min_evidence_score
         )
         if not sufficient and not allow_model_knowledge:
             answer = (
@@ -124,10 +139,17 @@ class AnswerService:
                 fallback_reason="insufficient_evidence",
             )
 
-        citations = candidates[: min(3, len(candidates))]
-        answer, generation_mode, fallback_reason = await self._generate_answer(
+        # Citations must be both retrieved and lexically related to the question.
+        # A whitelist check alone only proves provenance, not semantic support.
+        citations = supported_candidates[: min(3, len(supported_candidates))]
+        (
+            answer,
+            generation_mode,
+            fallback_reason,
+            effective_sufficient,
+        ) = await self._generate_answer(
             question=question,
-            candidates=candidates,
+            candidates=supported_candidates if sufficient else [],
             citations=citations,
             evidence_sufficient=sufficient,
             allow_model_knowledge=allow_model_knowledge,
@@ -139,7 +161,7 @@ class AnswerService:
             answer=answer,
             candidates=candidates,
             citations=citations,
-            evidence_sufficient=sufficient,
+            evidence_sufficient=effective_sufficient,
             generation_mode=generation_mode,
             model_name=self._default_model if generation_mode == "llm" else None,
             fallback_reason=fallback_reason,
@@ -177,7 +199,7 @@ class AnswerService:
         citations: list[RetrievedChunk],
         evidence_sufficient: bool,
         allow_model_knowledge: bool,
-    ) -> tuple[str, str, str | None]:
+    ) -> tuple[str, str, str | None, bool]:
         if self._llm is None:
             return (
                 self._compose_grounded_answer(
@@ -185,6 +207,7 @@ class AnswerService:
                 ),
                 "deterministic",
                 "llm_not_configured",
+                evidence_sufficient,
             )
         try:
             output = await self._llm.generate_structured(
@@ -210,13 +233,22 @@ class AnswerService:
                 trace_context=TraceContext(trace_id=str(uuid4()), operation="rag_answer"),
             )
             ensure_citations_are_valid(output.citation_chunk_ids, candidates)
+            if not output.evidence_sufficient and not allow_model_knowledge:
+                citations.clear()
+                return (
+                    "当前知识库检索到了候选内容，但这些证据不足以可靠回答该问题。"
+                    "请补充相关资料或调整问题后重试。",
+                    "evidence_guard",
+                    "llm_rejected_evidence",
+                    False,
+                )
             selected = [
                 chunk for chunk in candidates if chunk.chunk_id in output.citation_chunk_ids
             ]
             if output.evidence_sufficient and not selected and candidates:
                 selected = candidates[:1]
             citations[:] = selected[:3]
-            return output.answer, "llm", None
+            return output.answer, "llm", None, evidence_sufficient
         except Exception as error:
             log_event(
                 logging.WARNING,
@@ -232,6 +264,7 @@ class AnswerService:
                 ),
                 "deterministic",
                 type(error).__name__,
+                evidence_sufficient,
             )
 
     def _answer_prompt(
@@ -293,7 +326,26 @@ class AnswerService:
             context_terms.update(self._evidence_terms(chunk.content))
             context_terms.update(term.lower() for term in chunk.heading_path)
             context_terms.add(chunk.document_title.lower())
-        return bool(query_terms & context_terms)
+        overlap = query_terms & context_terms
+        english_query_terms = {term for term in query_terms if term.isascii()}
+        if english_query_terms & overlap:
+            return True
+        chinese_query_terms = query_terms - english_query_terms
+        chinese_overlap = overlap - english_query_terms
+        if not chinese_query_terms:
+            return False
+        return len(chinese_overlap) >= 2 and (
+            len(chinese_overlap) / len(chinese_query_terms) >= 0.18
+        )
+
+    def _supported_candidates(
+        self, question: str, candidates: list[RetrievedChunk]
+    ) -> list[RetrievedChunk]:
+        return [
+            candidate
+            for candidate in candidates
+            if self._has_lexical_support(question, [candidate])
+        ]
 
     def _evidence_terms(self, text: str) -> set[str]:
         lowered = text.lower()
@@ -303,7 +355,17 @@ class AnswerService:
             if match.group(0) not in ENGLISH_STOPWORDS
         }
         for segment in re.findall(r"[\u4e00-\u9fff]{2,}", lowered):
-            terms.update(segment[index : index + 2] for index in range(0, len(segment) - 1))
+            terms.update(
+                bigram
+                for index in range(0, len(segment) - 1)
+                if (bigram := segment[index : index + 2]) not in CHINESE_STOP_BIGRAMS
+            )
+        if "rrf" in terms or "reciprocal rank fusion" in lowered:
+            terms.update({"rrf", "reciprocal", "rank", "fusion"})
+        if "全文检索" in lowered:
+            terms.update({"lexical", "fulltext", "全文", "检索"})
+        if "向量检索" in lowered:
+            terms.update({"vector", "embedding", "向量", "检索"})
         return terms
 
     async def _persist(

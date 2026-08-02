@@ -1,10 +1,17 @@
 import { Empty, Info, StepCard } from "./common.jsx";
 
-export function KnowledgePanel({ knowledgeBase, documents, busy, onUpload, onReindex }) {
+export function KnowledgePanel({
+  knowledgeBase,
+  documents,
+  busy,
+  onUpload,
+  onReindex,
+  onOpenSelector,
+}) {
   return (
     <StepCard number="01" title="知识库与资料入库" tone="blue">
-      <p>刷新页面会自动恢复最近一个有资料的知识库、资料列表和本机用户画像。</p>
-      <Info label="Knowledge Base" value={knowledgeBase?.id ?? "尚未创建"} />
+      <p>资料按知识库独立维护；你可以随时切换知识库，原有资料不会丢失。</p>
+      <Info label="当前知识库" value={knowledgeBase?.name ?? "尚未创建"} />
       <label className={`upload ${!knowledgeBase || busy ? "disabled" : ""}`}>
         上传学习资料
         <input type="file" onChange={onUpload} disabled={!knowledgeBase || busy} />
@@ -29,7 +36,12 @@ export function KnowledgePanel({ knowledgeBase, documents, busy, onUpload, onRei
           ))}
         </div>
       ) : (
-        <Empty text="暂无上传资料" />
+        <div className="empty-workspace">
+          <Empty text="当前知识库暂时没有资料。你可以上传资料，或者切换回已有知识库。" />
+          <button className="secondary compact" type="button" onClick={onOpenSelector}>
+            切换知识库
+          </button>
+        </div>
       )}
     </StepCard>
   );

@@ -1,0 +1,39 @@
+﻿{
+    "knowledge_base":  {
+                           "id":  "cabdd7ba-61f2-48c1-80fa-f3e9cc36a501",
+                           "name":  "Agent?????RAG???-20260802",
+                           "description":  "????????,????RAG??????????????????????"
+                       },
+    "documents":  {
+                      "value":  [
+                                    {
+                                        "id":  "fdb58ffb-b56e-4a44-b926-339b917ec5a5",
+                                        "knowledge_base_id":  "cabdd7ba-61f2-48c1-80fa-f3e9cc36a501",
+                                        "original_filename":  "03-agent-evaluation.md",
+                                        "version":  1,
+                                        "status":  "ready",
+                                        "is_active":  true,
+                                        "error_message":  null
+                                    },
+                                    {
+                                        "id":  "f86e2aad-721c-475b-bb1c-1b765fc37c35",
+                                        "knowledge_base_id":  "cabdd7ba-61f2-48c1-80fa-f3e9cc36a501",
+                                        "original_filename":  "02-enterprise-rag-retrieval.md",
+                                        "version":  1,
+                                        "status":  "ready",
+                                        "is_active":  true,
+                                        "error_message":  null
+                                    },
+                                    {
+                                        "id":  "8bd9c1b7-4e79-40ad-a393-ba30b96fcb5a",
+                                        "knowledge_base_id":  "cabdd7ba-61f2-48c1-80fa-f3e9cc36a501",
+                                        "original_filename":  "01-agent-workflow-and-persistence.md",
+                                        "version":  1,
+                                        "status":  "ready",
+                                        "is_active":  true,
+                                        "error_message":  null
+                                    }
+                                ],
+                      "Count":  3
+                  }
+}

@@ -1,0 +1,96 @@
+<svg viewBox="0 0 680 390" xmlns="http://www.w3.org/2000/svg" width="100%" role="img">
+  <title>学习训练闭环流程图</title>
+  <desc>从知识库选择到复习训练的完整闭环，含 RAG 问答与面试训练双路径消费</desc>
+  <defs>
+    <style>
+      .tt{font:500 11px system-ui,sans-serif}
+      .ts{font:400 11px system-ui,sans-serif}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="340" y="22" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" font-weight="500" fill="#0C447C">学习训练闭环流程图</text>
+  <text x="340" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5F5E5A">知识库选择 → 资料入库 → 检索召回 → 双路径消费 → 评分 → 画像 → 闭环训练</text>
+
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5">
+    <rect x="40" y="58" width="115" height="56" rx="8"/>
+    <rect x="167" y="58" width="115" height="56" rx="8"/>
+    <rect x="294" y="58" width="115" height="56" rx="8"/>
+    <rect x="421" y="58" width="115" height="56" rx="8"/>
+  </g>
+  <rect x="550" y="58" width="88" height="56" rx="8" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+
+  <g text-anchor="middle" dominant-baseline="central">
+    <text class="tt" x="97" y="78" fill="#0C447C">1. 选择知识库</text>
+    <text class="ts" x="97" y="96" fill="#5F5E5A">选择 · 新建 · 切换</text>
+    <text class="tt" x="224" y="78" fill="#0C447C">2. 上传学习资料</text>
+    <text class="ts" x="224" y="96" fill="#5F5E5A">MD / PDF / DOCX</text>
+    <text class="tt" x="351" y="78" fill="#0C447C">3. 解析与结构化分块</text>
+    <text class="ts" x="351" y="96" fill="#5F5E5A">解析与分块策略</text>
+    <text class="tt" x="478" y="76" fill="#0C447C">4. PostgreSQL</text>
+    <text class="tt" x="478" y="93" fill="#0C447C">pgvector 索引</text>
+    <text class="tt" x="594" y="78" fill="#0C447C">5. 检索召回</text>
+    <text class="ts" x="594" y="96" fill="#5F5E5A">向量检索为主</text>
+  </g>
+
+  <g stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow)">
+    <line x1="155" y1="86" x2="165" y2="86"/>
+    <line x1="282" y1="86" x2="292" y2="86"/>
+    <line x1="409" y1="86" x2="419" y2="86"/>
+    <line x1="536" y1="86" x2="548" y2="86"/>
+  </g>
+
+  <line x1="594" y1="114" x2="594" y2="134" stroke="#5F5E5A" stroke-width="1"/>
+  <circle cx="594" cy="134" r="3" fill="#185FA5"/>
+  <path d="M 594 134 L 495 134 L 495 153" fill="none" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="548" y="128" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#185FA5">RAG 问答</text>
+  <line x1="594" y1="134" x2="594" y2="226" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="612" y="180" font-family="system-ui,sans-serif" font-size="11" fill="#5F5E5A">面试出题</text>
+
+  <rect x="430" y="155" width="130" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+  <g text-anchor="middle" dominant-baseline="central">
+    <text class="tt" x="495" y="170" fill="#0C447C">6A. RAG 问答验证</text>
+    <text class="ts" x="495" y="187" fill="#5F5E5A">证据不足时显式降级</text>
+  </g>
+
+  <g fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5">
+    <rect x="448" y="228" width="88" height="56" rx="8"/>
+    <rect x="346" y="228" width="88" height="56" rx="8"/>
+    <rect x="244" y="228" width="88" height="56" rx="8"/>
+    <rect x="142" y="228" width="88" height="56" rx="8"/>
+  </g>
+  <rect x="550" y="228" width="88" height="56" rx="8" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+  <rect x="40" y="228" width="88" height="56" rx="8" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+
+  <g text-anchor="middle" dominant-baseline="central">
+    <text class="tt" x="594" y="246" fill="#085041">6B. 画像驱动</text>
+    <text class="tt" x="594" y="263" fill="#085041">出题</text>
+    <text class="tt" x="492" y="248" fill="#085041">6. 用户回答</text>
+    <text class="ts" x="492" y="265" fill="#5F5E5A">幂等键防重复</text>
+    <text class="tt" x="390" y="248" fill="#085041">7. 可信评分</text>
+    <text class="ts" x="390" y="265" fill="#5F5E5A">四维 Rubric</text>
+    <text class="tt" x="288" y="246" fill="#085041">8. 报告历史</text>
+    <text class="tt" x="288" y="263" fill="#085041">与趋势</text>
+    <text class="tt" x="186" y="248" fill="#085041">9. 两层能力画像</text>
+    <text class="ts" x="186" y="265" fill="#5F5E5A">强弱项定位</text>
+    <text class="tt" x="84" y="246" fill="#085041">10. 复习任务</text>
+    <text class="tt" x="84" y="263" fill="#085041">下一轮专项训练</text>
+  </g>
+
+  <g stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow)">
+    <line x1="550" y1="256" x2="538" y2="256"/>
+    <line x1="448" y1="256" x2="436" y2="256"/>
+    <line x1="346" y1="256" x2="334" y2="256"/>
+    <line x1="244" y1="256" x2="232" y2="256"/>
+    <line x1="142" y1="256" x2="130" y2="256"/>
+  </g>
+
+  <line x1="390" y1="284" x2="390" y2="296" stroke="#854F0B" stroke-width="0.5" stroke-dasharray="3,2"/>
+  <rect x="305" y="296" width="170" height="28" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5" stroke-dasharray="3,2"/>
+  <text x="390" y="310" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-size="11" fill="#633806">disputed / review_pending 不污染画像</text>
+
+  <path d="M 84 284 L 84 370 L 594 370 L 594 284" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+  <text x="339" y="364" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-size="11" font-weight="500" fill="#0F6E56">↻ 画像驱动下一轮出题</text>
+</svg>

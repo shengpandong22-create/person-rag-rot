@@ -1,0 +1,23 @@
+﻿{
+    "answer_count_before":  1,
+    "answer_count_after":  1,
+    "interview_status_after":  "completed",
+    "report_id_first":  "a2c4f8f6-35d8-4b73-9be0-24bbc293a144",
+    "report_id_second":  "a2c4f8f6-35d8-4b73-9be0-24bbc293a144",
+    "report_id_stable":  true,
+    "profile_versions_before":  [
+                                    "subtopic::langgraph::checkpoint:3",
+                                    "subtopic::langgraph::interrupt:1",
+                                    "subtopic::langgraph::orchestration:3",
+                                    "subtopic::langgraph::state:3",
+                                    "topic::langgraph:3"
+                                ],
+    "profile_versions_after":  [
+                                   "subtopic::langgraph::checkpoint:3",
+                                   "subtopic::langgraph::interrupt:1",
+                                   "subtopic::langgraph::orchestration:3",
+                                   "subtopic::langgraph::state:3",
+                                   "topic::langgraph:3"
+                               ],
+    "profile_replay_stable":  true
+}
