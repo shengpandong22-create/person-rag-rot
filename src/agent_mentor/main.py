@@ -63,6 +63,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.database_engine = engine
     session_factory = create_session_factory(engine)
     embedding = DevelopmentEmbeddingGateway(settings.embedding_dimension)
+    app.state.embedding_provider = settings.embedding_provider
+    app.state.embedding_model = settings.embedding_model or "development-feature-hash"
+    app.state.embedding_dimension = settings.embedding_dimension
     llm = None
     if settings.llm_base_url and settings.llm_api_key and settings.llm_default_model:
         llm = OpenAICompatibleLLMGateway(

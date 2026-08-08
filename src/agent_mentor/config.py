@@ -14,6 +14,14 @@ class AppEnvironment(StrEnum):
     PRODUCTION = "production"
 
 
+class EmbeddingProvider(StrEnum):
+    DEVELOPMENT = "development"
+    BGE = "bge"
+
+
+PGVECTOR_DIMENSION = 1536
+
+
 class Settings(BaseSettings):
     """Typed application configuration with a dedicated environment-variable prefix."""
 
@@ -32,8 +40,9 @@ class Settings(BaseSettings):
     llm_base_url: str | None = None
     llm_api_key: SecretStr | None = None
     llm_default_model: str | None = None
+    embedding_provider: EmbeddingProvider = EmbeddingProvider.DEVELOPMENT
     embedding_model: str | None = None
-    embedding_dimension: int = 1536
+    embedding_dimension: int = PGVECTOR_DIMENSION
     document_storage_path: str = "uploads"
     max_upload_mb: int = 20
     max_pdf_pages: int = 200
@@ -50,6 +59,21 @@ class Settings(BaseSettings):
         """Tests must never consume a developer's real model credential."""
         if self.app_env is AppEnvironment.TEST:
             self.llm_api_key = None
+        return self
+
+    @model_validator(mode="after")
+    def validate_embedding_runtime(self) -> Settings:
+        """Keep the default local embedding aligned with the current pgvector schema."""
+        if self.embedding_provider is EmbeddingProvider.BGE:
+            raise ValueError(
+                "BGE embedding is planned but not enabled in this version. "
+                "Run retrieval evals first, then add a vector-dimension migration and reindex."
+            )
+        if self.embedding_dimension != PGVECTOR_DIMENSION:
+            raise ValueError(
+                f"embedding_dimension must be {PGVECTOR_DIMENSION} for the current "
+                "pgvector schema. Changing it requires a migration and chunk reindex."
+            )
         return self
 
 

@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
@@ -24,6 +25,9 @@ from agent_mentor.domain.interview import (
 from agent_mentor.infrastructure.database.models import (
     InterviewQuestionModel,
     InterviewSessionModel,
+    KnowledgeCatalogPointModel,
+    KnowledgeCatalogSourceModel,
+    QuestionCoverageModel,
     QuestionReferenceModel,
     UserAnswerModel,
     WorkflowCheckpointModel,
@@ -243,7 +247,14 @@ class InterviewService:
                 )
                 await self._checkpoint(db, wait_for_answer(next_state))
 
-            await db.commit()
+            try:
+                await db.commit()
+            except IntegrityError as error:
+                await db.rollback()
+                if "uq_answer_idempotency" not in str(error.orig):
+                    raise
+                interview = await self._get_session(db, session_id)
+                return await self._snapshot(db, interview)
             await db.refresh(interview)
             return await self._snapshot(db, interview)
 
@@ -310,10 +321,8 @@ class InterviewService:
                 )
             ).all()
         )
-        query_text = (
-            f"{interview.topic} {interview.difficulty} "
-            f"{self._question_type_search_hint(question_type)}"
-        )
+        coverage_focus = await self._coverage_gap_focus(db, interview, sequence=sequence)
+        query_text = self._question_search_text(interview, question_type, coverage_focus)
         chunks = await self._retriever.retrieve(
             RetrievalQuery(
                 knowledge_base_id=interview.knowledge_base_id,
@@ -325,8 +334,10 @@ class InterviewService:
         citation_ids = [chunk.chunk_id for chunk in chunks[:2]]
         validate_citations(citation_ids, chunks)
         generated = await self._generate_question_output(
-            interview, sequence, question_type, chunks, prior_questions
+            interview, sequence, question_type, chunks, prior_questions, coverage_focus
         )
+        if coverage_focus and coverage_focus not in generated.required_points:
+            generated.required_points.insert(0, coverage_focus)
         if self._is_too_similar(generated.question_text, prior_questions):
             generated = InterviewQuestionOutput(
                 question_text=self._question_text(interview, sequence, chunks),
@@ -396,11 +407,12 @@ class InterviewService:
         question_type: QuestionType,
         chunks: list[RetrievedChunk],
         prior_questions: list[str],
+        coverage_focus: str | None,
     ) -> InterviewQuestionOutput:
         fallback = InterviewQuestionOutput(
             question_text=self._question_text(interview, sequence, chunks),
             reference_answer=self._reference_answer(chunks),
-            required_points=[interview.topic],
+            required_points=[coverage_focus or interview.topic],
         )
         if self._llm is None:
             return fallback
@@ -419,7 +431,12 @@ class InterviewService:
                     Message(
                         role="user",
                         content=self._question_prompt(
-                            interview, sequence, question_type, chunks, prior_questions
+                            interview,
+                            sequence,
+                            question_type,
+                            chunks,
+                            prior_questions,
+                            coverage_focus,
                         ),
                     ),
                 ],
@@ -446,6 +463,7 @@ class InterviewService:
         question_type: QuestionType,
         chunks: list[RetrievedChunk],
         prior_questions: list[str],
+        coverage_focus: str | None,
     ) -> str:
         context = []
         for index, chunk in enumerate(chunks[:3], start=1):
@@ -470,12 +488,52 @@ class InterviewService:
             f"难度：{interview.difficulty}\n"
             f"题号：{sequence}/{interview.question_count}\n"
             f"题型要求：{type_hint}\n\n"
+            f"覆盖保底考点：{coverage_focus or '无'}\n"
+            "如果存在覆盖保底考点，题目必须优先围绕该考点展开，但仍需基于检索资料。\n\n"
             f"本轮已出题目：{prior_questions or '无'}\n"
             "不得重复已出题目的核心问法，应考察不同角度。\n\n"
             "检索资料：\n"
             f"{chr(10).join(context) if context else '无'}\n\n"
             "请输出 JSON：question_text、reference_answer、required_points。"
         )
+
+    async def _coverage_gap_focus(
+        self, db: AsyncSession, interview: InterviewSessionModel, *, sequence: int
+    ) -> str | None:
+        if sequence != self._coverage_gap_sequence(interview.question_count):
+            return None
+        covered_point_ids = select(QuestionCoverageModel.knowledge_point_id)
+        return await db.scalar(
+            select(KnowledgeCatalogPointModel.title)
+            .join(
+                KnowledgeCatalogSourceModel,
+                KnowledgeCatalogSourceModel.knowledge_point_id == KnowledgeCatalogPointModel.id,
+            )
+            .where(
+                KnowledgeCatalogPointModel.knowledge_base_id == interview.knowledge_base_id,
+                KnowledgeCatalogPointModel.id.not_in(covered_point_ids),
+            )
+            .order_by(KnowledgeCatalogPointModel.title)
+            .limit(1)
+        )
+
+    def _coverage_gap_sequence(self, question_count: int) -> int:
+        return 2 if question_count >= 2 else 1
+
+    def _question_search_text(
+        self,
+        interview: InterviewSessionModel,
+        question_type: QuestionType,
+        coverage_focus: str | None,
+    ) -> str:
+        parts = [
+            interview.topic,
+            str(interview.difficulty),
+            self._question_type_search_hint(question_type),
+        ]
+        if coverage_focus:
+            parts.extend(["覆盖盲区", coverage_focus])
+        return " ".join(part for part in parts if part)
 
     def _question_type(self, sequence: int) -> QuestionType:
         types = (QuestionType.CONCEPT, QuestionType.SCENARIO, QuestionType.DESIGN)

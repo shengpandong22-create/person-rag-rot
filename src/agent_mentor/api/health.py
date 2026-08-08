@@ -22,6 +22,9 @@ class RuntimeResponse(BaseModel):
     status: str
     llm_enabled: bool
     llm_model: str | None
+    embedding_provider: str
+    embedding_model: str
+    embedding_dimension: int
 
 
 @router.get("/live", response_model=HealthResponse)
@@ -47,4 +50,7 @@ async def runtime(request: Request) -> RuntimeResponse:
         status="ok",
         llm_enabled=bool(getattr(request.app.state, "llm_enabled", False)),
         llm_model=getattr(request.app.state, "llm_model", None),
+        embedding_provider=str(getattr(request.app.state, "embedding_provider", "unknown")),
+        embedding_model=str(getattr(request.app.state, "embedding_model", "unknown")),
+        embedding_dimension=int(getattr(request.app.state, "embedding_dimension", 0)),
     )

@@ -1,5 +1,5 @@
 {
-  "include": ["src", "tests/unit", "tests/integration", "migrations"],
+  "include": ["src", "tests/unit", "tests/integration", "migrations", "evals"],
   "venvPath": ".",
   "venv": ".venv",
   "executionEnvironments": [
@@ -9,7 +9,11 @@
     },
     {
       "root": "tests",
-      "extraPaths": ["src"]
+      "extraPaths": ["src", "."]
+    },
+    {
+      "root": "evals",
+      "extraPaths": ["src", "."]
     },
     {
       "root": "migrations",
