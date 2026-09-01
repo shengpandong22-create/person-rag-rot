@@ -19,7 +19,8 @@ class EmbeddingProvider(StrEnum):
     BGE = "bge"
 
 
-PGVECTOR_DIMENSION = 1536
+PGVECTOR_DIMENSION = 512
+DEFAULT_BGE_MODEL = "BAAI/bge-small-zh-v1.5"
 
 
 class Settings(BaseSettings):
@@ -48,7 +49,7 @@ class Settings(BaseSettings):
     max_pdf_pages: int = 200
     chunk_size: int = 600
     chunk_overlap: int = 100
-    embedding_batch_size: int = 24
+    embedding_batch_size: int = 16
     retrieval_candidate_k: int = 20
     retrieval_top_k: int = 6
     retrieval_min_score: float = 0.01
@@ -64,16 +65,13 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_embedding_runtime(self) -> Settings:
         """Keep the default local embedding aligned with the current pgvector schema."""
-        if self.embedding_provider is EmbeddingProvider.BGE:
-            raise ValueError(
-                "BGE embedding is planned but not enabled in this version. "
-                "Run retrieval evals first, then add a vector-dimension migration and reindex."
-            )
         if self.embedding_dimension != PGVECTOR_DIMENSION:
             raise ValueError(
                 f"embedding_dimension must be {PGVECTOR_DIMENSION} for the current "
                 "pgvector schema. Changing it requires a migration and chunk reindex."
             )
+        if self.embedding_provider is EmbeddingProvider.BGE and not self.embedding_model:
+            self.embedding_model = DEFAULT_BGE_MODEL
         return self
 
 

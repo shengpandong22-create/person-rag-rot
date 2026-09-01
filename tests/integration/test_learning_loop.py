@@ -10,6 +10,7 @@ from agent_mentor.application.evaluation_service import EvaluationService
 from agent_mentor.application.interview_service import InterviewService
 from agent_mentor.application.knowledge_service import KnowledgeService
 from agent_mentor.application.profile_service import ProfileService
+from agent_mentor.config import PGVECTOR_DIMENSION
 from agent_mentor.domain.interview import Difficulty, InterviewStatus
 from agent_mentor.domain.knowledge import DocumentStatus, TrustLevel
 from agent_mentor.infrastructure.database.session import (
@@ -33,7 +34,7 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
     assert DATABASE_URL is not None
     engine = create_database_engine(DATABASE_URL)
     sessions = create_session_factory(engine)
-    embedding = DevelopmentEmbeddingGateway(1536)
+    embedding = DevelopmentEmbeddingGateway(PGVECTOR_DIMENSION)
     knowledge = KnowledgeService(
         sessions,
         DocumentParser(max_pdf_pages=20),

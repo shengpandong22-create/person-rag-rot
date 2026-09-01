@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from types import SimpleNamespace
+from typing import cast
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -69,6 +71,15 @@ class ScoreTrendPoint:
     score_ratio: float
     dimension_averages: dict[str, float]
     created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class DirectEvaluationResult:
+    output: EvaluationOutput
+    needs_review: bool
+    status: EvaluationStatus
+    review_decision: ReviewDecision
+    model_name: str
 
 
 class EvaluationService:
@@ -178,6 +189,67 @@ class EvaluationService:
         history = await self.list_report_history(user_id, knowledge_base_id, limit=limit)
         chronological = reversed(history)
         return tuple(self._trend_point(item) for item in chronological)
+
+    async def evaluate_answer_direct(
+        self,
+        *,
+        question_text: str,
+        answer_text: str,
+        reference_answer: str,
+        knowledge_points: tuple[str, ...],
+        rubric: dict[str, object],
+        allowed_reference_ids: tuple[UUID, ...] = (),
+        reviewer_available: bool = True,
+    ) -> DirectEvaluationResult:
+        """Evaluate a dataset row without persisted interview/question/answer rows.
+
+        Eval Runner uses this method to measure scoring quality against labelled
+        JSONL cases while keeping the production interview persistence path
+        unchanged.
+        """
+        question = cast(
+            InterviewQuestionModel,
+            SimpleNamespace(
+                id=uuid4(),
+                question_text=question_text,
+                question_type="eval_case",
+                difficulty="medium",
+                knowledge_points=list(knowledge_points),
+                reference_answer=reference_answer,
+                rubric=rubric,
+            ),
+        )
+        answer = cast(
+            UserAnswerModel,
+            SimpleNamespace(id=uuid4(), answer_text=answer_text),
+        )
+        output = await self._evaluate_with_llm_or_fallback(
+            question, answer, allowed_reference_ids
+        )
+        reasons = review_reasons_for(output)
+        needs_review = should_review(output)
+        status, review_decision = initial_review_route(
+            output, reviewer_available=reviewer_available
+        )
+        model_name = self._default_model or EVALUATION_MODEL_NAME
+        if needs_review and reviewer_available:
+            reviewed_output = self._review_deterministically(output, answer)
+            if abs(total_score(reviewed_output) - total_score(output)) >= 5:
+                status = EvaluationStatus.DISPUTED
+                review_decision = ReviewDecision.DISPUTED
+            else:
+                output = reviewed_output
+                reasons = review_reasons_for(output)
+                status = EvaluationStatus.FINAL
+                review_decision = ReviewDecision.USED_REVIEW
+            model_name = f"{model_name}+{REVIEWER_MODEL_NAME}"
+        return DirectEvaluationResult(
+            output=output.model_copy(update={"review_reasons": reasons}),
+            needs_review=needs_review,
+            status=status,
+            review_decision=review_decision,
+            model_name=model_name,
+        )
 
     async def _evaluate_answer(
         self,

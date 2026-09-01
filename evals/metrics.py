@@ -23,6 +23,23 @@ class RetrievalMetrics:
     negative_rejection_accuracy: float
 
 
+@dataclass(frozen=True, slots=True)
+class ScoringCaseResult:
+    case_id: str
+    predicted_total: int
+    human_total: int
+    predicted_review: bool
+    expected_review: bool
+
+
+@dataclass(frozen=True, slots=True)
+class ScoringMetrics:
+    total: int
+    mean_absolute_error: float
+    pearson_correlation: float
+    reviewer_routing_accuracy: float
+
+
 def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMetrics:
     total = len(results)
     if total == 0:
@@ -42,6 +59,26 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
         ),
         negative_rejection_accuracy=_accuracy(
             not item.evidence_sufficient for item in negatives
+        ),
+    )
+
+
+def compute_scoring_metrics(results: list[ScoringCaseResult]) -> ScoringMetrics:
+    total = len(results)
+    if total == 0:
+        raise ValueError("results must not be empty.")
+    absolute_errors = [
+        abs(item.predicted_total - item.human_total) for item in results
+    ]
+    return ScoringMetrics(
+        total=total,
+        mean_absolute_error=round(sum(absolute_errors) / total, 4),
+        pearson_correlation=_pearson(
+            [item.predicted_total for item in results],
+            [item.human_total for item in results],
+        ),
+        reviewer_routing_accuracy=_accuracy(
+            item.predicted_review == item.expected_review for item in results
         ),
     )
 
@@ -72,3 +109,19 @@ def _accuracy(values: Iterable[object]) -> float:
     if not items:
         return 0.0
     return round(sum(bool(item) for item in items) / len(items), 4)
+
+
+def _pearson(left: list[int], right: list[int]) -> float:
+    if len(left) != len(right) or not left:
+        return 0.0
+    left_mean = sum(left) / len(left)
+    right_mean = sum(right) / len(right)
+    numerator = sum(
+        (left_item - left_mean) * (right_item - right_mean)
+        for left_item, right_item in zip(left, right, strict=True)
+    )
+    left_denominator = sum((item - left_mean) ** 2 for item in left) ** 0.5
+    right_denominator = sum((item - right_mean) ** 2 for item in right) ** 0.5
+    if left_denominator == 0 or right_denominator == 0:
+        return 0.0
+    return round(numerator / (left_denominator * right_denominator), 4)

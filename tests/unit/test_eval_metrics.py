@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
+from evals.metrics import (
+    RetrievalCaseResult,
+    ScoringCaseResult,
+    compute_retrieval_metrics,
+    compute_scoring_metrics,
+)
 
 
 def test_compute_retrieval_metrics_reports_recall_mrr_and_rejection_accuracy() -> None:
@@ -27,3 +32,15 @@ def test_compute_retrieval_metrics_reports_recall_mrr_and_rejection_accuracy() -
 def test_compute_retrieval_metrics_rejects_empty_results() -> None:
     with pytest.raises(ValueError):
         compute_retrieval_metrics([])
+
+
+def test_compute_scoring_metrics_reports_error_and_review_accuracy() -> None:
+    metrics = compute_scoring_metrics(
+        [
+            ScoringCaseResult("a", 10, 8, False, False),
+            ScoringCaseResult("b", 6, 8, True, False),
+        ]
+    )
+    assert metrics.total == 2
+    assert metrics.mean_absolute_error == 2.0
+    assert metrics.reviewer_routing_accuracy == 0.5

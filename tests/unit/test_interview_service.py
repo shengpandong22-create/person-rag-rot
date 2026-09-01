@@ -4,8 +4,11 @@ from types import SimpleNamespace
 from typing import Any, cast
 from uuid import uuid4
 
+from sqlalchemy import Table, UniqueConstraint
+
 from agent_mentor.application.interview_service import InterviewService
 from agent_mentor.domain.interview import Difficulty, QuestionType
+from agent_mentor.infrastructure.database.models import UserAnswerModel
 
 
 def test_coverage_gap_sequence_reserves_second_question_for_multi_question_interview() -> None:
@@ -49,3 +52,19 @@ def test_question_search_text_keeps_original_query_without_coverage_focus() -> N
     assert "LangGraph" in query
     assert "定义 原理 核心概念" in query
     assert "覆盖盲区" not in query
+
+
+def test_user_answer_idempotency_is_enforced_by_database_constraint() -> None:
+    table = cast(Table, UserAnswerModel.__table__)
+    constraints = [
+        constraint
+        for constraint in table.constraints
+        if isinstance(constraint, UniqueConstraint)
+    ]
+
+    assert any(
+        constraint.name == "uq_answer_idempotency"
+        and {column.name for column in constraint.columns}
+        == {"question_id", "idempotency_key"}
+        for constraint in constraints
+    )

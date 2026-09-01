@@ -14,10 +14,11 @@ def test_test_environment_discards_model_credential(monkeypatch) -> None:
 
 
 def test_embedding_dimension_must_match_current_pgvector_schema() -> None:
-    with pytest.raises(ValueError, match="embedding_dimension must be 1536"):
-        Settings(embedding_dimension=512)
+    with pytest.raises(ValueError, match="embedding_dimension must be 512"):
+        Settings(embedding_dimension=1536)
 
 
-def test_bge_provider_is_explicitly_guarded_until_migration_exists() -> None:
-    with pytest.raises(ValueError, match="BGE embedding is planned"):
-        Settings(embedding_provider=EmbeddingProvider.BGE)
+def test_bge_provider_uses_default_model_until_schema_rebuild() -> None:
+    settings = Settings(embedding_provider=EmbeddingProvider.BGE)
+
+    assert settings.embedding_model == "BAAI/bge-small-zh-v1.5"

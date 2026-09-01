@@ -10,10 +10,10 @@ from agent_mentor.infrastructure.database.session import (
     create_database_engine,
     create_session_factory,
 )
-from agent_mentor.infrastructure.embedding import DevelopmentEmbeddingGateway
 from agent_mentor.infrastructure.retriever import PostgresHybridRetriever
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
 from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
+from evals.runners.runtime import create_embedding_gateway
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,7 +48,7 @@ async def run_retrieval_eval(
     )
     engine = create_database_engine(settings.database_url)
     sessions = create_session_factory(engine)
-    embedding = DevelopmentEmbeddingGateway(settings.embedding_dimension)
+    embedding = create_embedding_gateway(settings)
     retriever = PostgresHybridRetriever(
         sessions,
         embedding,

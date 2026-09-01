@@ -25,10 +25,12 @@ services:
       AGENT_MENTOR_APP_ENV: development
       AGENT_MENTOR_DATABASE_URL: postgresql+asyncpg://agentmentor:agentmentor@db:5432/agentmentor
       AGENT_MENTOR_ALEMBIC_DATABASE_URL: postgresql+psycopg://agentmentor:agentmentor@db:5432/agentmentor
+      HF_HOME: /cache/huggingface
     ports:
       - "8000:8000"
     volumes:
       - uploads_data:/app/uploads
+      - hf_cache:/cache/huggingface
     depends_on:
       db:
         condition: service_healthy
@@ -50,3 +52,4 @@ services:
 volumes:
   postgres_data:
   uploads_data:
+  hf_cache:

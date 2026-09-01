@@ -26,7 +26,8 @@ from agent_mentor.application.evaluation_service import EvaluationService
 from agent_mentor.application.interview_service import InterviewService
 from agent_mentor.application.knowledge_service import DEFAULT_USER_ID, KnowledgeService
 from agent_mentor.application.profile_service import ProfileService
-from agent_mentor.config import Settings, get_settings
+from agent_mentor.config import EmbeddingProvider, Settings, get_settings
+from agent_mentor.infrastructure.bge_embedding import BgeEmbeddingGateway
 from agent_mentor.infrastructure.database.session import (
     DatabaseHealthChecker,
     create_database_engine,
@@ -62,9 +63,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     engine = create_database_engine(settings.database_url)
     app.state.database_engine = engine
     session_factory = create_session_factory(engine)
-    embedding = DevelopmentEmbeddingGateway(settings.embedding_dimension)
+    if settings.embedding_provider is EmbeddingProvider.BGE:
+        embedding = BgeEmbeddingGateway(
+            model_name=settings.embedding_model or "BAAI/bge-small-zh-v1.5",
+            dimension=settings.embedding_dimension,
+            batch_size=settings.embedding_batch_size,
+        )
+    else:
+        embedding = DevelopmentEmbeddingGateway(settings.embedding_dimension)
     app.state.embedding_provider = settings.embedding_provider
-    app.state.embedding_model = settings.embedding_model or "development-feature-hash"
+    app.state.embedding_model = (
+        settings.embedding_model
+        if settings.embedding_provider is EmbeddingProvider.BGE
+        else "development-feature-hash"
+    )
     app.state.embedding_dimension = settings.embedding_dimension
     llm = None
     if settings.llm_base_url and settings.llm_api_key and settings.llm_default_model:
