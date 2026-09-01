@@ -78,6 +78,12 @@ class WorkflowTraceItem:
     created_at: datetime
 
 
+@dataclass(frozen=True, slots=True)
+class CoverageFocus:
+    point_id: UUID
+    title: str
+
+
 class InterviewQuestionOutput(BaseModel):
     question_text: str = Field(min_length=1, max_length=1200)
     reference_answer: str = Field(min_length=1, max_length=4000)
@@ -322,7 +328,8 @@ class InterviewService:
             ).all()
         )
         coverage_focus = await self._coverage_gap_focus(db, interview, sequence=sequence)
-        query_text = self._question_search_text(interview, question_type, coverage_focus)
+        coverage_focus_title = coverage_focus.title if coverage_focus else None
+        query_text = self._question_search_text(interview, question_type, coverage_focus_title)
         chunks = await self._retriever.retrieve(
             RetrievalQuery(
                 knowledge_base_id=interview.knowledge_base_id,
@@ -334,10 +341,10 @@ class InterviewService:
         citation_ids = [chunk.chunk_id for chunk in chunks[:2]]
         validate_citations(citation_ids, chunks)
         generated = await self._generate_question_output(
-            interview, sequence, question_type, chunks, prior_questions, coverage_focus
+            interview, sequence, question_type, chunks, prior_questions, coverage_focus_title
         )
-        if coverage_focus and coverage_focus not in generated.required_points:
-            generated.required_points.insert(0, coverage_focus)
+        if coverage_focus_title and coverage_focus_title not in generated.required_points:
+            generated.required_points.insert(0, coverage_focus_title)
         if self._is_too_similar(generated.question_text, prior_questions):
             generated = InterviewQuestionOutput(
                 question_text=self._question_text(interview, sequence, chunks),
@@ -398,6 +405,12 @@ class InterviewService:
                 )
             )
         await map_question_coverage(db, question_id=question.id, chunk_ids=citation_ids)
+        if coverage_focus is not None:
+            await self._ensure_question_coverage(
+                db,
+                question_id=question.id,
+                knowledge_point_id=coverage_focus.point_id,
+            )
         return question
 
     async def _generate_question_output(
@@ -499,12 +512,12 @@ class InterviewService:
 
     async def _coverage_gap_focus(
         self, db: AsyncSession, interview: InterviewSessionModel, *, sequence: int
-    ) -> str | None:
+    ) -> CoverageFocus | None:
         if sequence != self._coverage_gap_sequence(interview.question_count):
             return None
         covered_point_ids = select(QuestionCoverageModel.knowledge_point_id)
-        return await db.scalar(
-            select(KnowledgeCatalogPointModel.title)
+        point = await db.scalar(
+            select(KnowledgeCatalogPointModel)
             .join(
                 KnowledgeCatalogSourceModel,
                 KnowledgeCatalogSourceModel.knowledge_point_id == KnowledgeCatalogPointModel.id,
@@ -515,6 +528,29 @@ class InterviewService:
             )
             .order_by(KnowledgeCatalogPointModel.title)
             .limit(1)
+        )
+        if point is None:
+            return None
+        return CoverageFocus(point_id=point.id, title=point.title)
+
+    async def _ensure_question_coverage(
+        self, db: AsyncSession, *, question_id: UUID, knowledge_point_id: UUID
+    ) -> None:
+        existing = await db.scalar(
+            select(QuestionCoverageModel.id).where(
+                QuestionCoverageModel.question_id == question_id,
+                QuestionCoverageModel.knowledge_point_id == knowledge_point_id,
+            )
+        )
+        if existing is not None:
+            return
+        db.add(
+            QuestionCoverageModel(
+                id=uuid4(),
+                question_id=question_id,
+                knowledge_point_id=knowledge_point_id,
+                created_at=datetime.now(UTC),
+            )
         )
 
     def _coverage_gap_sequence(self, question_count: int) -> int:
