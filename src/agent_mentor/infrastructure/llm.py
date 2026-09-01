@@ -11,9 +11,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from collections.abc import AsyncIterator, Sequence
-from dataclasses import dataclass
 from typing import Any, TypeVar
 
 import httpx
@@ -22,13 +22,13 @@ from pydantic import BaseModel, ValidationError
 from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
 
 T = TypeVar("T", bound=BaseModel)
+RETRYABLE_STATUS_CODES = frozenset({408, 409, 429, 500, 502, 503, 504})
 
 
 class LLMGatewayError(RuntimeError):
     """LLM 调用失败异常 — 所有 LLM 相关错误统一包装为此类型"""
 
 
-@dataclass(frozen=True, slots=True)
 class OpenAICompatibleLLMGateway(LLMGateway):
     """OpenAI 兼容的 LLM 适配器 — 支持 DeepSeek 及所有兼容 API 的供应商。
     
@@ -38,9 +38,14 @@ class OpenAICompatibleLLMGateway(LLMGateway):
         default_model:  默认模型名，如 deepseek-chat
     """
 
-    base_url: str
-    api_key: str
-    default_model: str
+    def __init__(self, *, base_url: str, api_key: str, default_model: str) -> None:
+        self.base_url = base_url.rstrip("/")
+        self.api_key = api_key
+        self.default_model = default_model
+        self._client = httpx.AsyncClient()
+
+    async def aclose(self) -> None:
+        await self._client.aclose()
 
     async def generate_structured(
         self,
@@ -134,7 +139,6 @@ class OpenAICompatibleLLMGateway(LLMGateway):
             
         注意：temperature=0.2 固定，保证输出相对稳定
         """
-        del operation  # operation 参数保留给子类或日志扩展
         payload: dict[str, Any] = {
             "model": model_policy.model or self.default_model,
             "messages": messages,
@@ -150,31 +154,58 @@ class OpenAICompatibleLLMGateway(LLMGateway):
         }
 
         last_error: Exception | None = None
-        for _attempt in range(model_policy.max_retries + 1):
+        for attempt in range(model_policy.max_retries + 1):
             try:
-                async with httpx.AsyncClient(timeout=model_policy.timeout_seconds) as client:
-                    response = await client.post(
-                        f"{self.base_url.rstrip('/')}/chat/completions",
+                response = await self._client.post(
+                    f"{self.base_url}/chat/completions",
+                    headers=headers,
+                    json=payload,
+                    timeout=model_policy.timeout_seconds,
+                )
+                # 降级：如果 API 不支持 json_object 格式，去除后立即重试一次。
+                if response.status_code == 400 and "response_format" in payload:
+                    payload.pop("response_format", None)
+                    response = await self._client.post(
+                        f"{self.base_url}/chat/completions",
                         headers=headers,
                         json=payload,
+                        timeout=model_policy.timeout_seconds,
                     )
-                    # 降级：如果 API 不支持 json_object 格式，去除后重试
-                    if response.status_code == 400 and response_format is not None:
-                        payload.pop("response_format", None)
-                        response = await client.post(
-                            f"{self.base_url.rstrip('/')}/chat/completions",
-                            headers=headers,
-                            json=payload,
-                        )
+                if response.status_code in RETRYABLE_STATUS_CODES:
+                    raise LLMGatewayError(
+                        f"LLM provider returned retryable status {response.status_code}."
+                    )
+                if 400 <= response.status_code < 500:
+                    raise LLMGatewayError(
+                        f"LLM call failed fast for {operation}: status {response.status_code}."
+                    )
                 response.raise_for_status()
                 data = response.json()
                 content = data["choices"][0]["message"]["content"]
                 if not isinstance(content, str) or not content.strip():
                     raise LLMGatewayError("LLM returned an empty message.")
                 return content
-            except Exception as error:  # noqa: BLE001 - gateway converts provider failures.
+            except LLMGatewayError as error:
                 last_error = error
-        raise LLMGatewayError(f"LLM call failed after retries: {last_error}") from last_error
+                is_retryable = self._is_retryable_gateway_error(error)
+                if not is_retryable:
+                    raise error
+                if attempt >= model_policy.max_retries:
+                    break
+            except (httpx.TimeoutException, httpx.TransportError, httpx.HTTPStatusError) as error:
+                last_error = error
+                if attempt >= model_policy.max_retries:
+                    break
+            await asyncio.sleep(self._retry_delay(attempt))
+        raise LLMGatewayError(
+            f"LLM call failed after retries for {operation}: {last_error}"
+        ) from last_error
+
+    def _is_retryable_gateway_error(self, error: LLMGatewayError) -> bool:
+        return "retryable status" in str(error)
+
+    def _retry_delay(self, attempt: int) -> float:
+        return min(0.25 * (2**attempt), 2.0)
 
     def _messages(self, messages: Sequence[Message]) -> list[dict[str, str]]:
         """将内部 Message 列表转为 OpenAI API 格式"""

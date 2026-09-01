@@ -46,6 +46,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await app.state.knowledge_service.rebuild_coverage_catalogs()
     await app.state.profile_service.backfill_two_layer_profiles(DEFAULT_USER_ID)
     yield
+    llm = app.state.llm_gateway
+    if llm is not None:
+        await llm.aclose()
     await app.state.database_engine.dispose()
 
 
