@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+from uuid import UUID
 
 
 @dataclass(frozen=True)
@@ -85,11 +86,23 @@ def request_json(
     raise RuntimeError(f"request failed after {attempts} attempts: {method} {url}") from last_error
 
 
-def run_suite(suite: str, base_url: str, output: Path) -> dict[str, Any]:
-    knowledge_base_id, scenarios = SUITES[suite]
+def run_suite(
+    suite: str,
+    base_url: str,
+    output: Path,
+    *,
+    knowledge_base_id_override: UUID | None = None,
+    rounds: int | None = None,
+) -> dict[str, Any]:
+    configured_knowledge_base_id, scenarios = SUITES[suite]
+    knowledge_base_id = str(knowledge_base_id_override or configured_knowledge_base_id)
+    if rounds is not None and rounds < 1:
+        raise ValueError("rounds must be greater than 0.")
+    planned_rounds = rounds or len(scenarios)
     result: dict[str, Any] = {
         "suite": suite,
         "knowledge_base_id": knowledge_base_id,
+        "planned_rounds": planned_rounds,
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "rounds": [],
         "failures": [],
@@ -101,7 +114,8 @@ def run_suite(suite: str, base_url: str, output: Path) -> dict[str, Any]:
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/reports/history?limit=100"
     )
 
-    for round_number, scenario in enumerate(scenarios, start=1):
+    for round_number in range(1, planned_rounds + 1):
+        scenario = scenarios[(round_number - 1) % len(scenarios)]
         started = time.monotonic()
         round_result: dict[str, Any] = {
             "round": round_number,
@@ -167,7 +181,7 @@ def run_suite(suite: str, base_url: str, output: Path) -> dict[str, Any]:
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
         print(
-            f"[{suite}] round={round_number}/10 topic={scenario.topic} "
+            f"[{suite}] round={round_number}/{planned_rounds} topic={scenario.topic} "
             f"status={round_result.get('status', 'failed')} "
             f"score={round_result.get('report', {}).get('total_score', '-')} "
             f"elapsed={round_result['elapsed_seconds']}s",
@@ -199,8 +213,16 @@ def main() -> None:
     parser.add_argument("suite", choices=sorted(SUITES))
     parser.add_argument("--base-url", default="http://localhost:8000")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--knowledge-base-id", type=UUID)
+    parser.add_argument("--rounds", type=int)
     args = parser.parse_args()
-    result = run_suite(args.suite, args.base_url.rstrip("/"), args.output)
+    result = run_suite(
+        args.suite,
+        args.base_url.rstrip("/"),
+        args.output,
+        knowledge_base_id_override=args.knowledge_base_id,
+        rounds=args.rounds,
+    )
     print(
         f"[{args.suite}] complete rounds={len(result['rounds'])} "
         f"failures={len(result['failures'])}",
