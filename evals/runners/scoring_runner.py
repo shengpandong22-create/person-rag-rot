@@ -96,6 +96,7 @@ async def run_scoring_eval(
                 "confidence": result.output.confidence,
                 "status": result.status.value,
                 "review_decision": result.review_decision.value,
+                "review_reasons": result.output.review_reasons,
                 "feedback": result.output.feedback,
             }
         )

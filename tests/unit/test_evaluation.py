@@ -116,6 +116,36 @@ def test_low_confidence_result_enters_review_route() -> None:
     assert should_review(output)
 
 
+def test_advisory_review_reason_does_not_force_review_for_mid_answer() -> None:
+    output = EvaluationOutput(
+        correctness=3,
+        completeness=2,
+        reasoning=2,
+        communication=2,
+        confidence=0.8,
+        missing_points=["工程取舍"],
+        feedback="needs more detail",
+        review_reasons=["missing_detail"],
+    )
+
+    assert not should_review(output)
+
+
+def test_severe_quality_gap_enters_review_even_with_high_confidence() -> None:
+    output = EvaluationOutput(
+        correctness=1,
+        completeness=1,
+        reasoning=1,
+        communication=2,
+        confidence=0.9,
+        missing_points=["证据边界", "降级流程"],
+        feedback="weak answer",
+        review_reasons=["missing_detail"],
+    )
+
+    assert should_review(output)
+
+
 def test_reviewer_unavailable_marks_pending() -> None:
     output = EvaluationOutput(
         correctness=2,

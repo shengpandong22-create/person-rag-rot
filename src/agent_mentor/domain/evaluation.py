@@ -53,15 +53,31 @@ class EvaluationOutput(BaseModel):
     review_reasons: list[str] = Field(default_factory=list)
 
 
+HARD_MODEL_REVIEW_REASONS = {
+    "boundary_with_dispute",
+    "citation_invalid",
+    "dimension_conflict",
+    "factual_conflict",
+    "hallucination",
+    "illegal_citation",
+    "low_confidence",
+    "severe_quality_gap",
+}
+
+
 def total_score(output: EvaluationOutput) -> int:
     return output.correctness + output.completeness + output.reasoning + output.communication
 
 
 def review_reasons_for(output: EvaluationOutput) -> list[str]:
-    reasons = list(output.review_reasons)
+    reasons = [
+        reason for reason in output.review_reasons if reason in HARD_MODEL_REVIEW_REASONS
+    ]
     if output.confidence < 0.70:
         reasons.append("low_confidence")
     total = total_score(output)
+    if total <= 8 and (output.correctness <= 2 or len(output.missing_points) >= 2):
+        reasons.append("severe_quality_gap")
     if total in {9, 10, 11, 12} and output.incorrect_claims:
         reasons.append("boundary_with_dispute")
     if (

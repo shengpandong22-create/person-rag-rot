@@ -376,3 +376,70 @@ LLM 评分结果：
 补充 LLM 验收后，可以进一步补充：
 
 > DeepSeek 评分版在 12 条人工标注样例上，MAE 为 2.0，Pearson 相关性为 0.9671，并且低/中/高三档排序正确。这个结果说明 LLM 评分不是只会给参考答案高分，而是能对不同质量回答做出接近人工预期的区分。同时我们也发现复核路由偏保守，中档答案经常进入复核，这是下一步可以优化的点。
+
+## 9. 第 4 批训练质量修复：复核路由降噪
+
+### 9.1 发现的问题
+
+LLM 评分区分度验收中，低/中/高三档分数已经能拉开，但 `Reviewer routing accuracy` 只有 0.6667。明细显示，4 条中档答案全部被送入 `used_review`。
+
+这不是评分分数本身的问题，而是复核路由偏保守：
+
+- 中档答案方向正确，但缺少细节；
+- LLM 会把 `missing_detail` 这类训练建议写入 `review_reasons`；
+- 旧规则直接接受模型输出的 `review_reasons`，导致“缺细节”也触发强复核。
+
+### 9.2 优化原则
+
+复核应该处理“可信性风险”，不是处理所有“训练建议”。
+
+因此规则调整为：
+
+- 低置信、事实冲突、引用非法、维度冲突、严重质量缺口：进入强复核；
+- 缺少细节、需要更深入、表达可优化：保留在反馈和扣分中，但不触发强复核；
+- 低分答案即使模型置信度高，只要存在严重质量缺口，仍会进入复核。
+
+### 9.3 代码路线
+
+- `src/agent_mentor/domain/evaluation.py`
+  - 新增 `HARD_MODEL_REVIEW_REASONS`；
+  - `review_reasons_for()` 只接收硬风险类模型原因；
+  - 对 `total <= 8` 且正确性较低或缺失点较多的答案追加 `severe_quality_gap`。
+- `tests/unit/test_evaluation.py`
+  - 增加“中档缺细节不强复核”测试；
+  - 增加“严重低质答案仍进入复核”测试。
+- `evals/runners/scoring_runner.py`
+  - 报告明细补充 `review_reasons`，方便定位路由原因。
+
+### 9.4 修复后 LLM Eval 结果
+
+重新运行：
+
+```bash
+python -m evals.run scoring \
+  --scoring-dataset evals/datasets/evaluation_discrimination_v1.jsonl \
+  --output-dir evals/reports/discrimination_llm \
+  --use-llm-scoring
+```
+
+结果对比：
+
+| 指标 | 修复前 | 修复后 |
+| --- | ---: | ---: |
+| MAE | 2.0 | 1.6667 |
+| Pearson correlation | 0.9671 | 0.9691 |
+| Reviewer routing accuracy | 0.6667 | 1.0 |
+| Band order accuracy | 1.0 | 1.0 |
+
+修复后表现：
+
+- 4 条 low 答案仍全部进入复核；
+- 4 条 mid 答案不再因为“缺细节”误触发强复核；
+- 4 条 high 答案正常通过；
+- 评分分档仍保持正确。
+
+### 9.5 面试表达价值
+
+可以这样讲：
+
+> 我们用人工低中高答案集发现了一个很具体的问题：LLM 评分分数是准的，但复核路由过于敏感，中档答案会因为 missing_detail 被送入 reviewer。于是我把 review reason 分成硬风险和训练建议：只有低置信、事实冲突、引用非法、维度冲突、严重质量缺口才触发强复核；缺细节则通过扣分和反馈体现。修复后 Reviewer routing accuracy 从 0.6667 提升到 1.0，同时低分答案仍能被拦住。
