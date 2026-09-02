@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from types import ModuleType
 from typing import Any, cast
+from uuid import UUID
 
 
 def _load_audit_runner() -> ModuleType:
@@ -146,3 +147,184 @@ def test_summarize_question_similarity_reports_near_duplicate_pairs() -> None:
         "sequence": 1,
         "topic": "RAG",
     }
+
+
+def test_summarize_coverage_reports_rates_and_priority_points() -> None:
+    runner = _load_audit_runner()
+    summarize_coverage = cast(Any, runner).summarize_coverage
+
+    summary = summarize_coverage(
+        {
+            "total": 5,
+            "uncovered": 2,
+            "attempted": 1,
+            "verified": 2,
+            "points": [
+                {
+                    "id": "rag_boundary",
+                    "title": "RAG 知识边界",
+                    "status": "uncovered",
+                    "source_count": 6,
+                    "attempt_count": 0,
+                    "trusted_evaluation_count": 0,
+                    "average_score": None,
+                },
+                {
+                    "id": "chunking",
+                    "title": "分块策略",
+                    "status": "uncovered",
+                    "source_count": 2,
+                    "attempt_count": 0,
+                    "trusted_evaluation_count": 0,
+                    "average_score": None,
+                },
+                {
+                    "id": "checkpoint",
+                    "title": "Checkpoint 恢复",
+                    "status": "weak",
+                    "source_count": 4,
+                    "attempt_count": 2,
+                    "trusted_evaluation_count": 2,
+                    "average_score": 0.55,
+                },
+                {
+                    "id": "rubric",
+                    "title": "Rubric 评分",
+                    "status": "verified",
+                    "source_count": 3,
+                    "attempt_count": 1,
+                    "trusted_evaluation_count": 1,
+                    "average_score": 0.82,
+                },
+            ],
+        }
+    )
+
+    assert summary["attempt_rate"] == 0.6
+    assert summary["trusted_coverage_rate"] == 0.4
+    assert summary["status_distribution"] == {"uncovered": 2, "verified": 1, "weak": 1}
+    assert summary["top_uncovered_points"][0]["id"] == "rag_boundary"
+    assert summary["weak_or_insufficient_points"] == [
+        {
+            "id": "checkpoint",
+            "title": "Checkpoint 恢复",
+            "status": "weak",
+            "source_count": 4,
+            "attempt_count": 2,
+            "trusted_evaluation_count": 2,
+            "average_score": 0.55,
+        }
+    ]
+
+
+def test_summarize_coverage_progress_reports_newly_covered_points() -> None:
+    runner = _load_audit_runner()
+    summarize_coverage_progress = cast(Any, runner).summarize_coverage_progress
+
+    progress = summarize_coverage_progress(
+        {
+            "total": 3,
+            "uncovered": 2,
+            "attempted": 1,
+            "verified": 0,
+            "points": [
+                {"id": "rag", "title": "RAG", "status": "uncovered", "source_count": 5},
+                {
+                    "id": "memory",
+                    "title": "Memory",
+                    "status": "attempted",
+                    "source_count": 3,
+                },
+                {"id": "tool", "title": "Tool", "status": "uncovered", "source_count": 1},
+            ],
+        },
+        {
+            "total": 4,
+            "uncovered": 1,
+            "attempted": 1,
+            "verified": 2,
+            "points": [
+                {
+                    "id": "rag",
+                    "title": "RAG",
+                    "status": "mastered",
+                    "source_count": 5,
+                    "attempt_count": 1,
+                    "trusted_evaluation_count": 1,
+                    "average_score": 0.9,
+                },
+                {
+                    "id": "memory",
+                    "title": "Memory",
+                    "status": "verified",
+                    "source_count": 3,
+                    "attempt_count": 2,
+                    "trusted_evaluation_count": 1,
+                    "average_score": 0.75,
+                },
+                {"id": "tool", "title": "Tool", "status": "uncovered", "source_count": 1},
+                {"id": "mcp", "title": "MCP", "status": "uncovered", "source_count": 2},
+            ],
+        },
+    )
+
+    assert progress["delta_total"] == 1
+    assert progress["delta_uncovered"] == -1
+    assert progress["delta_verified"] == 2
+    assert progress["newly_attempted_count"] == 1
+    assert progress["newly_attempted_points"][0]["id"] == "rag"
+    assert progress["newly_verified_count"] == 2
+    assert {point["id"] for point in progress["newly_verified_points"]} == {"rag", "memory"}
+    assert progress["remaining_uncovered_count"] == 2
+
+
+def test_resolve_knowledge_base_id_prefers_override() -> None:
+    runner = _load_audit_runner()
+    resolve_knowledge_base_id = cast(Any, runner).resolve_knowledge_base_id
+
+    resolved = resolve_knowledge_base_id(
+        "agent",
+        "http://localhost:8000",
+        "46691546-593a-4d21-bcfc-0d16986c20a7",
+        UUID("b2d70e40-02d1-4a78-af5a-22df85a82693"),
+    )
+
+    assert resolved == "b2d70e40-02d1-4a78-af5a-22df85a82693"
+
+
+def test_resolve_knowledge_base_id_falls_back_to_available_agent_base() -> None:
+    runner = _load_audit_runner()
+    resolve_knowledge_base_id = cast(Any, runner).resolve_knowledge_base_id
+
+    def fake_request_json(
+        method: str,
+        url: str,
+        payload: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        *,
+        attempts: int = 3,
+    ) -> Any:
+        assert method == "GET"
+        assert payload is None
+        assert headers is None
+        if url.endswith("/knowledge-bases"):
+            return [
+                {"id": "empty-base", "name": "空知识库", "description": ""},
+                {"id": "agent-base", "name": "AgentMentor BGE 面试知识库", "description": ""},
+            ]
+        if url.endswith("/old-base/documents") or url.endswith("/empty-base/documents"):
+            raise RuntimeError("not found")
+        if url.endswith("/agent-base/documents"):
+            return [{"id": "doc-1", "status": "ready"}]
+        raise AssertionError(url)
+
+    cast(Any, runner).request_json = fake_request_json
+
+    resolved = resolve_knowledge_base_id(
+        "agent",
+        "http://localhost:8000",
+        "old-base",
+        None,
+    )
+
+    assert resolved == "agent-base"

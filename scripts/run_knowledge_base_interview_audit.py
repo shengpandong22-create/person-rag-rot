@@ -170,6 +170,194 @@ def summarize_question_similarity(rounds: list[dict[str, Any]]) -> dict[str, Any
     }
 
 
+def summarize_coverage(coverage: dict[str, Any]) -> dict[str, Any]:
+    total = _safe_int(coverage.get("total"))
+    uncovered = _safe_int(coverage.get("uncovered"))
+    attempted = _safe_int(coverage.get("attempted"))
+    verified = _safe_int(coverage.get("verified"))
+    points = coverage.get("points")
+    if not isinstance(points, list):
+        points = []
+
+    status_distribution: dict[str, int] = {}
+    normalized_points: list[dict[str, Any]] = []
+    for point in points:
+        if not isinstance(point, dict):
+            continue
+        status = point.get("status")
+        if not isinstance(status, str) or not status:
+            status = "unknown"
+        status_distribution[status] = status_distribution.get(status, 0) + 1
+        normalized_points.append(point)
+
+    top_uncovered_points = _coverage_points_by_priority(
+        normalized_points,
+        allowed_statuses={"uncovered"},
+    )
+    weak_or_insufficient_points = _coverage_points_by_priority(
+        normalized_points,
+        allowed_statuses={"attempted", "insufficient_evidence", "weak"},
+    )
+    covered = max(total - uncovered, 0)
+    return {
+        "total": total,
+        "uncovered": uncovered,
+        "attempted": attempted,
+        "verified": verified,
+        "attempt_rate": _safe_rate(covered, total),
+        "trusted_coverage_rate": _safe_rate(verified, total),
+        "status_distribution": dict(sorted(status_distribution.items())),
+        "top_uncovered_points": top_uncovered_points[:10],
+        "weak_or_insufficient_points": weak_or_insufficient_points[:10],
+    }
+
+
+def summarize_coverage_progress(
+    before: dict[str, Any],
+    after: dict[str, Any],
+) -> dict[str, Any]:
+    before_by_id = _coverage_points_by_id(before.get("points"))
+    after_by_id = _coverage_points_by_id(after.get("points"))
+
+    newly_attempted: list[dict[str, Any]] = []
+    newly_verified: list[dict[str, Any]] = []
+    for point_id, after_point in after_by_id.items():
+        before_status = before_by_id.get(point_id, {}).get("status")
+        after_status = after_point.get("status")
+        if before_status == "uncovered" and after_status != "uncovered":
+            newly_attempted.append(_coverage_point_brief(after_point))
+        if before_status not in {"verified", "mastered"} and after_status in {
+            "verified",
+            "mastered",
+        }:
+            newly_verified.append(_coverage_point_brief(after_point))
+
+    remaining_uncovered = _coverage_points_by_priority(
+        list(after_by_id.values()),
+        allowed_statuses={"uncovered"},
+    )
+    return {
+        "delta_total": _safe_int(after.get("total")) - _safe_int(before.get("total")),
+        "delta_uncovered": _safe_int(after.get("uncovered"))
+        - _safe_int(before.get("uncovered")),
+        "delta_attempted": _safe_int(after.get("attempted"))
+        - _safe_int(before.get("attempted")),
+        "delta_verified": _safe_int(after.get("verified")) - _safe_int(before.get("verified")),
+        "newly_attempted_count": len(newly_attempted),
+        "newly_attempted_points": newly_attempted[:10],
+        "newly_verified_count": len(newly_verified),
+        "newly_verified_points": newly_verified[:10],
+        "remaining_uncovered_count": len(remaining_uncovered),
+        "remaining_uncovered_points": remaining_uncovered[:10],
+    }
+
+
+def _coverage_points_by_priority(
+    points: list[dict[str, Any]],
+    *,
+    allowed_statuses: set[str],
+) -> list[dict[str, Any]]:
+    selected = [
+        _coverage_point_brief(point)
+        for point in points
+        if isinstance(point.get("status"), str) and point["status"] in allowed_statuses
+    ]
+    return sorted(selected, key=lambda item: (-_safe_int(item.get("source_count")), item["title"]))
+
+
+def _coverage_points_by_id(points: Any) -> dict[str, dict[str, Any]]:
+    if not isinstance(points, list):
+        return {}
+    indexed: dict[str, dict[str, Any]] = {}
+    for point in points:
+        if not isinstance(point, dict):
+            continue
+        point_id = point.get("id")
+        if isinstance(point_id, str) and point_id:
+            indexed[point_id] = point
+    return indexed
+
+
+def _coverage_point_brief(point: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": point.get("id"),
+        "title": str(point.get("title") or point.get("id") or ""),
+        "status": point.get("status"),
+        "source_count": _safe_int(point.get("source_count")),
+        "attempt_count": _safe_int(point.get("attempt_count")),
+        "trusted_evaluation_count": _safe_int(point.get("trusted_evaluation_count")),
+        "average_score": point.get("average_score"),
+    }
+
+
+def _safe_rate(numerator: int, denominator: int) -> float:
+    if denominator <= 0:
+        return 0.0
+    return round(numerator / denominator, 4)
+
+
+def _safe_int(value: Any) -> int:
+    if isinstance(value, bool):
+        return 0
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    return 0
+
+
+def resolve_knowledge_base_id(
+    suite: str,
+    base_url: str,
+    configured_knowledge_base_id: str,
+    override: UUID | None,
+) -> str:
+    if override is not None:
+        return str(override)
+    if _knowledge_base_has_documents(base_url, configured_knowledge_base_id):
+        return configured_knowledge_base_id
+
+    bases = request_json("GET", f"{base_url}/api/v1/knowledge-bases")
+    if not isinstance(bases, list):
+        return configured_knowledge_base_id
+    candidates: list[dict[str, Any]] = []
+    for base in bases:
+        if not isinstance(base, dict):
+            continue
+        base_id = base.get("id")
+        if not isinstance(base_id, str) or not _knowledge_base_has_documents(base_url, base_id):
+            continue
+        candidates.append(base)
+    if not candidates:
+        return configured_knowledge_base_id
+    if len(candidates) == 1:
+        return str(candidates[0]["id"])
+
+    preferred_keywords = {
+        "agent": ("agent", "ai", "面试", "知识库"),
+        "java": ("java", "spring", "jvm", "并发"),
+    }.get(suite, ())
+    for keyword in preferred_keywords:
+        for base in candidates:
+            name = str(base.get("name") or "").lower()
+            description = str(base.get("description") or "").lower()
+            if keyword.lower() in name or keyword.lower() in description:
+                return str(base["id"])
+    return str(candidates[0]["id"])
+
+
+def _knowledge_base_has_documents(base_url: str, knowledge_base_id: str) -> bool:
+    try:
+        documents = request_json(
+            "GET",
+            f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/documents",
+            attempts=1,
+        )
+    except RuntimeError:
+        return False
+    return isinstance(documents, list) and len(documents) > 0
+
+
 def _question_terms(text: str) -> set[str]:
     terms = set(re.findall(r"[a-z0-9_]{2,}", text.lower()))
     for segment in re.findall(r"[\u4e00-\u9fff]{2,}", text):
@@ -219,12 +407,18 @@ def run_suite(
     rounds: int | None = None,
 ) -> dict[str, Any]:
     configured_knowledge_base_id, scenarios = SUITES[suite]
-    knowledge_base_id = str(knowledge_base_id_override or configured_knowledge_base_id)
+    knowledge_base_id = resolve_knowledge_base_id(
+        suite,
+        base_url,
+        configured_knowledge_base_id,
+        knowledge_base_id_override,
+    )
     if rounds is not None and rounds < 1:
         raise ValueError("rounds must be greater than 0.")
     planned_rounds = rounds or len(scenarios)
     result: dict[str, Any] = {
         "suite": suite,
+        "configured_knowledge_base_id": configured_knowledge_base_id,
         "knowledge_base_id": knowledge_base_id,
         "planned_rounds": planned_rounds,
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -237,6 +431,9 @@ def run_suite(
     result["runtime"] = request_json("GET", f"{base_url}/health/runtime")
     result["history_before"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/reports/history?limit=100"
+    )
+    result["coverage_before"] = request_json(
+        "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/coverage"
     )
 
     for round_number in range(1, planned_rounds + 1):
@@ -295,8 +492,12 @@ def run_suite(
             profile = request_json(
                 "POST", f"{base_url}/api/v1/interviews/{interview['id']}/profile-updates", {}
             )
+            coverage_after_round = request_json(
+                "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/coverage"
+            )
             round_result["report"] = report
             round_result["profile_after"] = profile
+            round_result["coverage_after"] = summarize_coverage(coverage_after_round)
             round_result["status"] = snapshot["status"]
         except Exception as error:  # noqa: BLE001 - acceptance runner must preserve later rounds
             round_result["error"] = f"{type(error).__name__}: {error}"
@@ -309,6 +510,7 @@ def run_suite(
             f"[{suite}] round={round_number}/{planned_rounds} topic={scenario.topic} "
             f"status={round_result.get('status', 'failed')} "
             f"score={round_result.get('report', {}).get('total_score', '-')} "
+            f"coverage={round_result.get('coverage_after', {}).get('trusted_coverage_rate', '-')} "
             f"elapsed={round_result['elapsed_seconds']}s",
             flush=True,
         )
@@ -316,6 +518,15 @@ def run_suite(
     result["question_angle_summary"] = summarize_question_angles(result["rounds"])
     result["question_generation_summary"] = summarize_question_generation(result["rounds"])
     result["question_similarity_summary"] = summarize_question_similarity(result["rounds"])
+    result["coverage_after"] = request_json(
+        "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/coverage"
+    )
+    result["coverage_summary_before"] = summarize_coverage(result["coverage_before"])
+    result["coverage_summary_after"] = summarize_coverage(result["coverage_after"])
+    result["coverage_progress_summary"] = summarize_coverage_progress(
+        result["coverage_before"],
+        result["coverage_after"],
+    )
     result["profile_after"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/profile/abilities"
     )
@@ -356,7 +567,8 @@ def main() -> None:
         f"failures={len(result['failures'])} "
         f"question_angles={result['question_angle_summary']['distribution']} "
         f"generation={result['question_generation_summary']['mode_distribution']} "
-        f"near_duplicates={result['question_similarity_summary']['near_duplicate_count']}",
+        f"near_duplicates={result['question_similarity_summary']['near_duplicate_count']} "
+        f"coverage={result['coverage_summary_after']['trusted_coverage_rate']}",
         flush=True,
     )
 
