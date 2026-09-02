@@ -59,6 +59,36 @@ SUITES: dict[str, tuple[str, list[Scenario]]] = {
 }
 
 
+def summarize_question_angles(rounds: list[dict[str, Any]]) -> dict[str, Any]:
+    distribution: dict[str, int] = {}
+    missing_count = 0
+    total_questions = 0
+    for round_result in rounds:
+        for question in round_result.get("questions", []):
+            total_questions += 1
+            rubric = question.get("rubric")
+            if not isinstance(rubric, dict):
+                missing_count += 1
+                continue
+            angle = rubric.get("question_angle")
+            if not isinstance(angle, dict):
+                missing_count += 1
+                continue
+            key = angle.get("key")
+            title = angle.get("title")
+            if not isinstance(key, str) or not key:
+                missing_count += 1
+                continue
+            label = key if not isinstance(title, str) or not title else f"{key}:{title}"
+            distribution[label] = distribution.get(label, 0) + 1
+    return {
+        "total_questions": total_questions,
+        "with_question_angle": total_questions - missing_count,
+        "missing_question_angle": missing_count,
+        "distribution": dict(sorted(distribution.items())),
+    }
+
+
 def request_json(
     method: str,
     url: str,
@@ -188,6 +218,7 @@ def run_suite(
             flush=True,
         )
 
+    result["question_angle_summary"] = summarize_question_angles(result["rounds"])
     result["profile_after"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/profile/abilities"
     )
@@ -225,7 +256,8 @@ def main() -> None:
     )
     print(
         f"[{args.suite}] complete rounds={len(result['rounds'])} "
-        f"failures={len(result['failures'])}",
+        f"failures={len(result['failures'])} "
+        f"question_angles={result['question_angle_summary']['distribution']}",
         flush=True,
     )
 

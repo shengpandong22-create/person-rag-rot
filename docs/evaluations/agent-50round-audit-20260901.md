@@ -147,3 +147,55 @@
 - `test_deterministic_question_text_exposes_angle`：验证 LLM 降级出题也会体现考察角度。
 
 后续如果继续做训练质量评估，可以在审计脚本中统计每轮题目的 `rubric.question_angle.key` 分布，判断 50 轮面试是否真正覆盖不同考察角度。
+
+## 10. 第 2 批训练质量修复：审计脚本补充角度覆盖统计
+
+### 10.1 发现的问题
+
+第 1 批改造已经让题目生成携带 `question_angle`，但如果审计脚本不统计这个字段，后续仍然只能靠人工翻题判断“题目是不是更丰富”。这会让训练质量验收停留在主观感受层面。
+
+### 10.2 最小改造方案
+
+在 `scripts/run_knowledge_base_interview_audit.py` 中新增 `summarize_question_angles()`：
+
+- 遍历每轮面试的 `questions`；
+- 从 `question.rubric.question_angle` 中提取角度；
+- 输出：
+  - `total_questions`；
+  - `with_question_angle`；
+  - `missing_question_angle`；
+  - `distribution`。
+
+审计脚本最终 JSON 会新增：
+
+```json
+{
+  "question_angle_summary": {
+    "total_questions": 150,
+    "with_question_angle": 150,
+    "missing_question_angle": 0,
+    "distribution": {
+      "concept_boundary:概念边界": 25,
+      "failure_handling:异常与降级": 25
+    }
+  }
+}
+```
+
+上面的数字只是结构示例，真实分布以后续实际审计输出为准。
+
+### 10.3 代码路线
+
+- `scripts/run_knowledge_base_interview_audit.py`
+  - 新增 `summarize_question_angles()`；
+  - `run_suite()` 结束后写入 `question_angle_summary`；
+  - CLI 完成日志打印角度分布，便于命令行快速观察。
+- `tests/unit/test_interview_audit_runner.py`
+  - 新增审计统计单元测试；
+  - 覆盖正常角度、缺失角度两类数据。
+
+### 10.4 面试表达价值
+
+这一步可以作为“训练质量可信”的一个小但很扎实的证据：
+
+> 我们一开始只验证面试闭环能跑通，后来通过 50 轮批量审计发现题目有语义重复风险。于是我没有大改架构，而是在出题服务里加了考察角度轮换，并把角度写入 rubric。随后又改造审计脚本统计角度覆盖，让题目多样性从主观体验变成可量化指标。
