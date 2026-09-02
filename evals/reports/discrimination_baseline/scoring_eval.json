@@ -1,0 +1,346 @@
+{
+  "dataset": "evals\\datasets\\evaluation_discrimination_v1.jsonl",
+  "metrics": {
+    "total": 12,
+    "mean_absolute_error": 7.1667,
+    "pearson_correlation": 0.8735,
+    "reviewer_routing_accuracy": 0.4167,
+    "band_order_accuracy": 1.0,
+    "predicted_average_by_band": {
+      "high": 11.25,
+      "low": 2.25,
+      "mid": 2.5
+    },
+    "human_average_by_band": {
+      "high": 19.5,
+      "low": 6.0,
+      "mid": 12.0
+    }
+  },
+  "cases": [
+    {
+      "id": "disc-rag-boundary-low",
+      "topic": "RAG 知识边界",
+      "question": "在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。",
+      "human_total": 5,
+      "predicted_total": 2,
+      "absolute_error": 3,
+      "human_scores": {
+        "correctness": 1,
+        "completeness": 1,
+        "reasoning": 1,
+        "communication": 2
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 0,
+        "reasoning": 0,
+        "communication": 2
+      },
+      "expected_review": true,
+      "predicted_review": true,
+      "expected_band": "low",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：RAG 知识边界, 在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。, 原因。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-rag-boundary-mid",
+      "topic": "RAG 知识边界",
+      "question": "在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。",
+      "human_total": 12,
+      "predicted_total": 4,
+      "absolute_error": 8,
+      "human_scores": {
+        "correctness": 3,
+        "completeness": 3,
+        "reasoning": 3,
+        "communication": 3
+      },
+      "predicted_scores": {
+        "correctness": 1,
+        "completeness": 1,
+        "reasoning": 1,
+        "communication": 1
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "mid",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-rag-boundary-high",
+      "topic": "RAG 知识边界",
+      "question": "在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。",
+      "human_total": 19,
+      "predicted_total": 13,
+      "absolute_error": 6,
+      "human_scores": {
+        "correctness": 5,
+        "completeness": 5,
+        "reasoning": 5,
+        "communication": 4
+      },
+      "predicted_scores": {
+        "correctness": 2,
+        "completeness": 3,
+        "reasoning": 3,
+        "communication": 5
+      },
+      "expected_review": false,
+      "predicted_review": false,
+      "expected_band": "high",
+      "confidence": 0.75,
+      "status": "final",
+      "review_decision": "not_required",
+      "feedback": "回答需要补齐关键点：原因, 流程, 取舍。"
+    },
+    {
+      "id": "disc-checkpoint-low",
+      "topic": "LangGraph / 工作流恢复",
+      "question": "为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？",
+      "human_total": 7,
+      "predicted_total": 2,
+      "absolute_error": 5,
+      "human_scores": {
+        "correctness": 2,
+        "completeness": 1,
+        "reasoning": 1,
+        "communication": 3
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 0,
+        "reasoning": 0,
+        "communication": 2
+      },
+      "expected_review": true,
+      "predicted_review": true,
+      "expected_band": "low",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：LangGraph / 工作流恢复, 为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？, 原因。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-checkpoint-mid",
+      "topic": "LangGraph / 工作流恢复",
+      "question": "为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？",
+      "human_total": 11,
+      "predicted_total": 1,
+      "absolute_error": 10,
+      "human_scores": {
+        "correctness": 3,
+        "completeness": 3,
+        "reasoning": 2,
+        "communication": 3
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 0,
+        "reasoning": 0,
+        "communication": 1
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "mid",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：LangGraph / 工作流恢复, 为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？, 原因。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-checkpoint-high",
+      "topic": "LangGraph / 工作流恢复",
+      "question": "为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？",
+      "human_total": 20,
+      "predicted_total": 10,
+      "absolute_error": 10,
+      "human_scores": {
+        "correctness": 5,
+        "completeness": 5,
+        "reasoning": 5,
+        "communication": 5
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 3,
+        "reasoning": 2,
+        "communication": 5
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "high",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：LangGraph / 工作流恢复, 为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？, 原因。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-evaluation-low",
+      "topic": "可信评分",
+      "question": "AgentMentor 为什么不能完全相信 LLM 直接给出的总分？当前系统如何提高评分可信度？",
+      "human_total": 7,
+      "predicted_total": 4,
+      "absolute_error": 3,
+      "human_scores": {
+        "correctness": 1,
+        "completeness": 1,
+        "reasoning": 2,
+        "communication": 3
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 1,
+        "reasoning": 2,
+        "communication": 1
+      },
+      "expected_review": true,
+      "predicted_review": true,
+      "expected_band": "low",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：可信评分, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-evaluation-mid",
+      "topic": "可信评分",
+      "question": "AgentMentor 为什么不能完全相信 LLM 直接给出的总分？当前系统如何提高评分可信度？",
+      "human_total": 13,
+      "predicted_total": 3,
+      "absolute_error": 10,
+      "human_scores": {
+        "correctness": 4,
+        "completeness": 3,
+        "reasoning": 3,
+        "communication": 3
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 1,
+        "reasoning": 1,
+        "communication": 1
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "mid",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：可信评分, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-evaluation-high",
+      "topic": "可信评分",
+      "question": "AgentMentor 为什么不能完全相信 LLM 直接给出的总分？当前系统如何提高评分可信度？",
+      "human_total": 20,
+      "predicted_total": 10,
+      "absolute_error": 10,
+      "human_scores": {
+        "correctness": 5,
+        "completeness": 5,
+        "reasoning": 5,
+        "communication": 5
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 3,
+        "reasoning": 2,
+        "communication": 5
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "high",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：可信评分, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-profile-low",
+      "topic": "能力画像",
+      "question": "AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？",
+      "human_total": 5,
+      "predicted_total": 1,
+      "absolute_error": 4,
+      "human_scores": {
+        "correctness": 1,
+        "completeness": 1,
+        "reasoning": 1,
+        "communication": 2
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 0,
+        "reasoning": 0,
+        "communication": 1
+      },
+      "expected_review": true,
+      "predicted_review": true,
+      "expected_band": "low",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：能力画像, AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？, 原因。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-profile-mid",
+      "topic": "能力画像",
+      "question": "AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？",
+      "human_total": 12,
+      "predicted_total": 2,
+      "absolute_error": 10,
+      "human_scores": {
+        "correctness": 3,
+        "completeness": 3,
+        "reasoning": 3,
+        "communication": 3
+      },
+      "predicted_scores": {
+        "correctness": 0,
+        "completeness": 0,
+        "reasoning": 1,
+        "communication": 1
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "mid",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：能力画像, AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？, 原因。 复核后确认：评分依据与引用范围一致。"
+    },
+    {
+      "id": "disc-profile-high",
+      "topic": "能力画像",
+      "question": "AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？",
+      "human_total": 19,
+      "predicted_total": 12,
+      "absolute_error": 7,
+      "human_scores": {
+        "correctness": 5,
+        "completeness": 5,
+        "reasoning": 5,
+        "communication": 4
+      },
+      "predicted_scores": {
+        "correctness": 1,
+        "completeness": 3,
+        "reasoning": 3,
+        "communication": 5
+      },
+      "expected_review": false,
+      "predicted_review": true,
+      "expected_band": "high",
+      "confidence": 0.72,
+      "status": "final",
+      "review_decision": "used_review",
+      "feedback": "回答需要补齐关键点：原因, 流程, 取舍。 复核后确认：评分依据与引用范围一致。"
+    }
+  ]
+}

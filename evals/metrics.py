@@ -30,6 +30,7 @@ class ScoringCaseResult:
     human_total: int
     predicted_review: bool
     expected_review: bool
+    expected_band: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,6 +39,9 @@ class ScoringMetrics:
     mean_absolute_error: float
     pearson_correlation: float
     reviewer_routing_accuracy: float
+    band_order_accuracy: float
+    predicted_average_by_band: dict[str, float]
+    human_average_by_band: dict[str, float]
 
 
 def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMetrics:
@@ -80,6 +84,9 @@ def compute_scoring_metrics(results: list[ScoringCaseResult]) -> ScoringMetrics:
         reviewer_routing_accuracy=_accuracy(
             item.predicted_review == item.expected_review for item in results
         ),
+        band_order_accuracy=_band_order_accuracy(results),
+        predicted_average_by_band=_average_by_band(results, "predicted_total"),
+        human_average_by_band=_average_by_band(results, "human_total"),
     )
 
 
@@ -125,3 +132,29 @@ def _pearson(left: list[int], right: list[int]) -> float:
     if left_denominator == 0 or right_denominator == 0:
         return 0.0
     return round(numerator / (left_denominator * right_denominator), 4)
+
+
+def _average_by_band(results: list[ScoringCaseResult], field: str) -> dict[str, float]:
+    grouped: dict[str, list[int]] = {}
+    for item in results:
+        if item.expected_band is None:
+            continue
+        grouped.setdefault(item.expected_band, []).append(getattr(item, field))
+    return {
+        band: round(sum(values) / len(values), 4)
+        for band, values in sorted(grouped.items())
+        if values
+    }
+
+
+def _band_order_accuracy(results: list[ScoringCaseResult]) -> float:
+    averages = _average_by_band(results, "predicted_total")
+    required = ("low", "mid", "high")
+    if any(band not in averages for band in required):
+        return 0.0
+    checks = [
+        averages["low"] < averages["mid"],
+        averages["mid"] < averages["high"],
+        averages["high"] - averages["low"] >= 6,
+    ]
+    return _accuracy(checks)

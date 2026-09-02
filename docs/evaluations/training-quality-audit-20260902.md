@@ -250,3 +250,91 @@
 3. 审计脚本增加知识点 covered / uncovered / stale 分布；
 4. 前端展示题目角度和生成模式，让用户知道这题在考什么；
 5. 多知识库再跑一次隔离验收，确认画像不串库。
+
+## 8. 第 3 批训练质量修复：评分区分度人工答案集
+
+### 8.1 发现的问题
+
+此前 50 轮真实面试主要使用每题参考答案提交，适合验证工程闭环，但不适合证明评分器能区分真实用户答案质量。因为参考答案天然高质量，评分结果偏高是合理的，但它不能回答这些问题：
+
+- 用户答得很差时，系统是否会明显低分？
+- 用户答得一般时，系统是否能给中档分，而不是粗暴打成低分？
+- 高质量答案是否能稳定拿到高分？
+- 低质量答案是否会进入复核路由？
+
+### 8.2 最小改造方案
+
+新增评分区分度数据集：
+
+- 文件：`evals/datasets/evaluation_discrimination_v1.jsonl`
+- 规模：12 条
+- 结构：4 组题，每组 low / mid / high 三档人工答案
+- 覆盖主题：
+  - RAG 知识边界；
+  - LangGraph / 工作流恢复；
+  - 可信评分；
+  - 能力画像。
+
+同时增强评分 Eval 指标：
+
+- `band_order_accuracy`：低/中/高三档预测均分是否满足 `low < mid < high`，且 high-low 有足够间隔；
+- `predicted_average_by_band`：各档预测均分；
+- `human_average_by_band`：各档人工均分。
+
+代码路线：
+
+- `evals/metrics.py`
+- `evals/runners/scoring_runner.py`
+- `tests/unit/test_eval_metrics.py`
+- `evals/datasets/evaluation_discrimination_v1.jsonl`
+
+### 8.3 本地 baseline 结果
+
+使用本地确定性 fallback 评分运行：
+
+```bash
+python -m evals.run scoring \
+  --scoring-dataset evals/datasets/evaluation_discrimination_v1.jsonl \
+  --output-dir evals/reports/discrimination_baseline
+```
+
+结果：
+
+| 指标 | 结果 |
+| --- | ---: |
+| total | 12 |
+| MAE | 7.1667 |
+| Pearson correlation | 0.8735 |
+| Reviewer routing accuracy | 0.4167 |
+| Band order accuracy | 1.0 |
+
+分档均分：
+
+| 档位 | 人工均分 | fallback 预测均分 |
+| --- | ---: | ---: |
+| low | 6.0 | 2.25 |
+| mid | 12.0 | 2.5 |
+| high | 19.5 | 11.25 |
+
+### 8.4 审计结论
+
+本地 fallback 评分具备方向性：低、中、高三档整体排序是对的。但它明显偏保守，尤其会把中档答案压得接近低档，导致 MAE 较高、复核路由偏激进。
+
+这个结论很重要：fallback 适合作为无 Key 或 LLM 失败时的保底机制，不适合作为“评分质量可信”的主要证据。真正的评分区分度验收需要继续跑 LLM 评分版本。
+
+### 8.5 外部 LLM 评分验收边界
+
+LLM 评分 Eval 会把 `evaluation_discrimination_v1.jsonl` 中的题目和人工答案样例发送给 DeepSeek/OpenAI-compatible 服务。由于这份数据集包含新生成的完整答案样例，不等同于此前授权的“学习文档检索片段”，因此需要单独明确授权后再运行：
+
+```bash
+python -m evals.run scoring \
+  --scoring-dataset evals/datasets/evaluation_discrimination_v1.jsonl \
+  --output-dir evals/reports/discrimination_llm \
+  --use-llm-scoring
+```
+
+### 8.6 面试表达价值
+
+可以这样讲：
+
+> 我没有只用参考答案跑通流程，因为那会让评分结果天然偏高。为了验证评分器是否真的有区分度，我构造了同题低、中、高三档人工答案集，并扩展 Eval Runner 统计 MAE、相关性、复核命中率和分档排序。第一版 baseline 暴露出本地 fallback 评分偏保守的问题，这也证明这个评估不是摆设，而是能发现系统缺陷。后续使用真实 LLM 评分时，就可以对比 fallback 和 LLM 的区分度差异。

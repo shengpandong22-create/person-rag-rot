@@ -20,6 +20,7 @@ class ScoringEvalCase:
     answer: str
     human_scores: dict[str, int]
     expected_review: bool
+    expected_band: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,6 +72,7 @@ async def run_scoring_eval(
                 human_total=human_total,
                 predicted_review=predicted_review,
                 expected_review=case.expected_review,
+                expected_band=case.expected_band,
             )
         )
         case_rows.append(
@@ -90,6 +92,7 @@ async def run_scoring_eval(
                 },
                 "expected_review": case.expected_review,
                 "predicted_review": predicted_review,
+                "expected_band": case.expected_band,
                 "confidence": result.output.confidence,
                 "status": result.status.value,
                 "review_decision": result.review_decision.value,
@@ -130,6 +133,9 @@ def _load_cases(path: Path) -> list[ScoringEvalCase]:
                             "communication": int(raw["human_scores"]["communication"]),
                         },
                         expected_review=bool(raw["expected_review"]),
+                        expected_band=(
+                            str(raw["expected_band"]) if raw.get("expected_band") else None
+                        ),
                     )
                 )
             except KeyError as error:
@@ -194,6 +200,9 @@ def _write_report(report: ScoringEvalReport, output_dir: Path) -> None:
                 f"- MAE: {metrics['mean_absolute_error']}",
                 f"- Pearson correlation: {metrics['pearson_correlation']}",
                 f"- Reviewer routing accuracy: {metrics['reviewer_routing_accuracy']}",
+                f"- Band order accuracy: {metrics['band_order_accuracy']}",
+                f"- Predicted average by band: {metrics['predicted_average_by_band']}",
+                f"- Human average by band: {metrics['human_average_by_band']}",
                 "",
             ]
         ),
