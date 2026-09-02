@@ -7,7 +7,11 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import Table, UniqueConstraint
 
-from agent_mentor.application.interview_service import CoverageFocus, InterviewService
+from agent_mentor.application.interview_service import (
+    QUESTION_ANGLES,
+    CoverageFocus,
+    InterviewService,
+)
 from agent_mentor.domain.interview import Difficulty, QuestionType
 from agent_mentor.infrastructure.database.models import QuestionCoverageModel, UserAnswerModel
 
@@ -35,19 +39,24 @@ def test_coverage_gap_sequence_reserves_second_question_for_multi_question_inter
 def test_question_search_text_includes_coverage_focus_when_present() -> None:
     service = InterviewService.__new__(InterviewService)
     interview = SimpleNamespace(
+        id=uuid4(),
         knowledge_base_id=uuid4(),
         topic="RAG",
         difficulty=Difficulty.MEDIUM,
     )
+    angle = QUESTION_ANGLES[2]
 
     query = service._question_search_text(
         cast(Any, interview),
         QuestionType.SCENARIO,
         "引用白名单与证据边界",
+        angle,
     )
 
     assert "RAG" in query
     assert "工程落地" in query
+    assert angle.title in query
+    assert angle.search_hint in query
     assert "覆盖盲区" in query
     assert "引用白名单与证据边界" in query
 
@@ -63,6 +72,7 @@ def test_coverage_focus_carries_point_id_and_title() -> None:
 def test_question_search_text_keeps_original_query_without_coverage_focus() -> None:
     service = InterviewService.__new__(InterviewService)
     interview = SimpleNamespace(
+        id=uuid4(),
         knowledge_base_id=uuid4(),
         topic="LangGraph",
         difficulty=Difficulty.HARD,
@@ -73,6 +83,40 @@ def test_question_search_text_keeps_original_query_without_coverage_focus() -> N
     assert "LangGraph" in query
     assert "定义 原理 核心概念" in query
     assert "覆盖盲区" not in query
+
+
+def test_question_angle_rotates_by_interview_and_sequence() -> None:
+    service = InterviewService.__new__(InterviewService)
+    interview = SimpleNamespace(
+        id=uuid4(),
+        knowledge_base_id=uuid4(),
+        topic="RAG",
+        difficulty=Difficulty.MEDIUM,
+    )
+
+    first = service._question_angle(cast(Any, interview), 1)
+    second = service._question_angle(cast(Any, interview), 2)
+    third = service._question_angle(cast(Any, interview), 3)
+
+    assert len({first.key, second.key, third.key}) == 3
+    assert first in QUESTION_ANGLES
+    assert second in QUESTION_ANGLES
+    assert third in QUESTION_ANGLES
+
+
+def test_deterministic_question_text_exposes_angle() -> None:
+    service = InterviewService.__new__(InterviewService)
+    interview = SimpleNamespace(
+        id=uuid4(),
+        topic="RAG",
+        question_count=3,
+    )
+    angle = QUESTION_ANGLES[0]
+
+    question = service._question_text(cast(Any, interview), 1, angle, [])
+
+    assert angle.title in question
+    assert "易混淆点" in question
 
 
 def test_user_answer_idempotency_is_enforced_by_database_constraint() -> None:

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from typing import Any, cast
 from uuid import uuid4
 
 import pytest
 
-from agent_mentor.application.interview_service import InterviewService
+from agent_mentor.application.interview_service import QUESTION_ANGLES, InterviewService
 from agent_mentor.domain.interview import InterviewStatus, assert_transition, can_transition
 from agent_mentor.workflows.interview import (
     InterviewWorkflowState,
@@ -76,17 +77,22 @@ def test_workflow_node_specs_expose_interview_agent_events() -> None:
 
 def test_interview_questions_use_progressive_templates() -> None:
     service = object.__new__(InterviewService)
-    interview = SimpleNamespace(topic="RAG", question_count=3)
+    interview = SimpleNamespace(id=uuid4(), topic="RAG", question_count=3)
 
     questions = [
-        service._question_text(interview, sequence, chunks=[])  # pyright: ignore[reportPrivateUsage, reportArgumentType]
+        service._question_text(  # pyright: ignore[reportPrivateUsage, reportArgumentType]
+            cast(Any, interview),
+            sequence,
+            QUESTION_ANGLES[sequence - 1],
+            chunks=[],
+        )
         for sequence in range(1, 4)
     ]
 
     assert len(set(questions)) == 3
-    assert questions[0].startswith("[1/3] 请说明")
+    assert questions[0].startswith("[1/3] 请从")
     assert "落地到自己的 AI 面试助手项目" in questions[1]
-    assert "面试官视角复盘" in questions[2]
+    assert "从面试官视角复盘" in questions[2]
 
 
 def test_interview_question_similarity_guard_rejects_repeated_core_question() -> None:

@@ -84,10 +84,58 @@ class CoverageFocus:
     title: str
 
 
+@dataclass(frozen=True, slots=True)
+class QuestionAngle:
+    key: str
+    title: str
+    prompt_hint: str
+    search_hint: str
+
+
 class InterviewQuestionOutput(BaseModel):
     question_text: str = Field(min_length=1, max_length=1200)
     reference_answer: str = Field(min_length=1, max_length=4000)
     required_points: list[str] = Field(default_factory=list, max_length=8)
+
+
+QUESTION_ANGLES: tuple[QuestionAngle, ...] = (
+    QuestionAngle(
+        key="concept_boundary",
+        title="概念边界",
+        prompt_hint="要求候选人说清定义、适用边界、容易混淆的相邻概念。",
+        search_hint="定义 边界 概念混淆 适用场景",
+    ),
+    QuestionAngle(
+        key="architecture_tradeoff",
+        title="架构取舍",
+        prompt_hint="要求候选人从组件职责、数据流、工程取舍和替代方案展开。",
+        search_hint="架构 取舍 组件 数据流 替代方案",
+    ),
+    QuestionAngle(
+        key="failure_handling",
+        title="异常与降级",
+        prompt_hint="要求候选人说明失败场景、兜底策略、重试/幂等和风险控制。",
+        search_hint="异常 降级 重试 幂等 风险",
+    ),
+    QuestionAngle(
+        key="production_observability",
+        title="生产化与观测",
+        prompt_hint="要求候选人结合日志、指标、Trace、评估集或运行态可观测性说明落地方案。",
+        search_hint="生产化 可观测 日志 指标 Trace 评估",
+    ),
+    QuestionAngle(
+        key="comparison",
+        title="对比辨析",
+        prompt_hint="要求候选人对比相似方案，说明为什么选当前方案以及不选什么。",
+        search_hint="对比 区别 方案选择 优缺点",
+    ),
+    QuestionAngle(
+        key="quality_evaluation",
+        title="质量评估",
+        prompt_hint="要求候选人说明如何验证效果、设计指标、构造评测和判断质量提升。",
+        search_hint="质量 评估 指标 验收 回归",
+    ),
+)
 
 
 class InterviewService:
@@ -329,7 +377,10 @@ class InterviewService:
         )
         coverage_focus = await self._coverage_gap_focus(db, interview, sequence=sequence)
         coverage_focus_title = coverage_focus.title if coverage_focus else None
-        query_text = self._question_search_text(interview, question_type, coverage_focus_title)
+        question_angle = self._question_angle(interview, sequence)
+        query_text = self._question_search_text(
+            interview, question_type, coverage_focus_title, question_angle
+        )
         chunks = await self._retriever.retrieve(
             RetrievalQuery(
                 knowledge_base_id=interview.knowledge_base_id,
@@ -341,13 +392,19 @@ class InterviewService:
         citation_ids = [chunk.chunk_id for chunk in chunks[:2]]
         validate_citations(citation_ids, chunks)
         generated = await self._generate_question_output(
-            interview, sequence, question_type, chunks, prior_questions, coverage_focus_title
+            interview,
+            sequence,
+            question_type,
+            question_angle,
+            chunks,
+            prior_questions,
+            coverage_focus_title,
         )
         if coverage_focus_title and coverage_focus_title not in generated.required_points:
             generated.required_points.insert(0, coverage_focus_title)
         if self._is_too_similar(generated.question_text, prior_questions):
             generated = InterviewQuestionOutput(
-                question_text=self._question_text(interview, sequence, chunks),
+                question_text=self._question_text(interview, sequence, question_angle, chunks),
                 reference_answer=generated.reference_answer,
                 required_points=generated.required_points,
             )
@@ -361,6 +418,11 @@ class InterviewService:
             knowledge_points=generated.required_points or [interview.topic],
             reference_answer=generated.reference_answer,
             rubric={
+                "question_angle": {
+                    "key": question_angle.key,
+                    "title": question_angle.title,
+                    "prompt_hint": question_angle.prompt_hint,
+                },
                 "items": [
                     {
                         "criterion": "correctness",
@@ -418,12 +480,13 @@ class InterviewService:
         interview: InterviewSessionModel,
         sequence: int,
         question_type: QuestionType,
+        question_angle: QuestionAngle,
         chunks: list[RetrievedChunk],
         prior_questions: list[str],
         coverage_focus: str | None,
     ) -> InterviewQuestionOutput:
         fallback = InterviewQuestionOutput(
-            question_text=self._question_text(interview, sequence, chunks),
+            question_text=self._question_text(interview, sequence, question_angle, chunks),
             reference_answer=self._reference_answer(chunks),
             required_points=[coverage_focus or interview.topic],
         )
@@ -447,6 +510,7 @@ class InterviewService:
                             interview,
                             sequence,
                             question_type,
+                            question_angle,
                             chunks,
                             prior_questions,
                             coverage_focus,
@@ -474,6 +538,7 @@ class InterviewService:
         interview: InterviewSessionModel,
         sequence: int,
         question_type: QuestionType,
+        question_angle: QuestionAngle,
         chunks: list[RetrievedChunk],
         prior_questions: list[str],
         coverage_focus: str | None,
@@ -501,6 +566,9 @@ class InterviewService:
             f"难度：{interview.difficulty}\n"
             f"题号：{sequence}/{interview.question_count}\n"
             f"题型要求：{type_hint}\n\n"
+            f"本题考察角度：{question_angle.title}\n"
+            f"角度要求：{question_angle.prompt_hint}\n"
+            "题目必须体现该考察角度，避免只换说法但重复考同一个点。\n\n"
             f"覆盖保底考点：{coverage_focus or '无'}\n"
             "如果存在覆盖保底考点，题目必须优先围绕该考点展开，但仍需基于检索资料。\n\n"
             f"本轮已出题目：{prior_questions or '无'}\n"
@@ -561,15 +629,22 @@ class InterviewService:
         interview: InterviewSessionModel,
         question_type: QuestionType,
         coverage_focus: str | None,
+        question_angle: QuestionAngle | None = None,
     ) -> str:
         parts = [
             interview.topic,
             str(interview.difficulty),
             self._question_type_search_hint(question_type),
         ]
+        if question_angle is not None:
+            parts.extend([question_angle.title, question_angle.search_hint])
         if coverage_focus:
             parts.extend(["覆盖盲区", coverage_focus])
         return " ".join(part for part in parts if part)
+
+    def _question_angle(self, interview: InterviewSessionModel, sequence: int) -> QuestionAngle:
+        offset = interview.id.int % len(QUESTION_ANGLES)
+        return QUESTION_ANGLES[(offset + sequence - 1) % len(QUESTION_ANGLES)]
 
     def _question_type(self, sequence: int) -> QuestionType:
         types = (QuestionType.CONCEPT, QuestionType.SCENARIO, QuestionType.DESIGN)
@@ -601,7 +676,11 @@ class InterviewService:
         return terms
 
     def _question_text(
-        self, interview: InterviewSessionModel, sequence: int, chunks: list[RetrievedChunk]
+        self,
+        interview: InterviewSessionModel,
+        sequence: int,
+        question_angle: QuestionAngle,
+        chunks: list[RetrievedChunk],
     ) -> str:
         question_type = self._question_type(sequence)
         context = interview.topic
@@ -610,15 +689,19 @@ class InterviewService:
             context = f"{interview.topic}（参考资料：{heading}）"
 
         prefix = f"[{sequence}/{interview.question_count}]"
+        angle = f"请从“{question_angle.title}”角度回答："
         if question_type == QuestionType.CONCEPT:
-            return f"{prefix} 请说明 {context} 的核心概念，并明确哪些结论需要后续用资料验证。"
+            return (
+                f"{prefix} {angle}说明 {context} 的核心概念，并明确适用边界、"
+                "易混淆点，以及哪些结论需要后续用资料验证。"
+            )
         if question_type == QuestionType.SCENARIO:
             return (
-                f"{prefix} 如果你要把 {context} 落地到自己的 AI 面试助手项目里，"
+                f"{prefix} {angle}如果你要把 {context} 落地到自己的 AI 面试助手项目里，"
                 "你会如何设计数据流、关键组件和异常处理？"
             )
         return (
-            f"{prefix} 请从面试官视角复盘 {context}：它最容易被追问的工程取舍、"
+            f"{prefix} {angle}从面试官视角复盘 {context}：它最容易被追问的工程取舍、"
             "边界条件和可量化效果分别是什么？"
         )
 
