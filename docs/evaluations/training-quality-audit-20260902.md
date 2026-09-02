@@ -333,8 +333,46 @@ python -m evals.run scoring \
   --use-llm-scoring
 ```
 
+用户已在 2026-09-02 明确授权后，执行 LLM 版评分区分度验收。
+
+结果文件：
+
+- `evals/reports/discrimination_llm/scoring_eval.json`
+- `evals/reports/discrimination_llm/scoring_eval.md`
+
+LLM 评分结果：
+
+| 指标 | fallback baseline | LLM 评分 |
+| --- | ---: | ---: |
+| MAE | 7.1667 | 2.0 |
+| Pearson correlation | 0.8735 | 0.9671 |
+| Reviewer routing accuracy | 0.4167 | 0.6667 |
+| Band order accuracy | 1.0 | 1.0 |
+
+分档均分对比：
+
+| 档位 | 人工均分 | fallback 预测均分 | LLM 预测均分 |
+| --- | ---: | ---: | ---: |
+| low | 6.0 | 2.25 | 4.0 |
+| mid | 12.0 | 2.5 | 10.0 |
+| high | 19.5 | 11.25 | 18.0 |
+
+结论：
+
+- LLM 评分能明显拉开低、中、高三档；
+- MAE 从 7.1667 降到 2.0，说明 LLM 评分比本地 fallback 更接近人工标注；
+- Pearson correlation 达到 0.9671，说明评分趋势与人工判断高度一致；
+- `band_order_accuracy = 1.0`，说明分档顺序正确；
+- Reviewer routing accuracy 仍只有 0.6667，主要原因是中档答案虽然方向正确，但内容较简略，系统会保守进入 `used_review`。
+
+这说明当前 LLM 评分链路已经具备较好的区分度，但复核路由策略偏保守。后续可以把“中档简略但无明显错误”的答案从强复核调整为“轻提示/低权重更新”，减少不必要的复核。
+
 ### 8.6 面试表达价值
 
 可以这样讲：
 
 > 我没有只用参考答案跑通流程，因为那会让评分结果天然偏高。为了验证评分器是否真的有区分度，我构造了同题低、中、高三档人工答案集，并扩展 Eval Runner 统计 MAE、相关性、复核命中率和分档排序。第一版 baseline 暴露出本地 fallback 评分偏保守的问题，这也证明这个评估不是摆设，而是能发现系统缺陷。后续使用真实 LLM 评分时，就可以对比 fallback 和 LLM 的区分度差异。
+
+补充 LLM 验收后，可以进一步补充：
+
+> DeepSeek 评分版在 12 条人工标注样例上，MAE 为 2.0，Pearson 相关性为 0.9671，并且低/中/高三档排序正确。这个结果说明 LLM 评分不是只会给参考答案高分，而是能对不同质量回答做出接近人工预期的区分。同时我们也发现复核路由偏保守，中档答案经常进入复核，这是下一步可以优化的点。
