@@ -144,6 +144,12 @@
 
 后续可继续让前端系统状态区展示该信息，审计脚本也可以把 runtime 元数据写入结果文件。
 
+补充处理：
+
+- `scripts/run_knowledge_base_interview_audit.py` 会在审计开始时请求 `/health/runtime`；
+- 审计 JSON 顶层写入 `runtime`，用于记录本次验收对应的模型模式、embedding 配置、API 版本和启动时间；
+- 后续如果出现“本地测试结果和代码不一致”，可以先检查 runtime 快照，确认是否连到了旧容器。
+
 ## 3. 本轮已落地改造
 
 ### 3.1 题目角度轮换

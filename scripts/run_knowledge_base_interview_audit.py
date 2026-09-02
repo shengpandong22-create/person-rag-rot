@@ -234,6 +234,7 @@ def run_suite(
     result["profile_before"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/profile/abilities"
     )
+    result["runtime"] = request_json("GET", f"{base_url}/health/runtime")
     result["history_before"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/reports/history?limit=100"
     )
