@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
+from agent_mentor import __version__
 from agent_mentor.api.chat import router as chat_router
 from agent_mentor.api.demo import router as demo_router
 from agent_mentor.api.errors import (
@@ -64,6 +66,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
     engine = create_database_engine(settings.database_url)
+    app.state.app_version = __version__
+    app.state.started_at = datetime.now(UTC).isoformat()
     app.state.database_engine = engine
     session_factory = create_session_factory(engine)
     if settings.embedding_provider is EmbeddingProvider.BGE:

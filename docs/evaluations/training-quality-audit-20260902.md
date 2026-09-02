@@ -122,7 +122,7 @@
 
 状态：部分已做，仍可增强。
 
-### 2.6 P2：运行态服务版本容易滞后
+### 2.6 P1：运行态服务版本容易滞后
 
 表现：
 
@@ -130,13 +130,19 @@
 - 不是代码问题，而是 Docker API 容器仍是 47 小时前的旧进程；
 - 重建并重启 API 后，角度统计正常。
 
-建议下一步：
+处理：
 
-- `/health/runtime` 增加代码版本或启动时间；
-- 前端系统状态显示 API 启动时间 / 版本摘要；
-- 审计报告记录 runtime 信息，避免误判。
+- `/health/runtime` 增加 `app_version`；
+- `/health/runtime` 增加 `started_at`；
+- 应用启动时在 `app.state` 写入版本和启动时间。
 
-状态：待做。
+代码路线：
+
+- `src/agent_mentor/main.py`
+- `src/agent_mentor/api/health.py`
+- `tests/unit/test_health.py`
+
+后续可继续让前端系统状态区展示该信息，审计脚本也可以把 runtime 元数据写入结果文件。
 
 ## 3. 本轮已落地改造
 
@@ -213,6 +219,10 @@
 - `ruff check`：通过；
 - `pyright`：0 errors；
 - `pytest`：79 passed，1 skipped。
+
+补充运行态元数据后，相关 health 测试：
+
+- `tests/unit/test_health.py`：3 passed。
 
 跳过项：
 

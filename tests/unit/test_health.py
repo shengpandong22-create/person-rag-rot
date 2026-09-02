@@ -35,3 +35,18 @@ async def test_ready_endpoint_returns_structured_error_when_database_is_unavaila
         "detail": None,
         "trace_id": "ready-trace",
     }
+
+
+@pytest.mark.asyncio
+async def test_runtime_endpoint_exposes_version_and_startup_metadata(app) -> None:
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/health/runtime")
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["status"] == "ok"
+    assert body["app_version"]
+    assert body["started_at"]
+    assert "llm_enabled" in body
+    assert "embedding_provider" in body

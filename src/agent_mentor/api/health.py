@@ -20,6 +20,8 @@ class HealthResponse(BaseModel):
 
 class RuntimeResponse(BaseModel):
     status: str
+    app_version: str
+    started_at: str
     llm_enabled: bool
     llm_model: str | None
     embedding_provider: str
@@ -48,6 +50,8 @@ async def ready(request: Request) -> HealthResponse:
 async def runtime(request: Request) -> RuntimeResponse:
     return RuntimeResponse(
         status="ok",
+        app_version=str(getattr(request.app.state, "app_version", "unknown")),
+        started_at=str(getattr(request.app.state, "started_at", "unknown")),
         llm_enabled=bool(getattr(request.app.state, "llm_enabled", False)),
         llm_model=getattr(request.app.state, "llm_model", None),
         embedding_provider=str(getattr(request.app.state, "embedding_provider", "unknown")),
