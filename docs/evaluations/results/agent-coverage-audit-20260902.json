@@ -3,7 +3,7 @@
   "configured_knowledge_base_id": "46691546-593a-4d21-bcfc-0d16986c20a7",
   "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
   "planned_rounds": 1,
-  "started_at": "2026-09-02T21:59:00+0800",
+  "started_at": "2026-09-02T22:08:23+0800",
   "rounds": [
     {
       "round": 1,
@@ -17,11 +17,11 @@
       },
       "questions": [
         {
-          "id": "9909b3cb-fcc2-4613-95ce-8c1f7688277e",
+          "id": "9e296a14-2667-4ead-9269-52c336ddc30b",
           "sequence": 1,
-          "text": "在RAG问答系统中，当底层检索或LLM生成环节出现异常时，系统应如何设计降级与兜底策略？请结合检索资料中的架构（如KnowledgeRetriever、LLMGateway等）说明：1）哪些环节可能失败，各自的影响是什么；2）你会采用哪些兜底策略（如缓存、默认回复、降级到纯检索等）；3）重试机制应如何设计以避免雪崩，并保证幂等性；4）如何通过风险控制（如超时、熔断、限流）保障系统稳定性。",
+          "text": "在 RAG 系统中，如何设计一套质量评估方案来验证系统效果并判断质量提升？请结合检索、生成、引用等环节，说明你会选择哪些指标、如何构造评测数据集，以及如何判断一次改动是否真正带来了质量提升。",
           "type": "concept",
-          "reference_answer": "在RAG问答系统中，异常可能发生在检索（KnowledgeRetriever）和LLM生成（LLMGateway）等关键环节。检索失败会导致无法获取上下文，LLM失败则无法生成答案。兜底策略包括：1）对于检索，可降级为纯关键词检索或返回缓存结果；2）对于LLM，可降级为基于检索结果的模板回答或返回预设的兜底话术；3）重试需设置最大次数和退避策略，并确保请求幂等（如使用请求ID）；4）风险控制包括设置超时时间、熔断器（如连续失败则快速失败）、限流（如令牌桶）等，防止系统雪崩。",
+          "reference_answer": "质量评估是 RAG 工程化的核心环节，需要从检索、生成、引用三个维度设计指标体系。检索质量常用 Recall@K、MRR、NDCG 等指标，衡量相关文档是否被召回以及排序是否合理；生成质量关注答案的准确性、完整性、忠实度，可结合 LLM-as-a-Judge 或人工评估；引用质量则需验证引用是否真实支持答案，即引用白名单校验和引用覆盖率。评测数据集的构造应覆盖典型问题、边界情况和对抗样本，并标注标准答案和引用依据。判断质量提升需建立基线，通过 A/B 测试或离线评测对比改动前后的指标变化，同时注意指标间的权衡，如召回率提升可能带来噪声增加。最终应形成可重复的评测流程，确保结论可靠。",
           "rubric": {
             "items": [
               {
@@ -29,11 +29,10 @@
                 "criterion": "correctness",
                 "description": "回答是否准确覆盖核心概念和资料依据。",
                 "required_points": [
-                  "识别关键失败环节（检索、LLM生成）及其影响",
-                  "兜底策略：缓存、降级到纯检索、默认回复等",
-                  "重试机制：最大次数、退避、幂等性（请求ID）",
-                  "风险控制：超时、熔断、限流",
-                  "结合架构中的组件（KnowledgeRetriever、LLMGateway）说明"
+                  "分维度设计指标：检索（Recall@K、MRR）、生成（准确性、忠实度）、引用（覆盖率、白名单校验）",
+                  "评测数据集构造：覆盖典型、边界、对抗样本，标注标准答案与引用依据",
+                  "判断质量提升的方法：建立基线、A/B测试或离线对比、统计显著性",
+                  "注意权衡与可靠性：指标间权衡、评测流程可重复性"
                 ]
               },
               {
@@ -41,9 +40,9 @@
                 "criterion": "completeness",
                 "description": "回答是否覆盖场景、边界和工程注意事项。",
                 "required_points": [
-                  "识别关键失败环节（检索、LLM生成）及其影响",
-                  "兜底策略：缓存、降级到纯检索、默认回复等",
-                  "重试机制：最大次数、退避、幂等性（请求ID）"
+                  "分维度设计指标：检索（Recall@K、MRR）、生成（准确性、忠实度）、引用（覆盖率、白名单校验）",
+                  "评测数据集构造：覆盖典型、边界、对抗样本，标注标准答案与引用依据",
+                  "判断质量提升的方法：建立基线、A/B测试或离线对比、统计显著性"
                 ]
               },
               {
@@ -59,10 +58,15 @@
                 "required_points": []
               }
             ],
+            "generation": {
+              "mode": "llm",
+              "prompt_version": "interview_question_v1",
+              "fallback_reason": null
+            },
             "question_angle": {
-              "key": "failure_handling",
-              "title": "异常与降级",
-              "prompt_hint": "要求候选人说明失败场景、兜底策略、重试/幂等和风险控制。"
+              "key": "quality_evaluation",
+              "title": "质量评估",
+              "prompt_hint": "要求候选人说明如何验证效果、设计指标、构造评测和判断质量提升。"
             }
           },
           "reference_chunk_ids": [
@@ -71,11 +75,11 @@
           ]
         },
         {
-          "id": "08af7970-2a25-4ca9-951c-56215f03b23c",
+          "id": "2cf0e4c4-602f-4b14-ab94-675a1b409b04",
           "sequence": 2,
-          "text": "在RAG系统的解析阶段，当面对PDF、Word、HTML、Markdown四种格式的文档时，请结合生产环境下的可观测性设计，说明：1）你会如何设计一个统一的解析流程来处理这四种格式，各自的关键处理步骤和注意事项是什么？2）为了保障解析质量和可观测性，你会采集哪些日志、指标或Trace信息？3）如果解析过程中出现异常（如PDF加密、Word损坏、HTML编码问题），你会如何设计异常处理和监控告警？",
+          "text": "在 RAG 系统中，分块（chunking）策略直接影响检索效果。很多初学者会直接按固定字数切割文本，请说明为什么固定字数切割往往不是最优策略？请结合概念边界，阐述分块策略与哪些相邻概念（如检索单元、上下文窗口、向量维度等）容易混淆，并说明在实际工程中应如何根据文档类型和查询特点设计分块方案。",
           "type": "scenario",
-          "reference_answer": "1）统一解析流程：设计一个Parser接口，针对不同格式实现具体Parser（如PDFParser、WordParser、HTMLParser、MarkdownParser），通过工厂模式根据文件类型选择对应Parser。PDF处理需考虑文本提取（如使用PDFBox或Tika）、扫描件OCR（需接入OCR服务）、表格识别；Word处理需区分doc和docx，docx可直接解析XML，doc需转换；HTML处理需去除标签、处理编码（如UTF-8、GBK）、提取正文（可用Jsoup）；Markdown处理需保留标题结构、代码块、表格等。所有Parser输出统一的Document对象（含文本、元数据如来源、页码）。\n2）可观测性设计：日志方面，记录每个文档的解析开始/结束、耗时、解析页数/字数、是否成功；指标方面，统计解析成功率、平均解析耗时、各格式解析耗时分布、OCR调用次数；Trace方面，为每个解析请求生成Trace ID，串联从文档上传到解析完成的全链路，便于定位瓶颈。\n3）异常处理与监控：针对不同异常类型设计处理策略：PDF加密可尝试密码或跳过并记录；Word损坏可尝试修复或返回错误；HTML编码问题可自动检测并转换。所有异常需记录详细错误信息（文件路径、异常类型、堆栈），并发送告警（如通过Prometheus + Alertmanager）。同时，设置解析超时和重试机制，避免单个文件阻塞整个流程。",
+          "reference_answer": "固定字数切割（如每500字一刀切）虽然实现简单，但会破坏语义完整性，导致一个完整的知识点被切碎到多个块中，检索时可能只召回部分信息，且容易引入噪声。更优的分块策略应基于语义边界，如段落、句子、标题等，或使用递归字符分割、基于文档结构的切分，甚至利用嵌入模型对句子进行语义聚类。\n\n概念边界方面：\n- 分块单元（chunk）是检索的基本单位，决定了召回内容的粒度；而上下文窗口（context window）是LLM一次能处理的token数，分块大小需适配上下文窗口，但不等同。\n- 向量维度是嵌入模型的输出维度，与分块大小无关，但影响存储和计算。\n- 检索单元有时指查询（query），有时指文档块，需明确区分。\n\n工程上，需根据文档类型（如代码、法律条文、对话）和查询特点（如长尾问题、多跳问题）调整分块策略，并通过评测（如召回率、答案准确率）验证效果。",
           "rubric": {
             "items": [
               {
@@ -83,11 +87,14 @@
                 "criterion": "correctness",
                 "description": "回答是否准确覆盖核心概念和资料依据。",
                 "required_points": [
-                  "2.4 解析阶段：四种格式怎么处理",
-                  "统一解析接口与工厂模式",
-                  "各格式处理要点（PDF/Word/HTML/Markdown）",
-                  "日志、指标、Trace的采集",
-                  "异常处理与监控告警"
+                  "2.5 分块策略：为什么不是固定字数切割",
+                  "固定字数切割的缺陷：破坏语义完整性、引入噪声、导致信息碎片化",
+                  "基于语义边界的分块方法：段落、句子、递归字符分割、文档结构",
+                  "分块与上下文窗口的区别：分块是检索单元，上下文窗口是生成限制",
+                  "分块与向量维度的区别：向量维度由模型决定，与分块无关",
+                  "分块与检索单元的关系：分块决定检索粒度，检索单元可能指查询或块",
+                  "根据文档类型和查询特点设计分块策略",
+                  "通过评测验证分块效果"
                 ]
               },
               {
@@ -95,9 +102,9 @@
                 "criterion": "completeness",
                 "description": "回答是否覆盖场景、边界和工程注意事项。",
                 "required_points": [
-                  "2.4 解析阶段：四种格式怎么处理",
-                  "统一解析接口与工厂模式",
-                  "各格式处理要点（PDF/Word/HTML/Markdown）"
+                  "2.5 分块策略：为什么不是固定字数切割",
+                  "固定字数切割的缺陷：破坏语义完整性、引入噪声、导致信息碎片化",
+                  "基于语义边界的分块方法：段落、句子、递归字符分割、文档结构"
                 ]
               },
               {
@@ -113,77 +120,88 @@
                 "required_points": []
               }
             ],
+            "generation": {
+              "mode": "llm",
+              "prompt_version": "interview_question_v1",
+              "fallback_reason": null
+            },
             "question_angle": {
-              "key": "production_observability",
-              "title": "生产化与观测",
-              "prompt_hint": "要求候选人结合日志、指标、Trace、评估集或运行态可观测性说明落地方案。"
-            }
-          },
-          "reference_chunk_ids": [
-            "feec7513-f43b-4260-877a-6adaba55c397",
-            "9e0fd232-bd45-4b56-b641-e7fd24b67718"
-          ]
-        },
-        {
-          "id": "d1ca5ca1-5a4c-4c56-b327-58b09d5af114",
-          "sequence": 3,
-          "text": "在RAG系统的工程化落地中，可观测性设计常面临两层粒度选择：一是面向整体能力的稳定主题层（如RAG整体得分），二是面向具体环节的动态诊断子知识点层（如RRF融合效果、引用校验准确率）。请对比这两种方案，说明：1）它们各自解决什么问题，为什么需要两层而非只用一层？2）在实际系统中，你会如何设计这两层的数据采集与指标聚合？3）如果只能保留一层，你会保留哪一层，为什么？请结合检索资料中的两层画像模型说明你的取舍依据。",
-          "type": "design",
-          "reference_answer": "两层画像模型的核心思想是：稳定节点用于统计，动态证据用于诊断。主题层回答'用户RAG整体能力怎么样'，粒度粗（10-20个），用于长期趋势图、下一轮选主题；子知识点层回答'RAG里哪里是短板'，粒度细（50-100+个），用于具体复习建议和错误模式诊断。只用主题层太粗糙，无法定位是检索还是生成的问题；只用子知识点层太碎片化，看不到整体趋势。因此需要两层配合。\n\n在实际系统中，我会设计两层数据采集：主题层采集宏观指标，如RAG整体准确率、端到端延迟、用户满意度等，按主题维度聚合，更新频率为每次该主题评分更新；子知识点层采集细粒度指标，如检索阶段的RRF融合得分、召回率、引用校验的准确率等，按子知识点维度聚合，更新频率为每次涉及该子知识点的评分更新。通过日志和Trace关联，将每次请求的链路数据打上主题和子知识点标签，然后分别聚合。\n\n如果只能保留一层，我会保留子知识点层。因为子知识点层能直接产生复习任务和错误模式诊断，对系统优化更有指导意义；而主题层虽然能看趋势，但无法定位具体问题。在资源受限时，优先保留诊断能力，因为工程化核心是快速定位和修复问题。",
-          "rubric": {
-            "items": [
-              {
-                "weight": 35,
-                "criterion": "correctness",
-                "description": "回答是否准确覆盖核心概念和资料依据。",
-                "required_points": [
-                  "能清晰对比两层粒度的差异：主题层粗粒度用于统计趋势，子知识点层细粒度用于诊断短板",
-                  "能说明只用一层的弊端：主题层太粗糙无法定位问题，子知识点层太碎片化看不到整体",
-                  "能结合检索资料中的两层画像模型（稳定节点用于统计，动态证据用于诊断）说明设计思想",
-                  "能给出实际数据采集与聚合方案：按主题和子知识点打标签，分别聚合，更新频率不同",
-                  "能说明取舍依据：若只能保留一层，倾向保留子知识点层，因为能直接产生复习任务和错误模式诊断，对优化更有价值"
-                ]
-              },
-              {
-                "weight": 30,
-                "criterion": "completeness",
-                "description": "回答是否覆盖场景、边界和工程注意事项。",
-                "required_points": [
-                  "能清晰对比两层粒度的差异：主题层粗粒度用于统计趋势，子知识点层细粒度用于诊断短板",
-                  "能说明只用一层的弊端：主题层太粗糙无法定位问题，子知识点层太碎片化看不到整体",
-                  "能结合检索资料中的两层画像模型（稳定节点用于统计，动态证据用于诊断）说明设计思想"
-                ]
-              },
-              {
-                "weight": 20,
-                "criterion": "reasoning",
-                "description": "回答是否有清晰推理链路和取舍说明。",
-                "required_points": []
-              },
-              {
-                "weight": 15,
-                "criterion": "communication",
-                "description": "表达是否结构化、适合面试交流。",
-                "required_points": []
-              }
-            ],
-            "question_angle": {
-              "key": "comparison",
-              "title": "对比辨析",
-              "prompt_hint": "要求候选人对比相似方案，说明为什么选当前方案以及不选什么。"
+              "key": "concept_boundary",
+              "title": "概念边界",
+              "prompt_hint": "要求候选人说清定义、适用边界、容易混淆的相邻概念。"
             }
           },
           "reference_chunk_ids": [
             "9e0fd232-bd45-4b56-b641-e7fd24b67718",
-            "1edcb521-2164-4e63-ba13-c212c1acd91d"
+            "4340ac7c-b480-46ab-b18f-1941356eea2d"
+          ]
+        },
+        {
+          "id": "6e59522b-d4c0-47c8-b5a8-b81c9c5cd27f",
+          "sequence": 3,
+          "text": "在设计一个企业级 RAG 系统时，架构分层是关键决策之一。请结合你熟悉的 RAG 项目，阐述你如何划分应用层与领域层（或类似的分层），并说明各层的职责、依赖关系以及这样划分带来的工程取舍。同时，请讨论在 16GB 内存约束下，你会如何调整各层的组件（如检索、评估、状态管理）以平衡性能与可维护性，并给出一个渐进式企业化路线。",
+          "type": "design",
+          "reference_answer": "好的，我将从架构分层、内存约束下的取舍、渐进式企业化路线三个方面来回答。\n\n首先，架构分层上，我倾向于将系统划分为领域层和应用层。领域层是纯 Python 实现的规则引擎，不依赖外部服务，例如 RAG 检索算法（RRF 融合、每文档限额、相邻块去重）、评估规则（final/pending/disputed 判定、should_review、total_score）、面试状态机（合法状态与过渡）。应用层则是流程导演，负责编排何时调用这些规则，依赖数据库 session、LLM Gateway、Retriever 等。这样划分的好处是：领域层可单元测试，无需启动服务，快速验证核心逻辑；应用层则通过集成测试确保流程正确。取舍在于，领域层需要精心设计接口以保持纯粹性，应用层则可能变得复杂，需要依赖注入来管理外部资源。\n\n其次，在 16GB 内存约束下，我会优先考虑检索和评估组件的资源占用。例如，向量索引可能占用大量内存，我会采用量化或分片技术，或者使用磁盘索引加缓存。对于评估环节，避免加载全部文档，采用流式处理或抽样。状态管理方面，使用轻量级存储如 SQLite 或 Redis，避免内存驻留。同时，我会将领域层保持无状态，以便在需要时水平扩展。\n\n最后，渐进式企业化路线：第一步，先实现核心 RAG 流程，确保检索和生成可用；第二步，引入评估和监控，建立质量基线；第三步，增加状态管理和多轮对话支持；第四步，优化性能，如缓存、并发控制；第五步，集成企业级安全、日志和权限。每一步都明确区分已实现、规划和行业通用方案，避免过度设计。",
+          "rubric": {
+            "items": [
+              {
+                "weight": 35,
+                "criterion": "correctness",
+                "description": "回答是否准确覆盖核心概念和资料依据。",
+                "required_points": [
+                  "明确区分应用层与领域层的职责，领域层为纯规则引擎，应用层为流程编排",
+                  "说明领域层无外部依赖，可单元测试；应用层依赖数据库、LLM Gateway 等，需集成测试",
+                  "阐述分层带来的工程取舍，如可测试性、可维护性与复杂度",
+                  "针对 16GB 内存约束，提出具体调整策略，如向量索引优化、评估流式处理、状态管理轻量化",
+                  "给出渐进式企业化路线，分阶段实施，并区分已实现、规划和行业通用方案",
+                  "避免红线表述，如声称完全解决所有问题"
+                ]
+              },
+              {
+                "weight": 30,
+                "criterion": "completeness",
+                "description": "回答是否覆盖场景、边界和工程注意事项。",
+                "required_points": [
+                  "明确区分应用层与领域层的职责，领域层为纯规则引擎，应用层为流程编排",
+                  "说明领域层无外部依赖，可单元测试；应用层依赖数据库、LLM Gateway 等，需集成测试",
+                  "阐述分层带来的工程取舍，如可测试性、可维护性与复杂度"
+                ]
+              },
+              {
+                "weight": 20,
+                "criterion": "reasoning",
+                "description": "回答是否有清晰推理链路和取舍说明。",
+                "required_points": []
+              },
+              {
+                "weight": 15,
+                "criterion": "communication",
+                "description": "表达是否结构化、适合面试交流。",
+                "required_points": []
+              }
+            ],
+            "generation": {
+              "mode": "llm",
+              "prompt_version": "interview_question_v1",
+              "fallback_reason": null
+            },
+            "question_angle": {
+              "key": "architecture_tradeoff",
+              "title": "架构取舍",
+              "prompt_hint": "要求候选人从组件职责、数据流、工程取舍和替代方案展开。"
+            }
+          },
+          "reference_chunk_ids": [
+            "9e0fd232-bd45-4b56-b641-e7fd24b67718",
+            "15c52ee7-0de1-4949-9389-2e2d6fb696bd"
           ]
         }
       ],
-      "session_id": "138fdbfc-618e-46f2-b71e-28c2fe89db50",
+      "session_id": "dd950b58-6523-4a4d-9119-73fd01a36305",
       "report": {
-        "id": "acda351c-ddf2-4cb1-a466-ffa2eb38e24b",
-        "session_id": "138fdbfc-618e-46f2-b71e-28c2fe89db50",
-        "total_score": 56,
+        "id": "478c5807-bec9-4ba3-9b31-512a8620c51c",
+        "session_id": "dd950b58-6523-4a4d-9119-73fd01a36305",
+        "total_score": 55,
         "max_score": 60,
         "dimension_summary": {
           "reasoning": {
@@ -195,8 +213,8 @@
             "average": 5.0
           },
           "completeness": {
-            "total": 15,
-            "average": 5.0
+            "total": 14,
+            "average": 4.67
           },
           "communication": {
             "total": 13,
@@ -215,48 +233,50 @@
         ],
         "evaluations": [
           {
-            "id": "70b19ae3-e267-4734-b6e5-cc9d376598f4",
-            "question_id": "9909b3cb-fcc2-4613-95ce-8c1f7688277e",
-            "answer_id": "4b8b94c8-44ec-4c51-a04b-6c4de0681727",
+            "id": "fdfed5d9-de43-41d9-8102-61fe3e93cea3",
+            "question_id": "9e296a14-2667-4ead-9269-52c336ddc30b",
+            "answer_id": "015cda66-ae00-4352-999e-b4963ce9ad7b",
             "sequence": 1,
-            "question_text": "在RAG问答系统中，当底层检索或LLM生成环节出现异常时，系统应如何设计降级与兜底策略？请结合检索资料中的架构（如KnowledgeRetriever、LLMGateway等）说明：1）哪些环节可能失败，各自的影响是什么；2）你会采用哪些兜底策略（如缓存、默认回复、降级到纯检索等）；3）重试机制应如何设计以避免雪崩，并保证幂等性；4）如何通过风险控制（如超时、熔断、限流）保障系统稳定性。",
+            "question_text": "在 RAG 系统中，如何设计一套质量评估方案来验证系统效果并判断质量提升？请结合检索、生成、引用等环节，说明你会选择哪些指标、如何构造评测数据集，以及如何判断一次改动是否真正带来了质量提升。",
             "question_type": "concept",
             "difficulty": "medium",
             "knowledge_points": [
-              "识别关键失败环节（检索、LLM生成）及其影响",
-              "兜底策略：缓存、降级到纯检索、默认回复等",
-              "重试机制：最大次数、退避、幂等性（请求ID）",
-              "风险控制：超时、熔断、限流",
-              "结合架构中的组件（KnowledgeRetriever、LLMGateway）说明"
+              "分维度设计指标：检索（Recall@K、MRR）、生成（准确性、忠实度）、引用（覆盖率、白名单校验）",
+              "评测数据集构造：覆盖典型、边界、对抗样本，标注标准答案与引用依据",
+              "判断质量提升的方法：建立基线、A/B测试或离线对比、统计显著性",
+              "注意权衡与可靠性：指标间权衡、评测流程可重复性"
             ],
-            "user_answer": "在RAG问答系统中，异常可能发生在检索（KnowledgeRetriever）和LLM生成（LLMGateway）等关键环节。检索失败会导致无法获取上下文，LLM失败则无法生成答案。兜底策略包括：1）对于检索，可降级为纯关键词检索或返回缓存结果；2）对于LLM，可降级为基于检索结果的模板回答或返回预设的兜底话术；3）重试需设置最大次数和退避策略，并确保请求幂等（如使用请求ID）；4）风险控制包括设置超时时间、熔断器（如连续失败则快速失败）、限流（如令牌桶）等，防止系统雪崩。",
+            "user_answer": "质量评估是 RAG 工程化的核心环节，需要从检索、生成、引用三个维度设计指标体系。检索质量常用 Recall@K、MRR、NDCG 等指标，衡量相关文档是否被召回以及排序是否合理；生成质量关注答案的准确性、完整性、忠实度，可结合 LLM-as-a-Judge 或人工评估；引用质量则需验证引用是否真实支持答案，即引用白名单校验和引用覆盖率。评测数据集的构造应覆盖典型问题、边界情况和对抗样本，并标注标准答案和引用依据。判断质量提升需建立基线，通过 A/B 测试或离线评测对比改动前后的指标变化，同时注意指标间的权衡，如召回率提升可能带来噪声增加。最终应形成可重复的评测流程，确保结论可靠。",
             "correctness": 5,
-            "completeness": 5,
+            "completeness": 4,
             "reasoning": 4,
             "communication": 4,
-            "total": 18,
+            "total": 17,
             "confidence": 0.9,
             "covered_points": [
-              "识别关键失败环节（检索、LLM生成）及其影响",
-              "兜底策略：缓存、降级到纯检索、默认回复等",
-              "重试机制：最大次数、退避、幂等性（请求ID）",
-              "风险控制：超时、熔断、限流",
-              "结合架构中的组件（KnowledgeRetriever、LLMGateway）说明"
+              "分维度设计指标：检索（Recall@K、MRR）、生成（准确性、忠实度）、引用（覆盖率、白名单校验）",
+              "评测数据集构造：覆盖典型、边界、对抗样本，标注标准答案与引用依据",
+              "判断质量提升的方法：建立基线、A/B测试或离线对比",
+              "注意权衡与可靠性：指标间权衡、评测流程可重复性"
             ],
-            "missing_points": [],
+            "missing_points": [
+              "统计显著性检验未明确提及"
+            ],
             "incorrect_claims": [],
             "answer_evidence": [
-              "检索失败会导致无法获取上下文，LLM失败则无法生成答案",
-              "对于检索，可降级为纯关键词检索或返回缓存结果",
-              "对于LLM，可降级为基于检索结果的模板回答或返回预设的兜底话术",
-              "重试需设置最大次数和退避策略，并确保请求幂等（如使用请求ID）",
-              "风险控制包括设置超时时间、熔断器（如连续失败则快速失败）、限流（如令牌桶）等"
+              "检索质量常用 Recall@K、MRR、NDCG 等指标",
+              "生成质量关注答案的准确性、完整性、忠实度，可结合 LLM-as-a-Judge 或人工评估",
+              "引用质量则需验证引用是否真实支持答案，即引用白名单校验和引用覆盖率",
+              "评测数据集的构造应覆盖典型问题、边界情况和对抗样本，并标注标准答案和引用依据",
+              "判断质量提升需建立基线，通过 A/B 测试或离线评测对比改动前后的指标变化",
+              "注意指标间的权衡，如召回率提升可能带来噪声增加",
+              "最终应形成可重复的评测流程，确保结论可靠"
             ],
             "reference_chunk_ids": [
               "b668d853-dd74-4b70-ac33-332b8df6d12a",
               "9e8eed04-61c9-45fd-9007-23ae9427eada"
             ],
-            "feedback": "回答准确覆盖了所有核心要点，包括失败环节识别、兜底策略、重试与幂等、风险控制，并正确结合了KnowledgeRetriever和LLMGateway组件。结构清晰，逻辑完整，符合面试要求。建议在表达上可进一步展开具体实现细节或举例，以增强说服力。",
+            "feedback": "回答准确覆盖了核心要点，结构清晰，从检索、生成、引用三个维度展开，并提及了评测数据集构造和质量提升判断方法。建议补充统计显著性检验的具体方法（如p值、置信区间）以增强严谨性，同时可举例说明如何平衡指标间权衡。整体表现优秀。",
             "follow_up_recommended": false,
             "needs_review": false,
             "reviewed": false,
@@ -267,21 +287,24 @@
             "prompt_version": "evaluation_v1"
           },
           {
-            "id": "653bab3c-17b3-4d72-9843-90107b627eeb",
-            "question_id": "08af7970-2a25-4ca9-951c-56215f03b23c",
-            "answer_id": "fdd275d9-80f8-4fd6-904d-dfd615ed867f",
+            "id": "ece75dc4-55a5-47f7-881c-4a93a0efcca9",
+            "question_id": "2cf0e4c4-602f-4b14-ab94-675a1b409b04",
+            "answer_id": "f059affe-df22-4463-a23c-32142969a1e2",
             "sequence": 2,
-            "question_text": "在RAG系统的解析阶段，当面对PDF、Word、HTML、Markdown四种格式的文档时，请结合生产环境下的可观测性设计，说明：1）你会如何设计一个统一的解析流程来处理这四种格式，各自的关键处理步骤和注意事项是什么？2）为了保障解析质量和可观测性，你会采集哪些日志、指标或Trace信息？3）如果解析过程中出现异常（如PDF加密、Word损坏、HTML编码问题），你会如何设计异常处理和监控告警？",
+            "question_text": "在 RAG 系统中，分块（chunking）策略直接影响检索效果。很多初学者会直接按固定字数切割文本，请说明为什么固定字数切割往往不是最优策略？请结合概念边界，阐述分块策略与哪些相邻概念（如检索单元、上下文窗口、向量维度等）容易混淆，并说明在实际工程中应如何根据文档类型和查询特点设计分块方案。",
             "question_type": "scenario",
             "difficulty": "medium",
             "knowledge_points": [
-              "2.4 解析阶段：四种格式怎么处理",
-              "统一解析接口与工厂模式",
-              "各格式处理要点（PDF/Word/HTML/Markdown）",
-              "日志、指标、Trace的采集",
-              "异常处理与监控告警"
+              "2.5 分块策略：为什么不是固定字数切割",
+              "固定字数切割的缺陷：破坏语义完整性、引入噪声、导致信息碎片化",
+              "基于语义边界的分块方法：段落、句子、递归字符分割、文档结构",
+              "分块与上下文窗口的区别：分块是检索单元，上下文窗口是生成限制",
+              "分块与向量维度的区别：向量维度由模型决定，与分块无关",
+              "分块与检索单元的关系：分块决定检索粒度，检索单元可能指查询或块",
+              "根据文档类型和查询特点设计分块策略",
+              "通过评测验证分块效果"
             ],
-            "user_answer": "1）统一解析流程：设计一个Parser接口，针对不同格式实现具体Parser（如PDFParser、WordParser、HTMLParser、MarkdownParser），通过工厂模式根据文件类型选择对应Parser。PDF处理需考虑文本提取（如使用PDFBox或Tika）、扫描件OCR（需接入OCR服务）、表格识别；Word处理需区分doc和docx，docx可直接解析XML，doc需转换；HTML处理需去除标签、处理编码（如UTF-8、GBK）、提取正文（可用Jsoup）；Markdown处理需保留标题结构、代码块、表格等。所有Parser输出统一的Document对象（含文本、元数据如来源、页码）。\n2）可观测性设计：日志方面，记录每个文档的解析开始/结束、耗时、解析页数/字数、是否成功；指标方面，统计解析成功率、平均解析耗时、各格式解析耗时分布、OCR调用次数；Trace方面，为每个解析请求生成Trace ID，串联从文档上传到解析完成的全链路，便于定位瓶颈。\n3）异常处理与监控：针对不同异常类型设计处理策略：PDF加密可尝试密码或跳过并记录；Word损坏可尝试修复或返回错误；HTML编码问题可自动检测并转换。所有异常需记录详细错误信息（文件路径、异常类型、堆栈），并发送告警（如通过Prometheus + Alertmanager）。同时，设置解析超时和重试机制，避免单个文件阻塞整个流程。",
+            "user_answer": "固定字数切割（如每500字一刀切）虽然实现简单，但会破坏语义完整性，导致一个完整的知识点被切碎到多个块中，检索时可能只召回部分信息，且容易引入噪声。更优的分块策略应基于语义边界，如段落、句子、标题等，或使用递归字符分割、基于文档结构的切分，甚至利用嵌入模型对句子进行语义聚类。\n\n概念边界方面：\n- 分块单元（chunk）是检索的基本单位，决定了召回内容的粒度；而上下文窗口（context window）是LLM一次能处理的token数，分块大小需适配上下文窗口，但不等同。\n- 向量维度是嵌入模型的输出维度，与分块大小无关，但影响存储和计算。\n- 检索单元有时指查询（query），有时指文档块，需明确区分。\n\n工程上，需根据文档类型（如代码、法律条文、对话）和查询特点（如长尾问题、多跳问题）调整分块策略，并通过评测（如召回率、答案准确率）验证效果。",
             "correctness": 5,
             "completeness": 5,
             "reasoning": 4,
@@ -289,81 +312,87 @@
             "total": 18,
             "confidence": 0.95,
             "covered_points": [
-              "统一解析接口与工厂模式",
-              "各格式处理要点（PDF/Word/HTML/Markdown）",
-              "日志、指标、Trace的采集",
-              "异常处理与监控告警",
-              "2.4 解析阶段：四种格式怎么处理"
+              "2.5 分块策略：为什么不是固定字数切割",
+              "固定字数切割的缺陷：破坏语义完整性、引入噪声、导致信息碎片化",
+              "基于语义边界的分块方法：段落、句子、递归字符分割、文档结构",
+              "分块与上下文窗口的区别：分块是检索单元，上下文窗口是生成限制",
+              "分块与向量维度的区别：向量维度由模型决定，与分块无关",
+              "分块与检索单元的关系：分块决定检索粒度，检索单元可能指查询或块",
+              "根据文档类型和查询特点设计分块策略",
+              "通过评测验证分块效果"
             ],
             "missing_points": [],
             "incorrect_claims": [],
             "answer_evidence": [
-              "设计一个Parser接口，针对不同格式实现具体Parser，通过工厂模式根据文件类型选择对应Parser",
-              "PDF处理需考虑文本提取、扫描件OCR、表格识别；Word处理需区分doc和docx；HTML处理需去除标签、处理编码、提取正文；Markdown处理需保留标题结构、代码块、表格等",
-              "日志方面，记录每个文档的解析开始/结束、耗时、解析页数/字数、是否成功；指标方面，统计解析成功率、平均解析耗时、各格式解析耗时分布、OCR调用次数；Trace方面，为每个解析请求生成Trace ID",
-              "针对不同异常类型设计处理策略：PDF加密可尝试密码或跳过并记录；Word损坏可尝试修复或返回错误；HTML编码问题可自动检测并转换。所有异常需记录详细错误信息，并发送告警。同时，设置解析超时和重试机制"
+              "固定字数切割会破坏语义完整性，导致知识点被切碎，检索时可能只召回部分信息，且引入噪声",
+              "更优策略应基于语义边界，如段落、句子、标题，或使用递归字符分割、文档结构切分，甚至语义聚类",
+              "分块单元是检索基本单位，上下文窗口是LLM处理token数的限制，分块大小需适配但不等同",
+              "向量维度由嵌入模型决定，与分块无关，但影响存储和计算",
+              "检索单元有时指查询有时指文档块，需明确区分",
+              "工程上需根据文档类型和查询特点调整分块策略，并通过评测验证效果"
             ],
             "reference_chunk_ids": [
-              "feec7513-f43b-4260-877a-6adaba55c397",
-              "9e0fd232-bd45-4b56-b641-e7fd24b67718"
+              "9e0fd232-bd45-4b56-b641-e7fd24b67718",
+              "4340ac7c-b480-46ab-b18f-1941356eea2d"
             ],
-            "feedback": "回答准确覆盖了所有核心知识点，结构清晰，逻辑完整。在可观测性设计上，日志、指标、Trace三方面均有具体说明，异常处理也覆盖了典型场景和监控告警机制。建议在面试中可进一步补充：1）统一Document对象的具体字段设计（如元数据包含哪些）；2）Trace信息如何与日志、指标关联（如Trace ID注入日志）；3）告警阈值和分级策略（如解析成功率低于多少触发告警）。整体表现优秀，符合生产环境可观测性要求。 复核后确认：评分依据与引用范围一致。",
-            "follow_up_recommended": true,
-            "needs_review": true,
-            "reviewed": true,
-            "review_reasons": [
-              "reviewer_checked",
-              "回答完整且准确，但可进一步深化可观测性细节，如Trace与日志关联、告警阈值设计"
-            ],
-            "review_decision": "used_review",
+            "feedback": "回答准确且完整，覆盖了所有核心知识点和概念边界，结构清晰，工程建议合理。建议在面试中可进一步举例说明具体分块策略的取舍，以增强说服力。",
+            "follow_up_recommended": false,
+            "needs_review": false,
+            "reviewed": false,
+            "review_reasons": [],
+            "review_decision": "not_required",
             "status": "final",
-            "model_name": "deepseek-chat+deterministic-reviewer-v1",
+            "model_name": "deepseek-chat",
             "prompt_version": "evaluation_v1"
           },
           {
-            "id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-            "question_id": "d1ca5ca1-5a4c-4c56-b327-58b09d5af114",
-            "answer_id": "679b69a7-8493-44d2-8f50-bb2564aab7c8",
+            "id": "e5c22dbd-2094-44ac-827b-63188dc1fb90",
+            "question_id": "6e59522b-d4c0-47c8-b5a8-b81c9c5cd27f",
+            "answer_id": "8e3de752-e406-460e-8836-153ba29f6f1f",
             "sequence": 3,
-            "question_text": "在RAG系统的工程化落地中，可观测性设计常面临两层粒度选择：一是面向整体能力的稳定主题层（如RAG整体得分），二是面向具体环节的动态诊断子知识点层（如RRF融合效果、引用校验准确率）。请对比这两种方案，说明：1）它们各自解决什么问题，为什么需要两层而非只用一层？2）在实际系统中，你会如何设计这两层的数据采集与指标聚合？3）如果只能保留一层，你会保留哪一层，为什么？请结合检索资料中的两层画像模型说明你的取舍依据。",
+            "question_text": "在设计一个企业级 RAG 系统时，架构分层是关键决策之一。请结合你熟悉的 RAG 项目，阐述你如何划分应用层与领域层（或类似的分层），并说明各层的职责、依赖关系以及这样划分带来的工程取舍。同时，请讨论在 16GB 内存约束下，你会如何调整各层的组件（如检索、评估、状态管理）以平衡性能与可维护性，并给出一个渐进式企业化路线。",
             "question_type": "design",
             "difficulty": "medium",
             "knowledge_points": [
-              "能清晰对比两层粒度的差异：主题层粗粒度用于统计趋势，子知识点层细粒度用于诊断短板",
-              "能说明只用一层的弊端：主题层太粗糙无法定位问题，子知识点层太碎片化看不到整体",
-              "能结合检索资料中的两层画像模型（稳定节点用于统计，动态证据用于诊断）说明设计思想",
-              "能给出实际数据采集与聚合方案：按主题和子知识点打标签，分别聚合，更新频率不同",
-              "能说明取舍依据：若只能保留一层，倾向保留子知识点层，因为能直接产生复习任务和错误模式诊断，对优化更有价值"
+              "明确区分应用层与领域层的职责，领域层为纯规则引擎，应用层为流程编排",
+              "说明领域层无外部依赖，可单元测试；应用层依赖数据库、LLM Gateway 等，需集成测试",
+              "阐述分层带来的工程取舍，如可测试性、可维护性与复杂度",
+              "针对 16GB 内存约束，提出具体调整策略，如向量索引优化、评估流式处理、状态管理轻量化",
+              "给出渐进式企业化路线，分阶段实施，并区分已实现、规划和行业通用方案",
+              "避免红线表述，如声称完全解决所有问题"
             ],
-            "user_answer": "两层画像模型的核心思想是：稳定节点用于统计，动态证据用于诊断。主题层回答'用户RAG整体能力怎么样'，粒度粗（10-20个），用于长期趋势图、下一轮选主题；子知识点层回答'RAG里哪里是短板'，粒度细（50-100+个），用于具体复习建议和错误模式诊断。只用主题层太粗糙，无法定位是检索还是生成的问题；只用子知识点层太碎片化，看不到整体趋势。因此需要两层配合。\n\n在实际系统中，我会设计两层数据采集：主题层采集宏观指标，如RAG整体准确率、端到端延迟、用户满意度等，按主题维度聚合，更新频率为每次该主题评分更新；子知识点层采集细粒度指标，如检索阶段的RRF融合得分、召回率、引用校验的准确率等，按子知识点维度聚合，更新频率为每次涉及该子知识点的评分更新。通过日志和Trace关联，将每次请求的链路数据打上主题和子知识点标签，然后分别聚合。\n\n如果只能保留一层，我会保留子知识点层。因为子知识点层能直接产生复习任务和错误模式诊断，对系统优化更有指导意义；而主题层虽然能看趋势，但无法定位具体问题。在资源受限时，优先保留诊断能力，因为工程化核心是快速定位和修复问题。",
+            "user_answer": "好的，我将从架构分层、内存约束下的取舍、渐进式企业化路线三个方面来回答。\n\n首先，架构分层上，我倾向于将系统划分为领域层和应用层。领域层是纯 Python 实现的规则引擎，不依赖外部服务，例如 RAG 检索算法（RRF 融合、每文档限额、相邻块去重）、评估规则（final/pending/disputed 判定、should_review、total_score）、面试状态机（合法状态与过渡）。应用层则是流程导演，负责编排何时调用这些规则，依赖数据库 session、LLM Gateway、Retriever 等。这样划分的好处是：领域层可单元测试，无需启动服务，快速验证核心逻辑；应用层则通过集成测试确保流程正确。取舍在于，领域层需要精心设计接口以保持纯粹性，应用层则可能变得复杂，需要依赖注入来管理外部资源。\n\n其次，在 16GB 内存约束下，我会优先考虑检索和评估组件的资源占用。例如，向量索引可能占用大量内存，我会采用量化或分片技术，或者使用磁盘索引加缓存。对于评估环节，避免加载全部文档，采用流式处理或抽样。状态管理方面，使用轻量级存储如 SQLite 或 Redis，避免内存驻留。同时，我会将领域层保持无状态，以便在需要时水平扩展。\n\n最后，渐进式企业化路线：第一步，先实现核心 RAG 流程，确保检索和生成可用；第二步，引入评估和监控，建立质量基线；第三步，增加状态管理和多轮对话支持；第四步，优化性能，如缓存、并发控制；第五步，集成企业级安全、日志和权限。每一步都明确区分已实现、规划和行业通用方案，避免过度设计。",
             "correctness": 5,
             "completeness": 5,
             "reasoning": 5,
             "communication": 5,
             "total": 20,
-            "confidence": 0.95,
+            "confidence": 0.9,
             "covered_points": [
-              "能清晰对比两层粒度的差异：主题层粗粒度用于统计趋势，子知识点层细粒度用于诊断短板",
-              "能说明只用一层的弊端：主题层太粗糙无法定位问题，子知识点层太碎片化看不到整体",
-              "能结合检索资料中的两层画像模型（稳定节点用于统计，动态证据用于诊断）说明设计思想",
-              "能给出实际数据采集与聚合方案：按主题和子知识点打标签，分别聚合，更新频率不同",
-              "能说明取舍依据：若只能保留一层，倾向保留子知识点层，因为能直接产生复习任务和错误模式诊断，对优化更有价值"
+              "明确区分应用层与领域层的职责，领域层为纯规则引擎，应用层为流程编排",
+              "说明领域层无外部依赖，可单元测试；应用层依赖数据库、LLM Gateway 等，需集成测试",
+              "阐述分层带来的工程取舍，如可测试性、可维护性与复杂度",
+              "针对 16GB 内存约束，提出具体调整策略，如向量索引优化、评估流式处理、状态管理轻量化",
+              "给出渐进式企业化路线，分阶段实施，并区分已实现、规划和行业通用方案",
+              "避免红线表述，如声称完全解决所有问题"
             ],
             "missing_points": [],
             "incorrect_claims": [],
             "answer_evidence": [
-              "两层画像模型的核心思想是：稳定节点用于统计，动态证据用于诊断。",
-              "主题层回答'用户RAG整体能力怎么样'，粒度粗（10-20个），用于长期趋势图、下一轮选主题；子知识点层回答'RAG里哪里是短板'，粒度细（50-100+个），用于具体复习建议和错误模式诊断。",
-              "只用主题层太粗糙，无法定位是检索还是生成的问题；只用子知识点层太碎片化，看不到整体趋势。",
-              "在实际系统中，我会设计两层数据采集：主题层采集宏观指标，如RAG整体准确率、端到端延迟、用户满意度等，按主题维度聚合，更新频率为每次该主题评分更新；子知识点层采集细粒度指标，如检索阶段的RRF融合得分、召回率、引用校验的准确率等，按子知识点维度聚合，更新频率为每次涉及该子知识点的评分更新。",
-              "通过日志和Trace关联，将每次请求的链路数据打上主题和子知识点标签，然后分别聚合。",
-              "如果只能保留一层，我会保留子知识点层。因为子知识点层能直接产生复习任务和错误模式诊断，对系统优化更有指导意义；而主题层虽然能看趋势，但无法定位具体问题。"
+              "领域层是纯 Python 实现的规则引擎，不依赖外部服务",
+              "应用层则是流程导演，负责编排何时调用这些规则，依赖数据库 session、LLM Gateway、Retriever 等",
+              "领域层可单元测试，无需启动服务，快速验证核心逻辑；应用层则通过集成测试确保流程正确",
+              "向量索引可能占用大量内存，我会采用量化或分片技术，或者使用磁盘索引加缓存",
+              "对于评估环节，避免加载全部文档，采用流式处理或抽样",
+              "状态管理方面，使用轻量级存储如 SQLite 或 Redis，避免内存驻留",
+              "第一步，先实现核心 RAG 流程，确保检索和生成可用；第二步，引入评估和监控，建立质量基线；第三步，增加状态管理和多轮对话支持；第四步，优化性能，如缓存、并发控制；第五步，集成企业级安全、日志和权限",
+              "每一步都明确区分已实现、规划和行业通用方案，避免过度设计"
             ],
             "reference_chunk_ids": [
               "9e0fd232-bd45-4b56-b641-e7fd24b67718",
-              "1edcb521-2164-4e63-ba13-c212c1acd91d"
+              "15c52ee7-0de1-4949-9389-2e2d6fb696bd"
             ],
-            "feedback": "回答准确、完整，清晰对比了两层粒度的差异，说明了只用一层的弊端，并结合两层画像模型阐述了设计思想。数据采集与聚合方案具体可行，取舍依据合理。整体表达结构化，适合面试交流。",
+            "feedback": "回答结构清晰，覆盖了所有关键点。领域层与应用层的职责划分明确，并正确阐述了依赖关系和测试策略。针对内存约束提出了具体可行的优化方案，渐进式路线也分阶段合理。整体表现优秀，无需额外补充。",
             "follow_up_recommended": false,
             "needs_review": false,
             "reviewed": false,
@@ -671,11 +700,11 @@
             "topic_title": "RAG",
             "subtopic_key": "citation",
             "subtopic_title": "证据引用",
-            "mastery_score": 0.9382,
-            "confidence_weighted_count": 18.0,
-            "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-            "version": 18,
-            "updated_at": "2026-09-02T13:59:25.890974Z"
+            "mastery_score": 0.9223,
+            "confidence_weighted_count": 19.0,
+            "last_evaluation_id": "fdfed5d9-de43-41d9-8102-61fe3e93cea3",
+            "version": 19,
+            "updated_at": "2026-09-02T14:08:59.734156Z"
           },
           {
             "id": "91aa9dfc-68e2-4895-9a80-acf6b76d1a55",
@@ -716,11 +745,11 @@
             "topic_title": "RAG",
             "subtopic_key": "evaluation",
             "subtopic_title": "RAG 评估",
-            "mastery_score": 0.9248,
-            "confidence_weighted_count": 18.0,
-            "last_evaluation_id": "bf7ad11f-2264-4733-8e22-840eab4a2280",
-            "version": 18,
-            "updated_at": "2026-09-02T13:57:21.836562Z"
+            "mastery_score": 0.9273,
+            "confidence_weighted_count": 20.0,
+            "last_evaluation_id": "e5c22dbd-2094-44ac-827b-63188dc1fb90",
+            "version": 20,
+            "updated_at": "2026-09-02T14:08:59.767235Z"
           },
           {
             "id": "09317455-7764-40cd-82bc-baf5d968e53c",
@@ -731,11 +760,11 @@
             "topic_title": "RAG",
             "subtopic_key": "generation",
             "subtopic_title": "生成边界",
-            "mastery_score": 0.9297,
-            "confidence_weighted_count": 32.0,
-            "last_evaluation_id": "70b19ae3-e267-4734-b6e5-cc9d376598f4",
-            "version": 32,
-            "updated_at": "2026-09-02T13:59:25.877156Z"
+            "mastery_score": 0.9126,
+            "confidence_weighted_count": 34.0,
+            "last_evaluation_id": "ece75dc4-55a5-47f7-881c-4a93a0efcca9",
+            "version": 34,
+            "updated_at": "2026-09-02T14:08:59.758955Z"
           },
           {
             "id": "de5196a9-0331-40b5-a272-dbf0c27fbb0a",
@@ -746,11 +775,11 @@
             "topic_title": "RAG",
             "subtopic_key": "retrieval",
             "subtopic_title": "检索与召回",
-            "mastery_score": 0.9481,
-            "confidence_weighted_count": 42.0,
-            "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-            "version": 42,
-            "updated_at": "2026-09-02T13:59:25.889716Z"
+            "mastery_score": 0.9249,
+            "confidence_weighted_count": 44.0,
+            "last_evaluation_id": "ece75dc4-55a5-47f7-881c-4a93a0efcca9",
+            "version": 44,
+            "updated_at": "2026-09-02T14:08:59.756655Z"
           },
           {
             "id": "9efcccaa-11c1-434c-b553-32830139d86e",
@@ -896,11 +925,11 @@
             "topic_title": "RAG",
             "subtopic_key": null,
             "subtopic_title": null,
-            "mastery_score": 0.9476,
-            "confidence_weighted_count": 51.0,
-            "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-            "version": 51,
-            "updated_at": "2026-09-02T13:59:25.888161Z"
+            "mastery_score": 0.9382,
+            "confidence_weighted_count": 54.0,
+            "last_evaluation_id": "e5c22dbd-2094-44ac-827b-63188dc1fb90",
+            "version": 54,
+            "updated_at": "2026-09-02T14:08:59.765174Z"
           },
           {
             "id": "ffbb26dd-d9b1-46e1-879e-42cf7603654f",
@@ -1183,15 +1212,15 @@
       },
       "coverage_after": {
         "total": 150,
-        "uncovered": 119,
-        "attempted": 11,
+        "uncovered": 118,
+        "attempted": 12,
         "verified": 20,
-        "attempt_rate": 0.2067,
+        "attempt_rate": 0.2133,
         "trusted_coverage_rate": 0.1333,
         "status_distribution": {
-          "insufficient_evidence": 11,
+          "insufficient_evidence": 12,
           "mastered": 20,
-          "uncovered": 119
+          "uncovered": 118
         },
         "top_uncovered_points": [
           {
@@ -1240,15 +1269,6 @@
             "average_score": null
           },
           {
-            "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
-            "title": "2.5 分块策略：为什么不是固定字数切割",
-            "status": "uncovered",
-            "source_count": 1,
-            "attempt_count": 0,
-            "trusted_evaluation_count": 0,
-            "average_score": null
-          },
-          {
             "id": "c9684995-c13e-49c6-a4b6-70380a4d1a07",
             "title": "2.6 Embedding 阶段：当前的真实实现",
             "status": "uncovered",
@@ -1278,6 +1298,15 @@
           {
             "id": "9a92288d-5e61-4bc5-81b9-b80523e1fc78",
             "title": "2.9 核心链路图",
+            "status": "uncovered",
+            "source_count": 1,
+            "attempt_count": 0,
+            "trusted_evaluation_count": 0,
+            "average_score": null
+          },
+          {
+            "id": "be331000-6739-46b6-b684-eeca07e63dc5",
+            "title": "3.1 先说结论",
             "status": "uncovered",
             "source_count": 1,
             "attempt_count": 0,
@@ -1350,6 +1379,15 @@
             "average_score": 0.9
           },
           {
+            "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
+            "title": "2.5 分块策略：为什么不是固定字数切割",
+            "status": "insufficient_evidence",
+            "source_count": 1,
+            "attempt_count": 1,
+            "trusted_evaluation_count": 1,
+            "average_score": 0.9
+          },
+          {
             "id": "19ef842e-9e01-4add-9e15-026c4bcf9d74",
             "title": "3.2 为什么需要两路检索",
             "status": "insufficient_evidence",
@@ -1366,20 +1404,11 @@
             "attempt_count": 1,
             "trusted_evaluation_count": 1,
             "average_score": 0.85
-          },
-          {
-            "id": "e993809f-9d33-4201-9556-f779572581f5",
-            "title": "Embedding 层确实基础，但工程防御层不 LOW",
-            "status": "insufficient_evidence",
-            "source_count": 1,
-            "attempt_count": 1,
-            "trusted_evaluation_count": 1,
-            "average_score": 1.0
           }
         ]
       },
       "status": "completed",
-      "elapsed_seconds": 25.187
+      "elapsed_seconds": 36.422
     }
   ],
   "failures": [],
@@ -1678,11 +1707,11 @@
       "topic_title": "RAG",
       "subtopic_key": "citation",
       "subtopic_title": "证据引用",
-      "mastery_score": 0.9246,
-      "confidence_weighted_count": 17.0,
-      "last_evaluation_id": "bf7ad11f-2264-4733-8e22-840eab4a2280",
-      "version": 17,
-      "updated_at": "2026-09-02T13:57:21.833436Z"
+      "mastery_score": 0.9382,
+      "confidence_weighted_count": 18.0,
+      "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
+      "version": 18,
+      "updated_at": "2026-09-02T13:59:25.890974Z"
     },
     {
       "id": "91aa9dfc-68e2-4895-9a80-acf6b76d1a55",
@@ -1708,11 +1737,11 @@
       "topic_title": "RAG",
       "subtopic_key": "engineering",
       "subtopic_title": "工程落地",
-      "mastery_score": 0.7001,
-      "confidence_weighted_count": 3.0,
-      "last_evaluation_id": "bcc93f57-dc94-4413-9e07-9b2a86cd10fd",
-      "version": 3,
-      "updated_at": "2026-09-02T13:57:21.821672Z"
+      "mastery_score": 0.7361,
+      "confidence_weighted_count": 4.0,
+      "last_evaluation_id": "653bab3c-17b3-4d72-9843-90107b627eeb",
+      "version": 4,
+      "updated_at": "2026-09-02T13:59:25.883387Z"
     },
     {
       "id": "949c9894-590d-483b-8151-3cf77cd79c36",
@@ -1738,11 +1767,11 @@
       "topic_title": "RAG",
       "subtopic_key": "generation",
       "subtopic_title": "生成边界",
-      "mastery_score": 0.9362,
-      "confidence_weighted_count": 31.0,
-      "last_evaluation_id": "bf7ad11f-2264-4733-8e22-840eab4a2280",
-      "version": 31,
-      "updated_at": "2026-09-02T13:57:21.834873Z"
+      "mastery_score": 0.9297,
+      "confidence_weighted_count": 32.0,
+      "last_evaluation_id": "70b19ae3-e267-4734-b6e5-cc9d376598f4",
+      "version": 32,
+      "updated_at": "2026-09-02T13:59:25.877156Z"
     },
     {
       "id": "de5196a9-0331-40b5-a272-dbf0c27fbb0a",
@@ -1753,11 +1782,11 @@
       "topic_title": "RAG",
       "subtopic_key": "retrieval",
       "subtopic_title": "检索与召回",
-      "mastery_score": 0.9448,
-      "confidence_weighted_count": 40.0,
-      "last_evaluation_id": "bf7ad11f-2264-4733-8e22-840eab4a2280",
-      "version": 40,
-      "updated_at": "2026-09-02T13:57:21.830399Z"
+      "mastery_score": 0.9481,
+      "confidence_weighted_count": 42.0,
+      "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
+      "version": 42,
+      "updated_at": "2026-09-02T13:59:25.889716Z"
     },
     {
       "id": "9efcccaa-11c1-434c-b553-32830139d86e",
@@ -1903,11 +1932,11 @@
       "topic_title": "RAG",
       "subtopic_key": null,
       "subtopic_title": null,
-      "mastery_score": 0.9536,
-      "confidence_weighted_count": 48.0,
-      "last_evaluation_id": "bf7ad11f-2264-4733-8e22-840eab4a2280",
-      "version": 48,
-      "updated_at": "2026-09-02T13:57:21.828137Z"
+      "mastery_score": 0.9476,
+      "confidence_weighted_count": 51.0,
+      "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
+      "version": 51,
+      "updated_at": "2026-09-02T13:59:25.888161Z"
     },
     {
       "id": "ffbb26dd-d9b1-46e1-879e-42cf7603654f",
@@ -1927,6 +1956,8 @@
   ],
   "runtime": {
     "status": "ok",
+    "app_version": "0.1.0",
+    "started_at": "2026-09-02T14:07:46.989950+00:00",
     "llm_enabled": true,
     "llm_model": "deepseek-chat",
     "embedding_provider": "bge",
@@ -1934,6 +1965,18 @@
     "embedding_dimension": 512
   },
   "history_before": [
+    {
+      "id": "acda351c-ddf2-4cb1-a466-ffa2eb38e24b",
+      "session_id": "138fdbfc-618e-46f2-b71e-28c2fe89db50",
+      "topic": "RAG 工程化",
+      "difficulty": "medium",
+      "total_score": 56,
+      "max_score": 60,
+      "score_ratio": 0.9333,
+      "low_confidence_count": 0,
+      "disputed_count": 0,
+      "created_at": "2026-09-02T13:59:25.856907+00:00"
+    },
     {
       "id": "c4d5e34c-f072-4396-932a-c94bad203fb2",
       "session_id": "dbeecc0b-4137-4290-9a7e-1b6393a9fbd1",
@@ -2644,1386 +2687,6 @@
     }
   ],
   "coverage_before": {
-    "total": 150,
-    "uncovered": 121,
-    "attempted": 9,
-    "verified": 20,
-    "points": [
-      {
-        "id": "de5a432d-e0e7-4de6-83ce-683814fa58b4",
-        "title": "2.4 解析阶段：四种格式怎么处理",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
-        "title": "2.5 分块策略：为什么不是固定字数切割",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "c9684995-c13e-49c6-a4b6-70380a4d1a07",
-        "title": "2.6 Embedding 阶段：当前的真实实现",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "f6d8ed69-a946-4e8c-a852-750d0df927c3",
-        "title": "2.7 重新索引时为什么尽量保留 Chunk ID",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "609e2d43-2009-41eb-b51d-ef2f0cae7704",
-        "title": "2.8 增量知识目录：新文档如何进入查漏体系",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9a92288d-5e61-4bc5-81b9-b80523e1fc78",
-        "title": "2.9 核心链路图",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "be331000-6739-46b6-b684-eeca07e63dc5",
-        "title": "3.1 先说结论",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "f1ecbeb2-2b2b-43db-9880-c5281fc7708a",
-        "title": "3.10 完整 RAG 链路",
-        "status": "uncovered",
-        "source_count": 2,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9269d96c-24b2-45a6-b0b0-229625f3ba6d",
-        "title": "3.11 本课自测",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "15874c87-8dbe-4a07-b77d-e3af4a1a3476",
-        "title": "3.4 检索代码的核心流程",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "79e4802c-80e7-473c-b000-6fd0276e0dae",
-        "title": "3.6 第一道防线：词汇化证据判断",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "5bbcb40e-fa88-4507-9101-423056330dfa",
-        "title": "3.7 第二道防线：证据门禁",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "a0754d94-c384-476e-a78d-7d8da465565f",
-        "title": "3.8 第三道防线：引用白名单",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ca402720-51a0-4967-a450-de268b135737",
-        "title": "3.9 LLM 生成层：双路径兜底",
-        "status": "uncovered",
-        "source_count": 2,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "c52b77ab-c30c-43fd-a901-7b69e0d460ee",
-        "title": "4.1 先说结论",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "4efe445d-e146-46c8-a2d0-248b4677776d",
-        "title": "4.2 面试状态机",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "80e50527-e613-4a35-9d89-6638611a3e5d",
-        "title": "4.3 面试启动流程",
-        "status": "uncovered",
-        "source_count": 2,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "333f8cd8-9292-4380-b362-d16f491d862f",
-        "title": "4.6 用户刷新恢复的完整交互",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "7956e7fe-c197-470b-af55-f689f6e93e00",
-        "title": "4.7 状态流全景",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "b91340fa-63f1-4745-9d97-747a95ea1814",
-        "title": "4.8 故障场景",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "241f0b9b-007c-4e7f-816a-7f8a472a5531",
-        "title": "5.10 评分数据流全景",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "37d0ab0f-a70d-48a6-9040-5f5295cfab52",
-        "title": "5.2 四维评分",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "e7e7067e-51a0-4d43-97ff-1c7338c6c19e",
-        "title": "5.3 应用层重算总分",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "4a5cd234-42e2-47c9-a7e5-19608f670dfa",
-        "title": "5.4 三种评分状态",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ca4d7a7d-719c-45a2-b0ff-e4727f0cd8ba",
-        "title": "5.5 评分代码中的可信约束",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ca057398-e232-4a28-ae89-99d4e09862dd",
-        "title": "5.6 复核路由逻辑",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "b7352401-897a-4fe5-a5d0-6bfc233c2fe7",
-        "title": "5.7 三种状态的完整对比",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ab4ff8a2-9039-4efd-8251-7a0ad7462667",
-        "title": "6.1 先说结论",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "57c525ab-8ae1-4168-a3ad-801b416a2a1a",
-        "title": "6.10 完整证据链",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "24a972b2-6a64-43ee-9462-58d76e9e0879",
-        "title": "6.11 数据流全景",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "89fe62b8-0c75-4105-ba84-c965f484e65e",
-        "title": "6.12 本课自测",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "0172a973-c799-4356-a4dc-f50f0fcdc94a",
-        "title": "6.2 为什么旧画像会出现问题",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "e3c44aaa-a922-4d7f-b42d-75c963265115",
-        "title": "6.4 哪些评分允许更新画像",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "32e28b39-349d-4a53-a1a3-a2691e7c3034",
-        "title": "6.5 为什么高分后画像不会立刻满分——渐进更新",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "94ffae34-22d3-489a-aadc-e850379ef6d0",
-        "title": "6.6 ProfileService 如何应用评分",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "f902350b-515f-43ae-a94a-b4d686ef9cdf",
-        "title": "6.7 复习任务：为什么需要两次验证",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "346cd587-3607-464f-9556-2de6857a7733",
-        "title": "6.8 训练焦点如何排序",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "b8b34d36-3fce-44b0-bf1b-8d82b4615ab9",
-        "title": "6.9 掌握度和覆盖度为什么必须分开",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "a7f7256e-2aec-4bf5-bc90-2e5abd22f5c9",
-        "title": "7.4 不要使用的表述（红线清单）",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "fcb08284-7e94-473e-a788-3dcc8c4ba91a",
-        "title": "7.5 最小源码定位表",
-        "status": "uncovered",
-        "source_count": 3,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "0ec2c69f-9d95-41ae-bdcc-8497930dd938",
-        "title": "7.8 七课总览",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "80c3e512-7f94-4b7c-a49d-3753c5c938af",
-        "title": "Agent 工作流",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "0174fe73-c581-403e-9e0c-7235e02b22b6",
-        "title": "Checkpoint 不能做什么",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "8e7d7416-5211-4636-a4bb-c4d94003b325",
-        "title": "Checkpoint 能做什么",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "4b225fac-db13-48fb-ba73-1c96a47f8e7e",
-        "title": "Embedding 是性价比最高的单点提升",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9b585dd7-1d2a-4bb1-a2c0-896369014363",
-        "title": "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "a1e509de-8440-4f1b-b9e8-ced0e3e5721e",
-        "title": "Q1：为什么设计成断点重连的思路？面试中断可恢复怎么回答？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "7ede18bc-929b-48bf-87a2-a351b11f3423",
-        "title": "Q1：什么情况下 Reviewer 判定为不可用？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "187ebeb2-2073-43f1-8f96-559917d26b6b",
-        "title": "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "8859b4cb-1fb8-47e8-a07b-4db3dd7e51fb",
-        "title": "Q1：未覆盖的题目在之后会有什么推荐策略？是否会一直未被覆盖？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ed4bb6b1-56ee-43be-b86a-45fb2901a47d",
-        "title": "Q2：REVIEW_PENDING 是不是因为没有 Reviewer 就直接被弃用？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "7d7d9165-cc97-4bd0-8fd1-03ce6b51bc3d",
-        "title": "Q2：三道防线在 Embedding 强的时候是否仍然具备存在意义？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "1ee9d6c4-091d-49a1-85fd-e51abf541420",
-        "title": "Q2：主题与子知识点分别解决什么问题？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ea3f603a-b7d2-4654-9705-b086cbbcb71d",
-        "title": "Q2：刷新恢复的具体交互是怎样的？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "5b146838-f28e-4e5a-b37e-8a20322ea765",
-        "title": "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "b01124e4-c7b2-432f-8750-58e053912b3d",
-        "title": "RAG",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "3fefb990-b65e-4c21-96c9-5fb578c70fc1",
-        "title": "RRF 公式",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "14863dd1-81b5-4719-868a-25c12e51839a",
-        "title": "RRF 的三条核心价值",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "0b699372-397d-456f-9ed4-fa715325e72a",
-        "title": "RRF 解决了什么，没解决什么",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "a30c547c-fbca-4528-be04-274577a90240",
-        "title": "Reviewer 什么时候不可用？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "87a6648c-3bd4-4a71-99fc-6c8136b06596",
-        "title": "一个具体例子",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "263a90ad-f8ee-4396-9f21-86de66a8bbb9",
-        "title": "三、本课结论",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "5753a65b-98be-4dc2-a79b-8b5a108f43f8",
-        "title": "三、自测结果",
-        "status": "uncovered",
-        "source_count": 5,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "2b3f6c61-888f-48ff-8ffe-40d51849f13f",
-        "title": "三层防护总结",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "c524647e-2695-4c39-b2cc-4c3dfac16fdf",
-        "title": "三种状态对画像的影响",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "894f7ed9-28de-4792-913a-e49f0bd8b9e1",
-        "title": "专题 1：幂等 ≠ 按钮防抖",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "17ff0c8a-9009-4690-afd1-4e269a99b82f",
-        "title": "专题 2：Checkpoint ≠ 完整工作流引擎",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9dd5d60a-d501-42ca-a4de-473fcd7cb259",
-        "title": "专题 3：降级必须可观测",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "240cafb2-28d4-4ded-823e-6e710d610a9b",
-        "title": "专题 4：事务边界比\"调用顺序正确\"更重要",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "35f2ed9c-c5ed-491d-a5c5-1c97fe1253cd",
-        "title": "专题 5：历史可追溯需要稳定标识和版本",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "5825de71-7d33-4bd6-b820-675d96ef696d",
-        "title": "两条消费路径的关键区别",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "74e0f70d-1049-4df5-9230-7e3ad177b343",
-        "title": "为什么不是一次高分就完成",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "156e2f38-068d-4ea7-8be0-93fa5e747f57",
-        "title": "为什么不能一开始就拆微服务",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "66106170-4c2e-4d91-9614-9165fe31f36e",
-        "title": "为什么设计成这样",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "d3f5d1f3-e7a8-4531-8989-d27cb9a4458c",
-        "title": "为什么还要加 overlap？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "24cd9939-45ea-4b81-9be0-2465095aea63",
-        "title": "为什么这么做",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "57d870e3-7014-4538-8336-5d03ff57e289",
-        "title": "为什么这样分层？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "57e151ae-f197-4616-bca7-3d464d92e608",
-        "title": "全文查询",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "d25648ea-3173-43ab-ae7a-083cbf9d3a87",
-        "title": "公式解读",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "7e96de68-05f5-446f-9cdc-4a8b3d02a33f",
-        "title": "六个亮点",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "66fa970b-e737-4ad6-85d8-3714f4b8279e",
-        "title": "关键区分：它不是什么",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "5d8cf1d4-4ad1-4cbd-860a-61e34499ea0f",
-        "title": "关键规则",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "38587cd9-808e-48b3-9ba6-853342da6345",
-        "title": "具体计算示例",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "3487059c-ad24-4ce1-a9ad-ae43b30f9247",
-        "title": "判定流程",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "e2c4289e-24b3-4162-a805-9d5ca26c2cb1",
-        "title": "向量查询",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "77176b6f-cdcd-4b8b-8a49-1586a6260199",
-        "title": "它的价值",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "918a3e0d-e962-44c9-a5f7-bb8a6a66123b",
-        "title": "已实现 vs 未实现",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "af37d2d2-3fb2-48b7-a993-e3b21e46b487",
-        "title": "引用白名单不能做什么",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "d8266786-ec72-4387-b2d0-37ffafdc512f",
-        "title": "引用白名单能做什么",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "7900136d-0663-4571-86af-12845306ce97",
-        "title": "当前项目的真实边界",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "287ba958-ff08-4c20-b751-7074d9451bf3",
-        "title": "方案 1：内容指纹（本地就能做，本质是 Hash 去重的延伸）",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9d5c8864-7f05-4fcb-86fa-4e96bc697ef9",
-        "title": "方案 2：结构路径匹配（当前已有 heading_path）",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "7a7cca06-cca5-49c9-a300-e3d48f589bf9",
-        "title": "方案 3：版本化引用（企业级方案，说你理解思路即可）",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "34888a3b-afcd-4cd1-9235-795355083383",
-        "title": "核心结论",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "488f0d3a-cfd2-4146-a4d9-8982b69caa58",
-        "title": "核心认知",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "59d02dfa-b5fe-4be2-9b7a-14a1090c7586",
-        "title": "核心问题：两种分数不在同一尺度上",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ed9703a1-7788-4571-963b-30d26f5feb44",
-        "title": "每文档限额（max_chunks_per_document）",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "e24712ee-a2ee-49cd-b954-0ad98c2f3ff2",
-        "title": "流程",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "797cddaa-c048-4105-86ae-a801f9c32e0a",
-        "title": "消除不了的",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "e04f330f-dbe5-43c2-963e-693b738c441d",
-        "title": "版本管理",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "d2dab15e-82ca-4047-bda5-71c9929decd2",
-        "title": "相邻块去重",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "3ab6f035-3c0b-4da2-9eab-a94e1f8e5fa2",
-        "title": "知识数据",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "402b245a-a8b8-4c2c-ba9b-087dddf9c75a",
-        "title": "第一层：Idempotency-Key 查询",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "2245c24d-2171-492d-85cc-fa891fe75df5",
-        "title": "第三层：提交前业务校验",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "622d0ae0-9ae8-409f-802f-8dc7897fbc49",
-        "title": "第二层：数据库唯一约束",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "c52d0056-864d-4bde-9782-fdbc7ce70559",
-        "title": "能缓解的",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "bfb05de3-445b-4fdf-be92-e376258db5b9",
-        "title": "自测结果：第 3 题需要加强",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "e63f8fe3-fdea-4316-8197-9bb2e9f59eed",
-        "title": "覆盖度六种状态",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "d678d97e-48e4-445f-867e-34df01ebad96",
-        "title": "覆盖缺口内部优先级",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "fb2414f3-17d8-4458-9bb9-144445545f97",
-        "title": "解析输出包含的结构信息",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "67bb4a44-b0eb-44ac-b9a0-672474d3828c",
-        "title": "评分与画像",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "051feb38-e0d8-4d18-a65d-84d2aebe40a3",
-        "title": "边界",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "8d54e293-7d64-4fac-b854-f6c739dbc55a",
-        "title": "长期画像数据",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "b3b1f59b-e34c-4b86-acc9-8dd4ae230597",
-        "title": "面试和评分数据",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "388897e3-da1b-4ed4-a9e9-362d10c8ada1",
-        "title": "面试必须准确描述",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "55d05e51-f0de-4d15-ac3e-3b00c2ee2c2f",
-        "title": "面试必须准确表述",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "238e0411-46eb-425c-98e5-6222d6209c98",
-        "title": "面试时这样说的效果",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "4f3fda67-97d5-4fff-868e-61581850c537",
-        "title": "面试策略",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "6d5d62a7-bfbc-4e78-b968-b1b744df8512",
-        "title": "面试要能讲清的三点",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "81e10acc-c557-4dc0-9d9b-fa492c362771",
-        "title": "面试重点：为什么需要 ProfileUpdateEvent？",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9f4bb7d9-5bcf-4244-8ce9-6ab6f509cea3",
-        "title": "项目介绍",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "9fe8f316-7171-435c-851f-7e1bd7e0fbfe",
-        "title": "1.2 六层架构（先建立系统地图）",
-        "status": "insufficient_evidence",
-        "source_count": 2,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 0.95
-      },
-      {
-        "id": "1dcbe634-f98a-450b-b273-260d5838e8ca",
-        "title": "1.4 核心闭环（整套系统如何串起来）",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "55c3b057-77bd-4e65-abd2-67e858205961",
-        "title": "2.1 先说结论",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "e876768d-0e7a-4ffa-a172-2419ce187dd5",
-        "title": "2.10 本课自测",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "f915af98-6095-47e1-a384-ee8ad5ff7128",
-        "title": "2.2 上传阶段：三个安全措施",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "679eda62-10a5-406a-a7a6-25b3a89fc203",
-        "title": "2.3 文档状态机",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "19ef842e-9e01-4add-9e15-026c4bcf9d74",
-        "title": "3.2 为什么需要两路检索",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "42f65df9-de25-48cb-93ef-300964551f7d",
-        "title": "5.9 报告：逐题解析比总分更重要",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 0.85
-      },
-      {
-        "id": "e993809f-9d33-4201-9556-f779572581f5",
-        "title": "Embedding 层确实基础，但工程防御层不 LOW",
-        "status": "insufficient_evidence",
-        "source_count": 1,
-        "attempt_count": 1,
-        "trusted_evaluation_count": 1,
-        "average_score": 1.0
-      },
-      {
-        "id": "c1cd9617-94d8-4d85-815b-6417a950addb",
-        "title": "1.1 一句话讲清这个项目是什么",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 11,
-        "trusted_evaluation_count": 11,
-        "average_score": 0.9545
-      },
-      {
-        "id": "2549eb40-facf-4ae4-86d7-c2c36784dd48",
-        "title": "1.6 请求如何穿过各层（以 RAG 问答为例）",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 21,
-        "trusted_evaluation_count": 21,
-        "average_score": 0.9595
-      },
-      {
-        "id": "b7fe7b86-03ae-47ef-a21f-1454873b093d",
-        "title": "1.7 本课自测",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 30,
-        "trusted_evaluation_count": 30,
-        "average_score": 0.9683
-      },
-      {
-        "id": "a82c0774-bfef-4c37-822a-b93f2831d00a",
-        "title": "4.9 本课自测",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 10,
-        "trusted_evaluation_count": 10,
-        "average_score": 0.955
-      },
-      {
-        "id": "cae1a1bc-eac0-46a8-b09b-e7846dbd4d32",
-        "title": "5.1 先说结论",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 4,
-        "trusted_evaluation_count": 4,
-        "average_score": 0.9125
-      },
-      {
-        "id": "96d09f3a-d044-4ca5-9c53-63f0cd88772b",
-        "title": "7.2 八个故障场景：必须会回答",
-        "status": "mastered",
-        "source_count": 2,
-        "attempt_count": 14,
-        "trusted_evaluation_count": 14,
-        "average_score": 0.9393
-      },
-      {
-        "id": "ed4c86eb-ee4e-4867-99de-5069d3c56646",
-        "title": "7.7 学完整个项目后应该形成的认知",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 34,
-        "trusted_evaluation_count": 34,
-        "average_score": 0.9574
-      },
-      {
-        "id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
-        "title": "Q1：为什么不使用 LangGraph？",
-        "status": "mastered",
-        "source_count": 2,
-        "attempt_count": 41,
-        "trusted_evaluation_count": 41,
-        "average_score": 0.9512
-      },
-      {
-        "id": "6d17935c-2976-40f5-9efb-1af29668b3ed",
-        "title": "Q2：应用层和领域层的区别？",
-        "status": "mastered",
-        "source_count": 2,
-        "attempt_count": 13,
-        "trusted_evaluation_count": 13,
-        "average_score": 0.9192
-      },
-      {
-        "id": "207a09c4-ffa3-4a3a-b002-6b659c2eb749",
-        "title": "三条真实边界",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 13,
-        "trusted_evaluation_count": 13,
-        "average_score": 0.9654
-      },
-      {
-        "id": "811edb21-7763-4780-bd9f-056b1dfdf69e",
-        "title": "为什么面试时不能回避边界？",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 17,
-        "trusted_evaluation_count": 17,
-        "average_score": 0.9382
-      },
-      {
-        "id": "213aa7b3-8ab3-4d87-8952-05910591c529",
-        "title": "企业化五阶段",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 21,
-        "trusted_evaluation_count": 21,
-        "average_score": 0.9405
-      },
-      {
-        "id": "60790b33-d36a-4a93-9294-6375a64530dd",
-        "title": "分别解决什么问题",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 11,
-        "trusted_evaluation_count": 11,
-        "average_score": 0.8773
-      },
-      {
-        "id": "a6b23cfa-f05f-45ba-b420-87616d0c0dee",
-        "title": "四、本课结论",
-        "status": "mastered",
-        "source_count": 5,
-        "attempt_count": 13,
-        "trusted_evaluation_count": 13,
-        "average_score": 0.9308
-      },
-      {
-        "id": "830aeb9e-ee8e-4a88-a52e-19627c8db457",
-        "title": "它的限制",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 5,
-        "trusted_evaluation_count": 5,
-        "average_score": 0.98
-      },
-      {
-        "id": "4993c5a0-1079-48c9-b8b5-097cf99ca53e",
-        "title": "工程化与企业化",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 39,
-        "trusted_evaluation_count": 39,
-        "average_score": 0.9205
-      },
-      {
-        "id": "9c3631ff-6a33-4739-b0a6-5190236e17a2",
-        "title": "应用层 vs 领域层：一句话区分",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 4,
-        "trusted_evaluation_count": 4,
-        "average_score": 0.9125
-      },
-      {
-        "id": "59b584a4-ea69-467e-95be-aa22c5d5aa25",
-        "title": "核心规则（面试必背）",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 5,
-        "trusted_evaluation_count": 5,
-        "average_score": 0.97
-      },
-      {
-        "id": "e24c6e08-9c0a-4c5a-9c62-693af16ea069",
-        "title": "第一层：稳定主题",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 9,
-        "trusted_evaluation_count": 9,
-        "average_score": 0.9611
-      },
-      {
-        "id": "2c2609fe-b7a4-41ac-9061-d9016a9ac2c7",
-        "title": "第二层：动态诊断子知识点",
-        "status": "mastered",
-        "source_count": 1,
-        "attempt_count": 19,
-        "trusted_evaluation_count": 19,
-        "average_score": 0.9368
-      }
-    ]
-  },
-  "question_angle_summary": {
-    "total_questions": 3,
-    "with_question_angle": 3,
-    "missing_question_angle": 0,
-    "distribution": {
-      "comparison:对比辨析": 1,
-      "failure_handling:异常与降级": 1,
-      "production_observability:生产化与观测": 1
-    }
-  },
-  "question_generation_summary": {
-    "total_questions": 3,
-    "with_generation": 0,
-    "missing_generation": 3,
-    "mode_distribution": {},
-    "fallback_reasons": {}
-  },
-  "question_similarity_summary": {
-    "total_questions": 3,
-    "near_duplicate_count": 0,
-    "near_duplicate_pairs": []
-  },
-  "coverage_after": {
     "total": 150,
     "uncovered": 119,
     "attempted": 11,
@@ -5381,82 +4044,36 @@
       }
     ]
   },
-  "coverage_summary_before": {
-    "total": 150,
-    "uncovered": 121,
-    "attempted": 9,
-    "verified": 20,
-    "attempt_rate": 0.1933,
-    "trusted_coverage_rate": 0.1333,
-    "status_distribution": {
-      "insufficient_evidence": 9,
-      "mastered": 20,
-      "uncovered": 121
+  "question_angle_summary": {
+    "total_questions": 3,
+    "with_question_angle": 3,
+    "missing_question_angle": 0,
+    "distribution": {
+      "architecture_tradeoff:架构取舍": 1,
+      "concept_boundary:概念边界": 1,
+      "quality_evaluation:质量评估": 1
+    }
+  },
+  "question_generation_summary": {
+    "total_questions": 3,
+    "with_generation": 3,
+    "missing_generation": 0,
+    "mode_distribution": {
+      "llm": 3
     },
-    "top_uncovered_points": [
-      {
-        "id": "5753a65b-98be-4dc2-a79b-8b5a108f43f8",
-        "title": "三、自测结果",
-        "status": "uncovered",
-        "source_count": 5,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "fcb08284-7e94-473e-a788-3dcc8c4ba91a",
-        "title": "7.5 最小源码定位表",
-        "status": "uncovered",
-        "source_count": 3,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "f1ecbeb2-2b2b-43db-9880-c5281fc7708a",
-        "title": "3.10 完整 RAG 链路",
-        "status": "uncovered",
-        "source_count": 2,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "ca402720-51a0-4967-a450-de268b135737",
-        "title": "3.9 LLM 生成层：双路径兜底",
-        "status": "uncovered",
-        "source_count": 2,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "80e50527-e613-4a35-9d89-6638611a3e5d",
-        "title": "4.3 面试启动流程",
-        "status": "uncovered",
-        "source_count": 2,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "de5a432d-e0e7-4de6-83ce-683814fa58b4",
-        "title": "2.4 解析阶段：四种格式怎么处理",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
-        "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
-        "title": "2.5 分块策略：为什么不是固定字数切割",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
+    "fallback_reasons": {}
+  },
+  "question_similarity_summary": {
+    "total_questions": 3,
+    "near_duplicate_count": 0,
+    "near_duplicate_pairs": []
+  },
+  "coverage_after": {
+    "total": 150,
+    "uncovered": 118,
+    "attempted": 12,
+    "verified": 20,
+    "points": [
       {
         "id": "c9684995-c13e-49c6-a4b6-70380a4d1a07",
         "title": "2.6 Embedding 阶段：当前的真实实现",
@@ -5483,9 +4100,1042 @@
         "attempt_count": 0,
         "trusted_evaluation_count": 0,
         "average_score": null
-      }
-    ],
-    "weak_or_insufficient_points": [
+      },
+      {
+        "id": "9a92288d-5e61-4bc5-81b9-b80523e1fc78",
+        "title": "2.9 核心链路图",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "be331000-6739-46b6-b684-eeca07e63dc5",
+        "title": "3.1 先说结论",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "f1ecbeb2-2b2b-43db-9880-c5281fc7708a",
+        "title": "3.10 完整 RAG 链路",
+        "status": "uncovered",
+        "source_count": 2,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "9269d96c-24b2-45a6-b0b0-229625f3ba6d",
+        "title": "3.11 本课自测",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "15874c87-8dbe-4a07-b77d-e3af4a1a3476",
+        "title": "3.4 检索代码的核心流程",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "79e4802c-80e7-473c-b000-6fd0276e0dae",
+        "title": "3.6 第一道防线：词汇化证据判断",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "5bbcb40e-fa88-4507-9101-423056330dfa",
+        "title": "3.7 第二道防线：证据门禁",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "a0754d94-c384-476e-a78d-7d8da465565f",
+        "title": "3.8 第三道防线：引用白名单",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ca402720-51a0-4967-a450-de268b135737",
+        "title": "3.9 LLM 生成层：双路径兜底",
+        "status": "uncovered",
+        "source_count": 2,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "c52b77ab-c30c-43fd-a901-7b69e0d460ee",
+        "title": "4.1 先说结论",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "4efe445d-e146-46c8-a2d0-248b4677776d",
+        "title": "4.2 面试状态机",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "80e50527-e613-4a35-9d89-6638611a3e5d",
+        "title": "4.3 面试启动流程",
+        "status": "uncovered",
+        "source_count": 2,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "333f8cd8-9292-4380-b362-d16f491d862f",
+        "title": "4.6 用户刷新恢复的完整交互",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "7956e7fe-c197-470b-af55-f689f6e93e00",
+        "title": "4.7 状态流全景",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "b91340fa-63f1-4745-9d97-747a95ea1814",
+        "title": "4.8 故障场景",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "241f0b9b-007c-4e7f-816a-7f8a472a5531",
+        "title": "5.10 评分数据流全景",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "37d0ab0f-a70d-48a6-9040-5f5295cfab52",
+        "title": "5.2 四维评分",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "e7e7067e-51a0-4d43-97ff-1c7338c6c19e",
+        "title": "5.3 应用层重算总分",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "4a5cd234-42e2-47c9-a7e5-19608f670dfa",
+        "title": "5.4 三种评分状态",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ca4d7a7d-719c-45a2-b0ff-e4727f0cd8ba",
+        "title": "5.5 评分代码中的可信约束",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ca057398-e232-4a28-ae89-99d4e09862dd",
+        "title": "5.6 复核路由逻辑",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "b7352401-897a-4fe5-a5d0-6bfc233c2fe7",
+        "title": "5.7 三种状态的完整对比",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ab4ff8a2-9039-4efd-8251-7a0ad7462667",
+        "title": "6.1 先说结论",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "57c525ab-8ae1-4168-a3ad-801b416a2a1a",
+        "title": "6.10 完整证据链",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "24a972b2-6a64-43ee-9462-58d76e9e0879",
+        "title": "6.11 数据流全景",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "89fe62b8-0c75-4105-ba84-c965f484e65e",
+        "title": "6.12 本课自测",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "0172a973-c799-4356-a4dc-f50f0fcdc94a",
+        "title": "6.2 为什么旧画像会出现问题",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "e3c44aaa-a922-4d7f-b42d-75c963265115",
+        "title": "6.4 哪些评分允许更新画像",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "32e28b39-349d-4a53-a1a3-a2691e7c3034",
+        "title": "6.5 为什么高分后画像不会立刻满分——渐进更新",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "94ffae34-22d3-489a-aadc-e850379ef6d0",
+        "title": "6.6 ProfileService 如何应用评分",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "f902350b-515f-43ae-a94a-b4d686ef9cdf",
+        "title": "6.7 复习任务：为什么需要两次验证",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "346cd587-3607-464f-9556-2de6857a7733",
+        "title": "6.8 训练焦点如何排序",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "b8b34d36-3fce-44b0-bf1b-8d82b4615ab9",
+        "title": "6.9 掌握度和覆盖度为什么必须分开",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "a7f7256e-2aec-4bf5-bc90-2e5abd22f5c9",
+        "title": "7.4 不要使用的表述（红线清单）",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "fcb08284-7e94-473e-a788-3dcc8c4ba91a",
+        "title": "7.5 最小源码定位表",
+        "status": "uncovered",
+        "source_count": 3,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "0ec2c69f-9d95-41ae-bdcc-8497930dd938",
+        "title": "7.8 七课总览",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "80c3e512-7f94-4b7c-a49d-3753c5c938af",
+        "title": "Agent 工作流",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "0174fe73-c581-403e-9e0c-7235e02b22b6",
+        "title": "Checkpoint 不能做什么",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "8e7d7416-5211-4636-a4bb-c4d94003b325",
+        "title": "Checkpoint 能做什么",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "4b225fac-db13-48fb-ba73-1c96a47f8e7e",
+        "title": "Embedding 是性价比最高的单点提升",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "9b585dd7-1d2a-4bb1-a2c0-896369014363",
+        "title": "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "a1e509de-8440-4f1b-b9e8-ced0e3e5721e",
+        "title": "Q1：为什么设计成断点重连的思路？面试中断可恢复怎么回答？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "7ede18bc-929b-48bf-87a2-a351b11f3423",
+        "title": "Q1：什么情况下 Reviewer 判定为不可用？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "187ebeb2-2073-43f1-8f96-559917d26b6b",
+        "title": "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "8859b4cb-1fb8-47e8-a07b-4db3dd7e51fb",
+        "title": "Q1：未覆盖的题目在之后会有什么推荐策略？是否会一直未被覆盖？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ed4bb6b1-56ee-43be-b86a-45fb2901a47d",
+        "title": "Q2：REVIEW_PENDING 是不是因为没有 Reviewer 就直接被弃用？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "7d7d9165-cc97-4bd0-8fd1-03ce6b51bc3d",
+        "title": "Q2：三道防线在 Embedding 强的时候是否仍然具备存在意义？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ea3f603a-b7d2-4654-9705-b086cbbcb71d",
+        "title": "Q2：刷新恢复的具体交互是怎样的？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "5b146838-f28e-4e5a-b37e-8a20322ea765",
+        "title": "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "b01124e4-c7b2-432f-8750-58e053912b3d",
+        "title": "RAG",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "3fefb990-b65e-4c21-96c9-5fb578c70fc1",
+        "title": "RRF 公式",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "14863dd1-81b5-4719-868a-25c12e51839a",
+        "title": "RRF 的三条核心价值",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "0b699372-397d-456f-9ed4-fa715325e72a",
+        "title": "RRF 解决了什么，没解决什么",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "a30c547c-fbca-4528-be04-274577a90240",
+        "title": "Reviewer 什么时候不可用？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "87a6648c-3bd4-4a71-99fc-6c8136b06596",
+        "title": "一个具体例子",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "263a90ad-f8ee-4396-9f21-86de66a8bbb9",
+        "title": "三、本课结论",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "5753a65b-98be-4dc2-a79b-8b5a108f43f8",
+        "title": "三、自测结果",
+        "status": "uncovered",
+        "source_count": 5,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "2b3f6c61-888f-48ff-8ffe-40d51849f13f",
+        "title": "三层防护总结",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "c524647e-2695-4c39-b2cc-4c3dfac16fdf",
+        "title": "三种状态对画像的影响",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "894f7ed9-28de-4792-913a-e49f0bd8b9e1",
+        "title": "专题 1：幂等 ≠ 按钮防抖",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "17ff0c8a-9009-4690-afd1-4e269a99b82f",
+        "title": "专题 2：Checkpoint ≠ 完整工作流引擎",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "9dd5d60a-d501-42ca-a4de-473fcd7cb259",
+        "title": "专题 3：降级必须可观测",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "240cafb2-28d4-4ded-823e-6e710d610a9b",
+        "title": "专题 4：事务边界比\"调用顺序正确\"更重要",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "35f2ed9c-c5ed-491d-a5c5-1c97fe1253cd",
+        "title": "专题 5：历史可追溯需要稳定标识和版本",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "5825de71-7d33-4bd6-b820-675d96ef696d",
+        "title": "两条消费路径的关键区别",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "74e0f70d-1049-4df5-9230-7e3ad177b343",
+        "title": "为什么不是一次高分就完成",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "156e2f38-068d-4ea7-8be0-93fa5e747f57",
+        "title": "为什么不能一开始就拆微服务",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "66106170-4c2e-4d91-9614-9165fe31f36e",
+        "title": "为什么设计成这样",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d3f5d1f3-e7a8-4531-8989-d27cb9a4458c",
+        "title": "为什么还要加 overlap？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "24cd9939-45ea-4b81-9be0-2465095aea63",
+        "title": "为什么这么做",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "57d870e3-7014-4538-8336-5d03ff57e289",
+        "title": "为什么这样分层？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "57e151ae-f197-4616-bca7-3d464d92e608",
+        "title": "全文查询",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d25648ea-3173-43ab-ae7a-083cbf9d3a87",
+        "title": "公式解读",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "7e96de68-05f5-446f-9cdc-4a8b3d02a33f",
+        "title": "六个亮点",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "66fa970b-e737-4ad6-85d8-3714f4b8279e",
+        "title": "关键区分：它不是什么",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "5d8cf1d4-4ad1-4cbd-860a-61e34499ea0f",
+        "title": "关键规则",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "38587cd9-808e-48b3-9ba6-853342da6345",
+        "title": "具体计算示例",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "3487059c-ad24-4ce1-a9ad-ae43b30f9247",
+        "title": "判定流程",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "e2c4289e-24b3-4162-a805-9d5ca26c2cb1",
+        "title": "向量查询",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "77176b6f-cdcd-4b8b-8a49-1586a6260199",
+        "title": "它的价值",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "918a3e0d-e962-44c9-a5f7-bb8a6a66123b",
+        "title": "已实现 vs 未实现",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "af37d2d2-3fb2-48b7-a993-e3b21e46b487",
+        "title": "引用白名单不能做什么",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d8266786-ec72-4387-b2d0-37ffafdc512f",
+        "title": "引用白名单能做什么",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "7900136d-0663-4571-86af-12845306ce97",
+        "title": "当前项目的真实边界",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "287ba958-ff08-4c20-b751-7074d9451bf3",
+        "title": "方案 1：内容指纹（本地就能做，本质是 Hash 去重的延伸）",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "9d5c8864-7f05-4fcb-86fa-4e96bc697ef9",
+        "title": "方案 2：结构路径匹配（当前已有 heading_path）",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "7a7cca06-cca5-49c9-a300-e3d48f589bf9",
+        "title": "方案 3：版本化引用（企业级方案，说你理解思路即可）",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "34888a3b-afcd-4cd1-9235-795355083383",
+        "title": "核心结论",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "488f0d3a-cfd2-4146-a4d9-8982b69caa58",
+        "title": "核心认知",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "59d02dfa-b5fe-4be2-9b7a-14a1090c7586",
+        "title": "核心问题：两种分数不在同一尺度上",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ed9703a1-7788-4571-963b-30d26f5feb44",
+        "title": "每文档限额（max_chunks_per_document）",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "e24712ee-a2ee-49cd-b954-0ad98c2f3ff2",
+        "title": "流程",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "797cddaa-c048-4105-86ae-a801f9c32e0a",
+        "title": "消除不了的",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "e04f330f-dbe5-43c2-963e-693b738c441d",
+        "title": "版本管理",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d2dab15e-82ca-4047-bda5-71c9929decd2",
+        "title": "相邻块去重",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "3ab6f035-3c0b-4da2-9eab-a94e1f8e5fa2",
+        "title": "知识数据",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "402b245a-a8b8-4c2c-ba9b-087dddf9c75a",
+        "title": "第一层：Idempotency-Key 查询",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "2245c24d-2171-492d-85cc-fa891fe75df5",
+        "title": "第三层：提交前业务校验",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "622d0ae0-9ae8-409f-802f-8dc7897fbc49",
+        "title": "第二层：数据库唯一约束",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "c52d0056-864d-4bde-9782-fdbc7ce70559",
+        "title": "能缓解的",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "bfb05de3-445b-4fdf-be92-e376258db5b9",
+        "title": "自测结果：第 3 题需要加强",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "e63f8fe3-fdea-4316-8197-9bb2e9f59eed",
+        "title": "覆盖度六种状态",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d678d97e-48e4-445f-867e-34df01ebad96",
+        "title": "覆盖缺口内部优先级",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "fb2414f3-17d8-4458-9bb9-144445545f97",
+        "title": "解析输出包含的结构信息",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "67bb4a44-b0eb-44ac-b9a0-672474d3828c",
+        "title": "评分与画像",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "051feb38-e0d8-4d18-a65d-84d2aebe40a3",
+        "title": "边界",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "8d54e293-7d64-4fac-b854-f6c739dbc55a",
+        "title": "长期画像数据",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "b3b1f59b-e34c-4b86-acc9-8dd4ae230597",
+        "title": "面试和评分数据",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "388897e3-da1b-4ed4-a9e9-362d10c8ada1",
+        "title": "面试必须准确描述",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "55d05e51-f0de-4d15-ac3e-3b00c2ee2c2f",
+        "title": "面试必须准确表述",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "238e0411-46eb-425c-98e5-6222d6209c98",
+        "title": "面试时这样说的效果",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "4f3fda67-97d5-4fff-868e-61581850c537",
+        "title": "面试策略",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "6d5d62a7-bfbc-4e78-b968-b1b744df8512",
+        "title": "面试要能讲清的三点",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "81e10acc-c557-4dc0-9d9b-fa492c362771",
+        "title": "面试重点：为什么需要 ProfileUpdateEvent？",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "9f4bb7d9-5bcf-4244-8ce9-6ab6f509cea3",
+        "title": "项目介绍",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
       {
         "id": "9fe8f316-7171-435c-851f-7e1bd7e0fbfe",
         "title": "1.2 六层架构（先建立系统地图）",
@@ -5541,6 +5191,24 @@
         "average_score": 1.0
       },
       {
+        "id": "de5a432d-e0e7-4de6-83ce-683814fa58b4",
+        "title": "2.4 解析阶段：四种格式怎么处理",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 0.9
+      },
+      {
+        "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
+        "title": "2.5 分块策略：为什么不是固定字数切割",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 0.9
+      },
+      {
         "id": "19ef842e-9e01-4add-9e15-026c4bcf9d74",
         "title": "3.2 为什么需要两路检索",
         "status": "insufficient_evidence",
@@ -5566,10 +5234,199 @@
         "attempt_count": 1,
         "trusted_evaluation_count": 1,
         "average_score": 1.0
+      },
+      {
+        "id": "1ee9d6c4-091d-49a1-85fd-e51abf541420",
+        "title": "Q2：主题与子知识点分别解决什么问题？",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 1.0
+      },
+      {
+        "id": "c1cd9617-94d8-4d85-815b-6417a950addb",
+        "title": "1.1 一句话讲清这个项目是什么",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 11,
+        "trusted_evaluation_count": 11,
+        "average_score": 0.9545
+      },
+      {
+        "id": "2549eb40-facf-4ae4-86d7-c2c36784dd48",
+        "title": "1.6 请求如何穿过各层（以 RAG 问答为例）",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 23,
+        "trusted_evaluation_count": 23,
+        "average_score": 0.9522
+      },
+      {
+        "id": "b7fe7b86-03ae-47ef-a21f-1454873b093d",
+        "title": "1.7 本课自测",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 30,
+        "trusted_evaluation_count": 30,
+        "average_score": 0.9683
+      },
+      {
+        "id": "a82c0774-bfef-4c37-822a-b93f2831d00a",
+        "title": "4.9 本课自测",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 10,
+        "trusted_evaluation_count": 10,
+        "average_score": 0.955
+      },
+      {
+        "id": "cae1a1bc-eac0-46a8-b09b-e7846dbd4d32",
+        "title": "5.1 先说结论",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 6,
+        "trusted_evaluation_count": 6,
+        "average_score": 0.9
+      },
+      {
+        "id": "96d09f3a-d044-4ca5-9c53-63f0cd88772b",
+        "title": "7.2 八个故障场景：必须会回答",
+        "status": "mastered",
+        "source_count": 2,
+        "attempt_count": 14,
+        "trusted_evaluation_count": 14,
+        "average_score": 0.9393
+      },
+      {
+        "id": "ed4c86eb-ee4e-4867-99de-5069d3c56646",
+        "title": "7.7 学完整个项目后应该形成的认知",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 34,
+        "trusted_evaluation_count": 34,
+        "average_score": 0.9574
+      },
+      {
+        "id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
+        "title": "Q1：为什么不使用 LangGraph？",
+        "status": "mastered",
+        "source_count": 2,
+        "attempt_count": 41,
+        "trusted_evaluation_count": 41,
+        "average_score": 0.9512
+      },
+      {
+        "id": "6d17935c-2976-40f5-9efb-1af29668b3ed",
+        "title": "Q2：应用层和领域层的区别？",
+        "status": "mastered",
+        "source_count": 2,
+        "attempt_count": 14,
+        "trusted_evaluation_count": 14,
+        "average_score": 0.925
+      },
+      {
+        "id": "207a09c4-ffa3-4a3a-b002-6b659c2eb749",
+        "title": "三条真实边界",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 13,
+        "trusted_evaluation_count": 13,
+        "average_score": 0.9654
+      },
+      {
+        "id": "811edb21-7763-4780-bd9f-056b1dfdf69e",
+        "title": "为什么面试时不能回避边界？",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 17,
+        "trusted_evaluation_count": 17,
+        "average_score": 0.9382
+      },
+      {
+        "id": "213aa7b3-8ab3-4d87-8952-05910591c529",
+        "title": "企业化五阶段",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 21,
+        "trusted_evaluation_count": 21,
+        "average_score": 0.9405
+      },
+      {
+        "id": "60790b33-d36a-4a93-9294-6375a64530dd",
+        "title": "分别解决什么问题",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 12,
+        "trusted_evaluation_count": 12,
+        "average_score": 0.8792
+      },
+      {
+        "id": "a6b23cfa-f05f-45ba-b420-87616d0c0dee",
+        "title": "四、本课结论",
+        "status": "mastered",
+        "source_count": 5,
+        "attempt_count": 13,
+        "trusted_evaluation_count": 13,
+        "average_score": 0.9308
+      },
+      {
+        "id": "830aeb9e-ee8e-4a88-a52e-19627c8db457",
+        "title": "它的限制",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 5,
+        "trusted_evaluation_count": 5,
+        "average_score": 0.98
+      },
+      {
+        "id": "4993c5a0-1079-48c9-b8b5-097cf99ca53e",
+        "title": "工程化与企业化",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 43,
+        "trusted_evaluation_count": 43,
+        "average_score": 0.9233
+      },
+      {
+        "id": "9c3631ff-6a33-4739-b0a6-5190236e17a2",
+        "title": "应用层 vs 领域层：一句话区分",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 4,
+        "trusted_evaluation_count": 4,
+        "average_score": 0.9125
+      },
+      {
+        "id": "59b584a4-ea69-467e-95be-aa22c5d5aa25",
+        "title": "核心规则（面试必背）",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 5,
+        "trusted_evaluation_count": 5,
+        "average_score": 0.97
+      },
+      {
+        "id": "e24c6e08-9c0a-4c5a-9c62-693af16ea069",
+        "title": "第一层：稳定主题",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 9,
+        "trusted_evaluation_count": 9,
+        "average_score": 0.9611
+      },
+      {
+        "id": "2c2609fe-b7a4-41ac-9061-d9016a9ac2c7",
+        "title": "第二层：动态诊断子知识点",
+        "status": "mastered",
+        "source_count": 1,
+        "attempt_count": 19,
+        "trusted_evaluation_count": 19,
+        "average_score": 0.9368
       }
     ]
   },
-  "coverage_summary_after": {
+  "coverage_summary_before": {
     "total": 150,
     "uncovered": 119,
     "attempted": 11,
@@ -5766,13 +5623,165 @@
       }
     ]
   },
-  "coverage_progress_summary": {
-    "delta_total": 0,
-    "delta_uncovered": -2,
-    "delta_attempted": 2,
-    "delta_verified": 0,
-    "newly_attempted_count": 2,
-    "newly_attempted_points": [
+  "coverage_summary_after": {
+    "total": 150,
+    "uncovered": 118,
+    "attempted": 12,
+    "verified": 20,
+    "attempt_rate": 0.2133,
+    "trusted_coverage_rate": 0.1333,
+    "status_distribution": {
+      "insufficient_evidence": 12,
+      "mastered": 20,
+      "uncovered": 118
+    },
+    "top_uncovered_points": [
+      {
+        "id": "5753a65b-98be-4dc2-a79b-8b5a108f43f8",
+        "title": "三、自测结果",
+        "status": "uncovered",
+        "source_count": 5,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "fcb08284-7e94-473e-a788-3dcc8c4ba91a",
+        "title": "7.5 最小源码定位表",
+        "status": "uncovered",
+        "source_count": 3,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "f1ecbeb2-2b2b-43db-9880-c5281fc7708a",
+        "title": "3.10 完整 RAG 链路",
+        "status": "uncovered",
+        "source_count": 2,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ca402720-51a0-4967-a450-de268b135737",
+        "title": "3.9 LLM 生成层：双路径兜底",
+        "status": "uncovered",
+        "source_count": 2,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "80e50527-e613-4a35-9d89-6638611a3e5d",
+        "title": "4.3 面试启动流程",
+        "status": "uncovered",
+        "source_count": 2,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "c9684995-c13e-49c6-a4b6-70380a4d1a07",
+        "title": "2.6 Embedding 阶段：当前的真实实现",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "f6d8ed69-a946-4e8c-a852-750d0df927c3",
+        "title": "2.7 重新索引时为什么尽量保留 Chunk ID",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "609e2d43-2009-41eb-b51d-ef2f0cae7704",
+        "title": "2.8 增量知识目录：新文档如何进入查漏体系",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "9a92288d-5e61-4bc5-81b9-b80523e1fc78",
+        "title": "2.9 核心链路图",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "be331000-6739-46b6-b684-eeca07e63dc5",
+        "title": "3.1 先说结论",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      }
+    ],
+    "weak_or_insufficient_points": [
+      {
+        "id": "9fe8f316-7171-435c-851f-7e1bd7e0fbfe",
+        "title": "1.2 六层架构（先建立系统地图）",
+        "status": "insufficient_evidence",
+        "source_count": 2,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 0.95
+      },
+      {
+        "id": "1dcbe634-f98a-450b-b273-260d5838e8ca",
+        "title": "1.4 核心闭环（整套系统如何串起来）",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 1.0
+      },
+      {
+        "id": "55c3b057-77bd-4e65-abd2-67e858205961",
+        "title": "2.1 先说结论",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 1.0
+      },
+      {
+        "id": "e876768d-0e7a-4ffa-a172-2419ce187dd5",
+        "title": "2.10 本课自测",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 1.0
+      },
+      {
+        "id": "f915af98-6095-47e1-a384-ee8ad5ff7128",
+        "title": "2.2 上传阶段：三个安全措施",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 1.0
+      },
+      {
+        "id": "679eda62-10a5-406a-a7a6-25b3a89fc203",
+        "title": "2.3 文档状态机",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 1.0
+      },
       {
         "id": "de5a432d-e0e7-4de6-83ce-683814fa58b4",
         "title": "2.4 解析阶段：四种格式怎么处理",
@@ -5783,18 +5792,54 @@
         "average_score": 0.9
       },
       {
-        "id": "1ee9d6c4-091d-49a1-85fd-e51abf541420",
-        "title": "Q2：主题与子知识点分别解决什么问题？",
+        "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
+        "title": "2.5 分块策略：为什么不是固定字数切割",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 0.9
+      },
+      {
+        "id": "19ef842e-9e01-4add-9e15-026c4bcf9d74",
+        "title": "3.2 为什么需要两路检索",
         "status": "insufficient_evidence",
         "source_count": 1,
         "attempt_count": 1,
         "trusted_evaluation_count": 1,
         "average_score": 1.0
+      },
+      {
+        "id": "42f65df9-de25-48cb-93ef-300964551f7d",
+        "title": "5.9 报告：逐题解析比总分更重要",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 0.85
+      }
+    ]
+  },
+  "coverage_progress_summary": {
+    "delta_total": 0,
+    "delta_uncovered": -1,
+    "delta_attempted": 1,
+    "delta_verified": 0,
+    "newly_attempted_count": 1,
+    "newly_attempted_points": [
+      {
+        "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
+        "title": "2.5 分块策略：为什么不是固定字数切割",
+        "status": "insufficient_evidence",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 1,
+        "average_score": 0.9
       }
     ],
     "newly_verified_count": 0,
     "newly_verified_points": [],
-    "remaining_uncovered_count": 119,
+    "remaining_uncovered_count": 118,
     "remaining_uncovered_points": [
       {
         "id": "5753a65b-98be-4dc2-a79b-8b5a108f43f8",
@@ -5842,15 +5887,6 @@
         "average_score": null
       },
       {
-        "id": "46994134-fab3-4d7a-81fd-2118839e1d4b",
-        "title": "2.5 分块策略：为什么不是固定字数切割",
-        "status": "uncovered",
-        "source_count": 1,
-        "attempt_count": 0,
-        "trusted_evaluation_count": 0,
-        "average_score": null
-      },
-      {
         "id": "c9684995-c13e-49c6-a4b6-70380a4d1a07",
         "title": "2.6 Embedding 阶段：当前的真实实现",
         "status": "uncovered",
@@ -5880,6 +5916,15 @@
       {
         "id": "9a92288d-5e61-4bc5-81b9-b80523e1fc78",
         "title": "2.9 核心链路图",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "be331000-6739-46b6-b684-eeca07e63dc5",
+        "title": "3.1 先说结论",
         "status": "uncovered",
         "source_count": 1,
         "attempt_count": 0,
@@ -6183,11 +6228,11 @@
       "topic_title": "RAG",
       "subtopic_key": "citation",
       "subtopic_title": "证据引用",
-      "mastery_score": 0.9382,
-      "confidence_weighted_count": 18.0,
-      "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-      "version": 18,
-      "updated_at": "2026-09-02T13:59:25.890974Z"
+      "mastery_score": 0.9223,
+      "confidence_weighted_count": 19.0,
+      "last_evaluation_id": "fdfed5d9-de43-41d9-8102-61fe3e93cea3",
+      "version": 19,
+      "updated_at": "2026-09-02T14:08:59.734156Z"
     },
     {
       "id": "91aa9dfc-68e2-4895-9a80-acf6b76d1a55",
@@ -6228,11 +6273,11 @@
       "topic_title": "RAG",
       "subtopic_key": "evaluation",
       "subtopic_title": "RAG 评估",
-      "mastery_score": 0.9248,
-      "confidence_weighted_count": 18.0,
-      "last_evaluation_id": "bf7ad11f-2264-4733-8e22-840eab4a2280",
-      "version": 18,
-      "updated_at": "2026-09-02T13:57:21.836562Z"
+      "mastery_score": 0.9273,
+      "confidence_weighted_count": 20.0,
+      "last_evaluation_id": "e5c22dbd-2094-44ac-827b-63188dc1fb90",
+      "version": 20,
+      "updated_at": "2026-09-02T14:08:59.767235Z"
     },
     {
       "id": "09317455-7764-40cd-82bc-baf5d968e53c",
@@ -6243,11 +6288,11 @@
       "topic_title": "RAG",
       "subtopic_key": "generation",
       "subtopic_title": "生成边界",
-      "mastery_score": 0.9297,
-      "confidence_weighted_count": 32.0,
-      "last_evaluation_id": "70b19ae3-e267-4734-b6e5-cc9d376598f4",
-      "version": 32,
-      "updated_at": "2026-09-02T13:59:25.877156Z"
+      "mastery_score": 0.9126,
+      "confidence_weighted_count": 34.0,
+      "last_evaluation_id": "ece75dc4-55a5-47f7-881c-4a93a0efcca9",
+      "version": 34,
+      "updated_at": "2026-09-02T14:08:59.758955Z"
     },
     {
       "id": "de5196a9-0331-40b5-a272-dbf0c27fbb0a",
@@ -6258,11 +6303,11 @@
       "topic_title": "RAG",
       "subtopic_key": "retrieval",
       "subtopic_title": "检索与召回",
-      "mastery_score": 0.9481,
-      "confidence_weighted_count": 42.0,
-      "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-      "version": 42,
-      "updated_at": "2026-09-02T13:59:25.889716Z"
+      "mastery_score": 0.9249,
+      "confidence_weighted_count": 44.0,
+      "last_evaluation_id": "ece75dc4-55a5-47f7-881c-4a93a0efcca9",
+      "version": 44,
+      "updated_at": "2026-09-02T14:08:59.756655Z"
     },
     {
       "id": "9efcccaa-11c1-434c-b553-32830139d86e",
@@ -6408,11 +6453,11 @@
       "topic_title": "RAG",
       "subtopic_key": null,
       "subtopic_title": null,
-      "mastery_score": 0.9476,
-      "confidence_weighted_count": 51.0,
-      "last_evaluation_id": "46c79e77-82f6-401d-bb34-8ba9f1140af4",
-      "version": 51,
-      "updated_at": "2026-09-02T13:59:25.888161Z"
+      "mastery_score": 0.9382,
+      "confidence_weighted_count": 54.0,
+      "last_evaluation_id": "e5c22dbd-2094-44ac-827b-63188dc1fb90",
+      "version": 54,
+      "updated_at": "2026-09-02T14:08:59.765174Z"
     },
     {
       "id": "ffbb26dd-d9b1-46e1-879e-42cf7603654f",
@@ -6693,6 +6738,18 @@
     }
   ],
   "history_after": [
+    {
+      "id": "478c5807-bec9-4ba3-9b31-512a8620c51c",
+      "session_id": "dd950b58-6523-4a4d-9119-73fd01a36305",
+      "topic": "RAG 工程化",
+      "difficulty": "medium",
+      "total_score": 55,
+      "max_score": 60,
+      "score_ratio": 0.9167,
+      "low_confidence_count": 0,
+      "disputed_count": 0,
+      "created_at": "2026-09-02T14:08:59.689124+00:00"
+    },
     {
       "id": "acda351c-ddf2-4cb1-a466-ffa2eb38e24b",
       "session_id": "138fdbfc-618e-46f2-b71e-28c2fe89db50",
@@ -8374,7 +8431,23 @@
         "communication": 4.33
       },
       "created_at": "2026-09-02T13:59:25.856907+00:00"
+    },
+    {
+      "report_id": "478c5807-bec9-4ba3-9b31-512a8620c51c",
+      "session_id": "dd950b58-6523-4a4d-9119-73fd01a36305",
+      "topic": "RAG 工程化",
+      "difficulty": "medium",
+      "total_score": 55,
+      "max_score": 60,
+      "score_ratio": 0.9167,
+      "dimension_averages": {
+        "reasoning": 4.33,
+        "correctness": 5.0,
+        "completeness": 4.67,
+        "communication": 4.33
+      },
+      "created_at": "2026-09-02T14:08:59.689124+00:00"
     }
   ],
-  "finished_at": "2026-09-02T21:59:26+0800"
+  "finished_at": "2026-09-02T22:08:59+0800"
 }
