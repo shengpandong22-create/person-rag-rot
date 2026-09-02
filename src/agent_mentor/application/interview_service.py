@@ -96,6 +96,8 @@ class InterviewQuestionOutput(BaseModel):
     question_text: str = Field(min_length=1, max_length=1200)
     reference_answer: str = Field(min_length=1, max_length=4000)
     required_points: list[str] = Field(default_factory=list, max_length=8)
+    generation_mode: str = "llm"
+    fallback_reason: str | None = None
 
 
 QUESTION_ANGLES: tuple[QuestionAngle, ...] = (
@@ -407,6 +409,8 @@ class InterviewService:
                 question_text=self._question_text(interview, sequence, question_angle, chunks),
                 reference_answer=generated.reference_answer,
                 required_points=generated.required_points,
+                generation_mode="deterministic_similarity_fallback",
+                fallback_reason="similar_to_prior_question",
             )
         question = InterviewQuestionModel(
             id=uuid4(),
@@ -422,6 +426,11 @@ class InterviewService:
                     "key": question_angle.key,
                     "title": question_angle.title,
                     "prompt_hint": question_angle.prompt_hint,
+                },
+                "generation": {
+                    "mode": generated.generation_mode,
+                    "fallback_reason": generated.fallback_reason,
+                    "prompt_version": QUESTION_PROMPT_VERSION,
                 },
                 "items": [
                     {
@@ -489,6 +498,8 @@ class InterviewService:
             question_text=self._question_text(interview, sequence, question_angle, chunks),
             reference_answer=self._reference_answer(chunks),
             required_points=[coverage_focus or interview.topic],
+            generation_mode="deterministic_fallback",
+            fallback_reason="llm_unavailable",
         )
         if self._llm is None:
             return fallback

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -87,6 +88,99 @@ def summarize_question_angles(rounds: list[dict[str, Any]]) -> dict[str, Any]:
         "missing_question_angle": missing_count,
         "distribution": dict(sorted(distribution.items())),
     }
+
+
+def summarize_question_generation(rounds: list[dict[str, Any]]) -> dict[str, Any]:
+    distribution: dict[str, int] = {}
+    fallback_reasons: dict[str, int] = {}
+    missing_count = 0
+    total_questions = 0
+    for round_result in rounds:
+        for question in round_result.get("questions", []):
+            total_questions += 1
+            rubric = question.get("rubric")
+            if not isinstance(rubric, dict):
+                missing_count += 1
+                continue
+            generation = rubric.get("generation")
+            if not isinstance(generation, dict):
+                missing_count += 1
+                continue
+            mode = generation.get("mode")
+            if not isinstance(mode, str) or not mode:
+                missing_count += 1
+                continue
+            distribution[mode] = distribution.get(mode, 0) + 1
+            reason = generation.get("fallback_reason")
+            if isinstance(reason, str) and reason:
+                fallback_reasons[reason] = fallback_reasons.get(reason, 0) + 1
+    return {
+        "total_questions": total_questions,
+        "with_generation": total_questions - missing_count,
+        "missing_generation": missing_count,
+        "mode_distribution": dict(sorted(distribution.items())),
+        "fallback_reasons": dict(sorted(fallback_reasons.items())),
+    }
+
+
+def summarize_question_similarity(rounds: list[dict[str, Any]]) -> dict[str, Any]:
+    questions: list[dict[str, Any]] = []
+    for round_result in rounds:
+        scenario = round_result.get("scenario", {})
+        topic = scenario.get("topic") if isinstance(scenario, dict) else None
+        for question in round_result.get("questions", []):
+            text = question.get("text")
+            if isinstance(text, str) and text:
+                questions.append(
+                    {
+                        "round": round_result.get("round"),
+                        "sequence": question.get("sequence"),
+                        "topic": topic,
+                        "text": text,
+                    }
+                )
+
+    near_duplicates: list[dict[str, Any]] = []
+    for left_index, left in enumerate(questions):
+        for right in questions[left_index + 1 :]:
+            similarity = _jaccard_similarity(
+                _question_terms(left["text"]),
+                _question_terms(right["text"]),
+            )
+            if similarity >= 0.72:
+                near_duplicates.append(
+                    {
+                        "left": {
+                            "round": left["round"],
+                            "sequence": left["sequence"],
+                            "topic": left["topic"],
+                        },
+                        "right": {
+                            "round": right["round"],
+                            "sequence": right["sequence"],
+                            "topic": right["topic"],
+                        },
+                        "similarity": round(similarity, 4),
+                    }
+                )
+    return {
+        "total_questions": len(questions),
+        "near_duplicate_count": len(near_duplicates),
+        "near_duplicate_pairs": near_duplicates[:20],
+    }
+
+
+def _question_terms(text: str) -> set[str]:
+    terms = set(re.findall(r"[a-z0-9_]{2,}", text.lower()))
+    for segment in re.findall(r"[\u4e00-\u9fff]{2,}", text):
+        terms.update(segment[index : index + 2] for index in range(len(segment) - 1))
+    return terms
+
+
+def _jaccard_similarity(left: set[str], right: set[str]) -> float:
+    if not left or not right:
+        return 0.0
+    return len(left & right) / len(left | right)
 
 
 def request_json(
@@ -219,6 +313,8 @@ def run_suite(
         )
 
     result["question_angle_summary"] = summarize_question_angles(result["rounds"])
+    result["question_generation_summary"] = summarize_question_generation(result["rounds"])
+    result["question_similarity_summary"] = summarize_question_similarity(result["rounds"])
     result["profile_after"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/profile/abilities"
     )
@@ -257,7 +353,9 @@ def main() -> None:
     print(
         f"[{args.suite}] complete rounds={len(result['rounds'])} "
         f"failures={len(result['failures'])} "
-        f"question_angles={result['question_angle_summary']['distribution']}",
+        f"question_angles={result['question_angle_summary']['distribution']} "
+        f"generation={result['question_generation_summary']['mode_distribution']} "
+        f"near_duplicates={result['question_similarity_summary']['near_duplicate_count']}",
         flush=True,
     )
 

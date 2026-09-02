@@ -10,6 +10,7 @@ from sqlalchemy import Table, UniqueConstraint
 from agent_mentor.application.interview_service import (
     QUESTION_ANGLES,
     CoverageFocus,
+    InterviewQuestionOutput,
     InterviewService,
 )
 from agent_mentor.domain.interview import Difficulty, QuestionType
@@ -117,6 +118,17 @@ def test_deterministic_question_text_exposes_angle() -> None:
 
     assert angle.title in question
     assert "易混淆点" in question
+
+
+def test_question_output_defaults_to_llm_generation_mode() -> None:
+    output = InterviewQuestionOutput(
+        question_text="请说明 RAG 的核心边界。",
+        reference_answer="RAG 需要基于检索证据回答。",
+        required_points=["证据边界"],
+    )
+
+    assert output.generation_mode == "llm"
+    assert output.fallback_reason is None
 
 
 def test_user_answer_idempotency_is_enforced_by_database_constraint() -> None:
