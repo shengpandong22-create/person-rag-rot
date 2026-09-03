@@ -54,6 +54,7 @@ from agent_mentor.workflows.interview import (
 )
 
 QUESTION_PROMPT_VERSION = "interview_question_v1"
+RECENT_QUESTION_COOLDOWN_LIMIT = 12
 
 
 @dataclass(frozen=True, slots=True)
@@ -377,6 +378,8 @@ class InterviewService:
                 )
             ).all()
         )
+        recent_questions = await self._recent_knowledge_base_questions(db, interview)
+        avoid_questions = [*prior_questions, *recent_questions]
         coverage_focus = await self._coverage_gap_focus(db, interview, sequence=sequence)
         coverage_focus_title = coverage_focus.title if coverage_focus else None
         question_angle = self._question_angle(interview, sequence)
@@ -400,17 +403,22 @@ class InterviewService:
             question_angle,
             chunks,
             prior_questions,
+            recent_questions,
             coverage_focus_title,
         )
         if coverage_focus_title and coverage_focus_title not in generated.required_points:
             generated.required_points.insert(0, coverage_focus_title)
-        if self._is_too_similar(generated.question_text, prior_questions):
+        if self._is_too_similar(generated.question_text, avoid_questions):
             generated = InterviewQuestionOutput(
                 question_text=self._question_text(interview, sequence, question_angle, chunks),
                 reference_answer=generated.reference_answer,
                 required_points=generated.required_points,
                 generation_mode="deterministic_similarity_fallback",
-                fallback_reason="similar_to_prior_question",
+                fallback_reason=(
+                    "similar_to_current_interview_question"
+                    if self._is_too_similar(generated.question_text, prior_questions)
+                    else "similar_to_recent_knowledge_base_question"
+                ),
             )
         question = InterviewQuestionModel(
             id=uuid4(),
@@ -431,6 +439,7 @@ class InterviewService:
                     "mode": generated.generation_mode,
                     "fallback_reason": generated.fallback_reason,
                     "prompt_version": QUESTION_PROMPT_VERSION,
+                    "recent_question_cooldown_count": len(recent_questions),
                 },
                 "items": [
                     {
@@ -492,6 +501,7 @@ class InterviewService:
         question_angle: QuestionAngle,
         chunks: list[RetrievedChunk],
         prior_questions: list[str],
+        recent_questions: list[str],
         coverage_focus: str | None,
     ) -> InterviewQuestionOutput:
         fallback = InterviewQuestionOutput(
@@ -524,6 +534,7 @@ class InterviewService:
                             question_angle,
                             chunks,
                             prior_questions,
+                            recent_questions,
                             coverage_focus,
                         ),
                     ),
@@ -552,6 +563,7 @@ class InterviewService:
         question_angle: QuestionAngle,
         chunks: list[RetrievedChunk],
         prior_questions: list[str],
+        recent_questions: list[str],
         coverage_focus: str | None,
     ) -> str:
         context = []
@@ -584,9 +596,31 @@ class InterviewService:
             "如果存在覆盖保底考点，题目必须优先围绕该考点展开，但仍需基于检索资料。\n\n"
             f"本轮已出题目：{prior_questions or '无'}\n"
             "不得重复已出题目的核心问法，应考察不同角度。\n\n"
+            f"同知识库最近历史题目：{recent_questions or '无'}\n"
+            "应主动避开最近历史题目的核心问法；如果必须考同一知识点，也要切换到不同场景、边界或排障角度。\n\n"
             "检索资料：\n"
             f"{chr(10).join(context) if context else '无'}\n\n"
             "请输出 JSON：question_text、reference_answer、required_points。"
+        )
+
+    async def _recent_knowledge_base_questions(
+        self, db: AsyncSession, interview: InterviewSessionModel
+    ) -> list[str]:
+        return list((await db.scalars(self._recent_question_statement(interview))).all())
+
+    def _recent_question_statement(self, interview: InterviewSessionModel):
+        return (
+            select(InterviewQuestionModel.question_text)
+            .join(
+                InterviewSessionModel,
+                InterviewSessionModel.id == InterviewQuestionModel.session_id,
+            )
+            .where(
+                InterviewSessionModel.knowledge_base_id == interview.knowledge_base_id,
+                InterviewSessionModel.id != interview.id,
+            )
+            .order_by(InterviewQuestionModel.created_at.desc())
+            .limit(RECENT_QUESTION_COOLDOWN_LIMIT)
         )
 
     async def _coverage_gap_focus(

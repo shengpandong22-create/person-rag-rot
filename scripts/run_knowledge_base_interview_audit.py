@@ -123,6 +123,39 @@ def summarize_question_generation(rounds: list[dict[str, Any]]) -> dict[str, Any
     }
 
 
+def summarize_question_cooldown(rounds: list[dict[str, Any]]) -> dict[str, Any]:
+    cooldown_counts: list[int] = []
+    missing_count = 0
+    total_questions = 0
+    for round_result in rounds:
+        for question in round_result.get("questions", []):
+            total_questions += 1
+            rubric = question.get("rubric")
+            if not isinstance(rubric, dict):
+                missing_count += 1
+                continue
+            generation = rubric.get("generation")
+            if not isinstance(generation, dict):
+                missing_count += 1
+                continue
+            cooldown_count = generation.get("recent_question_cooldown_count")
+            if not isinstance(cooldown_count, int):
+                missing_count += 1
+                continue
+            cooldown_counts.append(cooldown_count)
+    active_counts = [count for count in cooldown_counts if count > 0]
+    return {
+        "total_questions": total_questions,
+        "with_cooldown_trace": len(cooldown_counts),
+        "missing_cooldown_trace": missing_count,
+        "active_cooldown_questions": len(active_counts),
+        "max_recent_question_cooldown_count": max(cooldown_counts, default=0),
+        "average_recent_question_cooldown_count": round(
+            sum(cooldown_counts) / max(1, len(cooldown_counts)), 4
+        ),
+    }
+
+
 def summarize_question_similarity(rounds: list[dict[str, Any]]) -> dict[str, Any]:
     questions: list[dict[str, Any]] = []
     for round_result in rounds:
@@ -517,6 +550,7 @@ def run_suite(
 
     result["question_angle_summary"] = summarize_question_angles(result["rounds"])
     result["question_generation_summary"] = summarize_question_generation(result["rounds"])
+    result["question_cooldown_summary"] = summarize_question_cooldown(result["rounds"])
     result["question_similarity_summary"] = summarize_question_similarity(result["rounds"])
     result["coverage_after"] = request_json(
         "GET", f"{base_url}/api/v1/knowledge-bases/{knowledge_base_id}/coverage"
@@ -567,6 +601,7 @@ def main() -> None:
         f"failures={len(result['failures'])} "
         f"question_angles={result['question_angle_summary']['distribution']} "
         f"generation={result['question_generation_summary']['mode_distribution']} "
+        f"cooldown_active={result['question_cooldown_summary']['active_cooldown_questions']} "
         f"near_duplicates={result['question_similarity_summary']['near_duplicate_count']} "
         f"coverage={result['coverage_summary_after']['trusted_coverage_rate']}",
         flush=True,

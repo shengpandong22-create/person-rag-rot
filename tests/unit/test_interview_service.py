@@ -9,6 +9,7 @@ from sqlalchemy import Table, UniqueConstraint
 
 from agent_mentor.application.interview_service import (
     QUESTION_ANGLES,
+    RECENT_QUESTION_COOLDOWN_LIMIT,
     CoverageFocus,
     InterviewQuestionOutput,
     InterviewService,
@@ -80,6 +81,19 @@ def test_coverage_gap_focus_prioritizes_points_with_more_sources() -> None:
     assert "order by count(knowledge_catalog_sources.id) desc" in compiled
 
 
+def test_recent_question_statement_scopes_to_same_knowledge_base_and_excludes_current() -> None:
+    service = InterviewService.__new__(InterviewService)
+    interview = SimpleNamespace(id=uuid4(), knowledge_base_id=uuid4())
+
+    statement = service._recent_question_statement(cast(Any, interview))
+    compiled_statement = statement.compile(compile_kwargs={"literal_binds": False})
+    compiled = str(compiled_statement).lower()
+
+    assert "interview_sessions.knowledge_base_id" in compiled
+    assert "interview_sessions.id !=" in compiled or "interview_sessions.id ! =" in compiled
+    assert RECENT_QUESTION_COOLDOWN_LIMIT in compiled_statement.params.values()
+
+
 def test_question_search_text_keeps_original_query_without_coverage_focus() -> None:
     service = InterviewService.__new__(InterviewService)
     interview = SimpleNamespace(
@@ -139,6 +153,30 @@ def test_question_output_defaults_to_llm_generation_mode() -> None:
 
     assert output.generation_mode == "llm"
     assert output.fallback_reason is None
+
+
+def test_question_prompt_includes_recent_history_cooldown() -> None:
+    service = object.__new__(InterviewService)
+    interview = SimpleNamespace(
+        topic="RAG",
+        difficulty="medium",
+        question_count=3,
+    )
+
+    prompt = service._question_prompt(  # pyright: ignore[reportPrivateUsage, reportArgumentType]
+        cast(Any, interview),
+        1,
+        QuestionType.CONCEPT,
+        QUESTION_ANGLES[0],
+        [],
+        ["本轮题目"],
+        ["历史题目 A", "历史题目 B"],
+        None,
+    )
+
+    assert "同知识库最近历史题目" in prompt
+    assert "历史题目 A" in prompt
+    assert "避开最近历史题目的核心问法" in prompt
 
 
 def test_user_answer_idempotency_is_enforced_by_database_constraint() -> None:

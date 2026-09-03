@@ -107,6 +107,33 @@ def test_summarize_question_generation_counts_fallback_modes() -> None:
     }
 
 
+def test_summarize_question_cooldown_reports_trace_coverage() -> None:
+    runner = _load_audit_runner()
+    summarize_question_cooldown = cast(Any, runner).summarize_question_cooldown
+
+    summary = summarize_question_cooldown(
+        [
+            {
+                "questions": [
+                    {"rubric": {"generation": {"recent_question_cooldown_count": 0}}},
+                    {"rubric": {"generation": {"recent_question_cooldown_count": 3}}},
+                    {"rubric": {"generation": {"recent_question_cooldown_count": 6}}},
+                    {"rubric": {"generation": {"mode": "llm"}}},
+                ]
+            }
+        ]
+    )
+
+    assert summary == {
+        "total_questions": 4,
+        "with_cooldown_trace": 3,
+        "missing_cooldown_trace": 1,
+        "active_cooldown_questions": 2,
+        "max_recent_question_cooldown_count": 6,
+        "average_recent_question_cooldown_count": 3.0,
+    }
+
+
 def test_summarize_question_similarity_reports_near_duplicate_pairs() -> None:
     runner = _load_audit_runner()
     summarize_question_similarity = cast(Any, runner).summarize_question_similarity
