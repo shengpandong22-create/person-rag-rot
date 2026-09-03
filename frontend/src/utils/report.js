@@ -57,27 +57,33 @@ export function buildReportView(report) {
 }
 
 export function buildQuestionAnalysis(evaluation, index) {
-  const weakDimensions = [
+  const dimensions = [
     ["correctness", evaluation.correctness],
     ["completeness", evaluation.completeness],
     ["reasoning", evaluation.reasoning],
     ["communication", evaluation.communication],
-  ]
+  ];
+  const weakDimensions = dimensions
     .filter(([, score]) => score < 3)
     .map(([key]) => dimensionLabels[key] ?? key);
+  const lowestDimension = dimensions
+    .map(([key, score]) => ({
+      key,
+      label: dimensionLabels[key] ?? key,
+      score: Number(score ?? 0),
+    }))
+    .sort((a, b) => a.score - b.score)[0];
   const missing = evaluation.missing_points ?? [];
   const incorrect = evaluation.incorrect_claims ?? [];
   const covered = evaluation.covered_points ?? [];
-  const reason =
-    missing.length > 0
-      ? `主要扣分来自遗漏：${missing.slice(0, 3).join("、")}。`
-      : weakDimensions.length > 0
-        ? `主要扣分维度：${weakDimensions.join("、")}。`
-        : "本题基础要点覆盖较好，扣分主要来自表达完整度或工程细节不足。";
-  const suggestion =
-    missing.length > 0
-      ? "建议按“概念定义 → 核心流程 → 工程边界 → 示例/指标”重新组织答案。"
-      : "建议进一步补充项目落地细节、异常处理和可观测指标。";
+  const reason = buildQuestionReason({
+    covered,
+    missing,
+    incorrect,
+    lowestDimension,
+    confidence: evaluation.confidence,
+  });
+  const suggestion = buildQuestionSuggestion({ missing, incorrect, lowestDimension });
 
   return {
     id: evaluation.id,
@@ -100,4 +106,43 @@ export function buildQuestionAnalysis(evaluation, index) {
       `表达 ${evaluation.communication}/5`,
     ],
   };
+}
+
+function buildQuestionReason({ covered, missing, incorrect, lowestDimension, confidence }) {
+  const parts = [];
+  if (lowestDimension) {
+    parts.push(`最低维度是${lowestDimension.label}（${lowestDimension.score}/5）`);
+  }
+  if (covered.length > 0) {
+    parts.push(`已覆盖：${covered.slice(0, 2).join("、")}`);
+  }
+  if (missing.length > 0) {
+    parts.push(`主要遗漏：${missing.slice(0, 3).join("、")}`);
+  }
+  if (incorrect.length > 0) {
+    parts.push(`存在不准确表述：${incorrect.slice(0, 2).join("、")}`);
+  }
+  if (Number(confidence ?? 1) < 0.7) {
+    parts.push("评分置信度偏低，建议复核后再沉淀到画像");
+  }
+  if (parts.length === 0) {
+    return "本题基础要点覆盖较好，扣分主要来自表达完整度或工程细节不足。";
+  }
+  return `${parts.join("；")}。`;
+}
+
+function buildQuestionSuggestion({ missing, incorrect, lowestDimension }) {
+  if (incorrect.length > 0) {
+    return "先修正不准确结论，再补充引用依据，避免影响面试官对知识边界的判断。";
+  }
+  if (missing.length > 0) {
+    return `围绕“${missing[0]}”补一段定义、流程、风险和工程方案。`;
+  }
+  if (lowestDimension?.key === "reasoning") {
+    return "补充取舍依据、失败场景和验证方法，让回答从概念描述变成工程论证。";
+  }
+  if (lowestDimension?.key === "communication") {
+    return "用分点结构回答：先结论，再流程，最后补边界和例子。";
+  }
+  return "建议进一步补充项目落地细节、异常处理和可观测指标。";
 }
