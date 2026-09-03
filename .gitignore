@@ -24,6 +24,8 @@ frontend/node_modules/
 uploads/
 data/
 backups/
+evals/reports/scoring_eval.json
+evals/reports/scoring_eval.md
 
 # Codex/local workspace metadata
 .agents/
