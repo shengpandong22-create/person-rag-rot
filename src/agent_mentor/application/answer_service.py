@@ -62,6 +62,32 @@ CHINESE_STOP_BIGRAMS = {
     "是否",
 }
 
+GENERIC_EVIDENCE_TERMS = {
+    "agent",
+    "ai",
+    "api",
+    "desktop",
+    "docker",
+    "llm",
+    "rag",
+    "设计",
+    "系统",
+    "项目",
+    "统设",
+    "实现",
+    "影响",
+    "说明",
+    "什么",
+}
+
+STRONG_ENGLISH_EVIDENCE_TERMS = {
+    "chunk_id",
+    "mrr",
+    "recall",
+    "rrf",
+    "sse",
+}
+
 
 @dataclass(frozen=True, slots=True)
 class AnswerResult:
@@ -119,10 +145,7 @@ class AnswerService:
                 candidate_k=candidate_k or self._default_candidate_k,
             )
         )
-        supported_candidates = self._supported_candidates(question, candidates)
-        sufficient = (
-            bool(supported_candidates) and supported_candidates[0].score >= self._min_evidence_score
-        )
+        supported_candidates, sufficient = self.assess_evidence(question, candidates)
         if not sufficient and not allow_model_knowledge:
             answer = (
                 "当前知识库证据不足，我不能把模型常识伪装成资料结论。"
@@ -329,15 +352,30 @@ class AnswerService:
             context_terms.add(chunk.document_title.lower())
         overlap = query_terms & context_terms
         english_query_terms = {term for term in query_terms if term.isascii()}
-        if english_query_terms & overlap:
-            return True
         chinese_query_terms = query_terms - english_query_terms
         chinese_overlap = overlap - english_query_terms
+        if english_query_terms & overlap:
+            strong_english_overlap = english_query_terms & overlap & STRONG_ENGLISH_EVIDENCE_TERMS
+            return bool(strong_english_overlap) or not self._requires_specific_chinese_support(
+                chinese_query_terms, chinese_overlap
+            )
         if not chinese_query_terms:
             return False
-        return len(chinese_overlap) >= 2 and (
+        specific_chinese_overlap = chinese_overlap - GENERIC_EVIDENCE_TERMS
+        return len(specific_chinese_overlap) >= 2 and (
             len(chinese_overlap) / len(chinese_query_terms) >= 0.18
         )
+
+    def _requires_specific_chinese_support(
+        self, chinese_query_terms: set[str], chinese_overlap: set[str]
+    ) -> bool:
+        if len(chinese_query_terms) < 4:
+            return False
+        specific_query_terms = chinese_query_terms - GENERIC_EVIDENCE_TERMS
+        if len(specific_query_terms) < 3:
+            return False
+        specific_overlap = chinese_overlap - GENERIC_EVIDENCE_TERMS
+        return not specific_overlap
 
     def _supported_candidates(
         self, question: str, candidates: list[RetrievedChunk]
@@ -347,6 +385,15 @@ class AnswerService:
             for candidate in candidates
             if self._has_lexical_support(question, [candidate])
         ]
+
+    def assess_evidence(
+        self, question: str, candidates: list[RetrievedChunk]
+    ) -> tuple[list[RetrievedChunk], bool]:
+        supported_candidates = self._supported_candidates(question, candidates)
+        sufficient = (
+            bool(supported_candidates) and supported_candidates[0].score >= self._min_evidence_score
+        )
+        return supported_candidates, sufficient
 
     def _evidence_terms(self, text: str) -> set[str]:
         lowered = text.lower()

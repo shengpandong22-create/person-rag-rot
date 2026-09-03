@@ -5,6 +5,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from uuid import UUID
 
+from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.config import get_settings
 from agent_mentor.infrastructure.database.session import (
     create_database_engine,
@@ -54,6 +55,14 @@ async def run_retrieval_eval(
         embedding,
         max_chunks_per_document=settings.retrieval_max_chunks_per_document,
     )
+    answer_service = AnswerService(
+        sessions,
+        retriever,
+        default_top_k=top_k,
+        default_candidate_k=candidate_k,
+        min_evidence_score=threshold,
+        default_model=settings.llm_default_model,
+    )
     case_rows: list[dict[str, object]] = []
     metric_inputs: list[RetrievalCaseResult] = []
     try:
@@ -67,7 +76,9 @@ async def run_retrieval_eval(
                 )
             )
             first_rank = _first_relevant_rank(chunks, case.expected_keywords)
-            evidence_sufficient = bool(chunks) and chunks[0].score >= threshold
+            supported_chunks, evidence_sufficient = answer_service.assess_evidence(
+                case.question, chunks
+            )
             metric_inputs.append(
                 RetrievalCaseResult(
                     case_id=case.case_id,
@@ -84,6 +95,7 @@ async def run_retrieval_eval(
                     "expected_keywords": list(case.expected_keywords),
                     "first_relevant_rank": first_rank,
                     "evidence_sufficient": evidence_sufficient,
+                    "supported_chunk_count": len(supported_chunks),
                     "top_chunks": [
                         {
                             "rank": index,
@@ -166,22 +178,41 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         encoding="utf-8",
     )
     metrics = report.metrics
-    markdown_path.write_text(
-        "\n".join(
-            [
-                "# Retrieval Eval Report",
-                "",
-                f"- dataset: `{report.dataset}`",
-                f"- knowledge_base_id: `{report.knowledge_base_id}`",
-                f"- total: {metrics['total']}",
-                f"- Recall@1: {metrics['recall_at_1']}",
-                f"- Recall@3: {metrics['recall_at_3']}",
-                f"- Recall@6: {metrics['recall_at_6']}",
-                f"- MRR: {metrics['mrr']}",
-                f"- Evidence sufficient accuracy: {metrics['evidence_sufficient_accuracy']}",
-                f"- Negative rejection accuracy: {metrics['negative_rejection_accuracy']}",
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
+    lines = [
+        "# Retrieval Eval Report",
+        "",
+        f"- dataset: `{report.dataset}`",
+        f"- knowledge_base_id: `{report.knowledge_base_id}`",
+        f"- total: {metrics['total']}",
+        f"- Recall@1: {metrics['recall_at_1']}",
+        f"- Recall@3: {metrics['recall_at_3']}",
+        f"- Recall@6: {metrics['recall_at_6']}",
+        f"- MRR: {metrics['mrr']}",
+        f"- Evidence sufficient accuracy: {metrics['evidence_sufficient_accuracy']}",
+        f"- Negative rejection accuracy: {metrics['negative_rejection_accuracy']}",
+        "",
+    ]
+    failed_cases = [
+        row
+        for row in report.cases
+        if bool(row["answerable"]) != bool(row["evidence_sufficient"])
+    ]
+    if failed_cases:
+        lines.extend(["## Evidence Gate Failures", ""])
+        for row in failed_cases:
+            top_chunks = row.get("top_chunks", [])
+            first_chunk = top_chunks[0] if isinstance(top_chunks, list) and top_chunks else {}
+            lines.extend(
+                [
+                    f"### {row['id']}",
+                    "",
+                    f"- question: {row['question']}",
+                    f"- answerable: {row['answerable']}",
+                    f"- evidence_sufficient: {row['evidence_sufficient']}",
+                    f"- supported_chunk_count: {row.get('supported_chunk_count', 0)}",
+                    f"- top_document: {first_chunk.get('document_title', '-')}",
+                    f"- top_score: {first_chunk.get('score', '-')}",
+                    "",
+                ]
+            )
+    markdown_path.write_text("\n".join(lines), encoding="utf-8")

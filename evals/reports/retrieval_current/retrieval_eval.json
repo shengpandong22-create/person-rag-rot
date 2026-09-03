@@ -1,0 +1,1870 @@
+{
+  "dataset": "evals/datasets/retrieval_v1.jsonl",
+  "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "metrics": {
+    "total": 30,
+    "recall_at_1": 0.5,
+    "recall_at_3": 0.6538,
+    "recall_at_6": 0.7308,
+    "mrr": 0.5865,
+    "evidence_sufficient_accuracy": 0.7667,
+    "negative_rejection_accuracy": 1.0
+  },
+  "cases": [
+    {
+      "id": "ret-001",
+      "question": "RAG 为什么能降低大模型无依据回答的概率？",
+      "answerable": true,
+      "expected_keywords": [
+        "RAG",
+        "证据",
+        "引用"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "RAG"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "RAG"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "20fde7d8-b88f-4382-97b6-731c8f41ff6c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "证据"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015625,
+          "matched_keywords": [
+            "RAG",
+            "证据",
+            "引用"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "11652d7c-2f14-4ecf-aae2-6aca4df97410",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "证据"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "9e0fd232-bd45-4b56-b641-e7fd24b67718",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "RAG"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-002",
+      "question": "向量数据库在个人学习资料问答中承担什么角色？",
+      "answerable": true,
+      "expected_keywords": [
+        "向量",
+        "检索",
+        "学习资料"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "5c78df7d-1f54-44ab-96d7-bd5d76f67e75",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "学习资料"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "9dbafe6b-3c9c-43b5-bce1-6dde21ac3424",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "向量"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "检索",
+            "学习资料"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015625,
+          "matched_keywords": [
+            "检索",
+            "学习资料"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "628f985f-6526-4cd4-bed2-d68f5f94c68b",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.014705882352941176,
+          "matched_keywords": [
+            "检索"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-003",
+      "question": "为什么文档 chunk 要保留标题层级？",
+      "answerable": true,
+      "expected_keywords": [
+        "标题",
+        "章节",
+        "引用"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "标题"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "1a9cc3ab-a83c-4016-ae73-4cd10e314489",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "标题"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "引用"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "c6478dcf-88a8-473a-bd95-e70e01f5eef6",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.014705882352941176,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.014285714285714285,
+          "matched_keywords": [
+            "引用"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "e373a214-e53c-4d8c-aaca-9e56fe683c89",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.014084507042253521,
+          "matched_keywords": [
+            "引用"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-004",
+      "question": "Java 后端转 AI Agent 开发为什么需要学习 RAG？",
+      "answerable": true,
+      "expected_keywords": [
+        "Java",
+        "AI Agent",
+        "RAG"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "Java",
+            "RAG"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "RAG"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "b668d853-dd74-4b70-ac33-332b8df6d12a",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015625,
+          "matched_keywords": [
+            "RAG"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "RAG"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.014925373134328358,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-005",
+      "question": "全文检索和向量检索分别适合什么问题？",
+      "answerable": true,
+      "expected_keywords": [
+        "全文",
+        "向量",
+        "混合检索"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "全文",
+            "向量",
+            "混合检索"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "全文",
+            "向量"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "全文",
+            "向量",
+            "混合检索"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "4df526c6-ab98-4b59-a382-ca0e9f31de4e",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "混合检索"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.014925373134328358,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-006",
+      "question": "RRF 融合解决了什么排序问题？",
+      "answerable": true,
+      "expected_keywords": [
+        "RRF",
+        "排序",
+        "融合"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "RRF",
+            "排序",
+            "融合"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "RRF",
+            "融合"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "29d997a9-85b7-4165-839f-0d7055c7d7b3",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "RRF",
+            "排序",
+            "融合"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015625,
+          "matched_keywords": [
+            "RRF",
+            "融合"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "1edcb521-2164-4e63-ba13-c212c1acd91d",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "RRF",
+            "融合"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "299ce1b8-bb0e-41af-bf5f-1aab8672a6af",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.014925373134328358,
+          "matched_keywords": [
+            "RRF"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-007",
+      "question": "资料未覆盖问题时系统应该如何回答？",
+      "answerable": true,
+      "expected_keywords": [
+        "证据不足",
+        "不伪造引用"
+      ],
+      "first_relevant_rank": 6,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "c4e982e3-a5e9-4289-8a74-a1f96697c265",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "e17e3acf-51c9-4543-a8dd-b358bab0073f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "b5b0139a-049b-40fb-88d0-e168dd9e5564",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "证据不足"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-008",
+      "question": "引用校验为什么只能使用本次检索到的 chunk_id？",
+      "answerable": true,
+      "expected_keywords": [
+        "chunk_id",
+        "检索上下文",
+        "校验"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 2,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "chunk_id"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "e373a214-e53c-4d8c-aaca-9e56fe683c89",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "校验"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "913b0979-fbbf-4cca-b431-529574b55cfd",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "chunk_id"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.014705882352941176,
+          "matched_keywords": [
+            "chunk_id",
+            "检索上下文",
+            "校验"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-009",
+      "question": "可信等级可以怎样影响检索排序？",
+      "answerable": true,
+      "expected_keywords": [
+        "可信等级",
+        "排序",
+        "语义相关性"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "875f34a8-794d-4464-b1e5-3a75dd9084ce",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "d3e3977c-6d1b-4133-9ff7-0e821f844023",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-010",
+      "question": "为什么不能把 RAG 描述成保证答案绝对正确？",
+      "answerable": true,
+      "expected_keywords": [
+        "不能保证",
+        "证据",
+        "可追溯"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 2,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "证据"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "证据"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015625,
+          "matched_keywords": [
+            "证据"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "证据"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "e17e3acf-51c9-4543-a8dd-b358bab0073f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-011",
+      "question": "文档上传时为什么要计算 SHA-256？",
+      "answerable": true,
+      "expected_keywords": [
+        "SHA-256",
+        "重复",
+        "版本"
+      ],
+      "first_relevant_rank": 2,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "9513bdbe-13d1-415d-a703-09571bf457f3",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "SHA-256"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "SHA-256",
+            "版本"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "c6478dcf-88a8-473a-bd95-e70e01f5eef6",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "cb6f15f2-fdf8-47b9-ac9d-c45e7c80c49d",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.014705882352941176,
+          "matched_keywords": [
+            "SHA-256",
+            "版本"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.014285714285714285,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-012",
+      "question": "旧版本文档为什么要退出默认检索范围？",
+      "answerable": true,
+      "expected_keywords": [
+        "旧版本",
+        "默认检索",
+        "版本"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 2,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c4e982e3-a5e9-4289-8a74-a1f96697c265",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "旧版本",
+            "版本"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "eba3a26f-b2dc-4172-ad08-4b547bf3f34d",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.014705882352941176,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-013",
+      "question": "Prompt Injection 文档指令为什么不能覆盖系统规则？",
+      "answerable": true,
+      "expected_keywords": [
+        "Prompt Injection",
+        "系统规则",
+        "不可信数据"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 5,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "c8b161ed-b22a-419a-8c79-d9ae611f5a2c",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-014",
+      "question": "SSE 问答流需要哪些终止事件？",
+      "answerable": true,
+      "expected_keywords": [
+        "SSE",
+        "answer.completed",
+        "answer.failed"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "1b0399be-f394-444b-ad59-16b30ef302be",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "962cc6cd-7b45-4473-b6fa-680cc04224f1",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-015",
+      "question": "检索候选为什么需要记录融合分数？",
+      "answerable": true,
+      "expected_keywords": [
+        "候选",
+        "融合分数",
+        "追溯"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 1,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "34edfd35-911e-48a5-9a77-e358dfbd3485",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "e4237f63-134b-4f62-92f1-76c552e82f8c",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-016",
+      "question": "16GB 开发机资源约束对架构选型有什么影响？",
+      "answerable": true,
+      "expected_keywords": [
+        "16GB",
+        "Docker Compose",
+        "资源"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 1,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "9e0fd232-bd45-4b56-b641-e7fd24b67718",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "16GB"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "20fde7d8-b88f-4382-97b6-731c8f41ff6c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "资源"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "4e4f757d-00ec-44b8-af49-149c9bede454",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "75a57b89-27c7-4c4e-91c9-99db25bc2726",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.014925373134328358,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-017",
+      "question": "为什么 V1 不引入 Elasticsearch？",
+      "answerable": true,
+      "expected_keywords": [
+        "V1",
+        "PostgreSQL",
+        "复杂度"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "da031b6f-c815-4c5e-85b4-7ec046cf50fa",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "b54c06a9-e790-4273-ba94-89929c43c336",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "f695d031-fa43-4132-850f-b4327eb5901f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "e373a214-e53c-4d8c-aaca-9e56fe683c89",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-018",
+      "question": "为什么评测需要 Recall@K 和 MRR？",
+      "answerable": true,
+      "expected_keywords": [
+        "Recall",
+        "MRR",
+        "评测"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "4ba9d8ca-b5a2-40cb-a329-5bbc6545527c",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "29d997a9-85b7-4165-839f-0d7055c7d7b3",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.014925373134328358,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-019",
+      "question": "知识库证据不足时 allow_model_knowledge=false 有什么效果？",
+      "answerable": true,
+      "expected_keywords": [
+        "allow_model_knowledge",
+        "证据不足",
+        "禁止"
+      ],
+      "first_relevant_rank": 2,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 5,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "1cd77702-71fe-40cf-8827-cfe4f9987589",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "b5b0139a-049b-40fb-88d0-e168dd9e5564",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "allow_model_knowledge",
+            "证据不足"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "628f985f-6526-4cd4-bed2-d68f5f94c68b",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "9dbafe6b-3c9c-43b5-bce1-6dde21ac3424",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-020",
+      "question": "单文档占比控制想避免什么问题？",
+      "answerable": true,
+      "expected_keywords": [
+        "单文档",
+        "占比",
+        "多样性"
+      ],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c6478dcf-88a8-473a-bd95-e70e01f5eef6",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "4e9f83ce-b95c-4dba-a321-ffb3a84907c2",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "eba3a26f-b2dc-4172-ad08-4b547bf3f34d",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "5cd2458b-909e-403e-a554-5cb5bbe3f726",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "f695d031-fa43-4132-850f-b4327eb5901f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-021",
+      "question": "相邻 chunk 去重为什么有必要？",
+      "answerable": true,
+      "expected_keywords": [
+        "相邻",
+        "chunk",
+        "去重"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "32fcbe56-dde7-46f3-b935-1064086ec447",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "相邻",
+            "chunk",
+            "去重"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "11652d7c-2f14-4ecf-aae2-6aca4df97410",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "chunk",
+            "去重"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "chunk"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015625,
+          "matched_keywords": [
+            "chunk"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "a966a574-284f-4d21-ba84-52904f2a003a",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "chunk"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "e373a214-e53c-4d8c-aaca-9e56fe683c89",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.014925373134328358,
+          "matched_keywords": [
+            "chunk"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-022",
+      "question": "PostgreSQL pgvector 在这个项目中有什么好处？",
+      "answerable": true,
+      "expected_keywords": [
+        "PostgreSQL",
+        "pgvector",
+        "业务数据"
+      ],
+      "first_relevant_rank": 4,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015625,
+          "matched_keywords": [
+            "PostgreSQL"
+          ]
+        },
+        {
+          "rank": 5,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "pgvector"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.014925373134328358,
+          "matched_keywords": [
+            "PostgreSQL",
+            "pgvector"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-023",
+      "question": "回答与引用关系为什么要持久化？",
+      "answerable": true,
+      "expected_keywords": [
+        "持久化",
+        "引用",
+        "追溯"
+      ],
+      "first_relevant_rank": 3,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 1,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "引用"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "c4e982e3-a5e9-4289-8a74-a1f96697c265",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "引用",
+            "追溯"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-024",
+      "question": "面试助手为什么要先做证据化问答？",
+      "answerable": true,
+      "expected_keywords": [
+        "面试助手",
+        "证据化",
+        "学习"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 2,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "5c78df7d-1f54-44ab-96d7-bd5d76f67e75",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "学习"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "ef8758cf-aa9c-4a60-97c7-63dd11f57196",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "34edfd35-911e-48a5-9a77-e358dfbd3485",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "学习"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-025",
+      "question": "为什么测试环境不能误读真实 API Key？",
+      "answerable": true,
+      "expected_keywords": [
+        "测试环境",
+        "API Key",
+        "安全"
+      ],
+      "first_relevant_rank": 2,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "4b4eeb3c-68b7-432e-9386-864c86b4a8f8",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "API Key"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "bae050f7-9e9d-4337-9751-94f8c61ebdc4",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "b668d853-dd74-4b70-ac33-332b8df6d12a",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-026",
+      "question": "如何用 RAG 支撑之后的模拟面试出题？",
+      "answerable": true,
+      "expected_keywords": [
+        "RAG",
+        "出题",
+        "证据"
+      ],
+      "first_relevant_rank": 1,
+      "evidence_sufficient": true,
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.01639344262295082,
+          "matched_keywords": [
+            "RAG"
+          ]
+        },
+        {
+          "rank": 2,
+          "chunk_id": "5c78df7d-1f54-44ab-96d7-bd5d76f67e75",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.016129032258064516,
+          "matched_keywords": [
+            "RAG",
+            "出题",
+            "证据"
+          ]
+        },
+        {
+          "rank": 3,
+          "chunk_id": "34edfd35-911e-48a5-9a77-e358dfbd3485",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015873015873015872,
+          "matched_keywords": [
+            "RAG",
+            "出题",
+            "证据"
+          ]
+        },
+        {
+          "rank": 4,
+          "chunk_id": "9e124174-dacf-4569-b311-cdf90dda68ae",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.015384615384615385,
+          "matched_keywords": [
+            "出题"
+          ]
+        },
+        {
+          "rank": 6,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015151515151515152,
+          "matched_keywords": [
+            "RAG"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ret-027",
+      "question": "唐朝开元年间的具体盐税制度如何影响 RAG 系统设计？",
+      "answerable": false,
+      "expected_keywords": [],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.014925373134328358,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-028",
+      "question": "量子色动力学格点计算在本项目 Phase 1 怎么实现？",
+      "answerable": false,
+      "expected_keywords": [],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "29d997a9-85b7-4165-839f-0d7055c7d7b3",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "b188fd0a-1450-4706-a69d-8a7dd997faae",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "4141045f-9876-42b8-b1d1-378d7ebc71dd",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-029",
+      "question": "我昨天午饭吃了什么？",
+      "answerable": false,
+      "expected_keywords": [],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "cd038e3e-d8c7-4c17-b139-533e4d98d823",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "a96b3fe2-82ea-4708-bd19-efdfb7269e9b",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "9dfd6a46-700b-430c-aa0c-f6b8658da667",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "10adda9d-2734-483b-b337-97426ac42f23",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "score": 0.015151515151515152,
+          "matched_keywords": []
+        }
+      ]
+    },
+    {
+      "id": "ret-030",
+      "question": "Docker Desktop 4.82 的所有发布说明逐条是什么？",
+      "answerable": false,
+      "expected_keywords": [],
+      "first_relevant_rank": null,
+      "evidence_sufficient": false,
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "96140e48-a7f1-4d8c-9a92-c177bb6a0a92",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "score": 0.01639344262295082,
+          "matched_keywords": []
+        },
+        {
+          "rank": 2,
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.016129032258064516,
+          "matched_keywords": []
+        },
+        {
+          "rank": 3,
+          "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015873015873015872,
+          "matched_keywords": []
+        },
+        {
+          "rank": 4,
+          "chunk_id": "913b0979-fbbf-4cca-b431-529574b55cfd",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "score": 0.015625,
+          "matched_keywords": []
+        },
+        {
+          "rank": 5,
+          "chunk_id": "7eeb094b-2097-432c-8fe1-3fe063c69237",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.015384615384615385,
+          "matched_keywords": []
+        },
+        {
+          "rank": 6,
+          "chunk_id": "f49ca7a7-41f9-4ecc-ae43-6ee2e0cc3b81",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "score": 0.014925373134328358,
+          "matched_keywords": []
+        }
+      ]
+    }
+  ]
+}

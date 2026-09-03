@@ -127,6 +127,24 @@ def test_answer_service_rejects_cross_domain_question_with_generic_safety_terms(
     assert not service._has_lexical_support("volatile 是否能保证 count++ 的线程安全？", [evidence])
 
 
+def test_answer_service_rejects_external_constraint_with_only_generic_project_overlap() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = replace(
+        chunk(),
+        content="RAG 系统设计需要通过证据门禁、引用白名单和检索诊断降低幻觉。",
+    )
+
+    assert not service._has_lexical_support(
+        "唐朝开元年间的具体盐税制度如何影响 RAG 系统设计？", [evidence]
+    )
+
+
 def test_answer_service_expands_rrf_retrieval_aliases() -> None:
     service = AnswerService(
         cast(Any, None),

@@ -6,13 +6,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY pyproject.toml README.md alembic.ini ./
-COPY src ./src
-COPY migrations ./migrations
-
+COPY pyproject.toml README.md alembic.ini requirements.txt ./
 RUN pip install --upgrade pip \
     && pip install torch --index-url https://download.pytorch.org/whl/cpu \
-    && pip install .
+    && pip install -r requirements.txt
+
+COPY src ./src
+COPY migrations ./migrations
+COPY evals ./evals
+
+RUN pip install --no-deps .
 
 EXPOSE 8000
 

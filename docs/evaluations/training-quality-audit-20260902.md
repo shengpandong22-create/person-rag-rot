@@ -782,3 +782,128 @@ main.py
 可以这样讲：
 
 > 查漏不是随机从未覆盖点里挑一个，也不是按标题排序。我后来把查漏题位的候选排序改成了“资料来源数优先”：一个知识点关联的 chunk 越多，说明它在当前知识库中越重要或证据越充分，所以优先考。这个改动很小，但让覆盖驱动出题更有解释性。
+
+## 14. 第 9 批训练质量修复：RAG 知识边界与评估口径对齐
+
+### 14.1 发现的问题
+
+在 BGE 运行态下重新执行 `retrieval_v1.jsonl` 检索评估时，最初得到：
+
+```text
+negative_rejection_accuracy = 0.0
+```
+
+这表示 4 个知识库外问题全部被判为“证据充分”。继续追查后发现问题分成两层：
+
+1. **评估口径落后于生产口径**：`evals/runners/retrieval_runner.py` 只用 top score 判断证据是否足够，而生产 `AnswerService` 还会做 lexical support 检查。
+2. **生产边界仍有误放行风险**：如果问题里混入 `RAG`、`Docker` 这类项目泛化词，即使核心限定条件来自知识库外，也可能被误判为有支撑。
+
+典型风险问题：
+
+```text
+唐朝开元年间的具体盐税制度如何影响 RAG 系统设计？
+Docker Desktop 4.82 的所有发布说明逐条是什么？
+```
+
+这类问题不应该只因为包含 `RAG` 或 `Docker` 就被知识库回答。
+
+### 14.2 最小改造方案
+
+本次没有改 RAG 主链路，也没有引入复杂 reranker，只做三点小修：
+
+1. **抽出生产证据门禁方法**
+   - 在 `AnswerService` 中新增 `assess_evidence(question, candidates)`；
+   - `answer()` 和 retrieval eval 共用同一套证据充分判断。
+
+2. **收紧跨域问题边界**
+   - 对 `RAG`、`Docker`、`系统`、`设计` 等泛化词降权；
+   - 当问题同时包含英文项目词和大量中文限定实体时，必须有中文关键实体支撑；
+   - 避免“项目词命中”掩盖“核心问题知识库外”。
+
+3. **让评估报告暴露失败样本**
+   - `retrieval_eval.md` 增加 Evidence Gate Failures；
+   - 每个失败样本展示问题、是否可回答、证据充分判断、supported chunk 数、top document 和 top score；
+   - 方便后续判断是召回失败、资料缺失，还是边界门禁问题。
+
+代码路线：
+
+- `src/agent_mentor/application/answer_service.py`
+  - `assess_evidence()`
+  - `_has_lexical_support()`
+  - `_requires_specific_chinese_support()`
+- `evals/runners/retrieval_runner.py`
+  - 使用 `AnswerService.assess_evidence()` 对齐生产口径；
+  - 输出失败样本明细。
+- `tests/unit/test_retrieval.py`
+  - 增加跨域问题拒答测试。
+
+### 14.3 Docker 评估环境补齐
+
+本机直接运行 BGE eval 时，Windows 应用控制策略会拦截 `torch_python.dll`：
+
+```text
+WinError 4551 应用程序控制策略已阻止此文件
+```
+
+这不是业务代码失败，但会导致本机评估不可用。为保证验收贴近真实运行态，本次把 `evals/` 纳入 api 镜像，使检索评估可以直接在 Docker api 容器里执行。
+
+同时优化 Dockerfile 缓存层：
+
+旧构建方式：
+
+```text
+COPY src
+pip install .
+```
+
+问题是每次源码变动都会重新安装 torch 和 sentence-transformers。
+
+新构建方式：
+
+```text
+COPY requirements.txt
+pip install torch + requirements
+COPY src / migrations / evals
+pip install --no-deps .
+```
+
+这样依赖层可以命中缓存。实际验证中，后续 api 镜像构建缩短到约 12 秒。
+
+代码路线：
+
+- `Dockerfile`
+- `requirements.txt`
+
+### 14.4 验收结果
+
+容器内执行：
+
+```text
+python -m evals.run retrieval \
+  --knowledge-base-id b2d70e40-02d1-4a78-af5a-22df85a82693 \
+  --output-dir evals/reports/retrieval_current
+```
+
+修复后结果：
+
+```text
+total = 30
+Recall@1 = 0.5
+Recall@3 = 0.6538
+Recall@6 = 0.7308
+MRR = 0.5865
+evidence_sufficient_accuracy = 0.7667
+negative_rejection_accuracy = 1.0
+```
+
+结论：
+
+- 知识库外问题已经能稳定拒答；
+- 仍有若干可回答问题未命中预期证据，主要表现为召回排序或资料覆盖问题；
+- 下一步如果继续优化训练质量，重点应放在“召回质量可解释性”和“评测集与知识库版本绑定”。
+
+### 14.5 面试表达价值
+
+可以这样讲：
+
+> 我做 BGE 后没有只看“流程能跑”，而是补了 retrieval eval。评估时发现一个典型 RAG 边界问题：问题里只要混入 RAG/Docker 这类项目词，系统可能把知识库外问题误判成可回答。我没有简单调高阈值，而是把生产证据门禁抽成 `assess_evidence()`，让 eval 和线上口径一致；再对泛化项目词做边界约束，要求跨域问题必须有具体实体支撑。修复后负例拒答准确率从 0.0 提升到 1.0。这个过程说明我不是只做 demo，而是在用评测发现并收敛 RAG 可信性问题。
