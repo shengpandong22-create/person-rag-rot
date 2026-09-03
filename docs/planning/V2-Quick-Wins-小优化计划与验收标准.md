@@ -146,6 +146,8 @@ UniqueConstraint("question_id", "idempotency_key", name="uq_answer_idempotency")
 
 ### Quick Win 4：BGE Embedding 前置准备
 
+> 现状更新：本节记录的是当时的低风险 Quick Win 计划。后续已按“重建式切换”完成 BGE 落地：默认 `embedding_provider=bge` 时使用 `BAAI/bge-small-zh-v1.5`，pgvector 维度调整为 512，历史向量不做在线迁移，重新导入资料生成新向量；同时保留 `DevelopmentEmbeddingGateway` 作为测试和无模型环境 fallback。
+
 #### 背景
 
 当前 `DevelopmentEmbeddingGateway` 是特征哈希开发基线，优势是确定、轻量、离线可运行；短板是语义召回上限较低。直接默认切换 BGE 会引入依赖、模型下载、向量维度迁移和重索引风险，不适合作为面试前低风险改造。
@@ -173,7 +175,7 @@ UniqueConstraint("question_id", "idempotency_key", name="uq_answer_idempotency")
 
 - [x] 当前默认 Embedding 行为不变。
 - [x] 若配置维度与数据库向量维度不一致，系统能给出清晰错误或健康检查提示。
-- [x] 文档明确说明：BGE 是后续增强项，切换前应先跑 Retrieval Eval Runner 建立基线。
+- [x] 文档明确说明：当时 BGE 是后续增强项，切换前应先跑 Retrieval Eval Runner 建立基线；后续版本已完成 BGE 重建式切换。
 - [x] 不引入重依赖，不触发模型下载。
 - [x] `ruff check ... config.py main.py health.py ...` 通过。
 - [x] `pyright ... config.py main.py health.py ...` 通过。
@@ -223,7 +225,7 @@ UniqueConstraint("question_id", "idempotency_key", name="uq_answer_idempotency")
 - [ ] 能解释为什么覆盖保底出题比纯推荐更能证明闭环真实。
 - [ ] 能用指标解释 RAG 改造，而不是凭感觉说效果变好。
 - [ ] 能说明幂等的三层防线：前端防抖、应用层先查、数据库唯一约束。
-- [ ] 能诚实说明 BGE 是后续增强项，当前默认特征哈希是 16GB 本地可运行取舍。
+- [ ] 能诚实说明：当前默认 BGE-small-zh 已落地，但它不是企业级向量服务；development 特征哈希只是测试/无模型环境 fallback。
 
 ---
 
@@ -231,7 +233,7 @@ UniqueConstraint("question_id", "idempotency_key", name="uq_answer_idempotency")
 
 - 不做 Repository Port 大重构。
 - 不迁移到 LangGraph Runtime。
-- 不默认切换 BGE。
+- 当时本轮不默认切换 BGE；后续版本已采用重建式方案完成默认 BGE 落地。
 - 不修改 pgvector 维度。
 - 不引入多租户、认证、权限、队列等企业级能力。
 - 不重写前端整体布局。

@@ -22,7 +22,7 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 
 - **模块边界清晰，具备六边形架构雏形**：domain 层零框架依赖，有专门的 `test_architecture.py` 自动化守护。ports 使用 `Protocol`（结构化子类型）而非 `ABC`，更 Pythonic。
 - **依赖方向大体正确**：`main.py` 作为组合根，手动 DI 注入所有依赖；api → application → ports ← infrastructure 的主线清晰。
-- **供应商隔离到位**：`LLMGateway` Protocol 隔离了 OpenAI/DeepSeek，`KnowledgeRetriever` Protocol 隔离了 PostgreSQL 实现，`EmbeddingGateway` Protocol 隔离了特征哈希降级。切换供应商只需新增适配器，业务层无感知。
+- **供应商隔离到位**：`LLMGateway` Protocol 隔离了 OpenAI/DeepSeek，`KnowledgeRetriever` Protocol 隔离了 PostgreSQL 实现，`EmbeddingGateway` Protocol 隔离了 BGE 与 development fallback。切换供应商只需新增适配器，业务层无感知。
 - **组合根透明**：`create_app()` 中所有服务实例化集中可见，没有隐式的全局单例或 service locator。
 
 #### 问题与风险
@@ -353,7 +353,7 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 以下 5 个工程亮点最值得在面试/简历中展示：
 
 ### 1. 可降级的完整 RAG 闭环
-整个系统从知识上传到面试评分到画像更新，每一步都有确定性降级方案。无 LLM Key 时用特征哈希做 Embedding、用启发式规则做出题和评分、用模板拼接做回答。配置 Key 后无缝切换到真实 LLM。这种"先保证可运行，再提升智能"的工程思路在实际 AI 项目中非常有价值。
+整个系统从知识上传到面试评分到画像更新，每一步都有确定性降级方案。当前默认使用本地 BGE-small-zh 做 Embedding；无模型或测试环境可切回 development fallback。无 LLM Key 时用启发式规则做出题和评分、用模板拼接做回答；配置 Key 后切换到真实 LLM。这种"先保证可运行，再提升智能"的工程思路在实际 AI 项目中非常有价值。
 
 ### 2. 三重引用安全设计
 `validate_citations()`（白名单校验）+ `_has_lexical_support()`（词法关联校验）+ `_assert_allowed_references()`（评分时二次校验）。三层防线确保 LLM 无法编造引用，这在 RAG 系统中是容易被忽略但极其重要的安全特性。

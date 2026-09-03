@@ -69,7 +69,7 @@ AgentMentor 是一个面向个人学习者的 AI 面试训练系统：它将学�
 2. **方案**：RAG 前置，资料同时支撑问答与面试出题；
 3. **难点**：检索可信、评分可信、状态恢复、画像不被噪声污染；
 4. **结果**：知识入库、RAG、面试、报告、画像、复习任务完整跑通；
-5. **取舍**：单机用户、轻量 Embedding、PostgreSQL 一体化；
+5. **取舍**：单机用户、本地 BGE Embedding、PostgreSQL 一体化；
 6. **边界**：不是 LangGraph 运行时、没有 OCR/版面模型、不是企业多租户系统。
 
 ### 1.4 项目的真正亮点
@@ -541,7 +541,20 @@ statement = (
 
 ### 6.5 当前 Embedding 的准确口径
 
-当前 `DevelopmentEmbeddingGateway` 是确定性的特征哈希基线：
+当前默认链路已经切到本地 `BgeEmbeddingGateway`，模型为 `BAAI/bge-small-zh-v1.5`，输出 512 维向量并写入 pgvector。它解决的是早期特征哈希只能捕获字面相似的问题，让中文学习资料的语义召回更接近真实使用场景。
+
+```python
+if settings.embedding_provider is EmbeddingProvider.BGE:
+    embedding = BgeEmbeddingGateway(
+        model_name=settings.embedding_model or "BAAI/bge-small-zh-v1.5",
+        dimension=settings.embedding_dimension,
+        batch_size=settings.embedding_batch_size,
+    )
+else:
+    embedding = DevelopmentEmbeddingGateway(settings.embedding_dimension)
+```
+
+项目仍保留 `DevelopmentEmbeddingGateway` 作为测试和无模型环境 fallback。它是确定性的特征哈希基线：
 
 ```python
 words = re.findall(r"[a-z0-9_]{2,}", normalized)
@@ -556,20 +569,27 @@ chinese_ngrams = [
 
 然后使用 BLAKE2b 将特征映射到固定维度并做 L2 归一化。
 
-它的价值：
+BGE 链路的价值：
+
+- 中文语义召回能力明显强于特征哈希；
+- 与 pgvector 真实集成，检索评估可以复现；
+- 本机 CPU / Docker 环境可运行，符合个人项目演示约束；
+- 通过 `EmbeddingGateway` 端口隔离，后续可以继续替换云 Embedding 或 reranker。
+
+Development fallback 的价值：
 
 - 不下载本地大模型；
 - 资源占用稳定；
 - 离线可运行；
 - 测试结果确定。
 
-它的限制：
+当前限制：
 
-- 主要捕获字面和局部 n-gram 相似性；
-- 不能等同于 BGE 等生产语义 Embedding；
-- 复杂中文语义召回能力有限。
+- BGE-small-zh 是本地轻量语义模型，不等同于企业级向量服务；
+- 没有做多模型版本共存和在线向量迁移，历史向量采用重建式方案处理；
+- 还没有接入 reranker、权限过滤、多租户索引隔离等企业化能力。
 
-面试中应该说“pgvector 链路已跑通，Embedding 是适合本地约束的开发基线”，不能说“已经使用生产级中文向量模型”。
+面试中应该说：“当前默认使用 BGE-small-zh + pgvector，采用重建式切换并保留 development fallback；它已经比早期开发基线更接近真实语义检索，但不能夸大成企业级向量检索平台。”
 
 ### 6.6 RAG 如何执行证据门禁
 
@@ -1208,7 +1228,7 @@ flowchart LR
 | Agent 工作流 | 显式节点、checkpoint、人机中断；当前由 Service 编排 |
 | 画像驱动出题 | 画像推荐训练焦点，用户选择后注入主题 |
 | 查漏驱动出题 | 目录缺口进入推荐计划，仍由用户选择后启动面试 |
-| Embedding | 特征哈希开发基线，非生产语义模型 |
+| Embedding | 默认 BGE-small-zh，保留 development 特征哈希 fallback；非企业级向量服务 |
 | 复杂文档 | 基础文本解析，不包含 OCR 与复杂版面 |
 | 去重 | 文档内容去重 + 本轮题目规避，非全历史语义去重 |
 | 故障恢复 | 关键业务幂等和状态恢复，非分布式任务引擎 |
@@ -1220,7 +1240,7 @@ flowchart LR
 - “完全杜绝幻觉”；
 - “基于 LangGraph 实现完整自主 Agent”；
 - “支持所有复杂 PDF”；
-- “生产级中文 Embedding”；
+- “企业级向量服务 / 已完成生产级 Embedding 治理”；
 - “画像准确代表用户真实能力”；
 - “企业级权限和分布式恢复已完成”。
 
@@ -1375,7 +1395,7 @@ flowchart LR
 
 学习完这份手册后，你不需要成为每一行代码的作者，但必须能形成下面这段判断：
 
-> AgentMentor 的核心价值不是“用大模型生成三道题”，而是把学习资料、可溯源检索、人机工作流、可信评分和长期画像连接成一个受约束的训练闭环。系统通过应用层规则限制 LLM 的权力，通过 checkpoint 和幂等保证流程状态，通过两层画像控制长期记忆粒度，再通过增量知识目录区分“回答得怎么样”和“资料是否考到”，形成补缺与查漏两类训练信号；并在 16GB 本地约束下选择 PostgreSQL、轻量 Embedding 和模块化单体。它已经是一个真实可运行的个人学习系统，但还不是企业级终态；跨场题目去重、复杂文档、生产检索评测、租户权限和可靠异步任务是明确的演进方向。
+> AgentMentor 的核心价值不是“用大模型生成三道题”，而是把学习资料、可溯源检索、人机工作流、可信评分和长期画像连接成一个受约束的训练闭环。系统通过应用层规则限制 LLM 的权力，通过 checkpoint 和幂等保证流程状态，通过两层画像控制长期记忆粒度，再通过增量知识目录区分“回答得怎么样”和“资料是否考到”，形成补缺与查漏两类训练信号；并在 16GB 本地约束下选择 PostgreSQL、本地 BGE-small-zh 和模块化单体。它已经是一个真实可运行的个人学习系统，但还不是企业级终态；跨场题目去重、复杂文档、生产检索评测、租户权限和可靠异步任务是明确的演进方向。
 
 当你能够不用原文复述这段话，并能为每个结论指出一段关键代码或一条测试证据时，就已经达到项目面试所需的掌握程度。
 
@@ -1514,7 +1534,7 @@ Invoke-RestMethod http://localhost:8000/health/runtime
 
 #### 第 10 分钟：主动说明边界
 
-> 当前版本面向本机个人用户，Embedding 是轻量开发基线，复杂文档不包含 OCR，工作流由 Service 显式编排而不是 LangGraph Runtime。下一步企业化会优先补权限、数据治理、评测和可靠任务，而不是先拆微服务。
+> 当前版本面向本机个人用户，Embedding 默认使用本地 BGE-small-zh，并保留 development fallback；复杂文档不包含 OCR，工作流由 Service 显式编排而不是 LangGraph Runtime。下一步企业化会优先补权限、数据治理、评测和可靠任务，而不是先拆微服务。
 
 主动说明边界往往比等面试官指出更可信。
 

@@ -551,7 +551,7 @@ DocumentParser
 - 相关文本通常比无关文本具有更高相似度。
 - 适合离线测试、低资源演示和可复现回归。
 
-它不是生产级神经网络 Embedding。正式部署可通过 `EmbeddingGateway` 端口替换为外部 Embedding 服务。
+当前默认使用本地 BGE-small-zh，并保留 development 特征哈希 fallback。它已经不是早期纯字面特征哈希方案，但也不能等同于企业级向量服务；正式部署仍需要向量版本治理、重建任务、reranker、权限过滤和更大规模评测。
 
 ## 10. 报告历史、趋势和画像消费
 
@@ -980,7 +980,7 @@ postgresql+asyncpg://agentmentor:agentmentor@localhost:5432/agentmentor_test
 - 单用户本地画像，没有登录、RBAC 和租户隔离。
 - 不包含企业文档权限继承和行列级访问控制。
 - 不包含 OCR、布局模型、图片和公式多模态解析。
-- 不包含生产级神经网络 Embedding。
+- 已接入本地 BGE-small-zh，但不包含企业级向量服务治理。
 - BackgroundTasks 适合本机演示，不等同于可靠消息队列。
 - 工作流节点已显式化，但当前没有使用专用工作流引擎。
 - PostgreSQL/pgvector 适合当前规模，尚未验证大规模并发。
