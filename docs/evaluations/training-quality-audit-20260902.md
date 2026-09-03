@@ -902,6 +902,25 @@ negative_rejection_accuracy = 1.0
 - 仍有若干可回答问题未命中预期证据，主要表现为召回排序或资料覆盖问题；
 - 下一步如果继续优化训练质量，重点应放在“召回质量可解释性”和“评测集与知识库版本绑定”。
 
+同时执行真实 `/ask` 接口 smoke：
+
+```text
+POST /api/v1/knowledge-bases/{id}/ask
+question = 唐朝开元年间的具体盐税制度如何影响 RAG 系统设计？
+allow_model_knowledge = false
+```
+
+返回结果：
+
+```text
+evidence_sufficient = false
+generation_mode = evidence_guard
+fallback_reason = insufficient_evidence
+citations = []
+```
+
+这说明边界修复不仅体现在 eval 指标里，也已经作用到真实 RAG 问答链路。
+
 ### 14.5 面试表达价值
 
 可以这样讲：
