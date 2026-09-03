@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -594,23 +594,28 @@ class InterviewService:
     ) -> CoverageFocus | None:
         if sequence != self._coverage_gap_sequence(interview.question_count):
             return None
+        point = await db.scalar(self._coverage_gap_focus_statement(interview.knowledge_base_id))
+        if point is None:
+            return None
+        return CoverageFocus(point_id=point.id, title=point.title)
+
+    def _coverage_gap_focus_statement(self, knowledge_base_id: UUID):
         covered_point_ids = select(QuestionCoverageModel.knowledge_point_id)
-        point = await db.scalar(
+        source_count = func.count(KnowledgeCatalogSourceModel.id).label("source_count")
+        return (
             select(KnowledgeCatalogPointModel)
             .join(
                 KnowledgeCatalogSourceModel,
                 KnowledgeCatalogSourceModel.knowledge_point_id == KnowledgeCatalogPointModel.id,
             )
             .where(
-                KnowledgeCatalogPointModel.knowledge_base_id == interview.knowledge_base_id,
+                KnowledgeCatalogPointModel.knowledge_base_id == knowledge_base_id,
                 KnowledgeCatalogPointModel.id.not_in(covered_point_ids),
             )
-            .order_by(KnowledgeCatalogPointModel.title)
+            .group_by(KnowledgeCatalogPointModel.id)
+            .order_by(source_count.desc(), KnowledgeCatalogPointModel.title)
             .limit(1)
         )
-        if point is None:
-            return None
-        return CoverageFocus(point_id=point.id, title=point.title)
 
     async def _ensure_question_coverage(
         self, db: AsyncSession, *, question_id: UUID, knowledge_point_id: UUID

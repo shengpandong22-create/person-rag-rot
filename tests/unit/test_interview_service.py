@@ -70,6 +70,16 @@ def test_coverage_focus_carries_point_id_and_title() -> None:
     assert focus.title == "引用白名单与证据边界"
 
 
+def test_coverage_gap_focus_prioritizes_points_with_more_sources() -> None:
+    service = InterviewService.__new__(InterviewService)
+
+    statement = service._coverage_gap_focus_statement(uuid4())
+    compiled = str(statement.compile(compile_kwargs={"literal_binds": False})).lower()
+
+    assert "count(" in compiled
+    assert "order by count(knowledge_catalog_sources.id) desc" in compiled
+
+
 def test_question_search_text_keeps_original_query_without_coverage_focus() -> None:
     service = InterviewService.__new__(InterviewService)
     interview = SimpleNamespace(
