@@ -1,4 +1,5 @@
 import { Metric } from "./common.jsx";
+import { embeddingLabel, runtimeStartedLabel, runtimeVersionLabel } from "../utils/formatters.js";
 
 const navigation = [
   ["overview", "总览", "⌂"],
@@ -58,6 +59,7 @@ export function AppLayout({
           <div>
             <strong>{runtime.llm_enabled ? "LLM 已连接" : "本地降级模式"}</strong>
             <small>{runtime.llm_model ?? "Deterministic baseline"}</small>
+            <small>{embeddingLabel(runtime)}</small>
           </div>
         </div>
       </aside>
@@ -129,9 +131,12 @@ export function OverviewDashboard({
 
       <section className="overview-metrics">
         <Metric label="模型模式" value={runtime.llm_enabled ? "真实 LLM" : "本地降级"} />
+        <Metric label="API 版本" value={runtimeVersionLabel(runtime)} />
+        <Metric label="Embedding" value={embeddingLabel(runtime)} />
         <Metric label="可检索资料" value={`${readyCount} 份`} />
         <Metric label="当前面试" value={interview ? `${completion}%` : "未开始"} />
         <Metric label="演示就绪" value={`${passedChecks}/${totalChecks}`} />
+        <Metric label="启动时间" value={runtimeStartedLabel(runtime)} />
       </section>
 
       <div className="overview-columns">

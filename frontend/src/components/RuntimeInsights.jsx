@@ -1,7 +1,16 @@
+import {
+  embeddingLabel,
+  runtimeStartedLabel,
+  runtimeVersionLabel,
+} from "../utils/formatters.js";
+
 export function RuntimeInsights({ runtime, askResult, report, readiness }) {
   const llmMode = runtime?.llm_enabled
     ? `真实 LLM：${runtime.llm_model ?? "已配置"}`
     : "本地确定性降级";
+  const embeddingMode = embeddingLabel(runtime);
+  const apiVersion = runtimeVersionLabel(runtime);
+  const startedAt = runtimeStartedLabel(runtime);
   const evidenceLabel =
     askResult == null
       ? "尚未执行 RAG"
@@ -20,6 +29,16 @@ export function RuntimeInsights({ runtime, askResult, report, readiness }) {
       <div>
         <span>LLM 状态</span>
         <strong>{llmMode}</strong>
+      </div>
+      <div>
+        <span>Embedding</span>
+        <strong>{embeddingMode}</strong>
+        <small>{runtime?.embedding_model ?? "模型未返回"}</small>
+      </div>
+      <div>
+        <span>API 运行态</span>
+        <strong>{apiVersion}</strong>
+        <small>启动：{startedAt}</small>
       </div>
       <div>
         <span>最近 RAG</span>

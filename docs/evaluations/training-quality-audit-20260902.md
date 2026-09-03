@@ -556,3 +556,73 @@ python scripts/run_knowledge_base_interview_audit.py agent \
 可以这样讲：
 
 > 我们后续没有只看分数和错题，而是把训练质量拆成补缺和查漏两条线。补缺解决的是“哪里答错了”，查漏解决的是“哪些知识点还没考过”。我复用了画像服务里的 coverage 接口，在审计脚本里记录训练前后覆盖快照，输出触达率、可信覆盖率、新增触达点和剩余未覆盖点。一次小规模真实验收显示，训练后未覆盖点减少，但可信覆盖率没有立刻上升，这符合我们的设计：系统不会因为一次高分就认为用户稳定掌握，而是需要可信评分逐步沉淀。
+
+## 11. 第 6 批训练质量修复：前端运行态证据展示
+
+### 11.1 发现的问题
+
+在覆盖审计中发现，代码已经包含 `app_version`、`started_at`、`generation` 等运行态证据，但如果 Docker 容器没有重建，页面和审计结果可能仍连接到旧运行态。
+
+这个问题对面试演示很敏感：
+
+- 面试官看到页面时，不知道当前到底是本地降级还是 DeepSeek；
+- 不知道 embedding 是否已经切到 BGE；
+- 不知道 API 容器是否是最新启动版本；
+- 需要额外打开命令行解释，演示链路不够自证。
+
+### 11.2 最小改造方案
+
+不改后端接口，只复用已有 `/health/runtime` 返回值，在前端补充展示：
+
+- 侧边栏显示 LLM 状态和 Embedding 模式；
+- 总览页指标区展示 API 版本、Embedding、启动时间；
+- 系统状态页展示：
+  - LLM 状态；
+  - Embedding provider / dimension；
+  - embedding model；
+  - API version；
+  - API started_at；
+  - 最近 RAG / 最近评分 / 演示就绪度。
+
+代码路线：
+
+- `frontend/src/utils/formatters.js`
+  - `runtimeVersionLabel()`
+  - `runtimeStartedLabel()`
+  - `embeddingLabel()`
+- `frontend/src/components/AppLayout.jsx`
+- `frontend/src/components/RuntimeInsights.jsx`
+- `frontend/src/components/common.jsx`
+- `frontend/src/styles.css`
+
+### 11.3 验收结果
+
+本地前端构建：
+
+```bash
+npm run build
+```
+
+结果：
+
+- Vite build 通过；
+- React 页面没有构建错误；
+- 运行态字段缺失时会显示“未知”，不会导致页面崩溃。
+
+后端回归：
+
+- `ruff check .`：通过；
+- `pyright`：0 errors；
+- `pytest`：87 passed，1 skipped。
+
+限制：
+
+- 本轮尝试重建 frontend Docker 容器时，Docker Desktop 引擎不在线，报错为无法连接 `dockerDesktopLinuxEngine`；
+- 代码和本地 build 已通过；
+- Docker Desktop 恢复后执行 `docker compose up -d --build frontend` 即可让 `http://localhost:3000` 使用新版静态包。
+
+### 11.4 面试表达价值
+
+可以这样讲：
+
+> 我后来发现，仅靠源码和命令行说系统启用了 DeepSeek、BGE 和最新 API，不如让页面自己展示运行态证据。所以我把 `/health/runtime` 的信息接入前端系统状态和总览区，直接展示 LLM 模式、Embedding 模型、向量维度、API 版本和启动时间。这样面试演示时可以现场证明当前跑的不是旧容器，也不是纯本地假数据。

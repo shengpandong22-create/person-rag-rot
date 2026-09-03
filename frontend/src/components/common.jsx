@@ -1,4 +1,9 @@
-import { runtimeLabel } from "../utils/formatters.js";
+import {
+  embeddingLabel,
+  runtimeLabel,
+  runtimeStartedLabel,
+  runtimeVersionLabel,
+} from "../utils/formatters.js";
 
 export function StatusPanel({ status, error, busy, runtime }) {
   return (
@@ -9,7 +14,7 @@ export function StatusPanel({ status, error, busy, runtime }) {
         <strong>{status}</strong>
         <p>
           {error ||
-            `${runtimeLabel(runtime)}；本地 Docker Compose 运行，适合 16GB 普通开发机演示。`}
+            `${runtimeLabel(runtime)}；${embeddingLabel(runtime)}；${runtimeVersionLabel(runtime)}；启动 ${runtimeStartedLabel(runtime)}。`}
         </p>
       </div>
     </aside>
