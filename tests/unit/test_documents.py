@@ -17,6 +17,26 @@ def test_markdown_parser_preserves_heading_path() -> None:
     assert sections[1].heading_path == ["RAG", "Citations"]
 
 
+def test_markdown_parser_ignores_headings_inside_fenced_code() -> None:
+    sections = DocumentParser(max_pdf_pages=5).parse(
+        "notes.md",
+        b"# RAG\nbefore\n```python\n# not a heading\nprint('ok')\n```\nafter",
+    )
+
+    assert len(sections) == 1
+    assert sections[0].heading_path == ["RAG"]
+    assert "# not a heading" in sections[0].text
+
+
+def test_markdown_parser_strips_utf8_bom_before_heading_detection() -> None:
+    sections = DocumentParser(max_pdf_pages=5).parse(
+        "notes.md",
+        "\ufeff# 知识入库\n正文".encode(),
+    )
+
+    assert sections[0].heading_path == ["知识入库"]
+
+
 def test_docx_parser_and_chunker() -> None:
     document = Document()
     document.add_heading("Agent", level=1)

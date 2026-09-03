@@ -613,7 +613,7 @@ npm run build
 
 - `ruff check .`：通过；
 - `pyright`：0 errors；
-- `pytest`：87 passed，1 skipped。
+- `pytest`：93 passed，1 skipped。
 
 限制：
 
@@ -626,3 +626,102 @@ npm run build
 可以这样讲：
 
 > 我后来发现，仅靠源码和命令行说系统启用了 DeepSeek、BGE 和最新 API，不如让页面自己展示运行态证据。所以我把 `/health/runtime` 的信息接入前端系统状态和总览区，直接展示 LLM 模式、Embedding 模型、向量维度、API 版本和启动时间。这样面试演示时可以现场证明当前跑的不是旧容器，也不是纯本地假数据。
+
+## 12. 第 7 批训练质量修复：知识目录噪声清理
+
+### 12.1 发现的问题
+
+覆盖审计已经能告诉我们“哪些知识点没考过”，但进一步查看候选知识点后发现，目录抽取里存在两类噪声：
+
+1. Markdown 代码块里的 `# xxx` 被误识别成标题；
+2. 教案类文档中的结构性标题被当成知识点，例如：
+   - `一、教案正文`
+   - `二、学员疑问与讨论记录`
+   - `先说结论`
+   - `本课自测`
+   - `自测结果`
+   - `核心链路图`
+   - `最小源码定位表`
+
+这些内容不是知识点，而是文档组织结构。如果进入画像，会带来两个问题：
+
+- 查漏推荐会出现“自测结果”“源码定位表”这类不可训练主题；
+- 覆盖率看似完整，但其实混入了非知识节点，降低训练画像可信度。
+
+### 12.2 最小改造方案
+
+本轮仍然不改数据库结构，也不引入 LLM 抽取知识点，只增强确定性规则：
+
+- Markdown parser 识别 fenced code block；
+- 代码块里的 `#` 不再当作 Markdown heading；
+- catalog title 抽取时先清理编号前缀：
+  - `2.1 先说结论` → `先说结论`
+  - `一、教案正文` → `教案正文`
+  - `第 2 课：知识入库链路` → `知识入库链路`
+- 把标题分成两类：
+  - 泛标题：可以跳过当前标题，回退父级或正文第一行，例如 `核心知识点`；
+  - 非知识标题：直接跳过，不再回退，例如 `自测结果`、`核心链路图`、`源码定位表`。
+
+代码路线：
+
+- `src/agent_mentor/rag/documents.py`
+  - `_parse_text()` 增加 fenced code 识别；
+  - 解析前去掉 UTF-8 BOM，避免 `#` 标题识别失败。
+- `src/agent_mentor/application/coverage_catalog.py`
+  - `_clean_catalog_title()`
+  - `_is_specific_catalog_title()`
+  - `_is_non_knowledge_title()`
+  - `_is_non_knowledge_path()`
+- `tests/unit/test_documents.py`
+- `tests/unit/test_coverage_catalog.py`
+
+### 12.3 离线审计结果
+
+使用 `docs/learning` 下 7 份学习文档做离线扫描，不连接数据库，只验证 parser + chunking + catalog title 抽取效果。
+
+修复后结果：
+
+- 唯一候选知识点：112；
+- 关联 chunk：119；
+- 跳过非知识结构块：39；
+- 顶部候选从“教案正文 / 学员疑问 / 自测结果”变成：
+  - `Embedding 阶段：当前的真实实现`
+  - `重新索引时为什么尽量保留 Chunk ID`
+  - `上传阶段：三个安全措施`
+  - `增量知识目录：新文档如何进入查漏体系`
+  - `RRF 公式`
+  - `引用白名单`
+  - `证据门禁`
+
+这说明目录质量明显更接近“可训练知识点”，而不是文档结构标题。
+
+### 12.4 回归结果
+
+- `ruff check .`：通过；
+- `pyright`：0 errors；
+- `pytest`：93 passed，1 skipped。
+
+跳过项仍是：
+
+- `tests/integration/test_learning_loop.py`
+- 原因：未配置独立 PostgreSQL 集成测试库。
+
+### 12.5 生效方式
+
+本次修改会在新文档入库时自动生效。
+
+对于已经入库的旧文档，需要重建 coverage catalog 才会反映到数据库。当前项目在 API 启动时会执行：
+
+```text
+main.py
+→ knowledge_service.rebuild_coverage_catalogs()
+→ sync_document_catalog()
+```
+
+因此下一次重建并重启 API 容器后，已有文档的 catalog source 会按新规则刷新。
+
+### 12.6 面试表达价值
+
+可以这样讲：
+
+> 做 coverage 审计后，我发现不是所有 heading 都适合当作知识点。比如教案里的“先说结论”“自测结果”“核心链路图”只是文档结构，如果进入画像，会让查漏推荐失真。我没有直接引入 LLM 抽取，而是先做确定性清洗：Markdown parser 跳过代码块标题，catalog 抽取时清理编号并过滤非知识标题。这样保持实现可控，也让画像中的知识点更接近真实可训练主题。

@@ -40,11 +40,22 @@ class DocumentParser:
 
     @staticmethod
     def _parse_text(text: str, *, markdown: bool) -> list[ParsedSection]:
+        text = text.lstrip("\ufeff")
         current_path: list[str] = []
         buffer: list[str] = []
         sections: list[ParsedSection] = []
+        in_fenced_code = False
         for line in text.splitlines():
-            if markdown and line.startswith("#") and line.lstrip("#").startswith(" "):
+            if markdown and line.strip().startswith("```"):
+                in_fenced_code = not in_fenced_code
+                buffer.append(line)
+                continue
+            if (
+                markdown
+                and not in_fenced_code
+                and line.startswith("#")
+                and line.lstrip("#").startswith(" ")
+            ):
                 if buffer:
                     sections.append(
                         ParsedSection(
