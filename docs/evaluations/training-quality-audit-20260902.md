@@ -977,3 +977,76 @@ Band order accuracy = 1.0
 可以这样讲：
 
 > 我没有只说“系统能评分”，而是专门做了一个人工答案集，里面同一道能力点准备低分、中分、高分答案，并标注人工期望分。然后用 eval runner 对比模型评分和人工分，输出 MAE、相关系数、档位排序和复核路由准确率。结果显示 DeepSeek 评分 MAE 约 1.67，相关系数 0.98，能稳定区分不同质量答案。同时我也保留 deterministic fallback 的结果，明确它只是无 Key 降级，不把它包装成真实评分能力。
+
+## 16. 第 11 批训练质量修复：检索评估绑定知识库指纹
+
+### 16.1 发现的问题
+
+检索评估强依赖当前知识库内容。同一份 `retrieval_v1.jsonl`，如果跑在不同知识库、不同文档版本或不同 chunk 数量上，Recall/MRR 的含义会完全不同。
+
+此前 retrieval eval 报告只有：
+
+```text
+dataset
+knowledge_base_id
+embedding
+retrieval 参数
+metrics
+```
+
+这仍然不够。因为只看一个 UUID，无法快速判断：
+
+- 当前知识库到底是哪批资料；
+- 文档是否全部 ready；
+- chunk 数量和 catalog point 数量是否发生变化；
+- 是资料版本变化导致指标波动，还是代码变更导致指标波动。
+
+### 16.2 最小改造方案
+
+在 `retrieval_runner` 中增加知识库指纹，不改业务链路：
+
+- knowledge base 名称；
+- 文档总数；
+- active 文档数；
+- ready 文档数；
+- chunk 数；
+- catalog point 数；
+- 所有文档 `content_hash` 聚合后的 `document_hash_sha256`；
+- 每份文档的 title、logical_name、version、status、is_active、content_hash。
+
+代码路线：
+
+- `evals/runners/retrieval_runner.py`
+  - `_knowledge_base_fingerprint()`
+  - `_knowledge_base_summary()`
+  - `_status_value()`
+
+### 16.3 验收结果
+
+重新生成的 retrieval eval 报告中已包含：
+
+```text
+knowledge_base: AgentMentor BGE 验收知识库
+documents = 7
+active = 7
+ready = 7
+chunks = 195
+catalog_points = 194
+document_hash_sha256 = c7ad10b8c60db236b797763c38a3eb3578827b2f6d2aa6535e0885ebce13ae27
+```
+
+指标保持稳定：
+
+```text
+Recall@1 = 0.5
+Recall@3 = 0.6538
+Recall@6 = 0.7308
+MRR = 0.5865
+negative_rejection_accuracy = 1.0
+```
+
+### 16.4 面试表达价值
+
+可以这样讲：
+
+> RAG 评测不能只保存一个指标，否则之后根本不知道这个结果对应哪批资料。我在 eval 报告里加入了知识库指纹，包括文档数量、ready 状态、chunk 数、catalog point 数和文档 hash 聚合值。这样后续 Recall 变化时，可以先判断是不是资料库变化，而不是直接误判为算法退化。这也是企业里做 RAG 评估时很关键的一点：数据集、知识库版本、Embedding 模型和检索参数必须一起固化。

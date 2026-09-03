@@ -5,11 +5,21 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import Any
 from uuid import UUID
+
+from sqlalchemy import func, select
 
 from agent_mentor import __version__
 from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.config import get_settings
+from agent_mentor.domain.knowledge import DocumentStatus
+from agent_mentor.infrastructure.database.models import (
+    KnowledgeBaseModel,
+    KnowledgeCatalogPointModel,
+    KnowledgeChunkModel,
+    SourceDocumentModel,
+)
 from agent_mentor.infrastructure.database.session import (
     create_database_engine,
     create_session_factory,
@@ -70,6 +80,9 @@ async def run_retrieval_eval(
     case_rows: list[dict[str, object]] = []
     metric_inputs: list[RetrievalCaseResult] = []
     try:
+        knowledge_base_fingerprint = await _knowledge_base_fingerprint(
+            sessions, knowledge_base_id
+        )
         for case in cases:
             chunks = await retriever.retrieve(
                 RetrievalQuery(
@@ -132,6 +145,7 @@ async def run_retrieval_eval(
             "retrieval_candidate_k": candidate_k,
             "retrieval_min_score": threshold,
             "retrieval_max_chunks_per_document": settings.retrieval_max_chunks_per_document,
+            "knowledge_base": knowledge_base_fingerprint,
         },
         metrics=asdict(metrics),
         cases=case_rows,
@@ -184,12 +198,72 @@ def _matched_keywords(chunk: RetrievedChunk, keywords: tuple[str, ...]) -> list[
     return [keyword for keyword in keywords if keyword.casefold() in haystack]
 
 
+async def _knowledge_base_fingerprint(
+    sessions: Any, knowledge_base_id: UUID
+) -> dict[str, object]:
+    async with sessions() as session:
+        knowledge_base = await session.get(KnowledgeBaseModel, knowledge_base_id)
+        if knowledge_base is None:
+            return {"id": str(knowledge_base_id), "exists": False}
+
+        documents = (
+            await session.execute(
+                select(SourceDocumentModel)
+                .where(SourceDocumentModel.knowledge_base_id == knowledge_base_id)
+                .order_by(SourceDocumentModel.logical_name, SourceDocumentModel.version)
+            )
+        ).scalars().all()
+        chunk_count = await session.scalar(
+            select(func.count(KnowledgeChunkModel.id))
+            .join(SourceDocumentModel, KnowledgeChunkModel.document_id == SourceDocumentModel.id)
+            .where(SourceDocumentModel.knowledge_base_id == knowledge_base_id)
+        )
+        catalog_point_count = await session.scalar(
+            select(func.count(KnowledgeCatalogPointModel.id)).where(
+                KnowledgeCatalogPointModel.knowledge_base_id == knowledge_base_id
+            )
+        )
+        document_hash_digest = sha256()
+        for document in documents:
+            document_hash_digest.update(document.content_hash.encode("utf-8"))
+        return {
+            "id": str(knowledge_base.id),
+            "exists": True,
+            "name": knowledge_base.name,
+            "document_count": len(documents),
+            "active_document_count": sum(1 for document in documents if document.is_active),
+            "ready_document_count": sum(
+                1 for document in documents if document.status == DocumentStatus.READY
+            ),
+            "chunk_count": int(chunk_count or 0),
+            "catalog_point_count": int(catalog_point_count or 0),
+            "document_hash_sha256": document_hash_digest.hexdigest(),
+            "documents": [
+                {
+                    "title": document.title,
+                    "logical_name": document.logical_name,
+                    "version": document.version,
+                    "status": _status_value(document.status),
+                    "is_active": document.is_active,
+                    "content_hash": document.content_hash,
+                }
+                for document in documents
+            ],
+        }
+
+
 def _file_sha256(path: Path) -> str:
     digest = sha256()
     with path.open("rb") as file:
         for block in iter(lambda: file.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _status_value(status: object) -> str:
+    if isinstance(status, DocumentStatus):
+        return status.value
+    return str(status)
 
 
 def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
@@ -216,6 +290,7 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"top_k={report.metadata['retrieval_top_k']}, "
         f"candidate_k={report.metadata['retrieval_candidate_k']}, "
         f"min_score={report.metadata['retrieval_min_score']}",
+        f"- knowledge_base: {_knowledge_base_summary(report.metadata['knowledge_base'])}",
         f"- total: {metrics['total']}",
         f"- Recall@1: {metrics['recall_at_1']}",
         f"- Recall@3: {metrics['recall_at_3']}",
@@ -249,3 +324,18 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
                 ]
             )
     markdown_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def _knowledge_base_summary(value: object) -> str:
+    if not isinstance(value, dict):
+        return "-"
+    if not value.get("exists"):
+        return f"{value.get('id', '-')} (missing)"
+    return (
+        f"{value.get('name', '-')} "
+        f"(documents={value.get('document_count', 0)}, "
+        f"active={value.get('active_document_count', 0)}, "
+        f"ready={value.get('ready_document_count', 0)}, "
+        f"chunks={value.get('chunk_count', 0)}, "
+        f"catalog_points={value.get('catalog_point_count', 0)})"
+    )

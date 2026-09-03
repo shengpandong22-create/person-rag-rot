@@ -2,11 +2,12 @@
 
 - dataset: `evals/datasets/retrieval_v1.jsonl`
 - knowledge_base_id: `b2d70e40-02d1-4a78-af5a-22df85a82693`
-- generated_at: 2026-09-03T01:04:58.803300+00:00
+- generated_at: 2026-09-03T13:52:03.952919+00:00
 - app_version: 0.1.0
 - dataset_sha256: `d4c4213e3cfcdcff1d04caf2b844539f8adecf6e659c36820f96672953a0f6b7`
 - embedding: bge / BAAI/bge-small-zh-v1.5
 - retrieval: top_k=6, candidate_k=20, min_score=0.01
+- knowledge_base: AgentMentor BGE 验收知识库 (documents=7, active=7, ready=7, chunks=195, catalog_points=194)
 - total: 30
 - Recall@1: 0.5
 - Recall@3: 0.6538

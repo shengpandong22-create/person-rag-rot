@@ -2,7 +2,7 @@
   "dataset": "evals/datasets/retrieval_v1.jsonl",
   "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
   "metadata": {
-    "generated_at": "2026-09-03T01:04:58.803300+00:00",
+    "generated_at": "2026-09-03T13:52:03.952919+00:00",
     "app_version": "0.1.0",
     "dataset_sha256": "d4c4213e3cfcdcff1d04caf2b844539f8adecf6e659c36820f96672953a0f6b7",
     "embedding_provider": "bge",
@@ -11,7 +11,76 @@
     "retrieval_top_k": 6,
     "retrieval_candidate_k": 20,
     "retrieval_min_score": 0.01,
-    "retrieval_max_chunks_per_document": 3
+    "retrieval_max_chunks_per_document": 3,
+    "knowledge_base": {
+      "id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+      "exists": true,
+      "name": "AgentMentor BGE 验收知识库",
+      "document_count": 7,
+      "active_document_count": 7,
+      "ready_document_count": 7,
+      "chunk_count": 195,
+      "catalog_point_count": 194,
+      "document_hash_sha256": "c7ad10b8c60db236b797763c38a3eb3578827b2f6d2aa6535e0885ebce13ae27",
+      "documents": [
+        {
+          "title": "第 1 课：项目全景与架构地图",
+          "logical_name": "第 1 课：项目全景与架构地图",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "23e629defa25a7f9b6a3b36ae7e3800376b8687c7556c13f390435d3d45410c2"
+        },
+        {
+          "title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "b04f184e397c458d8b5b18bb9c3de0711a7701d464931ce0365676cdebb30a72"
+        },
+        {
+          "title": "第 3 课：混合检索与可信 RAG 回答",
+          "logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "f0ef6b515c3b004b6573dbcdb16c4c821f095e05c3698aea2704bf26f29d9387"
+        },
+        {
+          "title": "第 4 课：可恢复模拟面试工作流",
+          "logical_name": "第 4 课：可恢复模拟面试工作流",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "4dbcb6c46f07886fd3971a1f47fb1385365ea6aae50cab22e3b53d00721e5611"
+        },
+        {
+          "title": "第 5 课：可信评分与报告",
+          "logical_name": "第 5 课：可信评分与报告",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "62e9d7eb7a9dd7c12ec9ff93ac7fd07794e7e1f51b15890620db7defe44fe87b"
+        },
+        {
+          "title": "第 6 课：两层画像与复习闭环",
+          "logical_name": "第 6 课：两层画像与复习闭环",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "df1c34601fe13e54931a228bd1de781a36f1ca1073c3c374882b0c7ef393f8f9"
+        },
+        {
+          "title": "第 7 课：工程化专题 + 面试实战",
+          "logical_name": "第 7 课：工程化专题 + 面试实战",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "ef0ab6bdde4cdd1972bb8535c0e6afd9172fc5ede2b75b72bec28239ce729c11"
+        }
+      ]
+    }
   },
   "metrics": {
     "total": 30,
