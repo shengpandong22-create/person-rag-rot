@@ -145,6 +145,34 @@ def test_answer_service_rejects_external_constraint_with_only_generic_project_ov
     )
 
 
+def test_answer_service_assesses_only_lexically_supported_candidates() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.02,
+    )
+    unrelated_high_score = replace(
+        chunk(),
+        content="唐朝开元年间盐税制度主要涉及财政结构和区域治理。",
+        score=0.99,
+    )
+    supported_low_score = replace(
+        chunk(),
+        content="RAG 系统通过证据门禁和引用白名单降低幻觉，但仍需检索质量兜底。",
+        score=0.01,
+    )
+
+    supported, sufficient = service.assess_evidence(
+        "RAG 系统如何通过引用白名单降低幻觉？",
+        [unrelated_high_score, supported_low_score],
+    )
+
+    assert supported == [supported_low_score]
+    assert sufficient is False
+
+
 def test_answer_service_expands_rrf_retrieval_aliases() -> None:
     service = AnswerService(
         cast(Any, None),
