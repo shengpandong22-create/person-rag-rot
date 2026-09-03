@@ -1050,3 +1050,86 @@ negative_rejection_accuracy = 1.0
 可以这样讲：
 
 > RAG 评测不能只保存一个指标，否则之后根本不知道这个结果对应哪批资料。我在 eval 报告里加入了知识库指纹，包括文档数量、ready 状态、chunk 数、catalog point 数和文档 hash 聚合值。这样后续 Recall 变化时，可以先判断是不是资料库变化，而不是直接误判为算法退化。这也是企业里做 RAG 评估时很关键的一点：数据集、知识库版本、Embedding 模型和检索参数必须一起固化。
+
+## 17. 第 12 批训练质量修复：检索失败样本增加关键词覆盖诊断
+
+### 17.1 发现的问题
+
+在第 11 批之后，retrieval eval 仍有 7 个可回答问题被判为证据不足。
+
+进一步检查发现，这些失败不能简单归因于检索算法。例如：
+
+```text
+ret-014: SSE 问答流需要哪些终止事件？
+expected_keyword_coverage:
+  SSE = 2
+  answer.completed = 0
+  answer.failed = 0
+
+ret-020: 单文档占比控制想避免什么问题？
+expected_keyword_coverage:
+  单文档 = 0
+  占比 = 1
+  多样性 = 0
+```
+
+这说明当前评测集里有一部分关键词并没有出现在当前 `AgentMentor BGE 验收知识库` 中。此时 Recall 低不一定代表检索实现坏了，也可能是：
+
+- 评测集基于旧版本资料设计；
+- 当前知识库缺少对应材料；
+- 文档表达方式变化后，expected keyword 过于精确；
+- 评测集没有跟知识库版本一起维护。
+
+### 17.2 最小改造方案
+
+在 retrieval eval 的每个 case 中加入 `expected_keyword_coverage`：
+
+```text
+expected_keyword_coverage = {
+  keyword -> 当前知识库中命中的 chunk 数
+}
+```
+
+Markdown 失败样本里同步展示该字段。
+
+这样每个失败样本可以先被拆成两类：
+
+1. **知识库没有覆盖**：关键词命中为 0，优先补资料或调整评测集；
+2. **知识库有覆盖但召回不到**：关键词命中大于 0，但 top_k 没召回，优先优化检索排序、RRF 或 reranker。
+
+代码路线：
+
+- `evals/runners/retrieval_runner.py`
+  - `_expected_keyword_coverage()`
+  - 失败样本输出 `expected_keyword_coverage`
+
+### 17.3 验收结果
+
+新报告中失败样本已能直接展示关键词覆盖情况。
+
+例如：
+
+```text
+ret-009 可信等级可以怎样影响检索排序？
+expected_keyword_coverage:
+  可信等级 = 0
+  排序 = 1
+  语义相关性 = 0
+```
+
+这条失败更像是“评测集/资料不匹配”，而不是简单的向量召回失败。
+
+### 17.4 下一步建议
+
+后续如果继续提升检索质量，不建议盲目改阈值。更合理的路线是：
+
+1. 将 retrieval eval 数据集按知识库版本维护；
+2. 对每条 case 增加 `expected_document` 或 `expected_catalog_point`；
+3. 对“知识库有覆盖但召回不到”的样本再考虑 reranker、query rewrite 或关键词增强；
+4. 对“知识库未覆盖”的样本补文档或移出该知识库的评测集。
+
+### 17.5 面试表达价值
+
+可以这样讲：
+
+> 我在评估检索质量时没有只看 Recall。我发现有些失败样本的 expected keyword 在当前知识库中根本不存在，所以我给 eval runner 增加了关键词覆盖诊断。这样每个失败样本先判断是“资料未覆盖”还是“有资料但召回不到”。这避免了一个常见误区：把数据集和知识库不匹配误判为检索算法失败。

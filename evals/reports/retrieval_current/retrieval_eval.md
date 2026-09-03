@@ -2,7 +2,7 @@
 
 - dataset: `evals/datasets/retrieval_v1.jsonl`
 - knowledge_base_id: `b2d70e40-02d1-4a78-af5a-22df85a82693`
-- generated_at: 2026-09-03T13:52:03.952919+00:00
+- generated_at: 2026-09-03T13:55:40.278514+00:00
 - app_version: 0.1.0
 - dataset_sha256: `d4c4213e3cfcdcff1d04caf2b844539f8adecf6e659c36820f96672953a0f6b7`
 - embedding: bge / BAAI/bge-small-zh-v1.5
@@ -24,6 +24,7 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'证据不足': 7, '不伪造引用': 0}
 - top_document: 第 6 课：两层画像与复习闭环
 - top_score: 0.01639344262295082
 
@@ -33,6 +34,7 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'可信等级': 0, '排序': 1, '语义相关性': 0}
 - top_document: 第 6 课：两层画像与复习闭环
 - top_score: 0.01639344262295082
 
@@ -42,6 +44,7 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'SSE': 2, 'answer.completed': 0, 'answer.failed': 0}
 - top_document: 第 3 课：混合检索与可信 RAG 回答
 - top_score: 0.01639344262295082
 
@@ -51,6 +54,7 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'V1': 2, 'PostgreSQL': 3, '复杂度': 0}
 - top_document: 第 2 课：知识入库链路——文档如何变成可检索证据
 - top_score: 0.01639344262295082
 
@@ -60,6 +64,7 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'Recall': 1, 'MRR': 0, '评测': 4}
 - top_document: 第 5 课：可信评分与报告
 - top_score: 0.01639344262295082
 
@@ -69,6 +74,7 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'单文档': 0, '占比': 1, '多样性': 0}
 - top_document: 第 3 课：混合检索与可信 RAG 回答
 - top_score: 0.01639344262295082
 
@@ -78,5 +84,6 @@
 - answerable: True
 - evidence_sufficient: False
 - supported_chunk_count: 0
+- expected_keyword_coverage: {'PostgreSQL': 3, 'pgvector': 7, '业务数据': 0}
 - top_document: 第 6 课：两层画像与复习闭环
 - top_score: 0.01639344262295082

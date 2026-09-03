@@ -2,7 +2,7 @@
   "dataset": "evals/datasets/retrieval_v1.jsonl",
   "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
   "metadata": {
-    "generated_at": "2026-09-03T13:52:03.952919+00:00",
+    "generated_at": "2026-09-03T13:55:40.278514+00:00",
     "app_version": "0.1.0",
     "dataset_sha256": "d4c4213e3cfcdcff1d04caf2b844539f8adecf6e659c36820f96672953a0f6b7",
     "embedding_provider": "bge",
@@ -101,6 +101,11 @@
         "证据",
         "引用"
       ],
+      "expected_keyword_coverage": {
+        "RAG": 64,
+        "证据": 68,
+        "引用": 38
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 4,
@@ -172,6 +177,11 @@
         "检索",
         "学习资料"
       ],
+      "expected_keyword_coverage": {
+        "向量": 13,
+        "检索": 85,
+        "学习资料": 4
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 3,
@@ -241,6 +251,11 @@
         "章节",
         "引用"
       ],
+      "expected_keyword_coverage": {
+        "标题": 10,
+        "章节": 0,
+        "引用": 38
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 4,
@@ -308,6 +323,11 @@
         "AI Agent",
         "RAG"
       ],
+      "expected_keyword_coverage": {
+        "Java": 1,
+        "AI Agent": 0,
+        "RAG": 64
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 3,
@@ -374,6 +394,11 @@
         "向量",
         "混合检索"
       ],
+      "expected_keyword_coverage": {
+        "全文": 11,
+        "向量": 13,
+        "混合检索": 37
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 4,
@@ -444,6 +469,11 @@
         "排序",
         "融合"
       ],
+      "expected_keyword_coverage": {
+        "RRF": 24,
+        "排序": 1,
+        "融合": 10
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 6,
@@ -519,6 +549,10 @@
         "证据不足",
         "不伪造引用"
       ],
+      "expected_keyword_coverage": {
+        "证据不足": 7,
+        "不伪造引用": 0
+      },
       "first_relevant_rank": 6,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -578,6 +612,11 @@
         "检索上下文",
         "校验"
       ],
+      "expected_keyword_coverage": {
+        "chunk_id": 14,
+        "检索上下文": 1,
+        "校验": 23
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 2,
@@ -645,6 +684,11 @@
         "排序",
         "语义相关性"
       ],
+      "expected_keyword_coverage": {
+        "可信等级": 0,
+        "排序": 1,
+        "语义相关性": 0
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -702,6 +746,11 @@
         "证据",
         "可追溯"
       ],
+      "expected_keyword_coverage": {
+        "不能保证": 0,
+        "证据": 68,
+        "可追溯": 1
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 2,
@@ -767,6 +816,11 @@
         "重复",
         "版本"
       ],
+      "expected_keyword_coverage": {
+        "SHA-256": 5,
+        "重复": 10,
+        "版本": 8
+      },
       "first_relevant_rank": 2,
       "evidence_sufficient": true,
       "supported_chunk_count": 4,
@@ -832,6 +886,11 @@
         "默认检索",
         "版本"
       ],
+      "expected_keyword_coverage": {
+        "旧版本": 1,
+        "默认检索": 0,
+        "版本": 8
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 2,
@@ -892,6 +951,11 @@
         "系统规则",
         "不可信数据"
       ],
+      "expected_keyword_coverage": {
+        "Prompt Injection": 0,
+        "系统规则": 0,
+        "不可信数据": 0
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": true,
       "supported_chunk_count": 5,
@@ -949,6 +1013,11 @@
         "answer.completed",
         "answer.failed"
       ],
+      "expected_keyword_coverage": {
+        "SSE": 2,
+        "answer.completed": 0,
+        "answer.failed": 0
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1006,6 +1075,11 @@
         "融合分数",
         "追溯"
       ],
+      "expected_keyword_coverage": {
+        "候选": 0,
+        "融合分数": 0,
+        "追溯": 2
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": true,
       "supported_chunk_count": 1,
@@ -1063,6 +1137,11 @@
         "Docker Compose",
         "资源"
       ],
+      "expected_keyword_coverage": {
+        "16GB": 3,
+        "Docker Compose": 2,
+        "资源": 1
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 1,
@@ -1124,6 +1203,11 @@
         "PostgreSQL",
         "复杂度"
       ],
+      "expected_keyword_coverage": {
+        "V1": 2,
+        "PostgreSQL": 3,
+        "复杂度": 0
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1181,6 +1265,11 @@
         "MRR",
         "评测"
       ],
+      "expected_keyword_coverage": {
+        "Recall": 1,
+        "MRR": 0,
+        "评测": 4
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1238,6 +1327,11 @@
         "证据不足",
         "禁止"
       ],
+      "expected_keyword_coverage": {
+        "allow_model_knowledge": 2,
+        "证据不足": 7,
+        "禁止": 0
+      },
       "first_relevant_rank": 2,
       "evidence_sufficient": true,
       "supported_chunk_count": 5,
@@ -1298,6 +1392,11 @@
         "占比",
         "多样性"
       ],
+      "expected_keyword_coverage": {
+        "单文档": 0,
+        "占比": 1,
+        "多样性": 0
+      },
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1355,6 +1454,11 @@
         "chunk",
         "去重"
       ],
+      "expected_keyword_coverage": {
+        "相邻": 5,
+        "chunk": 38,
+        "去重": 13
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 3,
@@ -1427,6 +1531,11 @@
         "pgvector",
         "业务数据"
       ],
+      "expected_keyword_coverage": {
+        "PostgreSQL": 3,
+        "pgvector": 7,
+        "业务数据": 0
+      },
       "first_relevant_rank": 4,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1491,6 +1600,11 @@
         "引用",
         "追溯"
       ],
+      "expected_keyword_coverage": {
+        "持久化": 8,
+        "引用": 38,
+        "追溯": 2
+      },
       "first_relevant_rank": 3,
       "evidence_sufficient": true,
       "supported_chunk_count": 1,
@@ -1553,6 +1667,11 @@
         "证据化",
         "学习"
       ],
+      "expected_keyword_coverage": {
+        "面试助手": 0,
+        "证据化": 0,
+        "学习": 6
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 2,
@@ -1614,6 +1733,11 @@
         "API Key",
         "安全"
       ],
+      "expected_keyword_coverage": {
+        "测试环境": 0,
+        "API Key": 1,
+        "安全": 4
+      },
       "first_relevant_rank": 2,
       "evidence_sufficient": true,
       "supported_chunk_count": 3,
@@ -1673,6 +1797,11 @@
         "出题",
         "证据"
       ],
+      "expected_keyword_coverage": {
+        "RAG": 64,
+        "出题": 8,
+        "证据": 68
+      },
       "first_relevant_rank": 1,
       "evidence_sufficient": true,
       "supported_chunk_count": 4,
@@ -1740,6 +1869,7 @@
       "question": "唐朝开元年间的具体盐税制度如何影响 RAG 系统设计？",
       "answerable": false,
       "expected_keywords": [],
+      "expected_keyword_coverage": {},
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1793,6 +1923,7 @@
       "question": "量子色动力学格点计算在本项目 Phase 1 怎么实现？",
       "answerable": false,
       "expected_keywords": [],
+      "expected_keyword_coverage": {},
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1846,6 +1977,7 @@
       "question": "我昨天午饭吃了什么？",
       "answerable": false,
       "expected_keywords": [],
+      "expected_keyword_coverage": {},
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,
@@ -1899,6 +2031,7 @@
       "question": "Docker Desktop 4.82 的所有发布说明逐条是什么？",
       "answerable": false,
       "expected_keywords": [],
+      "expected_keyword_coverage": {},
       "first_relevant_rank": null,
       "evidence_sufficient": false,
       "supported_chunk_count": 0,

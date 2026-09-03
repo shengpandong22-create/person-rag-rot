@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from agent_mentor import __version__
 from agent_mentor.application.answer_service import AnswerService
@@ -83,6 +83,11 @@ async def run_retrieval_eval(
         knowledge_base_fingerprint = await _knowledge_base_fingerprint(
             sessions, knowledge_base_id
         )
+        keyword_coverage = await _expected_keyword_coverage(
+            sessions,
+            knowledge_base_id,
+            sorted({keyword for case in cases for keyword in case.expected_keywords}),
+        )
         for case in cases:
             chunks = await retriever.retrieve(
                 RetrievalQuery(
@@ -110,6 +115,10 @@ async def run_retrieval_eval(
                     "question": case.question,
                     "answerable": case.answerable,
                     "expected_keywords": list(case.expected_keywords),
+                    "expected_keyword_coverage": {
+                        keyword: keyword_coverage.get(keyword, 0)
+                        for keyword in case.expected_keywords
+                    },
                     "first_relevant_rank": first_rank,
                     "evidence_sufficient": evidence_sufficient,
                     "supported_chunk_count": len(supported_chunks),
@@ -252,6 +261,34 @@ async def _knowledge_base_fingerprint(
         }
 
 
+async def _expected_keyword_coverage(
+    sessions: Any, knowledge_base_id: UUID, keywords: list[str]
+) -> dict[str, int]:
+    coverage: dict[str, int] = {}
+    async with sessions() as session:
+        for keyword in keywords:
+            if not keyword:
+                coverage[keyword] = 0
+                continue
+            like_pattern = f"%{keyword}%"
+            count = await session.scalar(
+                select(func.count(KnowledgeChunkModel.id))
+                .join(
+                    SourceDocumentModel,
+                    KnowledgeChunkModel.document_id == SourceDocumentModel.id,
+                )
+                .where(
+                    SourceDocumentModel.knowledge_base_id == knowledge_base_id,
+                    or_(
+                        KnowledgeChunkModel.content.ilike(like_pattern),
+                        SourceDocumentModel.title.ilike(like_pattern),
+                    ),
+                )
+            )
+            coverage[keyword] = int(count or 0)
+    return coverage
+
+
 def _file_sha256(path: Path) -> str:
     digest = sha256()
     with path.open("rb") as file:
@@ -318,6 +355,7 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
                     f"- answerable: {row['answerable']}",
                     f"- evidence_sufficient: {row['evidence_sufficient']}",
                     f"- supported_chunk_count: {row.get('supported_chunk_count', 0)}",
+                    f"- expected_keyword_coverage: {row.get('expected_keyword_coverage', {})}",
                     f"- top_document: {first_chunk.get('document_title', '-')}",
                     f"- top_score: {first_chunk.get('score', '-')}",
                     "",
