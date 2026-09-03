@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+from hashlib import sha256
 from pathlib import Path
 from uuid import UUID
 
+from agent_mentor import __version__
 from agent_mentor.application.evaluation_service import EvaluationService
 from agent_mentor.config import get_settings
 from agent_mentor.domain.evaluation import total_score
@@ -26,6 +29,7 @@ class ScoringEvalCase:
 @dataclass(frozen=True, slots=True)
 class ScoringEvalReport:
     dataset: str
+    metadata: dict[str, object]
     metrics: dict[str, object]
     cases: list[dict[str, object]]
 
@@ -103,6 +107,14 @@ async def run_scoring_eval(
 
     report = ScoringEvalReport(
         dataset=str(dataset_path),
+        metadata={
+            "generated_at": datetime.now(UTC).isoformat(),
+            "app_version": __version__,
+            "dataset_sha256": _file_sha256(dataset_path),
+            "use_llm": use_llm,
+            "llm_enabled": llm is not None,
+            "llm_model": settings.llm_default_model if llm else None,
+        },
         metrics=asdict(compute_scoring_metrics(metric_inputs)),
         cases=case_rows,
     )
@@ -182,6 +194,14 @@ def _rubric(case: ScoringEvalCase) -> dict[str, object]:
     }
 
 
+def _file_sha256(path: Path) -> str:
+    digest = sha256()
+    with path.open("rb") as file:
+        for block in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def _write_report(report: ScoringEvalReport, output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / "scoring_eval.json"
@@ -191,21 +211,72 @@ def _write_report(report: ScoringEvalReport, output_dir: Path) -> None:
         encoding="utf-8",
     )
     metrics = report.metrics
-    markdown_path.write_text(
-        "\n".join(
-            [
-                "# Scoring Eval Report",
-                "",
-                f"- dataset: `{report.dataset}`",
-                f"- total: {metrics['total']}",
-                f"- MAE: {metrics['mean_absolute_error']}",
-                f"- Pearson correlation: {metrics['pearson_correlation']}",
-                f"- Reviewer routing accuracy: {metrics['reviewer_routing_accuracy']}",
-                f"- Band order accuracy: {metrics['band_order_accuracy']}",
-                f"- Predicted average by band: {metrics['predicted_average_by_band']}",
-                f"- Human average by band: {metrics['human_average_by_band']}",
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
+    lines = [
+        "# Scoring Eval Report",
+        "",
+        f"- dataset: `{report.dataset}`",
+        f"- generated_at: {report.metadata['generated_at']}",
+        f"- app_version: {report.metadata['app_version']}",
+        f"- dataset_sha256: `{report.metadata['dataset_sha256']}`",
+        f"- use_llm: {report.metadata['use_llm']}",
+        f"- llm_enabled: {report.metadata['llm_enabled']}",
+        f"- llm_model: {report.metadata['llm_model']}",
+        f"- total: {metrics['total']}",
+        f"- MAE: {metrics['mean_absolute_error']}",
+        f"- Pearson correlation: {metrics['pearson_correlation']}",
+        f"- Reviewer routing accuracy: {metrics['reviewer_routing_accuracy']}",
+        f"- Band order accuracy: {metrics['band_order_accuracy']}",
+        f"- Predicted average by band: {metrics['predicted_average_by_band']}",
+        f"- Human average by band: {metrics['human_average_by_band']}",
+        "",
+    ]
+    high_error_cases = [
+        row for row in report.cases if _integer_value(row, "absolute_error") >= 6
+    ]
+    review_mismatches = [
+        row
+        for row in report.cases
+        if bool(row["expected_review"]) != bool(row["predicted_review"])
+    ]
+    if high_error_cases:
+        lines.extend(["## High Error Cases", ""])
+        for row in high_error_cases:
+            lines.extend(
+                [
+                    f"### {row['id']}",
+                    "",
+                    f"- topic: {row['topic']}",
+                    f"- expected_band: {row['expected_band']}",
+                    f"- human_total: {row['human_total']}",
+                    f"- predicted_total: {row['predicted_total']}",
+                    f"- absolute_error: {row['absolute_error']}",
+                    f"- status: {row['status']}",
+                    "",
+                ]
+            )
+    if review_mismatches:
+        lines.extend(["## Review Routing Mismatches", ""])
+        for row in review_mismatches:
+            lines.extend(
+                [
+                    f"### {row['id']}",
+                    "",
+                    f"- expected_review: {row['expected_review']}",
+                    f"- predicted_review: {row['predicted_review']}",
+                    f"- confidence: {row['confidence']}",
+                    f"- review_reasons: {row['review_reasons']}",
+                    "",
+                ]
+            )
+    markdown_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def _integer_value(row: dict[str, object], key: str) -> int:
+    value = row[key]
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    if isinstance(value, str):
+        return int(value)
+    raise TypeError(f"{key} must be numeric, got {type(value).__name__}")

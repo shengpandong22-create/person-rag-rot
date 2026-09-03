@@ -907,3 +907,73 @@ negative_rejection_accuracy = 1.0
 可以这样讲：
 
 > 我做 BGE 后没有只看“流程能跑”，而是补了 retrieval eval。评估时发现一个典型 RAG 边界问题：问题里只要混入 RAG/Docker 这类项目词，系统可能把知识库外问题误判成可回答。我没有简单调高阈值，而是把生产证据门禁抽成 `assess_evidence()`，让 eval 和线上口径一致；再对泛化项目词做边界约束，要求跨域问题必须有具体实体支撑。修复后负例拒答准确率从 0.0 提升到 1.0。这个过程说明我不是只做 demo，而是在用评测发现并收敛 RAG 可信性问题。
+
+## 15. 第 10 批训练质量修复：评分区分度报告可追溯
+
+### 15.1 发现的问题
+
+`evaluation_discrimination_v1.jsonl` 已经能用于验证评分区分度，但评分 eval 报告最初只包含指标，缺少运行态元数据和失败样本摘要。
+
+这会带来两个问题：
+
+- 以后无法确认报告是 deterministic fallback 还是 DeepSeek LLM 跑出来的；
+- 如果 MAE 或复核路由不理想，需要重新打开 JSON 才能定位失败样本；
+- 面试复盘时很难证明“评分质量是被验证过的”，容易停留在口头描述。
+
+### 15.2 最小改造方案
+
+不改评分逻辑，只增强 eval runner 的报告能力：
+
+1. 在 `ScoringEvalReport` 中补充 metadata：
+   - `generated_at`
+   - `app_version`
+   - `dataset_sha256`
+   - `use_llm`
+   - `llm_enabled`
+   - `llm_model`
+2. Markdown 报告增加：
+   - 高误差样本：`absolute_error >= 6`
+   - 复核路由不一致样本：`expected_review != predicted_review`
+3. 保留 baseline 和 LLM 两类评估结果，用于说明：
+   - deterministic fallback 是可用降级，不是高质量评分器；
+   - DeepSeek LLM 才承担真实评分区分度。
+
+代码路线：
+
+- `evals/runners/scoring_runner.py`
+- `evals/reports/discrimination_baseline/scoring_eval.md`
+- `evals/reports/discrimination_llm/scoring_eval.md`
+
+### 15.3 验收结果
+
+deterministic baseline：
+
+```text
+total = 12
+MAE = 7.1667
+Pearson correlation = 0.8735
+Reviewer routing accuracy = 0.4167
+Band order accuracy = 1.0
+```
+
+DeepSeek LLM：
+
+```text
+total = 12
+MAE = 1.6667
+Pearson correlation = 0.9802
+Reviewer routing accuracy = 1.0
+Band order accuracy = 1.0
+```
+
+结论：
+
+- LLM 评分对低/中/高质量答案具备明显区分度；
+- 复核路由在该评测集上命中预期；
+- fallback 适合作为无 Key 环境演示闭环，但不能包装成高质量评分模型。
+
+### 15.4 面试表达价值
+
+可以这样讲：
+
+> 我没有只说“系统能评分”，而是专门做了一个人工答案集，里面同一道能力点准备低分、中分、高分答案，并标注人工期望分。然后用 eval runner 对比模型评分和人工分，输出 MAE、相关系数、档位排序和复核路由准确率。结果显示 DeepSeek 评分 MAE 约 1.67，相关系数 0.98，能稳定区分不同质量答案。同时我也保留 deterministic fallback 的结果，明确它只是无 Key 降级，不把它包装成真实评分能力。

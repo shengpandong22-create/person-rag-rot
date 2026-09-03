@@ -1,15 +1,23 @@
 {
   "dataset": "evals\\datasets\\evaluation_discrimination_v1.jsonl",
+  "metadata": {
+    "generated_at": "2026-09-03T13:45:49.955036+00:00",
+    "app_version": "0.1.0",
+    "dataset_sha256": "91361bd24fd42baafec2a338f4d8fe53f6b753f84f5916d9b6c6ef0d6ee06571",
+    "use_llm": true,
+    "llm_enabled": true,
+    "llm_model": "deepseek-chat"
+  },
   "metrics": {
     "total": 12,
     "mean_absolute_error": 1.6667,
-    "pearson_correlation": 0.9691,
+    "pearson_correlation": 0.9802,
     "reviewer_routing_accuracy": 1.0,
     "band_order_accuracy": 1.0,
     "predicted_average_by_band": {
-      "high": 18.25,
+      "high": 18.75,
       "low": 4.0,
-      "mid": 10.75
+      "mid": 10.25
     },
     "human_average_by_band": {
       "high": 19.5,
@@ -46,15 +54,15 @@
       "review_reasons": [
         "severe_quality_gap"
       ],
-      "feedback": "回答过于简单且存在误导。证据不足时直接让大模型自由回答会增加幻觉风险，违背 RAG 的知识边界原则。应显式处理证据不足：检测检索结果置信度，若不足则明确告知用户证据不足、提供部分回答并标注不确定性、或引导用户提供更多信息。请补充对原因、降级流程和工程取舍的说明。 复核后确认：评分依据与引用范围一致。"
+      "feedback": "回答过于简单，未触及题目核心。需要解释为何显式处理证据不足（如避免幻觉、维护可信度、明确知识边界），并说明降级策略（如声明无法回答、提供置信度、建议人工介入等）。请参考 RAG 知识边界相关概念，补充原因、流程和取舍。 复核后确认：评分依据与引用范围一致。"
     },
     {
       "id": "disc-rag-boundary-mid",
       "topic": "RAG 知识边界",
       "question": "在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。",
       "human_total": 12,
-      "predicted_total": 12,
-      "absolute_error": 0,
+      "predicted_total": 10,
+      "absolute_error": 2,
       "human_scores": {
         "correctness": 3,
         "completeness": 3,
@@ -64,8 +72,8 @@
       "predicted_scores": {
         "correctness": 4,
         "completeness": 2,
-        "reasoning": 3,
-        "communication": 3
+        "reasoning": 2,
+        "communication": 2
       },
       "expected_review": false,
       "predicted_review": false,
@@ -74,15 +82,15 @@
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答正确指出了 RAG 证据不足时避免幻觉的核心原因，并给出了基本的降级思路（提示证据不足并返回有限片段），但内容过于简略。建议补充：1) 具体降级流程，如设置置信度阈值、返回预设的'证据不足'提示、引导用户重新表述问题或提供相关文档链接；2) 工程取舍，如阈值过高导致过多拒答、过低导致幻觉风险，以及如何平衡用户体验与准确性；3) 结合 AgentMentor 场景说明如何实现（如使用元数据、日志记录等）。整体方向正确，但完整性和推理深度不足。"
+      "feedback": "回答正确指出了核心原则（避免幻觉）和基本降级方式（提示证据不足并返回有限片段），但内容过于简略，未深入解释为何需要显式处理（如用户信任、系统透明度、防止误导），也未说明具体的降级流程（如置信度阈值、提示语设计、引用展示）和工程取舍（如精确性与召回率的平衡、用户体验）。建议补充原因、流程和取舍，使回答更完整。"
     },
     {
       "id": "disc-rag-boundary-high",
       "topic": "RAG 知识边界",
       "question": "在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。",
       "human_total": 19,
-      "predicted_total": 17,
-      "absolute_error": 2,
+      "predicted_total": 16,
+      "absolute_error": 3,
       "human_scores": {
         "correctness": 5,
         "completeness": 5,
@@ -90,7 +98,7 @@
         "communication": 4
       },
       "predicted_scores": {
-        "correctness": 5,
+        "correctness": 4,
         "completeness": 4,
         "reasoning": 4,
         "communication": 4
@@ -98,11 +106,11 @@
       "expected_review": false,
       "predicted_review": false,
       "expected_band": "high",
-      "confidence": 0.9,
+      "confidence": 0.8,
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答正确且抓住了核心要点，明确解释了显式处理证据不足的原因（避免幻觉、保证可信性）和降级流程（返回降级回答、限制引用、记录原因）。结构清晰，表达专业。若补充降级回答的具体模板或判断证据不足的阈值，将更完整。"
+      "feedback": "回答正确指出了 RAG 证据不足时需要显式处理的原因（避免幻觉、保证可信性），并给出了降级策略（返回降级回答、限制引用、记录原因）。但缺少对降级流程的具体步骤描述，以及降级回答的具体形式（如明确告知用户证据不足）。建议补充这些细节以增强完整性。"
     },
     {
       "id": "disc-checkpoint-low",
@@ -132,7 +140,7 @@
       "review_reasons": [
         "severe_quality_gap"
       ],
-      "feedback": "回答过于简略，仅将 checkpoint 理解为保存日志，未触及 checkpoint 在 LangGraph 工作流中的核心作用（如状态持久化、故障恢复、断点续跑）以及它解决的工程问题。建议补充：1) checkpoint 如何保存工作流状态；2) 在面试流程中为何需要（如中断恢复、审计、调试）；3) 工程上的取舍（如存储开销、一致性）。请参考相关文档后重新回答。 复核后确认：评分依据与引用范围一致。"
+      "feedback": "回答过于简略，仅将 checkpoint 等同于日志保存，未涉及 LangGraph 工作流恢复、状态持久化、故障恢复等核心概念，也未说明解决的工程问题。建议补充 checkpoint 在面试流程中的具体作用、解决的问题及工程取舍。 复核后确认：评分依据与引用范围一致。"
     },
     {
       "id": "disc-checkpoint-mid",
@@ -160,7 +168,7 @@
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答提到了 checkpoint 的基本作用（保存状态、刷新后继续），但未涉及题目核心知识点 LangGraph / 工作流恢复，也未解释 checkpoint 解决的工程问题（如状态持久化、故障恢复、断点续跑）以及工程取舍。建议补充：在 LangGraph 中，checkpoint 用于保存图执行的中间状态，支持从断点恢复，避免因中断导致的状态丢失，并说明其带来的可靠性提升和存储开销等取舍。"
+      "feedback": "回答方向正确，但过于简略。需要明确提及 LangGraph 工作流恢复，并详细说明 checkpoint 解决的工程问题，如状态持久化、故障恢复、幂等性和可追溯性。建议补充原因、流程和取舍。"
     },
     {
       "id": "disc-checkpoint-high",
@@ -184,11 +192,11 @@
       "expected_review": false,
       "predicted_review": false,
       "expected_band": "high",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答准确且完整，清晰解释了 checkpoint 的必要性、解决的问题以及工程取舍，结构清晰，推理充分。"
+      "feedback": "回答准确且完整，清晰解释了 checkpoint 的必要性、解决的问题和工程取舍，结构清晰，推理充分。"
     },
     {
       "id": "disc-evaluation-low",
@@ -218,7 +226,7 @@
       "review_reasons": [
         "severe_quality_gap"
       ],
-      "feedback": "回答过于简略，未触及题目核心。需要解释LLM评分不可信的原因（如幻觉、不一致、缺乏校准），并说明系统通过结构化评分、多维度评估、引用证据和人工审核等机制提高可信度。请补充具体原因、流程和工程取舍。 复核后确认：评分依据与引用范围一致。"
+      "feedback": "回答过于简略，未触及题目核心。需要解释LLM直接评分不可靠的原因（如幻觉、不一致、缺乏校准），并说明系统如何通过结构化评分、多维度评估、引用证据和人工审核等机制提高可信度。请参考参考答案，补充关键概念和流程。 复核后确认：评分依据与引用范围一致。"
     },
     {
       "id": "disc-evaluation-mid",
@@ -246,15 +254,15 @@
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答抓住了核心要点，但缺乏细节和具体流程。建议补充：为什么 LLM 直接给总分不可靠（如幻觉、不一致性），系统如何通过结构化 rubric 和置信度检测来增强可信度，以及总分由应用层计算的具体实现和工程取舍。"
+      "feedback": "回答正确指出了 LLM 输出不稳定、使用 rubric 评分、低置信复核以及总分由应用层计算等关键点，覆盖了原因和部分流程。但缺少对工程取舍的讨论，例如为何不直接信任 LLM 的数值、如何权衡成本与准确性等。建议补充对取舍的说明，使回答更完整。"
     },
     {
       "id": "disc-evaluation-high",
       "topic": "可信评分",
       "question": "AgentMentor 为什么不能完全相信 LLM 直接给出的总分？当前系统如何提高评分可信度？",
       "human_total": 20,
-      "predicted_total": 16,
-      "absolute_error": 4,
+      "predicted_total": 19,
+      "absolute_error": 1,
       "human_scores": {
         "correctness": 5,
         "completeness": 5,
@@ -262,19 +270,19 @@
         "communication": 5
       },
       "predicted_scores": {
-        "correctness": 4,
-        "completeness": 4,
-        "reasoning": 4,
+        "correctness": 5,
+        "completeness": 5,
+        "reasoning": 5,
         "communication": 4
       },
       "expected_review": false,
       "predicted_review": false,
       "expected_band": "high",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答准确覆盖了核心要点，解释了不能完全相信 LLM 直接给总分的原因（模型可能产生幻觉或偏差），并清晰描述了系统通过四维 rubric、引用白名单、应用层总分计算、复核路由和降权更新等机制提高可信度。结构清晰，逻辑连贯。可进一步补充具体风险示例或人工复核触发条件，以增强完整性。"
+      "feedback": "回答准确且完整，清晰解释了不能完全相信 LLM 直接给总分的原因（模型可能偏离规则），并详细说明了系统提高可信度的具体机制：四维 rubric 限定维度、引用白名单限制引用、应用层计算总分、复核路由处理低置信和争议、以及状态管理避免污染画像。推理充分，覆盖了原因、流程和取舍。表达结构清晰，但可稍加组织以增强条理性。"
     },
     {
       "id": "disc-profile-low",
@@ -304,7 +312,7 @@
       "review_reasons": [
         "severe_quality_gap"
       ],
-      "feedback": "回答过于简略且存在事实错误。能力画像并非简单等同于用户分数，而是与知识库绑定以反映用户在不同知识领域的掌握情况，从而支持个性化推荐和评估。画像更新只消费可信评分是为了避免低质量或不可靠的评分污染画像，确保画像的准确性和稳定性。建议补充说明绑定知识库的原因（如领域细分、可解释性）、只消费可信评分的原因（如数据质量、防止噪声），以及相关的流程和工程取舍。 复核后确认：评分依据与引用范围一致。"
+      "feedback": "回答过于简略且存在事实错误。能力画像并非简单等同于用户分数，而是需要与知识库绑定以反映用户对特定知识领域的掌握程度，从而支持个性化推荐和评估。画像更新只消费可信评分是为了避免低质量或不可靠的评分干扰画像准确性，确保画像反映真实能力。建议补充解释绑定原因、可信评分的作用，以及相关流程和工程取舍，并采用结构化表达。 复核后确认：评分依据与引用范围一致。"
     },
     {
       "id": "disc-profile-mid",
@@ -328,11 +336,11 @@
       "expected_review": false,
       "predicted_review": false,
       "expected_band": "mid",
-      "confidence": 0.8,
+      "confidence": 0.7,
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答触及了核心点，但过于简略，缺乏深度和结构。建议补充：1) 画像与知识库绑定的原因（如知识库内容差异导致画像语义隔离、避免跨域污染、保证画像与知识库上下文一致）；2) 只消费可信评分的原因（如防止低质量评分污染画像、保证画像更新基于可靠信号）；3) 相关流程和工程取舍。请展开论述，使回答更完整、更有条理。"
+      "feedback": "回答触及了核心点，但过于简略。需要补充能力画像的定义、与知识库绑定的深层原因（如领域隔离、上下文相关性）、可信评分的概念与筛选机制、更新流程以及工程取舍。建议结构化展开，先定义概念，再解释原因，最后说明流程和取舍。"
     },
     {
       "id": "disc-profile-high",
@@ -360,7 +368,7 @@
       "status": "final",
       "review_decision": "not_required",
       "review_reasons": [],
-      "feedback": "回答准确且完整，清晰解释了画像与知识库绑定的原因、分层结构以及只消费可信评分的逻辑，推理充分，表达结构清晰。"
+      "feedback": "回答准确且完整，清晰解释了画像与知识库绑定的原因、分层设计以及只消费可信评分的理由，逻辑严谨，覆盖所有关键点。"
     }
   ]
 }

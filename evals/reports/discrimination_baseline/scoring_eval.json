@@ -1,5 +1,13 @@
 {
   "dataset": "evals\\datasets\\evaluation_discrimination_v1.jsonl",
+  "metadata": {
+    "generated_at": "2026-09-03T13:45:19.431473+00:00",
+    "app_version": "0.1.0",
+    "dataset_sha256": "91361bd24fd42baafec2a338f4d8fe53f6b753f84f5916d9b6c6ef0d6ee06571",
+    "use_llm": false,
+    "llm_enabled": false,
+    "llm_model": null
+  },
   "metrics": {
     "total": 12,
     "mean_absolute_error": 7.1667,
@@ -43,6 +51,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：RAG 知识边界, 在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。, 原因。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -70,6 +81,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：在 AgentMentor 中，RAG 回答为什么需要显式处理证据不足？请说明如果检索证据不足，系统应该如何降级。, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -97,6 +111,7 @@
       "confidence": 0.75,
       "status": "final",
       "review_decision": "not_required",
+      "review_reasons": [],
       "feedback": "回答需要补齐关键点：原因, 流程, 取舍。"
     },
     {
@@ -124,6 +139,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：LangGraph / 工作流恢复, 为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？, 原因。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -151,6 +169,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：LangGraph / 工作流恢复, 为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？, 原因。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -178,6 +199,10 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "boundary_with_dispute",
+        "dimension_conflict"
+      ],
       "feedback": "回答需要补齐关键点：LangGraph / 工作流恢复, 为什么 AgentMentor 的面试流程需要 checkpoint？它解决了哪些工程问题？, 原因。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -205,6 +230,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：可信评分, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -232,6 +260,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：可信评分, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -259,6 +290,10 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "boundary_with_dispute",
+        "dimension_conflict"
+      ],
       "feedback": "回答需要补齐关键点：可信评分, 原因, 流程。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -286,6 +321,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：能力画像, AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？, 原因。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -313,6 +351,9 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "severe_quality_gap"
+      ],
       "feedback": "回答需要补齐关键点：能力画像, AgentMentor 的能力画像为什么要跟知识库绑定？画像更新为什么只消费可信评分？, 原因。 复核后确认：评分依据与引用范围一致。"
     },
     {
@@ -340,6 +381,10 @@
       "confidence": 0.72,
       "status": "final",
       "review_decision": "used_review",
+      "review_reasons": [
+        "boundary_with_dispute",
+        "dimension_conflict"
+      ],
       "feedback": "回答需要补齐关键点：原因, 流程, 取舍。 复核后确认：评分依据与引用范围一致。"
     }
   ]
