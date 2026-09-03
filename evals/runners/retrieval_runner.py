@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+from hashlib import sha256
 from pathlib import Path
 from uuid import UUID
 
+from agent_mentor import __version__
 from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.config import get_settings
 from agent_mentor.infrastructure.database.session import (
@@ -29,6 +32,7 @@ class RetrievalEvalCase:
 class RetrievalEvalReport:
     dataset: str
     knowledge_base_id: str
+    metadata: dict[str, object]
     metrics: dict[str, object]
     cases: list[dict[str, object]]
 
@@ -117,6 +121,18 @@ async def run_retrieval_eval(
     report = RetrievalEvalReport(
         dataset=str(dataset_path),
         knowledge_base_id=str(knowledge_base_id),
+        metadata={
+            "generated_at": datetime.now(UTC).isoformat(),
+            "app_version": __version__,
+            "dataset_sha256": _file_sha256(dataset_path),
+            "embedding_provider": settings.embedding_provider.value,
+            "embedding_model": settings.embedding_model,
+            "embedding_dimension": settings.embedding_dimension,
+            "retrieval_top_k": top_k,
+            "retrieval_candidate_k": candidate_k,
+            "retrieval_min_score": threshold,
+            "retrieval_max_chunks_per_document": settings.retrieval_max_chunks_per_document,
+        },
         metrics=asdict(metrics),
         cases=case_rows,
     )
@@ -168,6 +184,14 @@ def _matched_keywords(chunk: RetrievedChunk, keywords: tuple[str, ...]) -> list[
     return [keyword for keyword in keywords if keyword.casefold() in haystack]
 
 
+def _file_sha256(path: Path) -> str:
+    digest = sha256()
+    with path.open("rb") as file:
+        for block in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     stem = "retrieval_eval"
@@ -183,6 +207,15 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         "",
         f"- dataset: `{report.dataset}`",
         f"- knowledge_base_id: `{report.knowledge_base_id}`",
+        f"- generated_at: {report.metadata['generated_at']}",
+        f"- app_version: {report.metadata['app_version']}",
+        f"- dataset_sha256: `{report.metadata['dataset_sha256']}`",
+        "- embedding: "
+        f"{report.metadata['embedding_provider']} / {report.metadata['embedding_model']}",
+        "- retrieval: "
+        f"top_k={report.metadata['retrieval_top_k']}, "
+        f"candidate_k={report.metadata['retrieval_candidate_k']}, "
+        f"min_score={report.metadata['retrieval_min_score']}",
         f"- total: {metrics['total']}",
         f"- Recall@1: {metrics['recall_at_1']}",
         f"- Recall@3: {metrics['recall_at_3']}",

@@ -1,6 +1,18 @@
 {
   "dataset": "evals/datasets/retrieval_v1.jsonl",
   "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "metadata": {
+    "generated_at": "2026-09-03T01:04:58.803300+00:00",
+    "app_version": "0.1.0",
+    "dataset_sha256": "d4c4213e3cfcdcff1d04caf2b844539f8adecf6e659c36820f96672953a0f6b7",
+    "embedding_provider": "bge",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_dimension": 512,
+    "retrieval_top_k": 6,
+    "retrieval_candidate_k": 20,
+    "retrieval_min_score": 0.01,
+    "retrieval_max_chunks_per_document": 3
+  },
   "metrics": {
     "total": 30,
     "recall_at_1": 0.5,
