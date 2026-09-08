@@ -274,6 +274,26 @@ h1 {
   line-height: 1.45;
 }
 
+.runtime-boundaries {
+  grid-column: 1 / -1;
+}
+
+.runtime-boundaries ul,
+.demo-evidence-grid ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 12px 0 0;
+  list-style: none;
+}
+
+.runtime-boundaries li,
+.demo-evidence-grid li {
+  color: #aebbd0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .metric {
   border-radius: 24px;
   padding: 18px 20px;
@@ -618,6 +638,73 @@ textarea::placeholder,
   margin: 10px 0 0;
   color: #aebbd0;
   line-height: 1.68;
+}
+
+.policy-note {
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(45, 212, 191, 0.07);
+}
+
+.policy-note span,
+.policy-note small {
+  display: block;
+  color: #8fb8d5;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.policy-note strong {
+  display: block;
+  margin-top: 5px;
+  color: #f7fbff;
+}
+
+.policy-note p {
+  margin: 7px 0 0;
+  color: #b7c8dd;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.policy-note small {
+  margin-top: 6px;
+  color: #84a7a8;
+}
+
+.follow-up-card {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  border: 1px solid rgba(168, 85, 247, 0.28);
+  border-radius: 20px;
+  padding: 16px;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.16), transparent 42%),
+    rgba(20, 29, 49, 0.78);
+}
+
+.follow-up-card h4 {
+  margin: 0;
+  color: #f7fbff;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.follow-up-card p {
+  margin: 0;
+  color: #b7c8dd;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.follow-up-card .pill {
+  width: fit-content;
+  padding: 6px 10px;
+  color: #d7c5ff;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .citation-list {
@@ -1326,6 +1413,116 @@ button.compact {
   padding: 17px;
 }
 
+.demo-mode-card {
+  border: 1px solid rgba(45, 212, 191, 0.18);
+  border-radius: 26px;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(45, 212, 191, 0.15), transparent 18rem),
+    rgba(10, 24, 43, 0.78);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.demo-mode-card .section-heading {
+  align-items: flex-start;
+}
+
+.demo-mode-card .section-heading span {
+  color: #2dd4bf;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.demo-mode-card .section-heading h3 {
+  margin: 6px 0 0;
+  color: #f7fbff;
+  font-size: 18px;
+}
+
+.demo-mode-card .section-heading > strong {
+  border: 1px solid rgba(45, 212, 191, 0.24);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: #baf7ea;
+  background: rgba(45, 212, 191, 0.08);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.demo-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-mode-grid article {
+  border: 1px solid rgba(167, 191, 235, 0.1);
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.demo-mode-grid article.ready {
+  border-color: rgba(45, 212, 191, 0.24);
+  background: rgba(45, 212, 191, 0.07);
+}
+
+.demo-mode-grid span {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #9fb0ca;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.demo-mode-grid article.ready span {
+  color: #baf7ea;
+  background: rgba(45, 212, 191, 0.12);
+}
+
+.demo-mode-grid h4,
+.demo-evidence-grid h4 {
+  margin: 14px 0 8px;
+  color: #f7fbff;
+  font-size: 16px;
+}
+
+.demo-mode-grid p {
+  min-height: 58px;
+  margin: 0 0 12px;
+  color: #9fb0ca;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.demo-evidence-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.demo-evidence-grid > div {
+  border: 1px solid rgba(167, 191, 235, 0.1);
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.demo-evidence-grid strong {
+  display: block;
+  color: #dfeaff;
+}
+
+.demo-evidence-grid span {
+  display: block;
+  margin-top: 4px;
+  color: #91a4c0;
+}
+
 .overview-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1528,6 +1725,8 @@ button.compact {
   }
 
   .overview-columns,
+  .demo-mode-grid,
+  .demo-evidence-grid,
   .task-split,
   .profile-layout {
     grid-template-columns: 1fr;

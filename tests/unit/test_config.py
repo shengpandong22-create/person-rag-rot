@@ -22,3 +22,11 @@ def test_bge_provider_uses_default_model_until_schema_rebuild() -> None:
     settings = Settings(embedding_provider=EmbeddingProvider.BGE)
 
     assert settings.embedding_model == "BAAI/bge-small-zh-v1.5"
+
+
+def test_retrieval_min_score_filters_rrf_tail_but_keeps_vector_top_hit() -> None:
+    settings = Settings()
+
+    assert settings.retrieval_min_score == 0.013
+    assert settings.retrieval_min_score > 1 / (60 + settings.retrieval_candidate_k)
+    assert settings.retrieval_min_score < 1 / (60 + 1)

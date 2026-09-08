@@ -21,10 +21,11 @@ from agent_mentor.domain.evaluation import (
     should_review,
     total_score,
 )
-from agent_mentor.domain.interview import InterviewStatus
+from agent_mentor.domain.interview import AnswerKind, FollowUpStatus, InterviewStatus
 from agent_mentor.infrastructure.database.models import (
     EvaluationModel,
     EvaluationReferenceModel,
+    InterviewFollowUpModel,
     InterviewQuestionModel,
     InterviewReportModel,
     InterviewSessionModel,
@@ -260,7 +261,10 @@ class EvaluationService:
         reviewer_available: bool,
     ) -> EvaluationModel:
         allowed_references = await self._question_reference_ids(db, question.id)
-        output = await self._evaluate_with_llm_or_fallback(question, answer, allowed_references)
+        scoring_answer = await self._answer_for_scoring(db, question.id, answer)
+        output = await self._evaluate_with_llm_or_fallback(
+            question, scoring_answer, allowed_references
+        )
         self._assert_allowed_references(output.reference_chunk_ids, allowed_references)
         reasons = review_reasons_for(output)
         needs_review = should_review(output)
@@ -271,7 +275,7 @@ class EvaluationService:
         model_name = self._default_model or EVALUATION_MODEL_NAME
 
         if needs_review and reviewer_available:
-            reviewed_output = self._review_deterministically(output, answer)
+            reviewed_output = self._review_deterministically(output, scoring_answer)
             self._assert_allowed_references(reviewed_output.reference_chunk_ids, allowed_references)
             if abs(total_score(reviewed_output) - total_score(output)) >= 5:
                 review_decision = ReviewDecision.DISPUTED
@@ -615,8 +619,37 @@ class EvaluationService:
     async def _primary_answer(self, db: AsyncSession, question_id: UUID) -> UserAnswerModel | None:
         return await db.scalar(
             select(UserAnswerModel)
-            .where(UserAnswerModel.question_id == question_id)
+            .where(
+                UserAnswerModel.question_id == question_id,
+                UserAnswerModel.answer_kind == AnswerKind.PRIMARY,
+            )
             .order_by(UserAnswerModel.submitted_at)
+        )
+
+    async def _answer_for_scoring(
+        self, db: AsyncSession, question_id: UUID, primary_answer: UserAnswerModel
+    ) -> UserAnswerModel:
+        follow_up = await db.scalar(
+            select(InterviewFollowUpModel).where(
+                InterviewFollowUpModel.question_id == question_id,
+                InterviewFollowUpModel.status == FollowUpStatus.ANSWERED,
+            )
+        )
+        if follow_up is None or follow_up.answer_id is None:
+            return primary_answer
+        follow_up_answer = await db.get(UserAnswerModel, follow_up.answer_id)
+        if follow_up_answer is None:
+            return primary_answer
+        return cast(
+            UserAnswerModel,
+            SimpleNamespace(
+                id=primary_answer.id,
+                answer_text=(
+                    f"【主回答】\n{primary_answer.answer_text.strip()}\n\n"
+                    f"【面试官追问】\n{follow_up.prompt.strip()}\n\n"
+                    f"【追问补充回答】\n{follow_up_answer.answer_text.strip()}"
+                ),
+            ),
         )
 
     async def _evaluation_by_answer(

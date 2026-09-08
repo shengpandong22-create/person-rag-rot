@@ -22,3 +22,24 @@ def test_demo_readiness_next_action_points_to_first_missing_step() -> None:
     action = service._next_action(checks)  # pyright: ignore[reportPrivateUsage]
 
     assert action == "上传至少一份学习资料并等待索引完成。"
+
+
+def test_demo_readiness_signals_explain_runtime_and_engineering_boundaries() -> None:
+    service = object.__new__(DemoReadinessService)
+
+    signals = service._signals(  # pyright: ignore[reportPrivateUsage]
+        ready_document_count=2,
+        completed_interview_count=3,
+        checkpoint_count=9,
+    )
+    boundaries = service._enterprise_boundaries()  # pyright: ignore[reportPrivateUsage]
+
+    assert [signal.key for signal in signals] == [
+        "runtime_scope",
+        "rag_trust",
+        "workflow_control",
+        "interview_quality",
+    ]
+    assert "READY 文档 2 份" in signals[1].detail
+    assert "checkpoint 9 条" in signals[2].detail
+    assert any("多租户" in item for item in boundaries)

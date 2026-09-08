@@ -11,15 +11,21 @@ export function InterviewPanel({
   completion,
   isCompleted,
   currentQuestion,
+  currentFollowUp,
   currentDefaultAnswer,
+  followUpDraft,
   workflowTrace,
   onTopicChange,
   onStartInterview,
   onAnswerDraftChange,
+  onFollowUpDraftChange,
   onUseDefaultAnswer,
   onSubmitAnswer,
+  onSubmitFollowUpAnswer,
   onEvaluateAndReport,
 }) {
+  const interviewPolicy = currentQuestion?.rubric?.interview_policy;
+  const isWaitingForFollowUp = Boolean(currentFollowUp);
   return (
     <StepCard number="03" title="可恢复模拟面试" tone="green">
       <p>
@@ -67,34 +73,86 @@ export function InterviewPanel({
           ) : null}
           {currentQuestion ? (
             <ResultBox title={`第 ${currentQuestion.sequence} 题`} subtitle="当前等待回答">
+              {interviewPolicy ? (
+                <div className="policy-note">
+                  <span>轻量面试官策略</span>
+                  <strong>{interviewPolicy.target_topic}</strong>
+                  <p>{interviewPolicy.reason}</p>
+                  <small>{interviewPolicy.deterministic_gate}</small>
+                </div>
+              ) : null}
               <strong>{currentQuestion.question_text}</strong>
-              <textarea
-                value={answerDraft}
-                onChange={(event) => onAnswerDraftChange(event.target.value)}
-                placeholder="在这里输入你的真实回答；如果留空提交，会使用本题随题生成的参考答案。"
-                rows={7}
-              />
-              {currentDefaultAnswer && (
-                <p className="hint">
-                  本题已生成参考答案，可用于演示评分闭环；真实训练时建议先自己回答。
-                </p>
+              {isWaitingForFollowUp ? (
+                <div className="follow-up-card">
+                  <span className="pill">受控追问 · 最多 1 次</span>
+                  <h4>{currentFollowUp.prompt}</h4>
+                  <p>{currentFollowUp.reason}</p>
+                  {currentFollowUp.expected_points.length > 0 ? (
+                    <div className="tag-row">
+                      {currentFollowUp.expected_points.map((point) => (
+                        <span className="tag" key={point}>
+                          {point}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                  <textarea
+                    value={followUpDraft}
+                    onChange={(event) => onFollowUpDraftChange(event.target.value)}
+                    placeholder="这里回答追问；留空提交会使用本题追问参考答案完成演示闭环。"
+                    rows={6}
+                  />
+                  <div className="inline-actions">
+                    <button
+                      className="secondary"
+                      type="button"
+                      onClick={() => onFollowUpDraftChange(currentFollowUp.reference_answer)}
+                      disabled={busy || !currentFollowUp.reference_answer}
+                    >
+                      使用追问参考答案
+                    </button>
+                    <button
+                      onClick={onSubmitFollowUpAnswer}
+                      disabled={
+                        busy ||
+                        (!followUpDraft.trim() && !currentFollowUp.reference_answer?.trim())
+                      }
+                    >
+                      {followUpDraft.trim() ? "提交追问回答" : "使用追问参考答案提交"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <textarea
+                    value={answerDraft}
+                    onChange={(event) => onAnswerDraftChange(event.target.value)}
+                    placeholder="在这里输入你的真实回答；如果留空提交，会使用本题随题生成的参考答案。"
+                    rows={7}
+                  />
+                  {currentDefaultAnswer && (
+                    <p className="hint">
+                      本题已生成参考答案，可用于演示评分闭环；真实训练时建议先自己回答。
+                    </p>
+                  )}
+                  <div className="inline-actions">
+                    <button
+                      className="secondary"
+                      type="button"
+                      onClick={onUseDefaultAnswer}
+                      disabled={busy || !currentDefaultAnswer}
+                    >
+                      使用本题参考答案
+                    </button>
+                    <button
+                      onClick={onSubmitAnswer}
+                      disabled={busy || (!answerDraft.trim() && !currentDefaultAnswer)}
+                    >
+                      {answerDraft.trim() ? "提交我的答案" : "使用默认答案提交"}
+                    </button>
+                  </div>
+                </>
               )}
-              <div className="inline-actions">
-                <button
-                  className="secondary"
-                  type="button"
-                  onClick={onUseDefaultAnswer}
-                  disabled={busy || !currentDefaultAnswer}
-                >
-                  使用本题参考答案
-                </button>
-                <button
-                  onClick={onSubmitAnswer}
-                  disabled={busy || (!answerDraft.trim() && !currentDefaultAnswer)}
-                >
-                  {answerDraft.trim() ? "提交我的答案" : "使用默认答案提交"}
-                </button>
-              </div>
             </ResultBox>
           ) : (
             <button onClick={onEvaluateAndReport} disabled={busy || !isCompleted}>

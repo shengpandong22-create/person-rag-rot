@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -45,9 +46,15 @@ from agent_mentor.rag.documents import DocumentParser
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await app.state.knowledge_service.recover_interrupted_ingestions()
+    app.state.ingestion_worker_task = asyncio.create_task(
+        app.state.knowledge_service.process_ingestion_queue(limit=10)
+    )
     await app.state.knowledge_service.rebuild_coverage_catalogs()
     await app.state.profile_service.backfill_two_layer_profiles(DEFAULT_USER_ID)
     yield
+    app.state.ingestion_worker_task.cancel()
+    with suppress(asyncio.CancelledError):
+        await app.state.ingestion_worker_task
     llm = app.state.llm_gateway
     if llm is not None:
         await llm.aclose()

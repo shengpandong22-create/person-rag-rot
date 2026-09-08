@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="840" viewBox="0 0 1280 840" role="img">
+  <title>AgentMentor 核心训练闭环</title>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#d97706"/>
+    </marker>
+    <marker id="grayArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 36px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 18px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
+      .node-title { font: 700 24px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
+      .node-text { font: 500 17px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
+      .small { font: 500 14px Consolas, "Microsoft YaHei", monospace; fill: #64748b; }
+      .blue { fill: #e8f3ff; stroke: #2f80c9; stroke-width: 3; rx: 20; filter: url(#shadow); }
+      .green { fill: #e2f6ef; stroke: #0f766e; stroke-width: 3; rx: 20; filter: url(#shadow); }
+      .orange { fill: #fff3df; stroke: #d97706; stroke-width: 3; rx: 20; filter: url(#shadow); }
+      .coral { fill: #fff0eb; stroke: #c05621; stroke-width: 3; rx: 20; filter: url(#shadow); }
+      .purple { fill: #f1edff; stroke: #7c3aed; stroke-width: 3; rx: 20; filter: url(#shadow); }
+      .risk { fill: #fff0f0; stroke: #b91c1c; stroke-width: 3; rx: 18; }
+      .main { stroke: #d97706; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .side { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#grayArrow); }
+      .dash { stroke: #0f766e; stroke-width: 4; fill: none; stroke-dasharray: 10 9; marker-end: url(#grayArrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="1280" height="840"/>
+  <text x="640" y="54" text-anchor="middle" class="title">学习训练系统 · 核心闭环</text>
+  <text x="640" y="86" text-anchor="middle" class="subtitle">资料摄入 → 检索召回 → 问答/面试 → 评分 → 画像 → 下一轮训练</text>
+
+  <rect x="55" y="135" width="210" height="115" class="blue"/>
+  <text x="160" y="174" text-anchor="middle" class="node-title">1 上传资料</text>
+  <text x="160" y="205" text-anchor="middle" class="node-text">Markdown / TXT</text>
+  <text x="160" y="230" text-anchor="middle" class="node-text">PDF / DOCX</text>
+
+  <rect x="320" y="135" width="210" height="115" class="blue"/>
+  <text x="425" y="174" text-anchor="middle" class="node-title">2 解析切分</text>
+  <text x="425" y="205" text-anchor="middle" class="node-text">DocumentParser</text>
+  <text x="425" y="230" text-anchor="middle" class="node-text">heading + chunk</text>
+
+  <rect x="585" y="135" width="210" height="115" class="green"/>
+  <text x="690" y="174" text-anchor="middle" class="node-title">3 存储索引</text>
+  <text x="690" y="205" text-anchor="middle" class="node-text">PostgreSQL</text>
+  <text x="690" y="230" text-anchor="middle" class="node-text">pgvector + BGE</text>
+
+  <rect x="850" y="135" width="210" height="115" class="green"/>
+  <text x="955" y="174" text-anchor="middle" class="node-title">4 检索召回</text>
+  <text x="955" y="205" text-anchor="middle" class="node-text">向量为主</text>
+  <text x="955" y="230" text-anchor="middle" class="node-text">全文 / RRF 扩展</text>
+
+  <path d="M265 193 L320 193" class="main"/>
+  <path d="M530 193 L585 193" class="main"/>
+  <path d="M795 193 L850 193" class="main"/>
+
+  <rect x="730" y="325" width="230" height="125" class="purple"/>
+  <text x="845" y="365" text-anchor="middle" class="node-title">5A RAG 问答</text>
+  <text x="845" y="398" text-anchor="middle" class="node-text">带引用回答</text>
+  <text x="845" y="423" text-anchor="middle" class="node-text">证据不足显式降级</text>
+
+  <rect x="1010" y="325" width="230" height="125" class="coral"/>
+  <text x="1125" y="365" text-anchor="middle" class="node-title">5B 生成题目</text>
+  <text x="1125" y="398" text-anchor="middle" class="node-text">题目 / 参考答案</text>
+  <text x="1125" y="423" text-anchor="middle" class="node-text">Rubric / 检索片段</text>
+
+  <path d="M955 250 L845 325" class="side"/>
+  <path d="M955 250 L1125 325" class="main"/>
+
+  <rect x="1010" y="560" width="230" height="115" class="blue"/>
+  <text x="1125" y="599" text-anchor="middle" class="node-title">6 用户回答</text>
+  <text x="1125" y="631" text-anchor="middle" class="node-text">真实回答或参考答案</text>
+  <text x="1125" y="656" text-anchor="middle" class="node-text">Idempotency-Key</text>
+
+  <rect x="730" y="560" width="230" height="115" class="orange"/>
+  <text x="845" y="599" text-anchor="middle" class="node-title">7 可信评分</text>
+  <text x="845" y="631" text-anchor="middle" class="node-text">四维 Rubric</text>
+  <text x="845" y="656" text-anchor="middle" class="node-text">引用白名单 / 降级</text>
+
+  <rect x="460" y="560" width="220" height="115" class="orange"/>
+  <text x="570" y="599" text-anchor="middle" class="node-title">8 面试报告</text>
+  <text x="570" y="631" text-anchor="middle" class="node-text">总分与逐题解析</text>
+  <text x="570" y="656" text-anchor="middle" class="node-text">历史趋势</text>
+
+  <rect x="185" y="560" width="220" height="115" class="green"/>
+  <text x="295" y="599" text-anchor="middle" class="node-title">9 更新画像</text>
+  <text x="295" y="631" text-anchor="middle" class="node-text">稳定主题 + 动态证据</text>
+  <text x="295" y="656" text-anchor="middle" class="node-text">复习任务 / 查漏</text>
+
+  <path d="M1125 450 L1125 560" class="main"/>
+  <path d="M1010 618 L960 618" class="main"/>
+  <path d="M730 618 L680 618" class="main"/>
+  <path d="M460 618 L405 618" class="main"/>
+  <path d="M295 560 C365 500 780 492 1010 500 C1080 503 1125 487 1125 450" class="dash"/>
+  <text x="720" y="488" text-anchor="middle" class="node-text" fill="#0f766e">画像与覆盖率反哺下一轮出题</text>
+
+  <rect x="185" y="720" width="910" height="75" class="risk"/>
+  <text x="320" y="766" text-anchor="middle" class="node-title">关键可信边界</text>
+  <text x="700" y="764" text-anchor="middle" class="node-text">证据不足不能硬答；伪造引用不进入可信结果；低置信评分降权更新画像</text>
+</svg>

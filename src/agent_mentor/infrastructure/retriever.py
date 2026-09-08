@@ -18,10 +18,11 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from uuid import UUID
 
-from sqlalchemy import Select, func, select
+from sqlalchemy import Select, case, func, literal, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.domain.knowledge import DocumentStatus
@@ -96,9 +97,28 @@ class PostgresHybridRetriever:
         vector_scores = {candidate.chunk.id: candidate.score for candidate in vector_candidates}
         text_scores = {candidate.chunk.id: candidate.score for candidate in text_candidates}
 
-        # RRF 融合：综合两路排名计算最终分数
+        # RRF 融合：综合两路排名计算召回分数
         fused = reciprocal_rank_fusion([list(vector_ranks), list(text_ranks)])
-        ordered_ids = sorted(fused, key=lambda chunk_id: fused[chunk_id], reverse=True)
+        reranked_scores = {
+            chunk_id: _rerank_score(
+                normalized=normalized,
+                content=by_id[chunk_id].chunk.content,
+                fused_score=fused[chunk_id],
+                vector_score=vector_scores.get(chunk_id),
+                text_score=text_scores.get(chunk_id),
+            )
+            for chunk_id in fused
+        }
+        ordered_ids = sorted(
+            fused,
+            key=lambda chunk_id: (
+                reranked_scores[chunk_id],
+                fused[chunk_id],
+                vector_scores.get(chunk_id) or 0.0,
+                text_scores.get(chunk_id) or 0.0,
+            ),
+            reverse=True,
+        )
 
         # 后处理：按 RRF 分数降序遍历，去重 + 截断
         results: list[RetrievedChunk] = []
@@ -131,9 +151,11 @@ class PostgresHybridRetriever:
                     block_type=_infer_retrieved_block_type(candidate.chunk.content),
                     chunk_index=candidate.chunk.chunk_index,
                     content=candidate.chunk.content,
-                    score=fused[chunk_id],
+                    score=reranked_scores[chunk_id],
                     retrieval_explanation=_retrieval_explanation(
                         fused_score=fused[chunk_id],
+                        rerank_score=reranked_scores[chunk_id],
+                        lexical_overlap=_lexical_overlap(normalized, candidate.chunk.content),
                         vector_rank=vector_ranks.get(chunk_id),
                         text_rank=text_ranks.get(chunk_id),
                         vector_score=vector_scores.get(chunk_id),
@@ -160,6 +182,7 @@ class PostgresHybridRetriever:
                 SourceDocumentModel.knowledge_base_id == query.knowledge_base_id,
                 SourceDocumentModel.status == DocumentStatus.READY,
                 SourceDocumentModel.is_active.is_(True),
+                KnowledgeChunkModel.is_active.is_(True),
             )
         )
         if query.trust_levels:
@@ -201,6 +224,8 @@ class PostgresHybridRetriever:
         ts_rank_cd：基于覆盖密度的排名函数
         coalesce：优先用预计算的 search_text 列，回退到运行时生成 tsvector
         """
+        if _contains_cjk(normalized):
+            return await self._bigram_text_candidates(session, query, normalized)
         ts_query = func.websearch_to_tsquery("simple", normalized)
         rank_expr = func.ts_rank_cd(
             func.coalesce(
@@ -228,6 +253,39 @@ class PostgresHybridRetriever:
             for rank, (chunk, document, score) in enumerate(rows, start=1)
         ]
 
+    async def _bigram_text_candidates(
+        self, session: AsyncSession, query: RetrievalQuery, normalized: str
+    ) -> list[_Candidate]:
+        """中文轻量全文召回：用应用层 bigram/关键词转 SQL ILIKE 条件。
+
+        这不是企业级中文分词的最终形态，但能在不引入 PostgreSQL 插件的情况下，
+        让中文资料具备可解释的词面召回信号。
+        """
+        terms = _lexical_terms(normalized)
+        if not terms:
+            return []
+
+        conditions = [KnowledgeChunkModel.content.ilike(f"%{term}%") for term in terms]
+        rank_expr = literal(0.0)
+        for term, condition in zip(terms, conditions, strict=True):
+            weight = 2.0 if _contains_cjk(term) else 1.0
+            rank_expr = rank_expr + case((condition, weight), else_=0.0)
+        rank_expr = rank_expr.label("bigram_rank")
+
+        rows = (
+            await session.execute(
+                self._base_query(query)
+                .add_columns(rank_expr)
+                .where(or_(*conditions))
+                .order_by(rank_expr.desc(), KnowledgeChunkModel.chunk_index)
+                .limit(query.candidate_k)
+            )
+        ).all()
+        return [
+            _Candidate(chunk=chunk, document=document, rank=rank, score=float(score))
+            for rank, (chunk, document, score) in enumerate(rows, start=1)
+        ]
+
 
 def _infer_retrieved_block_type(content: str) -> str:
     """推断检索结果的块类型：code/table/list/paragraph"""
@@ -246,6 +304,8 @@ def _infer_retrieved_block_type(content: str) -> str:
 def _retrieval_explanation(
     *,
     fused_score: float,
+    rerank_score: float,
+    lexical_overlap: float,
     vector_rank: int | None,
     text_rank: int | None,
     vector_score: float | None,
@@ -255,7 +315,9 @@ def _retrieval_explanation(
     
     格式示例："RRF=0.0328 | vector_rank=1 | text_rank=3 | vector_score=0.8560 | text_score=0.4320"
     """
-    signals: list[str] = [f"RRF={fused_score:.4f}"]
+    signals: list[str] = [f"RRF={fused_score:.4f}", f"rerank={rerank_score:.4f}"]
+    if lexical_overlap > 0:
+        signals.append(f"lexical_overlap={lexical_overlap:.2f}")
     if vector_rank is not None:
         signals.append(f"vector_rank={vector_rank}")
     if text_rank is not None:
@@ -265,3 +327,51 @@ def _retrieval_explanation(
     if text_score is not None:
         signals.append(f"text_score={text_score:.4f}")
     return " | ".join(signals)
+
+
+def _contains_cjk(text: str) -> bool:
+    return bool(re.search(r"[\u4e00-\u9fff]", text))
+
+
+def _lexical_terms(text: str, *, limit: int = 16) -> list[str]:
+    terms: list[str] = []
+    seen: set[str] = set()
+
+    def add(term: str) -> None:
+        normalized = term.strip().lower()
+        if len(normalized) < 2 or normalized in seen:
+            return
+        seen.add(normalized)
+        terms.append(normalized)
+
+    for token in re.findall(r"[a-zA-Z0-9_+#.-]{2,}", text):
+        add(token)
+    for segment in re.findall(r"[\u4e00-\u9fff]{2,}", text):
+        add(segment)
+        for index in range(len(segment) - 1):
+            add(segment[index : index + 2])
+    return terms[:limit]
+
+
+def _lexical_overlap(query: str, content: str) -> float:
+    terms = _lexical_terms(query)
+    if not terms:
+        return 0.0
+    lowered = content.lower()
+    hits = sum(1 for term in terms if term in lowered)
+    return hits / len(terms)
+
+
+def _rerank_score(
+    *,
+    normalized: str,
+    content: str,
+    fused_score: float,
+    vector_score: float | None,
+    text_score: float | None,
+) -> float:
+    lexical = _lexical_overlap(normalized, content)
+    vector_boost = max(0.0, min(vector_score or 0.0, 1.0)) * 0.003
+    text_boost = min(text_score or 0.0, 10.0) / 10.0 * 0.004
+    lexical_boost = lexical * 0.006
+    return fused_score + vector_boost + text_boost + lexical_boost

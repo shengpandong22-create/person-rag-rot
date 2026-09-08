@@ -19,7 +19,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from agent_mentor.domain.knowledge import DocumentStatus, TrustLevel
+from agent_mentor.domain.knowledge import DocumentStatus, IngestionJobStatus, TrustLevel
 
 
 class Base(DeclarativeBase):
@@ -93,6 +93,32 @@ class SourceDocumentModel(Base):
     chunks: Mapped[list[KnowledgeChunkModel]] = relationship(
         back_populates="document", cascade="all, delete-orphan"
     )
+    ingestion_jobs: Mapped[list[IngestionJobModel]] = relationship(
+        back_populates="document", cascade="all, delete-orphan"
+    )
+
+
+class IngestionJobModel(Base):
+    __tablename__ = "ingestion_jobs"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    document_id: Mapped[UUID] = mapped_column(
+        ForeignKey("source_documents.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    job_type: Mapped[str] = mapped_column(String(32), nullable=False, default="ingest")
+    status: Mapped[IngestionJobStatus] = mapped_column(String(32), nullable=False, index=True)
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    document: Mapped[SourceDocumentModel] = relationship(back_populates="ingestion_jobs")
 
 
 class KnowledgeChunkModel(Base):
@@ -114,6 +140,7 @@ class KnowledgeChunkModel(Base):
     token_count: Mapped[int] = mapped_column(Integer, nullable=False)
     embedding: Mapped[list[float]] = mapped_column(Vector(512), nullable=False)
     search_text: Mapped[str | None] = mapped_column(TSVECTOR, nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -300,6 +327,9 @@ class InterviewQuestionModel(Base):
     answers: Mapped[list[UserAnswerModel]] = relationship(
         back_populates="question", cascade="all, delete-orphan"
     )
+    follow_ups: Mapped[list[InterviewFollowUpModel]] = relationship(
+        back_populates="question", cascade="all, delete-orphan"
+    )
 
 
 class QuestionReferenceModel(Base):
@@ -360,6 +390,32 @@ class UserAnswerModel(Base):
     evaluations: Mapped[list[EvaluationModel]] = relationship(
         back_populates="answer", cascade="all, delete-orphan"
     )
+
+
+class InterviewFollowUpModel(Base):
+    __tablename__ = "interview_followups"
+    __table_args__ = (
+        UniqueConstraint("question_id", name="uq_followup_question_once"),
+    )
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    question_id: Mapped[UUID] = mapped_column(
+        ForeignKey("interview_questions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    reference_answer: Mapped[str] = mapped_column(Text, nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    expected_points: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list)
+    confidence: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    answer_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("user_answers.id"), nullable=True, index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    question: Mapped[InterviewQuestionModel] = relationship(back_populates="follow_ups")
+    answer: Mapped[UserAnswerModel | None] = relationship(foreign_keys=[answer_id])
 
 
 class WorkflowCheckpointModel(Base):

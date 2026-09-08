@@ -23,6 +23,7 @@ const terminalDocumentStatuses = new Set(["ready", "failed", "archived"]);
 const activeInterviewKey = "agentmentor.activeInterviewId";
 const activeKnowledgeBaseKey = "agentmentor.activeKnowledgeBaseId";
 const answerIdempotencyPrefix = "agentmentor.answerIdempotency";
+const followUpIdempotencyPrefix = "agentmentor.followUpIdempotency";
 
 function interviewStorageKey(knowledgeBaseId) {
   return `${activeInterviewKey}.${knowledgeBaseId}`;
@@ -67,6 +68,7 @@ function App() {
   const [interview, setInterview] = useState(null);
   const [workflowTrace, setWorkflowTrace] = useState([]);
   const [answerDraft, setAnswerDraft] = useState("");
+  const [followUpDraft, setFollowUpDraft] = useState("");
   const [report, setReport] = useState(null);
   const [reportHistory, setReportHistory] = useState([]);
   const [scoreTrends, setScoreTrends] = useState([]);
@@ -75,6 +77,7 @@ function App() {
   const [activeView, setActiveView] = useState("overview");
 
   const currentQuestion = interview?.current_question;
+  const currentFollowUp = interview?.current_follow_up;
   const completion = useMemo(() => {
     if (!interview) return 0;
     return Math.round((interview.current_question_index / interview.question_count) * 100);
@@ -198,6 +201,7 @@ function App() {
     setInterview(null);
     setWorkflowTrace([]);
     setAnswerDraft("");
+    setFollowUpDraft("");
     const scopedKey = interviewStorageKey(knowledgeBaseId);
     const interviewId =
       window.localStorage.getItem(scopedKey) ??
@@ -280,7 +284,7 @@ function App() {
 
   const switchKnowledgeBase = (knowledgeBaseId) => {
     if (
-      answerDraft.trim() &&
+      (answerDraft.trim() || followUpDraft.trim()) &&
       !window.confirm("当前输入的答案尚未提交，切换知识库会清空本地草稿，是否继续？")
     ) {
       return;
@@ -411,6 +415,7 @@ function App() {
       window.localStorage.setItem(interviewStorageKey(knowledgeBase.id), started.id);
       setWorkflowTrace(await loadWorkflowTrace(started.id));
       setAnswerDraft("");
+      setFollowUpDraft("");
       setReport(null);
       setActiveView("interview");
     });
@@ -440,6 +445,33 @@ function App() {
       window.localStorage.setItem(interviewStorageKey(knowledgeBase.id), updated.id);
       setWorkflowTrace(await loadWorkflowTrace(updated.id));
       setAnswerDraft("");
+    });
+
+  const submitFollowUpAnswer = () =>
+    run("提交追问回答并推进工作流", async () => {
+      const finalAnswer =
+        followUpDraft.trim() ||
+        currentFollowUp?.reference_answer?.trim() ||
+        "我会围绕追问补充定义、边界、风险和验证方式。";
+      const storageKey = `${followUpIdempotencyPrefix}.${interview.id}.${currentFollowUp.id}`;
+      let idempotencyKey = window.localStorage.getItem(storageKey);
+      if (!idempotencyKey) {
+        idempotencyKey = crypto.randomUUID();
+        window.localStorage.setItem(storageKey, idempotencyKey);
+      }
+      const updated = await api(
+        `/api/v1/interviews/${interview.id}/follow-ups/${currentFollowUp.id}/answers`,
+        {
+          method: "POST",
+          headers: { "Idempotency-Key": idempotencyKey },
+          body: JSON.stringify({ answer: finalAnswer }),
+        },
+      );
+      window.localStorage.removeItem(storageKey);
+      setInterview(updated);
+      window.localStorage.setItem(interviewStorageKey(knowledgeBase.id), updated.id);
+      setWorkflowTrace(await loadWorkflowTrace(updated.id));
+      setFollowUpDraft("");
     });
 
   const evaluateAndReport = () =>
@@ -580,13 +612,17 @@ function App() {
             completion={completion}
             isCompleted={isCompleted}
             currentQuestion={currentQuestion}
+            currentFollowUp={currentFollowUp}
             currentDefaultAnswer={currentDefaultAnswer}
+            followUpDraft={followUpDraft}
             workflowTrace={workflowTrace}
             onTopicChange={changeInterviewTopic}
             onStartInterview={startInterview}
             onAnswerDraftChange={setAnswerDraft}
+            onFollowUpDraftChange={setFollowUpDraft}
             onUseDefaultAnswer={() => setAnswerDraft(currentDefaultAnswer)}
             onSubmitAnswer={submitAnswer}
+            onSubmitFollowUpAnswer={submitFollowUpAnswer}
             onEvaluateAndReport={evaluateAndReport}
           />
         </div>

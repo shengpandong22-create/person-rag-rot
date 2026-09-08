@@ -15,7 +15,11 @@ from agent_mentor.application.interview_service import (
     WorkflowTraceItem,
 )
 from agent_mentor.domain.interview import Difficulty
-from agent_mentor.infrastructure.database.models import InterviewQuestionModel, UserAnswerModel
+from agent_mentor.infrastructure.database.models import (
+    InterviewFollowUpModel,
+    InterviewQuestionModel,
+    UserAnswerModel,
+)
 
 router = APIRouter(prefix="/api/v1", tags=["interviews"])
 
@@ -51,6 +55,17 @@ class UserAnswerResponse(BaseModel):
     idempotency_key: str
 
 
+class InterviewFollowUpResponse(BaseModel):
+    id: UUID
+    question_id: UUID
+    prompt: str
+    reference_answer: str
+    reason: str
+    expected_points: list[str]
+    confidence: float
+    status: str
+
+
 class InterviewResponse(BaseModel):
     id: UUID
     knowledge_base_id: UUID
@@ -65,6 +80,7 @@ class InterviewResponse(BaseModel):
     current_question_index: int
     workflow_thread_id: str
     current_question: InterviewQuestionResponse | None
+    current_follow_up: InterviewFollowUpResponse | None
     answers: list[UserAnswerResponse]
 
 
@@ -83,6 +99,10 @@ class WorkflowTraceResponse(BaseModel):
 
 class AnswerSubmitRequest(BaseModel):
     question_id: UUID
+    answer: str = Field(min_length=1, max_length=8000)
+
+
+class FollowUpAnswerSubmitRequest(BaseModel):
     answer: str = Field(min_length=1, max_length=8000)
 
 
@@ -118,6 +138,23 @@ def answer_response(answer: UserAnswerModel) -> UserAnswerResponse:
     )
 
 
+def follow_up_response(
+    follow_up: InterviewFollowUpModel | None,
+) -> InterviewFollowUpResponse | None:
+    if follow_up is None:
+        return None
+    return InterviewFollowUpResponse(
+        id=follow_up.id,
+        question_id=follow_up.question_id,
+        prompt=follow_up.prompt,
+        reference_answer=follow_up.reference_answer,
+        reason=follow_up.reason,
+        expected_points=follow_up.expected_points,
+        confidence=follow_up.confidence,
+        status=str(follow_up.status),
+    )
+
+
 def interview_response(snapshot: InterviewSnapshot) -> InterviewResponse:
     session = snapshot.session
     return InterviewResponse(
@@ -136,6 +173,7 @@ def interview_response(snapshot: InterviewSnapshot) -> InterviewResponse:
         current_question=question_response(
             snapshot.current_question, snapshot.current_reference_chunk_ids
         ),
+        current_follow_up=follow_up_response(snapshot.current_follow_up),
         answers=[answer_response(answer) for answer in snapshot.answers],
     )
 
@@ -167,7 +205,7 @@ async def create_interview(payload: InterviewCreateRequest, request: Request) ->
         difficulty=payload.difficulty,
         question_count=payload.question_count,
     )
-    return interview_response(InterviewSnapshot(session, None, (), ()))
+    return interview_response(InterviewSnapshot(session, None, None, (), ()))
 
 
 @router.post("/interviews/{interview_id}/start", response_model=InterviewResponse)
@@ -197,6 +235,27 @@ async def submit_answer(
         await service(request).submit_answer(
             session_id=interview_id,
             question_id=payload.question_id,
+            answer_text=payload.answer,
+            idempotency_key=idempotency_key,
+        )
+    )
+
+
+@router.post(
+    "/interviews/{interview_id}/follow-ups/{follow_up_id}/answers",
+    response_model=InterviewResponse,
+)
+async def submit_follow_up_answer(
+    interview_id: UUID,
+    follow_up_id: UUID,
+    payload: FollowUpAnswerSubmitRequest,
+    request: Request,
+    idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
+) -> InterviewResponse:
+    return interview_response(
+        await service(request).submit_follow_up_answer(
+            session_id=interview_id,
+            follow_up_id=follow_up_id,
             answer_text=payload.answer,
             idempotency_key=idempotency_key,
         )

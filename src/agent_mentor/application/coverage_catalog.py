@@ -141,7 +141,10 @@ async def sync_document_catalog(
         (
             await db.scalars(
                 select(KnowledgeChunkModel)
-                .where(KnowledgeChunkModel.document_id == document_id)
+                .where(
+                    KnowledgeChunkModel.document_id == document_id,
+                    KnowledgeChunkModel.is_active.is_(True),
+                )
                 .order_by(KnowledgeChunkModel.chunk_index)
             )
         ).all()

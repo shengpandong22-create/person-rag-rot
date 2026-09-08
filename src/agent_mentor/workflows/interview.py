@@ -49,6 +49,18 @@ WORKFLOW_NODE_SPECS: tuple[WorkflowNodeSpec, ...] = (
     ),
     WorkflowNodeSpec("persist_answer", "answer.persisted", "保存答案", "使用幂等键保存用户答案。"),
     WorkflowNodeSpec(
+        "generate_follow_up",
+        "follow_up.generated",
+        "生成追问",
+        "基于用户回答决定是否生成一次受控追问。",
+    ),
+    WorkflowNodeSpec(
+        "persist_follow_up",
+        "follow_up.persisted",
+        "保存追问回答",
+        "使用幂等键保存追问答案，然后回到确定性状态机推进。",
+    ),
+    WorkflowNodeSpec(
         "advance_question",
         "workflow.advanced",
         "推进题目",

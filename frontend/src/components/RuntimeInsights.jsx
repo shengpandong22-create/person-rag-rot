@@ -61,6 +61,22 @@ export function RuntimeInsights({ runtime, askResult, report, readiness }) {
         </strong>
         {readiness ? <small>{readiness.next_action}</small> : null}
       </div>
+      {readiness?.signals?.map((signal) => (
+        <div key={signal.key}>
+          <span>{signal.label}</span>
+          <strong>{signal.detail}</strong>
+        </div>
+      ))}
+      {readiness?.enterprise_boundaries?.length ? (
+        <div className="runtime-boundaries">
+          <span>企业级边界</span>
+          <ul>
+            {readiness.enterprise_boundaries.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </section>
   );
 }

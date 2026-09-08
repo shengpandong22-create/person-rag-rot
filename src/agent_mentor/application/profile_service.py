@@ -177,12 +177,35 @@ class ProfileService:
         mastery_by_point = {
             ability.knowledge_point: ability.mastery_score for ability in snapshot.abilities
         }
-        recommendations: list[RecommendedKnowledgePoint] = []
+        weighted: dict[str, tuple[float, RecommendedKnowledgePoint]] = {}
+
+        def recommendation_key(item: RecommendedKnowledgePoint) -> str:
+            if item.subtopic_key:
+                return f"subtopic:{item.topic_key or ''}:{item.subtopic_key}"
+            if item.topic_key:
+                return f"topic:{item.topic_key}"
+            return f"title:{item.knowledge_point.casefold().strip()}"
+
+        def add_recommendation(
+            item: RecommendedKnowledgePoint, *, source_weight: int, score_bonus: float = 0.0
+        ) -> None:
+            mastery = item.mastery_score if item.mastery_score is not None else 0.50
+            score = (
+                source_weight
+                + item.priority * 20
+                + max(0.0, 1.0 - mastery) * 40
+                + score_bonus
+            )
+            key = recommendation_key(item)
+            existing = weighted.get(key)
+            if existing is None or score > existing[0]:
+                weighted[key] = (score, item)
+
         open_tasks = [
             task for task in snapshot.review_tasks if task.status == ReviewTaskStatus.OPEN
         ]
         for task in sorted(open_tasks, key=lambda item: (-item.priority, item.due_at)):
-            recommendations.append(
+            add_recommendation(
                 RecommendedKnowledgePoint(
                     knowledge_point=_display_point(task),
                     topic_key=task.topic_key,
@@ -193,13 +216,19 @@ class ProfileService:
                     priority=task.priority,
                     mastery_score=mastery_by_point.get(task.knowledge_point),
                     source_type="review_task",
-                )
+                ),
+                source_weight=300,
             )
         coverage = await self.get_coverage(knowledge_base_id)
         for point in coverage.points:
             if point.status not in {"uncovered", "attempted", "insufficient_evidence"}:
                 continue
-            recommendations.append(
+            coverage_priority = {
+                "uncovered": 4,
+                "attempted": 3,
+                "insufficient_evidence": 3,
+            }[point.status]
+            add_recommendation(
                 RecommendedKnowledgePoint(
                     knowledge_point=point.title,
                     topic_key=None,
@@ -207,12 +236,12 @@ class ProfileService:
                     subtopic_key=None,
                     subtopic_title=None,
                     reason=f"coverage_gap:{point.status}",
-                    priority=3 if point.status == "uncovered" else 2,
+                    priority=coverage_priority,
                     mastery_score=point.average_score,
                     source_type="coverage_gap",
-                )
+                ),
+                source_weight=240,
             )
-        recommended_points = {task.knowledge_point for task in open_tasks}
         weak_abilities = sorted(
             (item for item in snapshot.abilities if item.profile_level == "topic"),
             key=lambda item: item.mastery_score,
@@ -220,9 +249,8 @@ class ProfileService:
         for ability in weak_abilities:
             if ability.mastery_score >= 0.72:
                 continue
-            if ability.knowledge_point in recommended_points:
-                continue
-            recommendations.append(
+            confidence_bonus = min(20, int(ability.confidence_weighted_count * 4))
+            add_recommendation(
                 RecommendedKnowledgePoint(
                     knowledge_point=_display_point(ability),
                     topic_key=ability.topic_key,
@@ -233,9 +261,15 @@ class ProfileService:
                     priority=2 if ability.mastery_score < 0.7 else 1,
                     mastery_score=ability.mastery_score,
                     source_type="ability",
-                )
+                ),
+                source_weight=160,
+                score_bonus=confidence_bonus,
             )
-        return tuple(recommendations[:limit])
+        ordered = sorted(
+            weighted.values(),
+            key=lambda item: (-item[0], -item[1].priority, item[1].knowledge_point),
+        )
+        return tuple(item for _, item in ordered[:limit])
 
     async def get_coverage(self, knowledge_base_id: UUID) -> CoverageSnapshot:
         async with self._sessions() as db:

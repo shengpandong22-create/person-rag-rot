@@ -28,6 +28,12 @@ class AnswerKind(StrEnum):
     FOLLOW_UP = "follow_up"
 
 
+class FollowUpStatus(StrEnum):
+    PENDING = "pending"
+    ANSWERED = "answered"
+    SKIPPED = "skipped"
+
+
 ALLOWED_STATUS_TRANSITIONS = {
     InterviewStatus.CREATED: {InterviewStatus.WAITING_FOR_ANSWER, InterviewStatus.CANCELLED},
     InterviewStatus.WAITING_FOR_ANSWER: {

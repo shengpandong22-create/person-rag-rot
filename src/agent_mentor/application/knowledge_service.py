@@ -10,8 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
 from agent_mentor.application.coverage_catalog import sync_document_catalog
-from agent_mentor.domain.knowledge import DocumentStatus, TrustLevel
+from agent_mentor.domain.knowledge import DocumentStatus, IngestionJobStatus, TrustLevel
 from agent_mentor.infrastructure.database.models import (
+    IngestionJobModel,
     KnowledgeBaseModel,
     KnowledgeCatalogSourceModel,
     KnowledgeChunkModel,
@@ -163,6 +164,85 @@ class KnowledgeService:
             await session.refresh(document)
             return document, False
 
+    async def enqueue_ingestion(
+        self, document_id: UUID, *, job_type: str = "ingest"
+    ) -> IngestionJobModel:
+        async with self._sessions() as session:
+            document = await session.get(SourceDocumentModel, document_id)
+            if document is None:
+                raise AppError("DOCUMENT_NOT_FOUND", "Document was not found.", 404)
+            now = datetime.now(UTC)
+            document.status = DocumentStatus.PENDING
+            document.error_message = None
+            document.updated_at = now
+            job = IngestionJobModel(
+                id=uuid4(),
+                document_id=document_id,
+                job_type=job_type,
+                status=IngestionJobStatus.PENDING,
+                attempt_count=0,
+                error_message=None,
+                created_at=now,
+                updated_at=now,
+                started_at=None,
+                completed_at=None,
+            )
+            session.add(job)
+            await session.commit()
+            await session.refresh(job)
+            return job
+
+    async def process_ingestion_queue(self, *, limit: int = 3) -> int:
+        processed = 0
+        for _ in range(limit):
+            async with self._sessions() as session:
+                job = await session.scalar(
+                    select(IngestionJobModel)
+                    .where(IngestionJobModel.status == IngestionJobStatus.PENDING)
+                    .order_by(IngestionJobModel.created_at, IngestionJobModel.id)
+                    .with_for_update(skip_locked=True)
+                    .limit(1)
+                )
+                if job is None:
+                    break
+                document = await session.get(SourceDocumentModel, job.document_id)
+                now = datetime.now(UTC)
+                job.status = IngestionJobStatus.PROCESSING
+                job.attempt_count += 1
+                job.started_at = now
+                job.updated_at = now
+                if document is not None:
+                    document.status = DocumentStatus.PROCESSING
+                    document.error_message = None
+                    document.updated_at = now
+                document_id = job.document_id
+                job_id = job.id
+                await session.commit()
+
+            await self.ingest(document_id)
+
+            async with self._sessions() as session:
+                job = await session.get(IngestionJobModel, job_id)
+                document = await session.get(SourceDocumentModel, document_id)
+                if job is None:
+                    continue
+                now = datetime.now(UTC)
+                if document is not None and document.status == DocumentStatus.READY:
+                    job.status = IngestionJobStatus.COMPLETED
+                    job.error_message = None
+                    job.completed_at = now
+                else:
+                    job.status = IngestionJobStatus.FAILED
+                    job.error_message = (
+                        document.error_message
+                        if document is not None and document.error_message
+                        else "文档摄入失败，请检查文件内容或重新索引。"
+                    )
+                job.updated_at = now
+                await session.commit()
+                processed += 1
+        return processed
+
     async def ingest(self, document_id: UUID) -> None:
         try:
             async with self._sessions() as session:
@@ -211,6 +291,7 @@ class KnowledgeService:
                                 token_count=draft.token_count,
                                 embedding=vector,
                                 search_text=None,
+                                is_active=True,
                                 created_at=datetime.now(UTC),
                             )
                         )
@@ -220,12 +301,12 @@ class KnowledgeService:
                         chunk.page_number = draft.page_number
                         chunk.token_count = draft.token_count
                         chunk.embedding = vector
+                        chunk.search_text = None
+                        chunk.is_active = True
                 if existing_chunks:
-                    await session.execute(
-                        delete(KnowledgeChunkModel).where(
-                            KnowledgeChunkModel.id.in_(tuple(existing_chunks))
-                        )
-                    )
+                    for stale_chunk in existing_chunks.values():
+                        stale_chunk.is_active = False
+                        stale_chunk.search_text = None
                 await session.flush()
                 from sqlalchemy import text
 
@@ -233,7 +314,7 @@ class KnowledgeService:
                     text(
                         "UPDATE knowledge_chunks "
                         "SET search_text = to_tsvector('simple', content) "
-                        "WHERE document_id = :document_id"
+                        "WHERE document_id = :document_id AND is_active = true"
                     ),
                     {"document_id": document_id},
                 )
@@ -274,6 +355,18 @@ class KnowledgeService:
                 .returning(SourceDocumentModel.id)
             )
             recovered_ids = result.scalars().all()
+            await session.execute(
+                update(IngestionJobModel)
+                .where(
+                    IngestionJobModel.status == IngestionJobStatus.PROCESSING,
+                    IngestionJobModel.updated_at < cutoff,
+                )
+                .values(
+                    status=IngestionJobStatus.PENDING,
+                    error_message="服务重启后自动恢复为待处理任务。",
+                    updated_at=datetime.now(UTC),
+                )
+            )
             await session.commit()
             return len(recovered_ids)
 

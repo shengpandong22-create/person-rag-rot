@@ -107,6 +107,53 @@ export function OverviewDashboard({
   const readyCount = documents.filter((item) => item.status === "ready").length;
   const passedChecks = readiness?.checks.filter((item) => item.passed).length ?? 0;
   const totalChecks = readiness?.checks.length ?? 0;
+  const demoSteps = [
+    {
+      key: "knowledge",
+      title: "1. 准备知识库",
+      detail: readyCount
+        ? `当前已有 ${readyCount} 份可检索资料，可以直接演示 RAG 和面试。`
+        : "先上传一份学习资料，等待索引 ready 后再开始演示。",
+      action: "查看知识库",
+      view: "knowledge",
+      ready: readyCount > 0,
+    },
+    {
+      key: "interview",
+      title: "2. 跑一轮面试",
+      detail: interview
+        ? `当前面试进度 ${completion}%，可继续答题或生成报告。`
+        : "基于画像、覆盖盲区和历史题冷却生成三题面试。",
+      action: "进入面试",
+      view: "interview",
+      ready: Boolean(interview),
+    },
+    {
+      key: "reports",
+      title: "3. 讲报告画像",
+      detail: reportHistory.length
+        ? `已有 ${reportHistory.length} 份历史报告，可展示趋势、画像和复习任务。`
+        : "完成面试后生成评分报告，再观察画像如何反哺下一轮训练。",
+      action: "查看报告",
+      view: "reports",
+      ready: reportHistory.length > 0,
+    },
+  ];
+  const trustSignals = readiness?.signals ?? [
+    {
+      key: "rag_trust",
+      label: "RAG 可信边界",
+      detail: "证据门禁、引用白名单和显式降级会在系统就绪后展示。",
+    },
+    {
+      key: "workflow_control",
+      label: "工作流控制",
+      detail: "状态机、checkpoint 和幂等提交会在完成面试后形成证据。",
+    },
+  ];
+  const enterpriseBoundaries = readiness?.enterprise_boundaries ?? [
+    "当前定位为本地单用户学习训练系统，不包装成企业级多租户平台。",
+  ];
   return (
     <div className="overview-dashboard">
       <section className="welcome-card">
@@ -137,6 +184,51 @@ export function OverviewDashboard({
         <Metric label="当前面试" value={interview ? `${completion}%` : "未开始"} />
         <Metric label="演示就绪" value={`${passedChecks}/${totalChecks}`} />
         <Metric label="启动时间" value={runtimeStartedLabel(runtime)} />
+      </section>
+
+      <section className="demo-mode-card">
+        <div className="section-heading">
+          <div>
+            <span>INTERVIEW DEMO MODE</span>
+            <h3>按这条路线演示，面试官更容易理解项目价值</h3>
+          </div>
+          <strong>{readiness ? `${readiness.score}% 就绪` : "待自检"}</strong>
+        </div>
+        <div className="demo-mode-grid">
+          {demoSteps.map((step) => (
+            <article className={step.ready ? "ready" : ""} key={step.key}>
+              <span>{step.ready ? "已具备" : "待完成"}</span>
+              <h4>{step.title}</h4>
+              <p>{step.detail}</p>
+              <button type="button" className="text-button" onClick={() => onNavigate(step.view)}>
+                {step.action} →
+              </button>
+            </article>
+          ))}
+        </div>
+        <div className="demo-evidence-grid">
+          <div>
+            <h4>工程可信性证据</h4>
+            <ul>
+              {trustSignals.slice(0, 4).map((signal) => (
+                <li key={signal.key}>
+                  <strong>{signal.label}</strong>
+                  <span>{signal.detail}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4>企业级边界口径</h4>
+            <ul>
+              {enterpriseBoundaries.slice(0, 3).map((boundary) => (
+                <li key={boundary}>
+                  <span>{boundary}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </section>
 
       <div className="overview-columns">

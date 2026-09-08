@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from types import SimpleNamespace
 from typing import Any, cast
 from uuid import uuid4
 
@@ -9,7 +10,11 @@ import pytest
 from agent_mentor.api.errors import AppError
 from agent_mentor.application.answer_service import AnswerService, ensure_citations_are_valid
 from agent_mentor.infrastructure.retriever import (
+    PostgresHybridRetriever,
     _infer_retrieved_block_type,
+    _lexical_overlap,
+    _lexical_terms,
+    _rerank_score,
     _retrieval_explanation,
 )
 from agent_mentor.ports.knowledge_retriever import RetrievedChunk
@@ -52,6 +57,8 @@ def test_rrf_is_deterministic_for_fixed_rankings() -> None:
 def test_retrieval_explanation_contains_rank_signals() -> None:
     explanation = _retrieval_explanation(
         fused_score=0.0325,
+        rerank_score=0.0395,
+        lexical_overlap=0.5,
         vector_rank=1,
         text_rank=3,
         vector_score=0.8123,
@@ -59,9 +66,52 @@ def test_retrieval_explanation_contains_rank_signals() -> None:
     )
 
     assert "RRF=0.0325" in explanation
+    assert "rerank=0.0395" in explanation
+    assert "lexical_overlap=0.50" in explanation
     assert "vector_rank=1" in explanation
     assert "text_rank=3" in explanation
     assert _infer_retrieved_block_type("| A | B |\n| - | - |\n| x | y |") == "table"
+
+
+def test_postgres_retriever_filters_inactive_chunks() -> None:
+    retriever = PostgresHybridRetriever.__new__(PostgresHybridRetriever)
+    query = SimpleNamespace(knowledge_base_id=uuid4(), trust_levels=())
+
+    compiled = str(
+        retriever._base_query(cast(Any, query)).compile(  # pyright: ignore[reportPrivateUsage]
+            compile_kwargs={"literal_binds": False}
+        )
+    ).lower()
+
+    assert "knowledge_chunks.is_active" in compiled
+
+
+def test_chinese_lexical_terms_include_bigrams_for_plugin_free_search() -> None:
+    terms = _lexical_terms("引用白名单如何判断证据不足")
+
+    assert "引用" in terms
+    assert "白名" in terms
+    assert "证据" in terms
+
+
+def test_rerank_score_uses_lexical_and_raw_retrieval_signals() -> None:
+    base = _rerank_score(
+        normalized="引用白名单 证据不足",
+        content="完全无关内容",
+        fused_score=0.02,
+        vector_score=0.2,
+        text_score=0,
+    )
+    boosted = _rerank_score(
+        normalized="引用白名单 证据不足",
+        content="引用白名单用于判断证据不足时是否显式降级。",
+        fused_score=0.02,
+        vector_score=0.8,
+        text_score=4,
+    )
+
+    assert _lexical_overlap("引用白名单 证据不足", "引用白名单用于判断证据不足") > 0
+    assert boosted > base
 
 
 def test_citation_validator_allows_only_current_context() -> None:

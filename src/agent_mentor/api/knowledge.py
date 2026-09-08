@@ -104,7 +104,8 @@ async def upload_document(
         author,
     )
     if not duplicate:
-        tasks.add_task(service(request).ingest, document.id)
+        await service(request).enqueue_ingestion(document.id, job_type="upload")
+        tasks.add_task(service(request).process_ingestion_queue)
     return document_response(document)
 
 
@@ -118,7 +119,8 @@ async def reindex_document(
     document_id: UUID, request: Request, tasks: BackgroundTasks
 ) -> DocumentResponse:
     document = await service(request).get_document(document_id)
-    tasks.add_task(service(request).ingest, document.id)
+    await service(request).enqueue_ingestion(document.id, job_type="reindex")
+    tasks.add_task(service(request).process_ingestion_queue)
     return document_response(document)
 
 

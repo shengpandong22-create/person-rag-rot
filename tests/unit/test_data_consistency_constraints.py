@@ -8,8 +8,10 @@ from agent_mentor.infrastructure.database.models import (
     AbilityProfileModel,
     EvaluationModel,
     EvaluationReferenceModel,
+    IngestionJobModel,
     InterviewQuestionModel,
     InterviewReportModel,
+    KnowledgeChunkModel,
     ProfileUpdateEventModel,
     QuestionCoverageModel,
     QuestionReferenceModel,
@@ -90,3 +92,19 @@ def test_question_coverage_and_ability_profile_are_scoped_by_knowledge_base() ->
         "uq_ability_user_base_point",
         {"user_id", "knowledge_base_id", "knowledge_point"},
     )
+
+
+def test_knowledge_chunks_support_soft_deactivation_for_safe_reindex() -> None:
+    table = cast(Table, KnowledgeChunkModel.__table__)
+
+    assert "is_active" in table.columns
+    assert table.columns["is_active"].nullable is False
+
+
+def test_ingestion_jobs_are_persisted_for_restart_recovery() -> None:
+    table = cast(Table, IngestionJobModel.__table__)
+
+    assert table.name == "ingestion_jobs"
+    assert "document_id" in table.columns
+    assert "status" in table.columns
+    assert "attempt_count" in table.columns

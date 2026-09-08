@@ -27,11 +27,20 @@ class ReadinessCheck:
 
 
 @dataclass(frozen=True, slots=True)
+class ReadinessSignal:
+    key: str
+    label: str
+    detail: str
+
+
+@dataclass(frozen=True, slots=True)
 class DemoReadiness:
     score: int
     status: str
     checks: tuple[ReadinessCheck, ...]
     next_action: str
+    signals: tuple[ReadinessSignal, ...]
+    enterprise_boundaries: tuple[str, ...]
 
 
 class DemoReadinessService:
@@ -135,6 +144,12 @@ class DemoReadinessService:
             status=self._status(score),
             checks=checks,
             next_action=self._next_action(checks),
+            signals=self._signals(
+                ready_document_count=ready_document_count,
+                completed_interview_count=completed_interview_count,
+                checkpoint_count=checkpoint_count,
+            ),
+            enterprise_boundaries=self._enterprise_boundaries(),
         )
 
     async def _count(self, db: AsyncSession, statement) -> int:  # type: ignore[no-untyped-def]
@@ -159,3 +174,46 @@ class DemoReadinessService:
                     "ability_profile": "执行画像更新，形成下一轮训练计划。",
                 }[check.key]
         return "演示闭环已就绪，可以按知识库、RAG、面试、报告、画像顺序演示。"
+
+    def _signals(
+        self,
+        *,
+        ready_document_count: int,
+        completed_interview_count: int,
+        checkpoint_count: int,
+    ) -> tuple[ReadinessSignal, ...]:
+        return (
+            ReadinessSignal(
+                "runtime_scope",
+                "当前定位",
+                "本地单用户学习训练系统，不包装成企业级多租户平台。",
+            ),
+            ReadinessSignal(
+                "rag_trust",
+                "RAG 可信边界",
+                f"READY 文档 {ready_document_count} 份；回答链路包含证据门禁、引用白名单和降级。",
+            ),
+            ReadinessSignal(
+                "workflow_control",
+                "工作流控制",
+                (
+                    f"已完成面试 {completed_interview_count} 场；"
+                    f"checkpoint {checkpoint_count} 条；状态推进由确定性代码控制。"
+                ),
+            ),
+            ReadinessSignal(
+                "interview_quality",
+                "训练质量",
+                "题目生成结合画像、覆盖盲区、历史题冷却和轻量面试官策略。",
+            ),
+        )
+
+    def _enterprise_boundaries(self) -> tuple[str, ...]:
+        return (
+            (
+                "复杂文档：当前支持 Markdown/TXT/PDF/DOCX 基础解析，"
+                "OCR、复杂表格和跨页版面解析属于后续演进。"
+            ),
+            "权限租户：当前为本机默认用户，企业级多租户、ACL 和审计链路未作为 V2 范围实现。",
+            "任务治理：当前以本地同步演示为主，大文件异步索引、重试队列、灰度和线上监控可作为企业化扩展。",
+        )

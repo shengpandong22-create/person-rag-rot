@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     embedding_batch_size: int = 16
     retrieval_candidate_k: int = 20
     retrieval_top_k: int = 6
-    retrieval_min_score: float = 0.01
+    retrieval_min_score: float = 0.013
     retrieval_max_chunks_per_document: int = 3
 
     @model_validator(mode="after")
