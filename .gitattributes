@@ -3,3 +3,10 @@
 *.bat text eol=crlf
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
+
+# Evaluation datasets are content-addressed: evals/freeze.py hashes their raw
+# bytes to detect holdout drift.  Any newline conversion would change the hash
+# and make --check report a false drift, so these files must be committed and
+# checked out byte-for-byte.
+evals/datasets/*.jsonl -text
+evals/datasets/HOLDOUT_FREEZE.json -text
