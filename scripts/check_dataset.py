@@ -14,7 +14,13 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from evals.schema import load_dataset
+# Allow running directly from the repo root without PYTHONPATH being set.
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+for _candidate in (_REPO_ROOT / "src", _REPO_ROOT):
+    if str(_candidate) not in sys.path:
+        sys.path.insert(0, str(_candidate))
+
+from evals.schema import graded_cases, load_dataset, ungraded_cases  # noqa: E402
 
 
 def main() -> None:
@@ -32,9 +38,10 @@ def main() -> None:
     print(f"split: {dict(Counter(case.split for case in cases))}")
     negatives = [case for case in cases if case.answerability.value == "none"]
     print(f"negative_reason: {dict(Counter(str(case.negative_reason) for case in negatives))}")
-    graded = [case for case in cases if case.relevant_sources]
-    print(f"graded_rows: {len(graded)}")
-    print(f"ungraded_rows: {len(cases) - len(graded)}")
+    # Reuse the schema helpers so this script and the runner cannot disagree on
+    # what counts as a graded row.
+    print(f"graded_rows: {len(graded_cases(cases))}")
+    print(f"ungraded_rows: {len(ungraded_cases(cases))}")
 
 
 if __name__ == "__main__":

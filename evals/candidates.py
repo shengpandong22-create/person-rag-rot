@@ -148,9 +148,7 @@ def section_terms(text: str) -> set[str]:
         if match.group(0) not in ENGLISH_STOPWORDS
     }
     for segment in re.findall(r"[\u4e00-\u9fff]{2,}", lowered):
-        terms.update(
-            segment[index : index + 2] for index in range(len(segment) - 1)
-        )
+        terms.update(segment[index : index + 2] for index in range(len(segment) - 1))
     return terms
 
 
@@ -287,8 +285,7 @@ def build_packages(
                 "as partial/none and authoring a label manually"
             )
         notes.append(
-            "candidates are model suggestions; select and verify before setting "
-            "label_origin=human"
+            "candidates are model suggestions; select and verify before setting label_origin=human"
         )
         packages.append(
             CaseCandidatePackage(

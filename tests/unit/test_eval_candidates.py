@@ -45,9 +45,7 @@ def test_candidates_never_claim_human_verification() -> None:
 
     assert payload["human_verified"] is False
     assert payload["suggested_by"] == MODEL_SUGGESTED
-    assert all(
-        candidate["review_status"] == NEEDS_REVIEW for candidate in payload["candidates"]
-    )
+    assert all(candidate["review_status"] == NEEDS_REVIEW for candidate in payload["candidates"])
     assert payload["notes"]
 
 
@@ -117,9 +115,7 @@ def test_no_candidate_above_threshold_is_reported_as_empty_not_fabricated() -> N
 
 def test_empty_candidate_package_carries_actionable_note() -> None:
     unrelated = _section(text="完全无关的内容。", heading=("其他",))
-    package = build_packages(
-        [_case(question="量子纠缠的本质？", keywords=())], [unrelated]
-    )[0]
+    package = build_packages([_case(question="量子纠缠的本质？", keywords=())], [unrelated])[0]
 
     assert package.candidates == ()
     assert any("may not cover this question" in note for note in package.notes)

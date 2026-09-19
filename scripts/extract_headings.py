@@ -72,9 +72,7 @@ def render_markdown(outlines: dict[str, list[SectionOutline]]) -> str:
         lines.append(f"section_count: {len(sections)}")
         for index, section in enumerate(sections, start=1):
             path_text = " > ".join(section.heading_path) or "(no heading)"
-            lines.append(
-                f"{index}. [{section.block_type}|{section.char_count}c] {path_text}"
-            )
+            lines.append(f"{index}. [{section.block_type}|{section.char_count}c] {path_text}")
             lines.append(f"   {section.excerpt}")
     return "\n".join(lines)
 
