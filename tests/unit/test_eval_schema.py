@@ -46,10 +46,23 @@ def test_parses_full_answerability_case_with_stable_locations() -> None:
 
 
 def test_partial_answerability_still_counts_as_answerable() -> None:
-    case = parse_case(_row(answerability="partial"), line_number=1)
+    case = parse_case(
+        _row(
+            answerability="partial",
+            negative_reason="partial_evidence_only",
+            negative_note="只能回答解析限制，OCR 能力无资料。",
+        ),
+        line_number=1,
+    )
 
     assert case.answerability is Answerability.PARTIAL
     assert case.answerable is True
+    assert case.negative_reason is NegativeReason.PARTIAL_EVIDENCE_ONLY
+
+
+def test_partial_without_negative_reason_is_rejected_as_underspecified() -> None:
+    with pytest.raises(ValueError, match="answerability=partial requires negative_reason"):
+        parse_case(_row(answerability="partial"), line_number=1)
 
 
 def test_negative_case_requires_reason_and_forbids_relevant_sources() -> None:

@@ -1,0 +1,19 @@
+// Validation set — used for failure analysis, parameter selection and ablation.
+//
+// Rows here MAY be inspected during tuning.  Keep holdout separate.
+//
+// STATUS: SEED FILE — only negatives and clearly-scoped partial rows are
+// seeded.  Positive rows require reading the demo knowledge base to fill
+// `relevant_sources` with honest document_logical_name + heading_path, which
+// cannot be derived from code alone.  Add them by reading the material.
+
+// --- partial answerability: the project answers part of this, not all of it ---
+{"id":"va-pt-001","question":"PDF 文档的解析限制和 OCR 支持情况分别是什么？","answerability":"partial","split":"validation","negative_reason":"partial_evidence_only","negative_note":"解析限制有明确说法（页数上限、扫描件不支持）；OCR 能力部分资料未展开，只能回答前一半。","tags":["partial_answer","in_domain"]}
+{"id":"va-pt-002","question":"系统如何控制单文档占比，以及在多大规模下验证过？","answerability":"partial","split":"validation","negative_reason":"partial_evidence_only","negative_note":"占比控制策略有据可查；规模验证数据缺失，只能部分回答。","tags":["partial_answer","in_domain"]}
+
+// --- in-domain hard negatives: same topic, no recorded evidence ---
+{"id":"va-neg-001","question":"本项目实测的 embedding 单条平均耗时是多少毫秒？","answerability":"none","split":"validation","negative_reason":"in_domain_value_missing","negative_note":"BGE 嵌入是本地执行，但资料未记录单条平均耗时。","tags":["hard_negative","in_domain"]}
+{"id":"va-neg-002","question":"两份资料对同一配置描述冲突时系统采用哪一份？","answerability":"none","split":"validation","negative_reason":"conflicting_sources","negative_note":"版本管理会停用旧版本，但资料未定义「同一版本内配置冲突」的仲裁规则。","tags":["hard_negative","in_domain"]}
+{"id":"va-neg-003","question":"当前系统在并发面试评分下的吞吐上限是多少？","answerability":"none","split":"validation","negative_reason":"in_domain_value_missing","negative_note":"并发提交答案已加行锁，但未给出吞吐上限数据。","tags":["hard_negative","in_domain"]}
+{"id":"va-neg-004","question":"为什么本项目选择 Kafka 作为摄入任务的消息队列？","answerability":"none","split":"validation","negative_reason":"false_premise","negative_note":"项目未引入 Kafka，摄入队列基于数据库任务表。","tags":["false_premise","in_domain"]}
+{"id":"va-neg-005","question":"pg_jieba 与 zhparser 插件在本项目中的分词效果对比结论是什么？","answerability":"none","split":"validation","negative_reason":"in_domain_no_conclusion","negative_note":"资料说明了尚未引入这类插件的取舍，但没有对比结论。","tags":["hard_negative","in_domain"]}

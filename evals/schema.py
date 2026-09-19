@@ -227,6 +227,12 @@ def parse_case(
             f"{context}: answerability=none requires negative_reason so negatives can be "
             "stratified into easy/hard instead of reported as one aggregate number"
         )
+    if answerability is Answerability.PARTIAL and negative_reason is None:
+        raise ValueError(
+            f"{context}: answerability=partial requires negative_reason describing which "
+            "part of the question the evidence does not cover, otherwise 'partial' is "
+            "indistinguishable from an under-specified 'full' row"
+        )
 
     return RetrievalEvalCase(
         case_id=case_id,
@@ -265,6 +271,48 @@ def load_dataset(path: Path, *, require_graded: bool = True) -> DatasetLoadResul
     if duplicates:
         raise ValueError(f"Dataset contains duplicate ids: {sorted(duplicates)}")
     return DatasetLoadResult(cases=tuple(cases), schema_version="v2")
+
+
+VALID_SPLITS = ("regression", "validation", "holdout")
+
+
+def split_cases(
+    cases: tuple[RetrievalEvalCase, ...],
+) -> dict[str, tuple[RetrievalEvalCase, ...]]:
+    """Group cases by split so holdout rows can be withheld from tuning.
+
+    Raises on an unknown split name rather than defaulting, because a typo in
+    ``split`` would otherwise silently move a row into the tuning pool.
+    """
+    grouped: dict[str, list[RetrievalEvalCase]] = {name: [] for name in VALID_SPLITS}
+    for case in cases:
+        if case.split not in grouped:
+            raise ValueError(
+                f"case {case.case_id!r} declares unknown split {case.split!r}; "
+                f"expected one of {list(VALID_SPLITS)}"
+            )
+        grouped[case.split].append(case)
+    return {name: tuple(items) for name, items in grouped.items()}
+
+
+def graded_cases(cases: tuple[RetrievalEvalCase, ...]) -> tuple[RetrievalEvalCase, ...]:
+    """Rows that may be scored as formal Recall/MRR, i.e. carry human labels.
+
+    Unanswerable rows count as graded — their label is the ``negative_reason``
+    itself, which is a human judgement.
+    """
+    return tuple(
+        case
+        for case in cases
+        if case.label_origin is LabelOrigin.HUMAN
+        and (case.relevant_sources or case.answerability is Answerability.NONE)
+    )
+
+
+def ungraded_cases(cases: tuple[RetrievalEvalCase, ...]) -> tuple[RetrievalEvalCase, ...]:
+    """Rows retained for diagnostics only; never enter formal Recall/MRR."""
+    graded_ids = {case.case_id for case in graded_cases(cases)}
+    return tuple(case for case in cases if case.case_id not in graded_ids)
 
 
 def _duplicate_ids(cases: list[RetrievalEvalCase]) -> set[str]:

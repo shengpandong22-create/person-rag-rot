@@ -1,0 +1,31 @@
+// Holdout set — acceptance only.
+//
+// RULES
+//   1. Never read these rows while tuning thresholds, weights or rerankers.
+//   2. Never add a row here after seeing a retrieval result for it.
+//   3. Freeze this file's hash (evals.freeze --write) before any tuning run.
+//
+// STATUS: SEED FILE — the rows below are in-domain negatives that can be
+// justified from the project's own documentation without reading the demo
+// knowledge base.  Positive rows are intentionally absent: they require
+// reading the actual course documents to label `relevant_sources` honestly.
+// Add positives only by reading the source material, never by guessing.
+//
+// Intended size per the agreed plan: ~10-15 easy negatives, ~10-15 in-domain
+// hard negatives, ~5 false-premise, ~5 partial-answer.  This file is the
+// hard-negative and false-premise seed; the remaining rows need human review.
+
+// --- false premise: the project explicitly chose NOT to adopt these ---
+{"id":"ho-neg-001","question":"为什么本项目选择 Elasticsearch 作为主检索方案？","answerability":"none","split":"holdout","negative_reason":"false_premise","negative_note":"项目明确选择 PostgreSQL 全文检索而非 Elasticsearch；问题预设了错误前提，正确行为是否定前提而不是检索后强行回答。","tags":["false_premise","in_domain"]}
+{"id":"ho-neg-002","question":"为什么本项目用 Redis 保存面试工作流的 checkpoint？","answerability":"none","split":"holdout","negative_reason":"false_premise","negative_note":"checkpoint 由 PostgreSQL 持久化，项目明确未引入 Redis。","tags":["false_premise","in_domain"]}
+{"id":"ho-neg-003","question":"为什么本项目用 Celery 处理文档摄入任务？","answerability":"none","split":"holdout","negative_reason":"false_premise","negative_note":"摄入任务依赖持久化 ingestion job，项目明确未引入 Celery。","tags":["false_premise","in_domain"]}
+
+// --- in-domain but the specific value is not recorded in the material ---
+{"id":"ho-neg-004","question":"本项目当前使用的 pgvector 精确版本号是多少？","answerability":"none","split":"holdout","negative_reason":"in_domain_value_missing","negative_note":"资料说明使用 pgvector，但未记录精确版本号。主题相关 ≠ 证据充分。","tags":["hard_negative","in_domain"]}
+{"id":"ho-neg-005","question":"BGE reranker 的 P95 延迟是多少毫秒？","answerability":"none","split":"holdout","negative_reason":"in_domain_value_missing","negative_note":"当前实现是启发式 rerank，未接入 cross-encoder reranker，也没有该延迟数据。","tags":["hard_negative","in_domain"]}
+{"id":"ho-neg-006","question":"Cross-Encoder 精排相比 RRF 带来了多少 Recall 提升？","answerability":"none","split":"holdout","negative_reason":"in_domain_no_conclusion","negative_note":"资料提到了精排方向，但没有给出实测结论，不能凭空推断提升幅度。","tags":["hard_negative","in_domain"]}
+{"id":"ho-neg-007","question":"知识库在十万级 chunk 规模下的实测 P95 检索耗时是多少？","answerability":"none","split":"holdout","negative_reason":"in_domain_value_missing","negative_note":"当前验收知识库仅 195 chunk，没有十万级规模数据。","tags":["hard_negative","in_domain"]}
+
+// --- version boundary: discussed as future work, not yet implemented ---
+{"id":"ho-neg-008","question":"V3 已经实现了哪些 Observe-Decide-Act 自主决策节点？","answerability":"none","split":"holdout","negative_reason":"version_not_released","negative_note":"V3 为演进规划，尚未实现；提问把规划当成已完成事实。","tags":["hard_negative","version_boundary"]}
+{"id":"ho-neg-009","question":"当前系统支持哪些 PDF OCR 能力？","answerability":"none","split":"holdout","negative_reason":"out_of_range_implementation","negative_note":"扫描版 PDF 明确不支持，需要 OCR；系统只支持可提取文本的 PDF。","tags":["hard_negative","in_domain"]}
