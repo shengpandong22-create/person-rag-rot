@@ -27,6 +27,13 @@ from evals.schema import VALID_SPLITS, load_dataset
 HOLDOUT_DATASET = Path("evals/datasets/retrieval_holdout_v1.jsonl")
 FREEZE_RECORD = Path("evals/datasets/HOLDOUT_FREEZE.json")
 
+# Validation is frozen too, for a different reason: holdout freezing protects
+# the acceptance set from being edited after tuning, while validation freezing
+# makes a tuning run reproducible — the same parameters must be scored against
+# the same questions to be comparable across experiments.
+VALIDATION_DATASET = Path("evals/datasets/retrieval_validation_v1.jsonl")
+VALIDATION_FREEZE_RECORD = Path("evals/datasets/VALIDATION_FREEZE.json")
+
 
 @dataclass(frozen=True, slots=True)
 class FreezeRecord:
@@ -56,35 +63,49 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def build_record(path: Path, *, note: str) -> FreezeRecord:
+def build_record(path: Path, *, note: str, expected_split: str = "holdout") -> FreezeRecord:
+    """Record a hash over a single-split dataset file.
+
+    A freeze over a file that mixes splits is meaningless: editing one split
+    would invalidate the other's record.  ``expected_split`` makes the intent
+    explicit so validation and holdout cannot be frozen by accident.
+    """
     result = load_dataset(path, require_graded=False)
-    holdout = [case for case in result.cases if case.split == "holdout"]
-    if not holdout:
+    rows = [case for case in result.cases if case.split == expected_split]
+    if not rows:
         raise ValueError(
-            f"{path} contains no rows with split='holdout'; a freeze record over an "
-            "empty holdout would give false assurance"
+            f"{path} contains no rows with split={expected_split!r}; a freeze record "
+            "over an empty set would give false assurance"
         )
-    non_holdout = sorted({case.split for case in result.cases} - {"holdout"})
-    if non_holdout:
+    other_splits = sorted({case.split for case in result.cases} - {expected_split})
+    if other_splits:
         raise ValueError(
-            f"{path} must contain holdout rows only, found other splits: {non_holdout}. "
-            "Mixing splits in one file makes the freeze meaningless; keep "
-            f"holdout in its own file and use {list(VALID_SPLITS)} for the rest."
+            f"{path} must contain {expected_split} rows only, found other splits: "
+            f"{other_splits}. Mixing splits in one file makes the freeze meaningless; "
+            f"keep each split in its own file and use {list(VALID_SPLITS)} for the rest."
         )
     return FreezeRecord(
         dataset=str(path),
         sha256=file_sha256(path),
-        case_count=len(holdout),
-        case_ids=tuple(case.case_id for case in holdout),
+        case_count=len(rows),
+        case_ids=tuple(case.case_id for case in rows),
         frozen_at=datetime.now(UTC).isoformat(),
         note=note,
     )
 
 
-def write_freeze(path: Path = HOLDOUT_DATASET, record_path: Path = FREEZE_RECORD) -> FreezeRecord:
+def write_freeze(
+    path: Path = HOLDOUT_DATASET,
+    record_path: Path = FREEZE_RECORD,
+    *,
+    expected_split: str = "holdout",
+    note: str | None = None,
+) -> FreezeRecord:
     record = build_record(
         path,
-        note=(
+        expected_split=expected_split,
+        note=note
+        or (
             "Holdout is not used for parameter tuning, threshold selection or "
             "failure analysis. Run once per candidate implementation; if the "
             "hash below changes, the previous acceptance run is void."
@@ -110,32 +131,73 @@ def check_freeze(
     current_hash = file_sha256(path)
     if current_hash != recorded["sha256"]:
         return False, (
-            "HOLDOUT DRIFT: holdout file changed after the freeze was recorded.\n"
+            f"DATASET DRIFT: {path} changed after the freeze was recorded.\n"
             f"  recorded: {recorded['sha256']}\n"
             f"  current:  {current_hash}\n"
-            "Any acceptance number produced before this change is void; re-freeze "
-            "and re-run tuning from scratch if the holdout was edited."
+            "Any metric produced before this change is void. Re-freeze and re-run; "
+            "if this was the holdout, tuning must start over because the acceptance "
+            "set has been seen."
         )
     return True, (
-        f"holdout intact: {recorded['case_count']} cases, sha256={current_hash[:16]}..., "
+        f"intact: {recorded['case_count']} cases, sha256={current_hash[:16]}..., "
         f"frozen_at={recorded['frozen_at']}"
     )
 
 
+VALIDATION_NOTE = (
+    "Validation is the tuning split. Freezing it keeps ablation runs comparable: "
+    "the same parameters must be scored against the same questions. It is "
+    "expected to be read during tuning; the holdout record is the one that must "
+    "not be read."
+)
+
+
+def freeze_targets() -> dict[str, tuple[Path, Path, str, str]]:
+    """Map a split name to (dataset, record, expected_split, note)."""
+    return {
+        "holdout": (
+            HOLDOUT_DATASET,
+            FREEZE_RECORD,
+            "holdout",
+            "Holdout is not used for parameter tuning, threshold selection or "
+            "failure analysis. Run once per candidate implementation; if the "
+            "hash below changes, the previous acceptance run is void.",
+        ),
+        "validation": (
+            VALIDATION_DATASET,
+            VALIDATION_FREEZE_RECORD,
+            "validation",
+            VALIDATION_NOTE,
+        ),
+    }
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Manage the retrieval holdout freeze.")
+    parser = argparse.ArgumentParser(description="Manage dataset freeze records.")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--write", action="store_true", help="Record the current holdout hash.")
-    group.add_argument("--check", action="store_true", help="Verify the holdout has not drifted.")
-    parser.add_argument("--dataset", type=Path, default=HOLDOUT_DATASET)
-    parser.add_argument("--record", type=Path, default=FREEZE_RECORD)
+    group.add_argument("--write", action="store_true", help="Record the current hash.")
+    group.add_argument("--check", action="store_true", help="Verify no drift occurred.")
+    parser.add_argument(
+        "--split",
+        choices=sorted(freeze_targets()),
+        default="holdout",
+        help="Which split to freeze or verify.",
+    )
+    parser.add_argument("--dataset", type=Path, default=None)
+    parser.add_argument("--record", type=Path, default=None)
     args = parser.parse_args()
 
+    default_dataset, default_record, expected_split, note = freeze_targets()[args.split]
+    dataset = args.dataset or default_dataset
+    record_path = args.record or default_record
+
     if args.write:
-        record = write_freeze(args.dataset, args.record)
-        print(f"frozen: {record.case_count} cases, sha256={record.sha256}")
+        record = write_freeze(
+            dataset, record_path, expected_split=expected_split, note=note
+        )
+        print(f"frozen {args.split}: {record.case_count} cases, sha256={record.sha256}")
         return
-    ok, message = check_freeze(args.dataset, args.record)
+    ok, message = check_freeze(dataset, record_path)
     print(("OK   " if ok else "FAIL ") + message)
     sys.exit(0 if ok else 1)
 

@@ -1,0 +1,31 @@
+{
+  "dataset": "evals\\datasets\\retrieval_validation_v1.jsonl",
+  "sha256": "4ab6e481a792a60f612e6b1f29efaa7397371561662991eb682d3b72b617d441",
+  "case_count": 22,
+  "case_ids": [
+    "va-pt-001",
+    "va-pt-002",
+    "va-neg-001",
+    "va-neg-002",
+    "va-neg-003",
+    "va-neg-004",
+    "va-neg-005",
+    "va-pos-001",
+    "va-pos-002",
+    "va-pos-003",
+    "va-pos-004",
+    "va-pos-005",
+    "va-pos-006",
+    "va-pos-007",
+    "va-pos-008",
+    "va-pos-009",
+    "va-pos-010",
+    "va-pos-011",
+    "va-pos-012",
+    "va-pos-013",
+    "va-pos-014",
+    "va-pos-015"
+  ],
+  "frozen_at": "2026-09-19T06:25:57.843865+00:00",
+  "note": "Validation is the tuning split. Freezing it keeps ablation runs comparable: the same parameters must be scored against the same questions. It is expected to be read during tuning; the holdout record is the one that must not be read."
+}

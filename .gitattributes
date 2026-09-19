@@ -10,3 +10,4 @@
 # checked out byte-for-byte.
 evals/datasets/*.jsonl -text
 evals/datasets/HOLDOUT_FREEZE.json -text
+evals/datasets/VALIDATION_FREEZE.json -text

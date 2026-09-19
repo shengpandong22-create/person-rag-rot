@@ -1,7 +1,7 @@
 {
   "dataset": "evals\\datasets\\retrieval_holdout_v1.jsonl",
-  "sha256": "d3b3d30032536a0237bd0db84f691f95f85615b72ebd4c0932003d0a0dbad363",
-  "case_count": 9,
+  "sha256": "9f9d1dbb04df5147bc7b7f61998f74302d5e45ec8138e4fd7452bd48fadb37c9",
+  "case_count": 19,
   "case_ids": [
     "ho-neg-001",
     "ho-neg-002",
@@ -11,8 +11,18 @@
     "ho-neg-006",
     "ho-neg-007",
     "ho-neg-008",
-    "ho-neg-009"
+    "ho-neg-009",
+    "ho-pos-001",
+    "ho-pos-002",
+    "ho-neg-010",
+    "ho-pos-004",
+    "ho-pos-005",
+    "ho-pos-006",
+    "ho-pos-007",
+    "ho-pos-008",
+    "ho-pos-009",
+    "ho-pos-010"
   ],
-  "frozen_at": "2026-09-19T04:45:16.700646+00:00",
+  "frozen_at": "2026-09-19T06:25:25.284526+00:00",
   "note": "Holdout is not used for parameter tuning, threshold selection or failure analysis. Run once per candidate implementation; if the hash below changes, the previous acceptance run is void."
 }

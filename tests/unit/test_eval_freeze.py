@@ -54,12 +54,34 @@ def test_freeze_round_trip_detects_drift(tmp_path: Path) -> None:
 
     ok, message = check_freeze(dataset, record_path)
     assert ok is True
-    assert "holdout intact" in message
+    assert "intact" in message
 
     dataset.write_text(HOLDOUT_ROW.replace("保留样本问题", "偷改后的问题") + "\n", encoding="utf-8")
     ok, message = check_freeze(dataset, record_path)
     assert ok is False
-    assert "HOLDOUT DRIFT" in message
+    assert "DATASET DRIFT" in message
+
+
+def test_validation_split_can_be_frozen_with_its_own_record(tmp_path: Path) -> None:
+    dataset = _write(tmp_path / "validation.jsonl", [VALIDATION_ROW])
+    record_path = tmp_path / "VALIDATION_FREEZE.json"
+
+    record = write_freeze(
+        dataset, record_path, expected_split="validation", note="tuning split"
+    )
+
+    assert record.case_count == 1
+    ok, message = check_freeze(dataset, record_path)
+    assert ok is True
+    assert "intact" in message
+
+
+def test_freeze_rejects_a_record_for_the_wrong_split(tmp_path: Path) -> None:
+    """Freezing validation rows as if they were holdout would fake an acceptance set."""
+    dataset = _write(tmp_path / "validation.jsonl", [VALIDATION_ROW])
+
+    with pytest.raises(ValueError, match="no rows with split='holdout'"):
+        build_record(dataset, note="test", expected_split="holdout")
 
 
 def test_check_freeze_without_record_fails_loudly(tmp_path: Path) -> None:
