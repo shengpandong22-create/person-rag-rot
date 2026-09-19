@@ -27,15 +27,18 @@ from agent_mentor.infrastructure.database.session import (
 from agent_mentor.infrastructure.retriever import PostgresHybridRetriever
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
 from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
+from evals.provenance import build_provenance
 from evals.runners.runtime import create_embedding_gateway
+from evals.schema import (
+    Answerability,
+    LabelOrigin,
+    RetrievalEvalCase,
+    load_dataset,
+)
 
-
-@dataclass(frozen=True, slots=True)
-class RetrievalEvalCase:
-    case_id: str
-    question: str
-    expected_keywords: tuple[str, ...]
-    answerable: bool
+GROUND_TRUTH_RESOLVED = "resolved"
+GROUND_TRUTH_KEYWORD_FALLBACK = "keyword_fallback"
+GROUND_TRUTH_ABSENT = "absent"
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,14 +82,13 @@ async def run_retrieval_eval(
     )
     case_rows: list[dict[str, object]] = []
     metric_inputs: list[RetrievalCaseResult] = []
+    grading_counts = {"graded": 0, "ungraded": 0}
+    ground_truth_counts: dict[str, int] = {}
     try:
-        knowledge_base_fingerprint = await _knowledge_base_fingerprint(
-            sessions, knowledge_base_id
-        )
+        knowledge_base_fingerprint = await _knowledge_base_fingerprint(sessions, knowledge_base_id)
+        all_keywords = sorted({keyword for case in cases for keyword in case.diagnostic_keywords})
         keyword_coverage = await _expected_keyword_coverage(
-            sessions,
-            knowledge_base_id,
-            sorted({keyword for case in cases for keyword in case.expected_keywords}),
+            sessions, knowledge_base_id, all_keywords
         )
         for case in cases:
             chunks = await retriever.retrieve(
@@ -97,27 +99,53 @@ async def run_retrieval_eval(
                     candidate_k=candidate_k,
                 )
             )
-            first_rank = _first_relevant_rank(chunks, case.expected_keywords)
+            ground_truth, ground_truth_mode = await _resolve_ground_truth(
+                sessions,
+                knowledge_base_id=knowledge_base_id,
+                case=case,
+            )
+            graded = _is_graded(case)
+            grading_counts["graded" if graded else "ungraded"] += 1
+            ground_truth_counts[ground_truth_mode] = (
+                ground_truth_counts.get(ground_truth_mode, 0) + 1
+            )
+            # Graded rows are ranked against resolved chunk ids; ungraded rows
+            # fall back to keyword matching purely as a diagnostic, and are
+            # excluded from formal Recall/MRR below.
+            if ground_truth:
+                first_rank = _first_relevant_rank_by_id(chunks, ground_truth)
+            else:
+                first_rank = _first_relevant_rank(chunks, case.diagnostic_keywords)
             supported_chunks, evidence_sufficient = answer_service.assess_evidence(
                 case.question, chunks
             )
-            metric_inputs.append(
-                RetrievalCaseResult(
-                    case_id=case.case_id,
-                    answerable=case.answerable,
-                    first_relevant_rank=first_rank,
-                    evidence_sufficient=evidence_sufficient,
+            if graded:
+                metric_inputs.append(
+                    RetrievalCaseResult(
+                        case_id=case.case_id,
+                        answerable=case.answerable,
+                        first_relevant_rank=first_rank,
+                        evidence_sufficient=evidence_sufficient,
+                    )
                 )
-            )
             case_rows.append(
                 {
                     "id": case.case_id,
                     "question": case.question,
+                    "answerability": case.answerability.value,
                     "answerable": case.answerable,
-                    "expected_keywords": list(case.expected_keywords),
+                    "graded": graded,
+                    "label_origin": case.label_origin.value,
+                    "ground_truth_mode": ground_truth_mode,
+                    "ground_truth_chunk_count": len(ground_truth),
+                    "negative_reason": (
+                        case.negative_reason.value if case.negative_reason else None
+                    ),
+                    "tags": list(case.tags),
+                    "diagnostic_keywords": list(case.diagnostic_keywords),
                     "expected_keyword_coverage": {
                         keyword: keyword_coverage.get(keyword, 0)
-                        for keyword in case.expected_keywords
+                        for keyword in case.diagnostic_keywords
                     },
                     "first_relevant_rank": first_rank,
                     "evidence_sufficient": evidence_sufficient,
@@ -127,10 +155,10 @@ async def run_retrieval_eval(
                             "rank": index,
                             "chunk_id": str(chunk.chunk_id),
                             "document_title": chunk.document_title,
+                            "heading_path": list(chunk.heading_path),
                             "score": chunk.score,
-                            "matched_keywords": _matched_keywords(
-                                chunk, case.expected_keywords
-                            ),
+                            "matched_keywords": _matched_keywords(chunk, case.diagnostic_keywords),
+                            "matched_ground_truth": chunk.chunk_id in set(ground_truth),
                         }
                         for index, chunk in enumerate(chunks[:top_k], start=1)
                     ],
@@ -139,14 +167,20 @@ async def run_retrieval_eval(
     finally:
         await engine.dispose()
 
+    if not metric_inputs:
+        raise ValueError(
+            f"{dataset_path} contains no graded rows. Formal Recall/MRR requires human "
+            "labels; run with a dataset whose positive rows carry relevant_sources."
+        )
     metrics = compute_retrieval_metrics(metric_inputs)
+    provenance = build_provenance(dataset_path=dataset_path)
     report = RetrievalEvalReport(
         dataset=str(dataset_path),
         knowledge_base_id=str(knowledge_base_id),
         metadata={
             "generated_at": datetime.now(UTC).isoformat(),
             "app_version": __version__,
-            "dataset_sha256": _file_sha256(dataset_path),
+            **provenance,
             "embedding_provider": settings.embedding_provider.value,
             "embedding_model": settings.embedding_model,
             "embedding_dimension": settings.embedding_dimension,
@@ -155,6 +189,9 @@ async def run_retrieval_eval(
             "retrieval_min_score": threshold,
             "retrieval_max_chunks_per_document": settings.retrieval_max_chunks_per_document,
             "knowledge_base": knowledge_base_fingerprint,
+            "grading_counts": grading_counts,
+            "ground_truth_counts": ground_truth_counts,
+            "metrics_scope": "graded_rows_only",
         },
         metrics=asdict(metrics),
         cases=case_rows,
@@ -163,33 +200,111 @@ async def run_retrieval_eval(
     return report
 
 
-def _load_cases(path: Path) -> list[RetrievalEvalCase]:
-    if not path.exists():
-        raise FileNotFoundError(f"Dataset not found: {path}")
-    cases: list[RetrievalEvalCase] = []
-    with path.open("r", encoding="utf-8") as file:
-        for line_number, line in enumerate(file, start=1):
-            stripped = line.strip()
-            if not stripped:
-                continue
-            raw = json.loads(stripped)
-            try:
-                cases.append(
-                    RetrievalEvalCase(
-                        case_id=str(raw["id"]),
-                        question=str(raw["question"]),
-                        expected_keywords=tuple(str(item) for item in raw["expected_keywords"]),
-                        answerable=bool(raw["answerable"]),
+def _is_graded(case: RetrievalEvalCase) -> bool:
+    """Whether this row may be scored as formal Recall/MRR.
+
+    A negative row's label *is* its ``negative_reason`` — a human judgement —
+    so it counts as graded even without ``relevant_sources``.
+    """
+    if case.label_origin is not LabelOrigin.HUMAN:
+        return False
+    if case.answerability is Answerability.NONE:
+        return case.negative_reason is not None
+    return bool(case.relevant_sources)
+
+
+async def _resolve_ground_truth(
+    sessions: Any,
+    *,
+    knowledge_base_id: UUID,
+    case: RetrievalEvalCase,
+) -> tuple[tuple[UUID, ...], str]:
+    """Map stable document/heading labels onto the chunk ids of the live KB.
+
+    Resolution happens at run time on purpose: chunk ids change whenever the
+    knowledge base is re-chunked or re-embedded, so storing ids in the dataset
+    would silently invalidate every label after a rebuild.
+    """
+    if not case.relevant_sources:
+        return (), GROUND_TRUTH_ABSENT
+    matched: set[UUID] = set()
+    unresolved: list[str] = []
+    async with sessions() as session:
+        for source in case.relevant_sources:
+            rows = (
+                await session.execute(
+                    select(KnowledgeChunkModel, SourceDocumentModel)
+                    .join(
+                        SourceDocumentModel,
+                        SourceDocumentModel.id == KnowledgeChunkModel.document_id,
+                    )
+                    .where(
+                        SourceDocumentModel.knowledge_base_id == knowledge_base_id,
+                        SourceDocumentModel.logical_name == source.document_logical_name,
+                        SourceDocumentModel.is_active.is_(True),
+                        KnowledgeChunkModel.is_active.is_(True),
                     )
                 )
-            except KeyError as error:
-                raise ValueError(f"Invalid dataset row {line_number}: missing {error}") from error
-    if not cases:
-        raise ValueError(f"Dataset is empty: {path}")
-    return cases
+            ).all()
+            if not rows:
+                unresolved.append(source.document_logical_name)
+                continue
+            for chunk, _document in rows:
+                if _heading_matches(source.heading_path, tuple(chunk.heading_path)):
+                    matched.add(chunk.id)
+    if unresolved and not matched:
+        return (), GROUND_TRUTH_KEYWORD_FALLBACK
+    if not matched:
+        return (), GROUND_TRUTH_ABSENT
+    return tuple(sorted(matched, key=str)), GROUND_TRUTH_RESOLVED
+
+
+def _heading_matches(expected: tuple[str, ...], actual: tuple[str, ...]) -> bool:
+    """Match an expected heading path against a chunk's path.
+
+    An empty expectation matches any chunk in the document.  Otherwise the
+    expectation must appear as a contiguous subsequence so that adding an outer
+    chapter to a document does not break the label.
+    """
+    if not expected:
+        return True
+    if len(expected) > len(actual):
+        return False
+    for start in range(len(actual) - len(expected) + 1):
+        if all(
+            expected[index].strip() == actual[start + index].strip()
+            for index in range(len(expected))
+        ):
+            return True
+    return False
+
+
+def _load_cases(path: Path) -> tuple[RetrievalEvalCase, ...]:
+    """Load a v2 dataset in migration mode.
+
+    Ungraded rows are tolerated so a partially labelled regression set can
+    still run, but they are excluded from formal metrics by :func:`_is_graded`.
+    """
+    return load_dataset(path, require_graded=False).cases
+
+
+def _first_relevant_rank_by_id(
+    chunks: list[RetrievedChunk], ground_truth: tuple[UUID, ...]
+) -> int | None:
+    """Rank of the first retrieved chunk that a human marked as relevant.
+
+    This is the only ranking signal used for formal Recall/MRR: it compares
+    retrieved ids against resolved human labels, not against keyword strings.
+    """
+    allowed = set(ground_truth)
+    for rank, chunk in enumerate(chunks, start=1):
+        if chunk.chunk_id in allowed:
+            return rank
+    return None
 
 
 def _first_relevant_rank(chunks: list[RetrievedChunk], keywords: tuple[str, ...]) -> int | None:
+    """Diagnostic-only keyword rank, used for rows without human labels."""
     for rank, chunk in enumerate(chunks, start=1):
         if _matched_keywords(chunk, keywords):
             return rank
@@ -207,21 +322,23 @@ def _matched_keywords(chunk: RetrievedChunk, keywords: tuple[str, ...]) -> list[
     return [keyword for keyword in keywords if keyword.casefold() in haystack]
 
 
-async def _knowledge_base_fingerprint(
-    sessions: Any, knowledge_base_id: UUID
-) -> dict[str, object]:
+async def _knowledge_base_fingerprint(sessions: Any, knowledge_base_id: UUID) -> dict[str, object]:
     async with sessions() as session:
         knowledge_base = await session.get(KnowledgeBaseModel, knowledge_base_id)
         if knowledge_base is None:
             return {"id": str(knowledge_base_id), "exists": False}
 
         documents = (
-            await session.execute(
-                select(SourceDocumentModel)
-                .where(SourceDocumentModel.knowledge_base_id == knowledge_base_id)
-                .order_by(SourceDocumentModel.logical_name, SourceDocumentModel.version)
+            (
+                await session.execute(
+                    select(SourceDocumentModel)
+                    .where(SourceDocumentModel.knowledge_base_id == knowledge_base_id)
+                    .order_by(SourceDocumentModel.logical_name, SourceDocumentModel.version)
+                )
             )
-        ).scalars().all()
+            .scalars()
+            .all()
+        )
         chunk_count = await session.scalar(
             select(func.count(KnowledgeChunkModel.id))
             .join(SourceDocumentModel, KnowledgeChunkModel.document_id == SourceDocumentModel.id)
@@ -313,21 +430,45 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         encoding="utf-8",
     )
     metrics = report.metrics
+    metadata = report.metadata
+    grading = _as_dict(metadata.get("grading_counts"))
+    ground_truth = _as_dict(metadata.get("ground_truth_counts"))
     lines = [
         "# Retrieval Eval Report",
         "",
+        "## Reproducibility",
+        "",
+        f"- git_commit: `{metadata.get('git_commit', 'unknown')}`"
+        f" (dirty={metadata.get('git_dirty', 'unknown')})",
+        f"- git_branch: `{metadata.get('git_branch', 'unknown')}`",
         f"- dataset: `{report.dataset}`",
-        f"- knowledge_base_id: `{report.knowledge_base_id}`",
-        f"- generated_at: {report.metadata['generated_at']}",
-        f"- app_version: {report.metadata['app_version']}",
-        f"- dataset_sha256: `{report.metadata['dataset_sha256']}`",
-        "- embedding: "
-        f"{report.metadata['embedding_provider']} / {report.metadata['embedding_model']}",
+        f"- dataset_sha256: `{metadata.get('dataset_sha256', 'unknown')}`",
+        f"- app_version: {metadata['app_version']}",
+        f"- generated_at: {metadata['generated_at']}",
+        f"- holdout_intact: {metadata.get('holdout_intact', 'n/a')}",
+        f"- holdout_detail: {metadata.get('holdout_detail', 'n/a')}",
+        "",
+        "## Scope",
+        "",
+        f"- metrics_scope: {metadata.get('metrics_scope', 'unknown')}",
+        f"- graded_rows: {grading.get('graded', 'n/a')}",
+        f"- ungraded_rows: {grading.get('ungraded', 'n/a')}",
+        f"- ground_truth_resolution: {ground_truth}",
+        "- ungraded 行仅作诊断，不进入下方 Recall/MRR。"
+        "ground_truth_mode=keyword_fallback 表示标签未能解析到当前知识库，"
+        "该行结论不可信，需先修标注。",
+        "",
+        "## Configuration",
+        "",
+        f"- embedding: {metadata['embedding_provider']} / {metadata['embedding_model']}",
         "- retrieval: "
-        f"top_k={report.metadata['retrieval_top_k']}, "
-        f"candidate_k={report.metadata['retrieval_candidate_k']}, "
-        f"min_score={report.metadata['retrieval_min_score']}",
-        f"- knowledge_base: {_knowledge_base_summary(report.metadata['knowledge_base'])}",
+        f"top_k={metadata['retrieval_top_k']}, "
+        f"candidate_k={metadata['retrieval_candidate_k']}, "
+        f"min_score={metadata['retrieval_min_score']}",
+        f"- knowledge_base: {_knowledge_base_summary(metadata['knowledge_base'])}",
+        "",
+        "## Metrics (graded rows only)",
+        "",
         f"- total: {metrics['total']}",
         f"- Recall@1: {metrics['recall_at_1']}",
         f"- Recall@3: {metrics['recall_at_3']}",
@@ -337,10 +478,19 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Negative rejection accuracy: {metrics['negative_rejection_accuracy']}",
         "",
     ]
+    rows: list[dict[str, Any]] = [dict(row) for row in report.cases]
+    unresolved = [
+        row for row in rows if row.get("ground_truth_mode") == GROUND_TRUTH_KEYWORD_FALLBACK
+    ]
+    if unresolved:
+        lines.extend(["## Unresolved Labels (fix before trusting any number)", ""])
+        for row in unresolved:
+            lines.append(f"- `{row['id']}`: {row['question']}")
+        lines.append("")
     failed_cases = [
         row
-        for row in report.cases
-        if bool(row["answerable"]) != bool(row["evidence_sufficient"])
+        for row in rows
+        if bool(row["graded"]) and bool(row["answerable"]) != bool(row["evidence_sufficient"])
     ]
     if failed_cases:
         lines.extend(["## Evidence Gate Failures", ""])
@@ -352,16 +502,21 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
                     f"### {row['id']}",
                     "",
                     f"- question: {row['question']}",
-                    f"- answerable: {row['answerable']}",
+                    f"- answerability: {row['answerability']}",
                     f"- evidence_sufficient: {row['evidence_sufficient']}",
                     f"- supported_chunk_count: {row.get('supported_chunk_count', 0)}",
-                    f"- expected_keyword_coverage: {row.get('expected_keyword_coverage', {})}",
+                    f"- diagnostic_keyword_coverage: {row.get('expected_keyword_coverage', {})}",
                     f"- top_document: {first_chunk.get('document_title', '-')}",
                     f"- top_score: {first_chunk.get('score', '-')}",
                     "",
                 ]
             )
     markdown_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def _as_dict(value: object) -> dict[str, object]:
+    """Narrow an untyped metadata value to a dict for report rendering."""
+    return value if isinstance(value, dict) else {}
 
 
 def _knowledge_base_summary(value: object) -> str:
