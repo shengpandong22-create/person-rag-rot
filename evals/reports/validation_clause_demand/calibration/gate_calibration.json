@@ -1,0 +1,728 @@
+{
+  "source_report": "evals\\reports\\validation_clause_demand\\vector-only\\retrieval_eval.json",
+  "source_report_sha256": "e800480df2208f3ba5d7d4e5e898e701f1cabe82de7885d98d7a152f25da2b50",
+  "experiment_type": "offline_evidence_gate_replay",
+  "retrieval_rerun": false,
+  "results": [
+    {
+      "policy": "current_binary_v1",
+      "parameters": {},
+      "full_acceptance_rate": 1.0,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.6667,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 0
+        },
+        "partial": {
+          "full": 2,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-001",
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": []
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.15
+      },
+      "full_acceptance_rate": 1.0,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.6667,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 0
+        },
+        "partial": {
+          "full": 2,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-001",
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": []
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.2
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.6444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 1,
+          "none": 0
+        },
+        "partial": {
+          "full": 2,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-001",
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.25
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.8111,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 1,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.3
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.8111,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 1,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.35
+      },
+      "full_acceptance_rate": 0.8667,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7889,
+      "confusion_matrix": {
+        "full": {
+          "full": 13,
+          "partial": 2,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-010",
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.4
+      },
+      "full_acceptance_rate": 0.8,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7667,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 3,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-004",
+        "va-pos-010",
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.45
+      },
+      "full_acceptance_rate": 0.6667,
+      "partial_boundary_detection_rate": 1.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.8889,
+      "confusion_matrix": {
+        "full": {
+          "full": 10,
+          "partial": 5,
+          "none": 0
+        },
+        "partial": {
+          "full": 0,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-004",
+        "va-pos-010",
+        "va-pos-012",
+        "va-pos-014"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.5
+      },
+      "full_acceptance_rate": 0.6,
+      "partial_boundary_detection_rate": 1.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.8667,
+      "confusion_matrix": {
+        "full": {
+          "full": 9,
+          "partial": 6,
+          "none": 0
+        },
+        "partial": {
+          "full": 0,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-004",
+        "va-pos-009",
+        "va-pos-010",
+        "va-pos-012",
+        "va-pos-014"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 2
+      },
+      "full_acceptance_rate": 1.0,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.6667,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 0
+        },
+        "partial": {
+          "full": 2,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-001",
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": []
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 3
+      },
+      "full_acceptance_rate": 0.8,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.6,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 3,
+          "none": 0
+        },
+        "partial": {
+          "full": 2,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-001",
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-010",
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 4
+      },
+      "full_acceptance_rate": 0.8,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7667,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 3,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-010",
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 5
+      },
+      "full_acceptance_rate": 0.7333,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7444,
+      "confusion_matrix": {
+        "full": {
+          "full": 11,
+          "partial": 4,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-009",
+        "va-pos-010",
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 6
+      },
+      "full_acceptance_rate": 0.6667,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7222,
+      "confusion_matrix": {
+        "full": {
+          "full": 10,
+          "partial": 5,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-004",
+        "va-pos-009",
+        "va-pos-010",
+        "va-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 7
+      },
+      "full_acceptance_rate": 0.6,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7,
+      "confusion_matrix": {
+        "full": {
+          "full": 9,
+          "partial": 6,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-004",
+        "va-pos-009",
+        "va-pos-010",
+        "va-pos-012",
+        "va-pos-014"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 8
+      },
+      "full_acceptance_rate": 0.6,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.7,
+      "confusion_matrix": {
+        "full": {
+          "full": 9,
+          "partial": 6,
+          "none": 0
+        },
+        "partial": {
+          "full": 1,
+          "partial": 1,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": [
+        "va-pos-003",
+        "va-pos-004",
+        "va-pos-009",
+        "va-pos-010",
+        "va-pos-012",
+        "va-pos-014"
+      ]
+    },
+    {
+      "policy": "numeric_demand_coverage",
+      "parameters": {},
+      "full_acceptance_rate": 1.0,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.6667,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 0
+        },
+        "partial": {
+          "full": 2,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [
+        "va-pt-001",
+        "va-pt-002"
+      ],
+      "false_rejection_case_ids": []
+    },
+    {
+      "policy": "clause_demand_v1",
+      "parameters": {},
+      "full_acceptance_rate": 1.0,
+      "partial_boundary_detection_rate": 1.0,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 1.0,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 0
+        },
+        "partial": {
+          "full": 0,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 0,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "conflicting_sources": 1.0,
+        "false_premise": 1.0,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0
+      },
+      "false_full_case_ids": [],
+      "false_rejection_case_ids": []
+    }
+  ],
+  "eligible_candidates": []
+}

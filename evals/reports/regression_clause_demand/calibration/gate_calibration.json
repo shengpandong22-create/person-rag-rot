@@ -1,0 +1,827 @@
+{
+  "source_report": "evals\\reports\\regression_clause_demand\\vector-only\\retrieval_eval.json",
+  "source_report_sha256": "eae603fa90a875e89770ca56c069c913bf1d7cf2b29e037ee89d6808c8d96ab5",
+  "experiment_type": "offline_evidence_gate_replay",
+  "retrieval_rerun": false,
+  "results": [
+    {
+      "policy": "current_binary_v1",
+      "parameters": {},
+      "full_acceptance_rate": 0.8824,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.5,
+      "macro_accuracy": 0.4608,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 5,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 0.5
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025",
+        "ret-027",
+        "ret-030"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-020"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.15
+      },
+      "full_acceptance_rate": 0.8235,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.5,
+      "macro_accuracy": 0.4412,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 1,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 5,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 0.5
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025",
+        "ret-027",
+        "ret-030"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-016",
+        "ret-020"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.2
+      },
+      "full_acceptance_rate": 0.8235,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.4412,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 1,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-016",
+        "ret-020"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.25
+      },
+      "full_acceptance_rate": 0.7059,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.5131,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 3,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.3
+      },
+      "full_acceptance_rate": 0.6471,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.4935,
+      "confusion_matrix": {
+        "full": {
+          "full": 11,
+          "partial": 4,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-008",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.35
+      },
+      "full_acceptance_rate": 0.5882,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.4738,
+      "confusion_matrix": {
+        "full": {
+          "full": 10,
+          "partial": 5,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-008",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.4
+      },
+      "full_acceptance_rate": 0.4706,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.4346,
+      "confusion_matrix": {
+        "full": {
+          "full": 8,
+          "partial": 7,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-002",
+        "ret-007",
+        "ret-008",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.45
+      },
+      "full_acceptance_rate": 0.3529,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.8,
+      "macro_accuracy": 0.3954,
+      "confusion_matrix": {
+        "full": {
+          "full": 6,
+          "partial": 9,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 2,
+          "partial": 3,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-002",
+        "ret-005",
+        "ret-007",
+        "ret-008",
+        "ret-010",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.5
+      },
+      "full_acceptance_rate": 0.3529,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.8,
+      "macro_accuracy": 0.3954,
+      "confusion_matrix": {
+        "full": {
+          "full": 6,
+          "partial": 9,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 2,
+          "partial": 3,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-002",
+        "ret-005",
+        "ret-007",
+        "ret-008",
+        "ret-010",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 2
+      },
+      "full_acceptance_rate": 0.8824,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.4608,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-020"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 3
+      },
+      "full_acceptance_rate": 0.7647,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.4216,
+      "confusion_matrix": {
+        "full": {
+          "full": 13,
+          "partial": 2,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-016",
+        "ret-020",
+        "ret-023"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 4
+      },
+      "full_acceptance_rate": 0.7059,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.7,
+      "macro_accuracy": 0.5131,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 3,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 3,
+          "partial": 2,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-016",
+        "ret-020",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 5
+      },
+      "full_acceptance_rate": 0.4706,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.8,
+      "macro_accuracy": 0.4346,
+      "confusion_matrix": {
+        "full": {
+          "full": 8,
+          "partial": 7,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 2,
+          "partial": 3,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-013",
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-007",
+        "ret-008",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-021",
+        "ret-023",
+        "ret-024"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 6
+      },
+      "full_acceptance_rate": 0.2941,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 0.9,
+      "macro_accuracy": 0.3758,
+      "confusion_matrix": {
+        "full": {
+          "full": 5,
+          "partial": 10,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 1,
+          "partial": 4,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [
+        "ret-025"
+      ],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-003",
+        "ret-007",
+        "ret-008",
+        "ret-010",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-021",
+        "ret-023",
+        "ret-024",
+        "ret-026"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 7
+      },
+      "full_acceptance_rate": 0.2353,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.3562,
+      "confusion_matrix": {
+        "full": {
+          "full": 4,
+          "partial": 11,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 0,
+          "partial": 5,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-002",
+        "ret-003",
+        "ret-007",
+        "ret-008",
+        "ret-010",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-021",
+        "ret-023",
+        "ret-024",
+        "ret-026"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 8
+      },
+      "full_acceptance_rate": 0.1176,
+      "partial_boundary_detection_rate": 0.3333,
+      "none_rejection_rate": 1.0,
+      "macro_accuracy": 0.317,
+      "confusion_matrix": {
+        "full": {
+          "full": 2,
+          "partial": 13,
+          "none": 2
+        },
+        "partial": {
+          "full": 0,
+          "partial": 1,
+          "none": 2
+        },
+        "none": {
+          "full": 0,
+          "partial": 5,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 1.0
+      },
+      "false_full_case_ids": [],
+      "false_rejection_case_ids": [
+        "ret-001",
+        "ret-002",
+        "ret-003",
+        "ret-005",
+        "ret-007",
+        "ret-008",
+        "ret-010",
+        "ret-011",
+        "ret-012",
+        "ret-016",
+        "ret-020",
+        "ret-021",
+        "ret-023",
+        "ret-024",
+        "ret-026"
+      ]
+    },
+    {
+      "policy": "numeric_demand_coverage",
+      "parameters": {},
+      "full_acceptance_rate": 0.8824,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.6,
+      "macro_accuracy": 0.4608,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 4,
+          "partial": 1,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 0.75
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025",
+        "ret-027"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-020"
+      ]
+    },
+    {
+      "policy": "clause_demand_v1",
+      "parameters": {},
+      "full_acceptance_rate": 0.8824,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.5,
+      "macro_accuracy": 0.4608,
+      "confusion_matrix": {
+        "full": {
+          "full": 15,
+          "partial": 0,
+          "none": 2
+        },
+        "partial": {
+          "full": 1,
+          "partial": 0,
+          "none": 2
+        },
+        "none": {
+          "full": 5,
+          "partial": 0,
+          "none": 5
+        }
+      },
+      "rejection_by_negative_reason": {
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 1.0,
+        "out_of_scope": 0.5
+      },
+      "false_full_case_ids": [
+        "ret-004",
+        "ret-013",
+        "ret-015",
+        "ret-025",
+        "ret-027",
+        "ret-030"
+      ],
+      "false_rejection_case_ids": [
+        "ret-007",
+        "ret-020"
+      ]
+    }
+  ],
+  "eligible_candidates": []
+}
