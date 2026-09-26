@@ -27,6 +27,7 @@ for _candidate in (_REPO_ROOT / "src", _REPO_ROOT):
 from evals.schema import RetrievalEvalCase, load_dataset  # noqa: E402
 
 DATASETS = {
+    "development": _REPO_ROOT / "evals" / "datasets" / "retrieval_development_v1.jsonl",
     "regression": _REPO_ROOT / "evals" / "datasets" / "retrieval_regression_v1.jsonl",
     "validation": _REPO_ROOT / "evals" / "datasets" / "retrieval_validation_v1.jsonl",
     "holdout": _REPO_ROOT / "evals" / "datasets" / "retrieval_holdout_v1.jsonl",
@@ -63,7 +64,11 @@ def main() -> None:
             counts[key] = counts.get(key, 0) + 1
         print(f"{name}: {len(result.cases)} rows, splits={counts}")
 
-    names = [name for name in ("regression", "validation", "holdout") if name in cases]
+    names = [
+        name
+        for name in ("development", "regression", "validation", "holdout")
+        if name in cases
+    ]
     problems: list[str] = []
     for i, left_name in enumerate(names):
         for right_name in names[i + 1 :]:

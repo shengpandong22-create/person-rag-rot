@@ -1,4 +1,4 @@
-"""Guard that the three dataset splits stay isolated and resolvable.
+"""Guard that the dataset splits stay isolated and resolvable.
 
 Why this matters for the ablation plan
 --------------------------------------
@@ -27,6 +27,7 @@ DATASETS = REPO_ROOT / "evals" / "datasets"
 DOCS_DIR = REPO_ROOT / "docs" / "learning"
 
 SPLIT_FILES = {
+    "development": DATASETS / "retrieval_development_v1.jsonl",
     "regression": DATASETS / "retrieval_regression_v1.jsonl",
     "validation": DATASETS / "retrieval_validation_v1.jsonl",
     "holdout": DATASETS / "retrieval_holdout_v1.jsonl",

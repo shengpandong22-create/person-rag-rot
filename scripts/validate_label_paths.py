@@ -28,6 +28,7 @@ from evals.schema import Answerability, load_dataset  # noqa: E402
 
 DOCS_DIR = _REPO_ROOT / "docs" / "learning"
 DATASETS = (
+    _REPO_ROOT / "evals" / "datasets" / "retrieval_development_v1.jsonl",
     _REPO_ROOT / "evals" / "datasets" / "retrieval_regression_v1.jsonl",
     _REPO_ROOT / "evals" / "datasets" / "retrieval_validation_v1.jsonl",
     _REPO_ROOT / "evals" / "datasets" / "retrieval_holdout_v1.jsonl",
