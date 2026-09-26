@@ -126,6 +126,22 @@ class CandidateEvidenceAssessment:
 
 
 @dataclass(frozen=True, slots=True)
+class ClauseEvidenceAssessment:
+    text: str
+    specific_terms: tuple[str, ...]
+    covered_terms: tuple[str, ...]
+    lexical_support: bool
+
+
+@dataclass(frozen=True, slots=True)
+class DemandEvidenceAssessment:
+    demand_type: str
+    markers: tuple[str, ...]
+    matched: bool
+    matched_signals: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class EvidenceAssessment:
     policy_name: str
     decision: EvidenceDecision
@@ -140,6 +156,8 @@ class EvidenceAssessment:
     numeric_tokens_requested: tuple[str, ...]
     numeric_tokens_covered: tuple[str, ...]
     demand_markers: tuple[str, ...]
+    clause_assessments: tuple[ClauseEvidenceAssessment, ...]
+    demand_assessments: tuple[DemandEvidenceAssessment, ...]
     candidate_assessments: tuple[CandidateEvidenceAssessment, ...]
     rejection_reasons: tuple[str, ...]
 
@@ -475,21 +493,16 @@ class AnswerService:
             for token in numeric_tokens
             if any(token in candidate.content for candidate in supported_candidates)
         }
+        supported_text = "\n".join(
+            " ".join((*candidate.heading_path, candidate.document_title, candidate.content))
+            for candidate in supported_candidates[:3]
+        )
+        demand_assessments = self._demand_assessments(question, supported_text)
         demand_markers = tuple(
-            marker
-            for marker in (
-                "精确值",
-                "多少",
-                "哪一天",
-                "保证",
-                "一定",
-                "最好",
-                "相比",
-                "下一版",
-                "未来",
-                "当前",
-            )
-            if marker in question
+            marker for assessment in demand_assessments for marker in assessment.markers
+        )
+        clause_assessments = self._clause_assessments(
+            question, supported_candidates, query_terms
         )
         rejection_reasons: list[str] = []
         if not supported_candidates:
@@ -512,9 +525,85 @@ class AnswerService:
             numeric_tokens_requested=tuple(sorted(numeric_tokens)),
             numeric_tokens_covered=tuple(sorted(covered_numeric_tokens)),
             demand_markers=demand_markers,
+            clause_assessments=clause_assessments,
+            demand_assessments=demand_assessments,
             candidate_assessments=tuple(candidate_rows),
             rejection_reasons=tuple(rejection_reasons),
         )
+
+    def _clause_assessments(
+        self,
+        question: str,
+        candidates: list[RetrievedChunk],
+        fallback_terms: set[str],
+    ) -> tuple[ClauseEvidenceAssessment, ...]:
+        clauses = tuple(
+            clause.strip()
+            for clause in re.split(r"[，,；;。？！?!]+", question)
+            if clause.strip()
+        ) or (question,)
+        rows: list[ClauseEvidenceAssessment] = []
+        for clause in clauses:
+            clause_terms = self._evidence_terms(clause)
+            specific_terms = clause_terms - GENERIC_EVIDENCE_TERMS
+            if not specific_terms and len(clauses) == 1:
+                specific_terms = fallback_terms - GENERIC_EVIDENCE_TERMS
+            context_terms: set[str] = set()
+            for candidate in candidates[:3]:
+                context_terms.update(self._evidence_terms(candidate.content))
+                context_terms.update(self._evidence_terms(" ".join(candidate.heading_path)))
+                context_terms.update(self._evidence_terms(candidate.document_title))
+            covered = specific_terms & context_terms
+            rows.append(
+                ClauseEvidenceAssessment(
+                    text=clause,
+                    specific_terms=tuple(sorted(specific_terms)),
+                    covered_terms=tuple(sorted(covered)),
+                    lexical_support=(
+                        self._has_lexical_support(clause, candidates[:3])
+                        if candidates
+                        else False
+                    ),
+                )
+            )
+        return tuple(rows)
+
+    def _demand_assessments(
+        self, question: str, evidence_text: str
+    ) -> tuple[DemandEvidenceAssessment, ...]:
+        definitions = (
+            ("exact_value", ("精确值", "多少", "几条", "几次", "比例", "人月", "rto")),
+            ("date", ("哪一天", "日期", "何时", "什么时候")),
+            ("guarantee", ("保证", "一定", "永远", "必然")),
+            ("future_version", ("下一版", "未来", "v3", "尚未发布")),
+            ("comparison", ("最好", "相比", "更准确", "优于", "为什么选择")),
+        )
+        signal_patterns = {
+            "exact_value": r"\d+(?:\.\d+)?%?|没有.{0,6}(?:数值|数据|估算)|未.{0,6}(?:给出|记录)",
+            "date": r"\d{4}[-年/]\d{1,2}|没有.{0,6}(?:日期|时间)|尚未.{0,6}(?:确定|发布)",
+            "guarantee": r"保证|一定|永远|必然|不能保证|无法保证|不保证",
+            "future_version": r"下一版|未来|v3|尚未发布|演进方向|计划",
+            "comparison": r"相比|比较|更准确|优于|取舍|没有.{0,6}(?:比较|实验)",
+        }
+        rows: list[DemandEvidenceAssessment] = []
+        lowered_question = question.lower()
+        lowered_evidence = evidence_text.lower()
+        for demand_type, known_markers in definitions:
+            markers = tuple(marker for marker in known_markers if marker in lowered_question)
+            if not markers:
+                continue
+            signals = tuple(
+                sorted(set(re.findall(signal_patterns[demand_type], lowered_evidence)))
+            )
+            rows.append(
+                DemandEvidenceAssessment(
+                    demand_type=demand_type,
+                    markers=markers,
+                    matched=bool(signals),
+                    matched_signals=signals,
+                )
+            )
+        return tuple(rows)
 
     def _evidence_terms(self, text: str) -> set[str]:
         lowered = text.lower()

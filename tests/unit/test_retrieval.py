@@ -407,6 +407,38 @@ def test_evidence_diagnostics_record_uncovered_numeric_demand_without_changing_g
     assert assessment.numeric_tokens_requested == ("30",)
     assert assessment.numeric_tokens_covered == ()
     assert "保证" in assessment.demand_markers
+    assert {item.demand_type for item in assessment.demand_assessments} == {
+        "exact_value",
+        "guarantee",
+    }
+    assert all(not item.matched for item in assessment.demand_assessments)
+
+
+def test_evidence_diagnostics_record_clause_level_support() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = replace(
+        chunk(),
+        content="checkpoint 保存流程轨迹并恢复业务状态。",
+        score=0.5,
+    )
+
+    assessment = service.assess_evidence_diagnostics(
+        "checkpoint 如何恢复，未来版本何时提供分布式任务租约？", [evidence]
+    )
+
+    assert len(assessment.clause_assessments) == 2
+    assert assessment.clause_assessments[0].lexical_support is True
+    assert assessment.clause_assessments[1].lexical_support is False
+    assert {item.demand_type for item in assessment.demand_assessments} == {
+        "date",
+        "future_version",
+    }
 
 
 def test_answer_service_expands_rrf_retrieval_aliases() -> None:

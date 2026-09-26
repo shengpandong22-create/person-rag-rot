@@ -33,6 +33,7 @@ def replay_report(report: dict[str, Any]) -> list[GatePolicyResult]:
         ("specific_covered_terms", {"minimum": minimum}) for minimum in range(2, 9)
     )
     policies.append(("numeric_demand_coverage", {}))
+    policies.append(("clause_demand_v1", {}))
     return [_evaluate_policy(rows, name, parameters) for name, parameters in policies]
 
 
@@ -140,6 +141,12 @@ def _predict(row: dict[str, Any], name: str, parameters: dict[str, object]) -> s
         requested = set(assessment["numeric_tokens_requested"])
         covered = set(assessment["numeric_tokens_covered"])
         return "partial" if requested - covered else "full"
+    if name == "clause_demand_v1":
+        clauses = assessment.get("clause_assessments", [])
+        demands = assessment.get("demand_assessments", [])
+        uncovered_clause = any(not clause["lexical_support"] for clause in clauses)
+        unmet_demand = any(not demand["matched"] for demand in demands)
+        return "partial" if uncovered_clause or unmet_demand else "full"
     raise ValueError(f"Unknown policy: {name}")
 
 

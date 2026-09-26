@@ -24,6 +24,8 @@ def _row(
             "covered_terms": list(covered),
             "numeric_tokens_requested": list(requested_numbers),
             "numeric_tokens_covered": list(covered_numbers),
+            "clause_assessments": [],
+            "demand_assessments": [],
         },
     }
 
@@ -83,3 +85,23 @@ def test_eligible_candidates_enforce_full_acceptance_floor() -> None:
 
     assert candidates
     assert all(item.full_acceptance_rate >= 0.9 for item in candidates)
+
+
+def test_clause_demand_policy_marks_uncovered_demand_as_partial() -> None:
+    row = _row("partial", "partial", sufficient=True, coverage=0.5)
+    assessment = row["evidence_assessment"]
+    assert isinstance(assessment, dict)
+    assessment["clause_assessments"] = [
+        {"text": "checkpoint 如何恢复", "lexical_support": True}
+    ]
+    assessment["demand_assessments"] = [
+        {"demand_type": "exact_value", "matched": False}
+    ]
+
+    result = next(
+        item
+        for item in replay_report({"cases": [row]})
+        if item.policy == "clause_demand_v1"
+    )
+
+    assert result.partial_boundary_detection_rate == 1.0
