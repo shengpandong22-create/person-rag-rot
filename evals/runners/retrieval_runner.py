@@ -136,9 +136,14 @@ async def run_retrieval_eval(
                 first_rank = _first_relevant_rank(chunks, case.diagnostic_keywords)
                 first_raw_candidate_rank = None
                 first_post_filter_rank = None
-            supported_chunks, evidence_sufficient = answer_service.assess_evidence(
+            evidence_assessment = answer_service.assess_evidence_diagnostics(
                 case.question, chunks
             )
+            supported_ids = set(evidence_assessment.supported_chunk_ids)
+            supported_chunks = [
+                chunk for chunk in chunks if str(chunk.chunk_id) in supported_ids
+            ]
+            evidence_sufficient = evidence_assessment.production_sufficient
             formally_scorable = graded and (
                 case.answerability is Answerability.NONE
                 or ground_truth_mode == GROUND_TRUTH_RESOLVED
@@ -181,6 +186,7 @@ async def run_retrieval_eval(
                             for item in diagnostics.filtered_out
                         ),
                         failure_category=failure_category,
+                        evidence_decision=evidence_assessment.decision.value,
                     )
                 )
             case_rows.append(
@@ -212,6 +218,7 @@ async def run_retrieval_eval(
                     "post_filter_candidate_count": len(diagnostics.post_filter_candidates),
                     "evidence_sufficient": evidence_sufficient,
                     "evidence_decision": "accept" if evidence_sufficient else "reject",
+                    "evidence_assessment": asdict(evidence_assessment),
                     "failure_category": failure_category,
                     "retrieval_stages": {
                         "vector_candidate_ids": [
@@ -644,6 +651,13 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Partial answerability accuracy: {metrics['partial_answerability_accuracy']}",
         f"- Evidence sufficient accuracy: {metrics['evidence_sufficient_accuracy']}",
         f"- Negative rejection accuracy: {metrics['negative_rejection_accuracy']}",
+        f"- Full acceptance rate: {metrics['full_acceptance_rate']}",
+        f"- Partial acceptance rate: {metrics['partial_acceptance_rate']}",
+        "- Partial boundary detection rate: "
+        f"{metrics['partial_boundary_detection_rate']}",
+        f"- None rejection rate: {metrics['none_rejection_rate']}",
+        f"- Evidence macro accuracy: {metrics['evidence_macro_accuracy']}",
+        f"- Evidence confusion matrix: {metrics['evidence_confusion_matrix']}",
         f"- Rejection by negative reason: {metrics['rejection_by_negative_reason']}",
         f"- Retrieval latency P50/P95 ms: {metrics['latency_p50_ms']} / "
         f"{metrics['latency_p95_ms']}",

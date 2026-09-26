@@ -346,6 +346,69 @@ def test_answer_service_assesses_only_lexically_supported_candidates() -> None:
     assert sufficient is False
 
 
+def test_evidence_diagnostics_preserve_current_binary_decision() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.02,
+    )
+    supported = replace(
+        chunk(),
+        content="RAG 使用 evidence gate 和 citation 白名单。",
+        score=0.03,
+    )
+    unrelated = replace(
+        chunk(),
+        chunk_id=uuid4(),
+        document_title="历史资料",
+        heading_path=("财政",),
+        content="唐朝盐税制度。",
+        score=0.99,
+    )
+
+    assessment = service.assess_evidence_diagnostics(
+        "RAG 的 evidence gate 如何约束 citation？", [unrelated, supported]
+    )
+    candidates, sufficient = service.assess_evidence(
+        "RAG 的 evidence gate 如何约束 citation？", [unrelated, supported]
+    )
+
+    assert candidates == [supported]
+    assert sufficient is assessment.production_sufficient is True
+    assert assessment.decision.value == "full"
+    assert assessment.supported_chunk_ids == (str(supported.chunk_id),)
+    assert assessment.top_supported_score == 0.03
+    assert assessment.coverage_ratio > 0
+    assert assessment.candidate_assessments[0].lexical_support is False
+    assert assessment.candidate_assessments[1].lexical_support is True
+
+
+def test_evidence_diagnostics_record_uncovered_numeric_demand_without_changing_gate() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = replace(
+        chunk(),
+        content="checkpoint 可以保存流程轨迹并恢复业务状态。",
+        score=0.5,
+    )
+
+    assessment = service.assess_evidence_diagnostics(
+        "checkpoint 如何恢复，是否保证 30 秒 RTO？", [evidence]
+    )
+
+    assert assessment.production_sufficient is True
+    assert assessment.numeric_tokens_requested == ("30",)
+    assert assessment.numeric_tokens_covered == ()
+    assert "保证" in assessment.demand_markers
+
+
 def test_answer_service_expands_rrf_retrieval_aliases() -> None:
     service = AnswerService(
         cast(Any, None),

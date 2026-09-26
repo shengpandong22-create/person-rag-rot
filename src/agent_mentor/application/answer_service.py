@@ -5,6 +5,7 @@ import re
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from enum import StrEnum
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
@@ -100,6 +101,47 @@ class AnswerResult:
     generation_mode: str
     model_name: str | None
     fallback_reason: str | None
+
+
+class EvidenceDecision(StrEnum):
+    """Evaluation vocabulary for evidence coverage.
+
+    The current production policy is binary and therefore emits only ``full``
+    or ``none``. ``partial`` is reserved for evaluation policies that can
+    explicitly detect an uncovered part of a question.
+    """
+
+    FULL = "full"
+    PARTIAL = "partial"
+    NONE = "none"
+
+
+@dataclass(frozen=True, slots=True)
+class CandidateEvidenceAssessment:
+    chunk_id: str
+    score: float
+    lexical_support: bool
+    covered_terms: tuple[str, ...]
+    specific_covered_terms: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class EvidenceAssessment:
+    policy_name: str
+    decision: EvidenceDecision
+    production_sufficient: bool
+    supported_chunk_ids: tuple[str, ...]
+    top_supported_score: float | None
+    query_terms: tuple[str, ...]
+    specific_query_terms: tuple[str, ...]
+    covered_terms: tuple[str, ...]
+    uncovered_terms: tuple[str, ...]
+    coverage_ratio: float
+    numeric_tokens_requested: tuple[str, ...]
+    numeric_tokens_covered: tuple[str, ...]
+    demand_markers: tuple[str, ...]
+    candidate_assessments: tuple[CandidateEvidenceAssessment, ...]
+    rejection_reasons: tuple[str, ...]
 
 
 class GroundedAnswerOutput(BaseModel):
@@ -389,11 +431,90 @@ class AnswerService:
     def assess_evidence(
         self, question: str, candidates: list[RetrievedChunk]
     ) -> tuple[list[RetrievedChunk], bool]:
-        supported_candidates = self._supported_candidates(question, candidates)
-        sufficient = (
-            bool(supported_candidates) and supported_candidates[0].score >= self._min_evidence_score
+        assessment = self.assess_evidence_diagnostics(question, candidates)
+        supported_ids = set(assessment.supported_chunk_ids)
+        return (
+            [candidate for candidate in candidates if str(candidate.chunk_id) in supported_ids],
+            assessment.production_sufficient,
         )
-        return supported_candidates, sufficient
+
+    def assess_evidence_diagnostics(
+        self, question: str, candidates: list[RetrievedChunk]
+    ) -> EvidenceAssessment:
+        """Explain the current Gate without changing its decision."""
+        query_terms = self._evidence_terms(question)
+        specific_query_terms = query_terms - GENERIC_EVIDENCE_TERMS
+        candidate_rows: list[CandidateEvidenceAssessment] = []
+        supported_candidates: list[RetrievedChunk] = []
+        covered_terms: set[str] = set()
+        for candidate in candidates:
+            context_terms = self._evidence_terms(candidate.content)
+            context_terms.update(self._evidence_terms(" ".join(candidate.heading_path)))
+            context_terms.update(self._evidence_terms(candidate.document_title))
+            overlap = query_terms & context_terms
+            lexical_support = self._has_lexical_support(question, [candidate])
+            if lexical_support:
+                supported_candidates.append(candidate)
+                covered_terms.update(overlap)
+            candidate_rows.append(
+                CandidateEvidenceAssessment(
+                    chunk_id=str(candidate.chunk_id),
+                    score=candidate.score,
+                    lexical_support=lexical_support,
+                    covered_terms=tuple(sorted(overlap)),
+                    specific_covered_terms=tuple(sorted(overlap & specific_query_terms)),
+                )
+            )
+        top_supported_score = supported_candidates[0].score if supported_candidates else None
+        sufficient = bool(supported_candidates) and bool(
+            top_supported_score is not None and top_supported_score >= self._min_evidence_score
+        )
+        numeric_tokens = set(re.findall(r"\d+(?:\.\d+)?%?", question))
+        covered_numeric_tokens = {
+            token
+            for token in numeric_tokens
+            if any(token in candidate.content for candidate in supported_candidates)
+        }
+        demand_markers = tuple(
+            marker
+            for marker in (
+                "精确值",
+                "多少",
+                "哪一天",
+                "保证",
+                "一定",
+                "最好",
+                "相比",
+                "下一版",
+                "未来",
+                "当前",
+            )
+            if marker in question
+        )
+        rejection_reasons: list[str] = []
+        if not supported_candidates:
+            rejection_reasons.append("no_lexically_supported_candidate")
+        elif not sufficient:
+            rejection_reasons.append("top_supported_score_below_threshold")
+        return EvidenceAssessment(
+            policy_name="current_binary_v1",
+            decision=EvidenceDecision.FULL if sufficient else EvidenceDecision.NONE,
+            production_sufficient=sufficient,
+            supported_chunk_ids=tuple(str(item.chunk_id) for item in supported_candidates),
+            top_supported_score=top_supported_score,
+            query_terms=tuple(sorted(query_terms)),
+            specific_query_terms=tuple(sorted(specific_query_terms)),
+            covered_terms=tuple(sorted(covered_terms)),
+            uncovered_terms=tuple(sorted(query_terms - covered_terms)),
+            coverage_ratio=(
+                round(len(covered_terms) / len(query_terms), 4) if query_terms else 1.0
+            ),
+            numeric_tokens_requested=tuple(sorted(numeric_tokens)),
+            numeric_tokens_covered=tuple(sorted(covered_numeric_tokens)),
+            demand_markers=demand_markers,
+            candidate_assessments=tuple(candidate_rows),
+            rejection_reasons=tuple(rejection_reasons),
+        )
 
     def _evidence_terms(self, text: str) -> set[str]:
         lowered = text.lower()

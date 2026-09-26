@@ -19,6 +19,7 @@ class RetrievalCaseResult:
     raw_candidate_count: int = 0
     diversity_filtered_count: int = 0
     failure_category: str | None = None
+    evidence_decision: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,6 +42,12 @@ class RetrievalMetrics:
     post_filter_recall_at_6: float
     diversity_filter_drop_rate: float
     failure_category_counts: dict[str, int]
+    full_acceptance_rate: float
+    none_rejection_rate: float
+    partial_acceptance_rate: float
+    partial_boundary_detection_rate: float
+    evidence_macro_accuracy: float
+    evidence_confusion_matrix: dict[str, dict[str, int]]
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,6 +90,24 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
         if item.failure_category:
             failure_counts[item.failure_category] = failure_counts.get(item.failure_category, 0) + 1
     raw_candidate_total = sum(item.raw_candidate_count for item in results)
+    confusion = {
+        actual: {
+            predicted: sum(
+                item.answerability == actual and item.evidence_decision == predicted
+                for item in results
+            )
+            for predicted in ("full", "partial", "none")
+        }
+        for actual in ("full", "partial", "none")
+    }
+    class_accuracies = [
+        _accuracy(
+            item.evidence_decision == label
+            for item in results
+            if item.answerability == label
+        )
+        for label in ("full", "partial", "none")
+    ]
     return RetrievalMetrics(
         total=total,
         recall_at_1=_recall_at(answerable, 1),
@@ -112,6 +137,14 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
         if raw_candidate_total
         else 0.0,
         failure_category_counts=dict(sorted(failure_counts.items())),
+        full_acceptance_rate=_accuracy(item.evidence_sufficient for item in full),
+        none_rejection_rate=_accuracy(not item.evidence_sufficient for item in negatives),
+        partial_acceptance_rate=_accuracy(item.evidence_sufficient for item in partial),
+        partial_boundary_detection_rate=_accuracy(
+            item.evidence_decision == "partial" for item in partial
+        ),
+        evidence_macro_accuracy=round(sum(class_accuracies) / len(class_accuracies), 4),
+        evidence_confusion_matrix=confusion,
     )
 
 

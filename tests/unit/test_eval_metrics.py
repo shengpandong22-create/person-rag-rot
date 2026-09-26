@@ -37,6 +37,44 @@ def test_compute_retrieval_metrics_rejects_empty_results() -> None:
         compute_retrieval_metrics([])
 
 
+def test_retrieval_metrics_report_explicit_three_way_gate_metrics() -> None:
+    rows = [
+        RetrievalCaseResult(
+            "full", True, 1, True, answerability="full", evidence_decision="full"
+        ),
+        RetrievalCaseResult(
+            "partial",
+            True,
+            1,
+            True,
+            answerability="partial",
+            evidence_decision="full",
+        ),
+        RetrievalCaseResult(
+            "none",
+            False,
+            None,
+            False,
+            answerability="none",
+            negative_reason="false_premise",
+            evidence_decision="none",
+        ),
+    ]
+
+    metrics = compute_retrieval_metrics(rows)
+
+    assert metrics.full_acceptance_rate == 1.0
+    assert metrics.partial_acceptance_rate == 1.0
+    assert metrics.none_rejection_rate == 1.0
+    assert metrics.partial_boundary_detection_rate == 0.0
+    assert metrics.evidence_macro_accuracy == 0.6667
+    assert metrics.evidence_confusion_matrix == {
+        "full": {"full": 1, "partial": 0, "none": 0},
+        "partial": {"full": 1, "partial": 0, "none": 0},
+        "none": {"full": 0, "partial": 0, "none": 1},
+    }
+
+
 def test_retrieval_stage_metrics_use_raw_and_post_filter_ranks() -> None:
     metrics = compute_retrieval_metrics(
         [
