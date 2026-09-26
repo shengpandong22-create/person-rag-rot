@@ -28,6 +28,7 @@ from agent_mentor.infrastructure.database.session import (
 from agent_mentor.infrastructure.retriever import (
     PostgresHybridRetriever,
     RetrievalExperimentMode,
+    RetrievalFilterReason,
 )
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
 from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
@@ -98,7 +99,7 @@ async def run_retrieval_eval(
         )
         for case in cases:
             started = perf_counter()
-            chunks = await retriever.retrieve(
+            diagnostics = await retriever.retrieve_with_diagnostics(
                 RetrievalQuery(
                     knowledge_base_id=knowledge_base_id,
                     query=case.question,
@@ -107,6 +108,7 @@ async def run_retrieval_eval(
                 ),
                 experiment_mode=experiment_mode,
             )
+            chunks = list(diagnostics.final_results)
             latency_ms = (perf_counter() - started) * 1000
             total_retrieval_ms += latency_ms
             ground_truth, ground_truth_mode = await _resolve_ground_truth(
@@ -124,14 +126,39 @@ async def run_retrieval_eval(
             # excluded from formal Recall/MRR below.
             if ground_truth:
                 first_rank = _first_relevant_rank_by_id(chunks, ground_truth)
+                first_raw_candidate_rank = _first_relevant_rank_by_id(
+                    list(diagnostics.ordered_candidates), ground_truth
+                )
+                first_post_filter_rank = _first_relevant_rank_by_id(
+                    list(diagnostics.post_filter_candidates), ground_truth
+                )
             else:
                 first_rank = _first_relevant_rank(chunks, case.diagnostic_keywords)
+                first_raw_candidate_rank = None
+                first_post_filter_rank = None
             supported_chunks, evidence_sufficient = answer_service.assess_evidence(
                 case.question, chunks
             )
             formally_scorable = graded and (
                 case.answerability is Answerability.NONE
                 or ground_truth_mode == GROUND_TRUTH_RESOLVED
+            )
+            ground_truth_ids = set(ground_truth)
+            relevant_filter_reasons = [
+                item.reason.value
+                for item in diagnostics.filtered_out
+                if item.chunk.chunk_id in ground_truth_ids
+                and item.reason is not RetrievalFilterReason.TOP_K_CUTOFF
+            ]
+            failure_category = _failure_category(
+                case=case,
+                ground_truth_mode=ground_truth_mode,
+                first_rank=first_rank,
+                first_raw_candidate_rank=first_raw_candidate_rank,
+                first_post_filter_rank=first_post_filter_rank,
+                relevant_filter_reasons=relevant_filter_reasons,
+                evidence_sufficient=evidence_sufficient,
+                top_k=top_k,
             )
             if formally_scorable:
                 metric_inputs.append(
@@ -146,15 +173,16 @@ async def run_retrieval_eval(
                         ),
                         latency_ms=latency_ms,
                         candidate_count=len(chunks),
+                        first_raw_candidate_rank=first_raw_candidate_rank,
+                        first_post_filter_rank=first_post_filter_rank,
+                        raw_candidate_count=len(diagnostics.ordered_candidates),
+                        diversity_filtered_count=sum(
+                            item.reason is not RetrievalFilterReason.TOP_K_CUTOFF
+                            for item in diagnostics.filtered_out
+                        ),
+                        failure_category=failure_category,
                     )
                 )
-            failure_category = _failure_category(
-                case=case,
-                ground_truth_mode=ground_truth_mode,
-                first_rank=first_rank,
-                evidence_sufficient=evidence_sufficient,
-                top_k=top_k,
-            )
             case_rows.append(
                 {
                     "id": case.case_id,
@@ -175,12 +203,38 @@ async def run_retrieval_eval(
                         for keyword in case.diagnostic_keywords
                     },
                     "first_relevant_rank": first_rank,
+                    "first_raw_candidate_rank": first_raw_candidate_rank,
+                    "first_post_filter_rank": first_post_filter_rank,
                     "experiment_mode": experiment_mode.value,
                     "latency_ms": round(latency_ms, 4),
                     "retrieved_candidate_count": len(chunks),
+                    "raw_candidate_count": len(diagnostics.ordered_candidates),
+                    "post_filter_candidate_count": len(diagnostics.post_filter_candidates),
                     "evidence_sufficient": evidence_sufficient,
                     "evidence_decision": "accept" if evidence_sufficient else "reject",
                     "failure_category": failure_category,
+                    "retrieval_stages": {
+                        "vector_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.vector_candidates
+                        ],
+                        "text_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.text_candidates
+                        ],
+                        "ordered_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.ordered_candidates
+                        ],
+                        "post_filter_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.post_filter_candidates
+                        ],
+                        "filtered_out": [
+                            {
+                                "chunk_id": str(item.chunk.chunk_id),
+                                "reason": item.reason.value,
+                                "matched_ground_truth": (item.chunk.chunk_id in ground_truth_ids),
+                            }
+                            for item in diagnostics.filtered_out
+                        ],
+                    },
                     "supported_chunk_count": len(supported_chunks),
                     "top_chunks": [
                         {
@@ -264,6 +318,9 @@ def _failure_category(
     case: RetrievalEvalCase,
     ground_truth_mode: str,
     first_rank: int | None,
+    first_raw_candidate_rank: int | None,
+    first_post_filter_rank: int | None,
+    relevant_filter_reasons: list[str],
     evidence_sufficient: bool,
     top_k: int,
 ) -> str | None:
@@ -271,10 +328,16 @@ def _failure_category(
         return "source_label_unresolved"
     if case.answerability is Answerability.NONE:
         return "false_acceptance" if evidence_sufficient else "correct_rejection"
-    if first_rank is None:
-        return "retrieval_miss"
-    if first_rank > top_k:
-        return "ranking_miss"
+    if first_raw_candidate_rank is None:
+        return "candidate_recall_miss"
+    if first_post_filter_rank is None:
+        if RetrievalFilterReason.PER_DOCUMENT_LIMIT.value in relevant_filter_reasons:
+            return "per_document_filter_miss"
+        if RetrievalFilterReason.ADJACENT_CHUNK.value in relevant_filter_reasons:
+            return "adjacent_filter_miss"
+        return "diversity_filter_miss"
+    if first_post_filter_rank > top_k or first_rank is None:
+        return "ranking_cutoff_miss"
     if not evidence_sufficient:
         return "evidence_gate_rejection"
     if case.answerability is Answerability.PARTIAL:
@@ -585,6 +648,11 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Retrieval latency P50/P95 ms: {metrics['latency_p50_ms']} / "
         f"{metrics['latency_p95_ms']}",
         f"- Average candidate count: {metrics['average_candidate_count']}",
+        f"- Candidate Recall@20: {metrics['candidate_recall_at_20']}",
+        f"- Pre-filter Recall@6: {metrics['pre_filter_recall_at_6']}",
+        f"- Post-filter Recall@6: {metrics['post_filter_recall_at_6']}",
+        f"- Diversity filter drop rate: {metrics['diversity_filter_drop_rate']}",
+        f"- Failure category counts: {metrics['failure_category_counts']}",
         "",
     ]
     rows: list[dict[str, Any]] = [dict(row) for row in report.cases]

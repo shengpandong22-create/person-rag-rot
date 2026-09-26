@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from agent_mentor.ports.knowledge_retriever import RetrievedChunk
 from evals.runners.retrieval_runner import (
+    _failure_category,
     _first_relevant_rank,
     _first_relevant_rank_by_id,
     _heading_matches,
@@ -120,3 +121,50 @@ def test_legacy_ungraded_row_is_never_graded() -> None:
     )
 
     assert _is_graded(case) is False
+
+
+def test_failure_attribution_distinguishes_candidate_ranking_and_filters() -> None:
+    case = RetrievalEvalCase(
+        "p4",
+        "q",
+        Answerability.FULL,
+        (RelevantSource("doc.md"),),
+        (),
+    )
+    common = {
+        "case": case,
+        "ground_truth_mode": "resolved",
+        "evidence_sufficient": False,
+        "top_k": 6,
+    }
+
+    assert (
+        _failure_category(
+            **common,
+            first_rank=None,
+            first_raw_candidate_rank=None,
+            first_post_filter_rank=None,
+            relevant_filter_reasons=[],
+        )
+        == "candidate_recall_miss"
+    )
+    assert (
+        _failure_category(
+            **common,
+            first_rank=None,
+            first_raw_candidate_rank=4,
+            first_post_filter_rank=8,
+            relevant_filter_reasons=[],
+        )
+        == "ranking_cutoff_miss"
+    )
+    assert (
+        _failure_category(
+            **common,
+            first_rank=None,
+            first_raw_candidate_rank=3,
+            first_post_filter_rank=None,
+            relevant_filter_reasons=["adjacent_chunk"],
+        )
+        == "adjacent_filter_miss"
+    )

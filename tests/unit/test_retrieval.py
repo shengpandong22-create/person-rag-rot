@@ -13,6 +13,7 @@ from agent_mentor.application.answer_service import AnswerService, ensure_citati
 from agent_mentor.infrastructure.retriever import (
     PostgresHybridRetriever,
     RetrievalExperimentMode,
+    RetrievalFilterReason,
     _Candidate,
     _infer_retrieved_block_type,
     _lexical_overlap,
@@ -121,6 +122,59 @@ async def test_default_retrieval_path_equals_explicit_current_heuristic(
     )
 
     assert default == explicit
+
+
+@pytest.mark.asyncio
+async def test_diagnostics_share_pipeline_and_attribute_filters(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(),
+        title="Guide",
+        logical_name="guide",
+        source_url=None,
+        trust_level="curated",
+    )
+    candidates = []
+    for index, score in enumerate((0.9, 0.8, 0.7, 0.6)):
+        model = SimpleNamespace(
+            id=uuid4(),
+            content=f"evidence {index}",
+            heading_path=["Guide"],
+            page_number=None,
+            chunk_index=index,
+        )
+        candidates.append(_Candidate(cast(Any, model), cast(Any, document), index + 1, score))
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=2
+    )
+    monkeypatch.setattr(retriever, "_vector_candidates", AsyncMock(return_value=candidates))
+    query = RetrievalQuery(uuid4(), "evidence", top_k=1, candidate_k=4)
+
+    diagnostics = await retriever.retrieve_with_diagnostics(
+        query, experiment_mode=RetrievalExperimentMode.VECTOR_ONLY
+    )
+    production = await retriever.retrieve(
+        query, experiment_mode=RetrievalExperimentMode.VECTOR_ONLY
+    )
+
+    assert list(diagnostics.final_results) == production
+    assert [item.chunk_index for item in diagnostics.post_filter_candidates] == [0, 2]
+    assert [item.reason for item in diagnostics.filtered_out] == [
+        RetrievalFilterReason.ADJACENT_CHUNK,
+        RetrievalFilterReason.PER_DOCUMENT_LIMIT,
+        RetrievalFilterReason.TOP_K_CUTOFF,
+    ]
 
 
 def test_retrieval_explanation_contains_rank_signals() -> None:

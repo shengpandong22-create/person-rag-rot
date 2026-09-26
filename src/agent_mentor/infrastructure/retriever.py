@@ -56,6 +56,30 @@ class RetrievalExperimentMode(StrEnum):
     RRF_HEURISTIC = "rrf-heuristic"
 
 
+class RetrievalFilterReason(StrEnum):
+    PER_DOCUMENT_LIMIT = "per_document_limit"
+    ADJACENT_CHUNK = "adjacent_chunk"
+    TOP_K_CUTOFF = "top_k_cutoff"
+
+
+@dataclass(frozen=True, slots=True)
+class FilteredRetrievalCandidate:
+    chunk: RetrievedChunk
+    reason: RetrievalFilterReason
+
+
+@dataclass(frozen=True, slots=True)
+class RetrievalDiagnostics:
+    """Eval-only view of each stage of the unchanged retrieval pipeline."""
+
+    vector_candidates: tuple[RetrievedChunk, ...]
+    text_candidates: tuple[RetrievedChunk, ...]
+    ordered_candidates: tuple[RetrievedChunk, ...]
+    post_filter_candidates: tuple[RetrievedChunk, ...]
+    filtered_out: tuple[FilteredRetrievalCandidate, ...]
+    final_results: tuple[RetrievedChunk, ...]
+
+
 class PostgresHybridRetriever:
     """PostgreSQL 混合检索器 — 生产环境的核心检索实现。
 
@@ -92,9 +116,27 @@ class PostgresHybridRetriever:
             5. 后处理：文档去重 + 去相邻 chunk
             6. 截取 top_k
         """
+        diagnostics = await self._retrieve_result(query, experiment_mode=experiment_mode)
+        return list(diagnostics.final_results)
+
+    async def retrieve_with_diagnostics(
+        self,
+        query: RetrievalQuery,
+        *,
+        experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
+    ) -> RetrievalDiagnostics:
+        """Return stage diagnostics without changing production retrieval semantics."""
+        return await self._retrieve_result(query, experiment_mode=experiment_mode)
+
+    async def _retrieve_result(
+        self,
+        query: RetrievalQuery,
+        *,
+        experiment_mode: RetrievalExperimentMode,
+    ) -> RetrievalDiagnostics:
         normalized = normalize_query(query.query)
         if not normalized:
-            return []
+            return RetrievalDiagnostics((), (), (), (), (), ())
 
         # 并行执行向量和全文检索（注意：这里实际上是串行的，优化空间）
         async with self._sessions() as session:
@@ -149,59 +191,63 @@ class PostgresHybridRetriever:
             reverse=True,
         )
 
-        # 后处理：按 RRF 分数降序遍历，去重 + 截断
-        results: list[RetrievedChunk] = []
+        converted = {
+            chunk_id: _to_retrieved_chunk(
+                candidate=by_id[chunk_id],
+                normalized=normalized,
+                score=final_scores[chunk_id],
+                fused_score=fused[chunk_id],
+                heuristic_score=heuristic_scores[chunk_id],
+                vector_rank=vector_ranks.get(chunk_id),
+                text_rank=text_ranks.get(chunk_id),
+                vector_score=vector_scores.get(chunk_id),
+                text_score=text_scores.get(chunk_id),
+            )
+            for chunk_id in ordered_ids
+        }
+        # 后处理：完整执行 diversity filter，再截断。前 top_k 与旧的遇满即停逻辑相同；
+        # 继续处理尾部仅用于诊断，不会改变生产返回值。
+        post_filter: list[RetrievedChunk] = []
+        filtered_out: list[FilteredRetrievalCandidate] = []
         per_document: dict[UUID, int] = {}  # 每篇文档已选 chunk 计数
         seen_neighbors: set[tuple[UUID, int]] = set()  # 已选 chunk 的相邻标记
         for chunk_id in ordered_ids:
             candidate = by_id[chunk_id]
             document_id = candidate.document.id
+            retrieved = converted[chunk_id]
 
             # 每篇文档最多 max_chunks_per_document 个 chunk
             if per_document.get(document_id, 0) >= self._max_chunks_per_document:
+                filtered_out.append(
+                    FilteredRetrievalCandidate(retrieved, RetrievalFilterReason.PER_DOCUMENT_LIMIT)
+                )
                 continue
 
             # 跳过相邻 chunk：避免返回内容高度重叠的连续分块
             neighbor_key = (document_id, candidate.chunk.chunk_index)
             if (document_id, candidate.chunk.chunk_index - 1) in seen_neighbors:
+                filtered_out.append(
+                    FilteredRetrievalCandidate(retrieved, RetrievalFilterReason.ADJACENT_CHUNK)
+                )
                 continue
             seen_neighbors.add(neighbor_key)
             per_document[document_id] = per_document.get(document_id, 0) + 1
 
-            results.append(
-                RetrievedChunk(
-                    chunk_id=candidate.chunk.id,
-                    document_id=document_id,
-                    document_title=candidate.document.title,
-                    source_url=candidate.document.source_url,
-                    trust_level=str(candidate.document.trust_level),
-                    heading_path=tuple(candidate.chunk.heading_path),
-                    page_number=candidate.chunk.page_number,
-                    block_type=_infer_retrieved_block_type(candidate.chunk.content),
-                    chunk_index=candidate.chunk.chunk_index,
-                    content=candidate.chunk.content,
-                    score=final_scores[chunk_id],
-                    retrieval_explanation=_retrieval_explanation(
-                        fused_score=fused[chunk_id],
-                        rerank_score=heuristic_scores[chunk_id],
-                        lexical_overlap=_lexical_overlap(normalized, candidate.chunk.content),
-                        vector_rank=vector_ranks.get(chunk_id),
-                        text_rank=text_ranks.get(chunk_id),
-                        vector_score=vector_scores.get(chunk_id),
-                        text_score=text_scores.get(chunk_id),
-                    ),
-                    vector_rank=vector_ranks.get(chunk_id),
-                    text_rank=text_ranks.get(chunk_id),
-                    vector_score=vector_scores.get(chunk_id),
-                    text_score=text_scores.get(chunk_id),
-                    document_logical_name=candidate.document.logical_name,
-                    rrf_score=fused.get(chunk_id),
-                    heuristic_rerank_score=heuristic_scores.get(chunk_id),
-                )
-            )
-            if len(results) >= query.top_k:
-                break
-        return results
+            post_filter.append(retrieved)
+
+        results = post_filter[: query.top_k]
+        filtered_out.extend(
+            FilteredRetrievalCandidate(chunk, RetrievalFilterReason.TOP_K_CUTOFF)
+            for chunk in post_filter[query.top_k :]
+        )
+        return RetrievalDiagnostics(
+            vector_candidates=tuple(converted[item.chunk.id] for item in vector_candidates),
+            text_candidates=tuple(converted[item.chunk.id] for item in text_candidates),
+            ordered_candidates=tuple(converted[chunk_id] for chunk_id in ordered_ids),
+            post_filter_candidates=tuple(post_filter),
+            filtered_out=tuple(filtered_out),
+            final_results=tuple(results),
+        )
 
     def _base_query(
         self, query: RetrievalQuery
@@ -317,6 +363,49 @@ class PostgresHybridRetriever:
             _Candidate(chunk=chunk, document=document, rank=rank, score=float(score))
             for rank, (chunk, document, score) in enumerate(rows, start=1)
         ]
+
+
+def _to_retrieved_chunk(
+    *,
+    candidate: _Candidate,
+    normalized: str,
+    score: float,
+    fused_score: float,
+    heuristic_score: float,
+    vector_rank: int | None,
+    text_rank: int | None,
+    vector_score: float | None,
+    text_score: float | None,
+) -> RetrievedChunk:
+    return RetrievedChunk(
+        chunk_id=candidate.chunk.id,
+        document_id=candidate.document.id,
+        document_title=candidate.document.title,
+        source_url=candidate.document.source_url,
+        trust_level=str(candidate.document.trust_level),
+        heading_path=tuple(candidate.chunk.heading_path),
+        page_number=candidate.chunk.page_number,
+        block_type=_infer_retrieved_block_type(candidate.chunk.content),
+        chunk_index=candidate.chunk.chunk_index,
+        content=candidate.chunk.content,
+        score=score,
+        retrieval_explanation=_retrieval_explanation(
+            fused_score=fused_score,
+            rerank_score=heuristic_score,
+            lexical_overlap=_lexical_overlap(normalized, candidate.chunk.content),
+            vector_rank=vector_rank,
+            text_rank=text_rank,
+            vector_score=vector_score,
+            text_score=text_score,
+        ),
+        vector_rank=vector_rank,
+        text_rank=text_rank,
+        vector_score=vector_score,
+        text_score=text_score,
+        document_logical_name=candidate.document.logical_name,
+        rrf_score=fused_score,
+        heuristic_rerank_score=heuristic_score,
+    )
 
 
 def _infer_retrieved_block_type(content: str) -> str:

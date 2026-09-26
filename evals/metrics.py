@@ -14,6 +14,11 @@ class RetrievalCaseResult:
     negative_reason: str | None = None
     latency_ms: float = 0.0
     candidate_count: int = 0
+    first_raw_candidate_rank: int | None = None
+    first_post_filter_rank: int | None = None
+    raw_candidate_count: int = 0
+    diversity_filtered_count: int = 0
+    failure_category: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +36,11 @@ class RetrievalMetrics:
     latency_p50_ms: float
     latency_p95_ms: float
     average_candidate_count: float
+    candidate_recall_at_20: float
+    pre_filter_recall_at_6: float
+    post_filter_recall_at_6: float
+    diversity_filter_drop_rate: float
+    failure_category_counts: dict[str, int]
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,6 +78,11 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
     for item in negatives:
         grouped_negatives.setdefault(item.negative_reason or "unspecified", []).append(item)
     latencies = sorted(item.latency_ms for item in results)
+    failure_counts: dict[str, int] = {}
+    for item in results:
+        if item.failure_category:
+            failure_counts[item.failure_category] = failure_counts.get(item.failure_category, 0) + 1
+    raw_candidate_total = sum(item.raw_candidate_count for item in results)
     return RetrievalMetrics(
         total=total,
         recall_at_1=_recall_at(answerable, 1),
@@ -87,7 +102,24 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
         latency_p50_ms=_percentile(latencies, 0.50),
         latency_p95_ms=_percentile(latencies, 0.95),
         average_candidate_count=round(sum(item.candidate_count for item in results) / total, 4),
+        candidate_recall_at_20=_rank_recall(answerable, "first_raw_candidate_rank", 20),
+        pre_filter_recall_at_6=_rank_recall(answerable, "first_raw_candidate_rank", 6),
+        post_filter_recall_at_6=_rank_recall(answerable, "first_post_filter_rank", 6),
+        diversity_filter_drop_rate=round(
+            sum(item.diversity_filtered_count for item in results) / raw_candidate_total,
+            4,
+        )
+        if raw_candidate_total
+        else 0.0,
+        failure_category_counts=dict(sorted(failure_counts.items())),
     )
+
+
+def _rank_recall(results: list[RetrievalCaseResult], field: str, k: int) -> float:
+    if not results:
+        return 0.0
+    hits = sum((rank := getattr(item, field)) is not None and rank <= k for item in results)
+    return round(hits / len(results), 4)
 
 
 def _percentile(values: list[float], quantile: float) -> float:

@@ -37,6 +37,39 @@ def test_compute_retrieval_metrics_rejects_empty_results() -> None:
         compute_retrieval_metrics([])
 
 
+def test_retrieval_stage_metrics_use_raw_and_post_filter_ranks() -> None:
+    metrics = compute_retrieval_metrics(
+        [
+            RetrievalCaseResult(
+                "hit",
+                True,
+                2,
+                True,
+                first_raw_candidate_rank=4,
+                first_post_filter_rank=2,
+                raw_candidate_count=20,
+            ),
+            RetrievalCaseResult(
+                "cutoff",
+                True,
+                None,
+                False,
+                first_raw_candidate_rank=8,
+                first_post_filter_rank=7,
+                raw_candidate_count=20,
+                diversity_filtered_count=3,
+                failure_category="ranking_cutoff_miss",
+            ),
+        ]
+    )
+
+    assert metrics.candidate_recall_at_20 == 1.0
+    assert metrics.pre_filter_recall_at_6 == 0.5
+    assert metrics.post_filter_recall_at_6 == 0.5
+    assert metrics.diversity_filter_drop_rate == 0.075
+    assert metrics.failure_category_counts == {"ranking_cutoff_miss": 1}
+
+
 def test_compute_scoring_metrics_reports_error_and_review_accuracy() -> None:
     metrics = compute_scoring_metrics(
         [
