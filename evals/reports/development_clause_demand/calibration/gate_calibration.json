@@ -1,0 +1,1585 @@
+{
+  "source_report": "evals\\reports\\development_clause_demand\\vector-only\\retrieval_eval.json",
+  "source_report_sha256": "917c601512db3a9107e2f40c7a876f2142d7d1edb50d855de580ce55ee493f5b",
+  "experiment_type": "offline_evidence_gate_replay",
+  "retrieval_rerun": false,
+  "results": [
+    {
+      "policy": "current_binary_v1",
+      "parameters": {},
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.2,
+      "macro_accuracy": 0.3778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 10,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 28,
+          "partial": 0,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.125,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.1429,
+        "out_of_range_implementation": 0.4,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.2
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-025",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-035",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-005",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-008",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.15
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.2,
+      "none_rejection_rate": 0.2286,
+      "macro_accuracy": 0.4444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 8,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 27,
+          "partial": 1,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.1429,
+        "out_of_range_implementation": 0.4,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.2
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-035",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.2
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.3,
+      "none_rejection_rate": 0.3429,
+      "macro_accuracy": 0.4778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 7,
+          "partial": 3,
+          "none": 0
+        },
+        "none": {
+          "full": 23,
+          "partial": 5,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.6
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.25
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 0.5143,
+      "macro_accuracy": 0.5444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 5,
+          "partial": 5,
+          "none": 0
+        },
+        "none": {
+          "full": 17,
+          "partial": 11,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 0.5714,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.6,
+        "version_not_released": 0.6
+      },
+      "false_full_case_ids": [
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-036",
+        "dev-neg-039",
+        "dev-pt-007",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.3
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.7,
+      "none_rejection_rate": 0.6286,
+      "macro_accuracy": 0.6111,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 3,
+          "partial": 7,
+          "none": 0
+        },
+        "none": {
+          "full": 13,
+          "partial": 15,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.375,
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 0.7143,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.8,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-005",
+        "dev-neg-008",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-036",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.35
+      },
+      "full_acceptance_rate": 0.8667,
+      "partial_boundary_detection_rate": 0.9,
+      "none_rejection_rate": 0.7714,
+      "macro_accuracy": 0.6556,
+      "confusion_matrix": {
+        "full": {
+          "full": 13,
+          "partial": 1,
+          "none": 1
+        },
+        "partial": {
+          "full": 1,
+          "partial": 9,
+          "none": 0
+        },
+        "none": {
+          "full": 8,
+          "partial": 20,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.75,
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 0.7143,
+        "out_of_range_implementation": 0.8,
+        "out_of_scope": 0.8,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-005",
+        "dev-neg-008",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-019",
+        "dev-neg-022",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010",
+        "dev-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.4
+      },
+      "full_acceptance_rate": 0.8667,
+      "partial_boundary_detection_rate": 0.9,
+      "none_rejection_rate": 0.8571,
+      "macro_accuracy": 0.6556,
+      "confusion_matrix": {
+        "full": {
+          "full": 13,
+          "partial": 1,
+          "none": 1
+        },
+        "partial": {
+          "full": 1,
+          "partial": 9,
+          "none": 0
+        },
+        "none": {
+          "full": 5,
+          "partial": 23,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.75,
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 0.8571,
+        "out_of_range_implementation": 0.8,
+        "out_of_scope": 1.0,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-005",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-019",
+        "dev-neg-027",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010",
+        "dev-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.45
+      },
+      "full_acceptance_rate": 0.7333,
+      "partial_boundary_detection_rate": 1.0,
+      "none_rejection_rate": 0.9429,
+      "macro_accuracy": 0.6444,
+      "confusion_matrix": {
+        "full": {
+          "full": 11,
+          "partial": 3,
+          "none": 1
+        },
+        "partial": {
+          "full": 0,
+          "partial": 10,
+          "none": 0
+        },
+        "none": {
+          "full": 2,
+          "partial": 26,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.875,
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 1.0,
+        "out_of_range_implementation": 1.0,
+        "out_of_scope": 1.0,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-005",
+        "dev-neg-019"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-002",
+        "dev-pos-003",
+        "dev-pos-010",
+        "dev-pos-012"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.5
+      },
+      "full_acceptance_rate": 0.6,
+      "partial_boundary_detection_rate": 1.0,
+      "none_rejection_rate": 0.9429,
+      "macro_accuracy": 0.6,
+      "confusion_matrix": {
+        "full": {
+          "full": 9,
+          "partial": 5,
+          "none": 1
+        },
+        "partial": {
+          "full": 0,
+          "partial": 10,
+          "none": 0
+        },
+        "none": {
+          "full": 2,
+          "partial": 26,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.875,
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 1.0,
+        "out_of_range_implementation": 1.0,
+        "out_of_scope": 1.0,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-005",
+        "dev-neg-019"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-002",
+        "dev-pos-003",
+        "dev-pos-010",
+        "dev-pos-012",
+        "dev-pos-014",
+        "dev-pos-015"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 2
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.2,
+      "macro_accuracy": 0.3778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 10,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 28,
+          "partial": 0,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.125,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.1429,
+        "out_of_range_implementation": 0.4,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.2
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-025",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-035",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-005",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-008",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 3
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.2,
+      "none_rejection_rate": 0.4,
+      "macro_accuracy": 0.4444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 8,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 21,
+          "partial": 7,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.4,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 4
+      },
+      "full_acceptance_rate": 0.8,
+      "partial_boundary_detection_rate": 0.2,
+      "none_rejection_rate": 0.5143,
+      "macro_accuracy": 0.4,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 2,
+          "none": 1
+        },
+        "partial": {
+          "full": 8,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 17,
+          "partial": 11,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 0.4286,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.8,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-036",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-003",
+        "dev-pos-005",
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 5
+      },
+      "full_acceptance_rate": 0.7333,
+      "partial_boundary_detection_rate": 0.2,
+      "none_rejection_rate": 0.6286,
+      "macro_accuracy": 0.3778,
+      "confusion_matrix": {
+        "full": {
+          "full": 11,
+          "partial": 3,
+          "none": 1
+        },
+        "partial": {
+          "full": 8,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 13,
+          "partial": 15,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 0.5714,
+        "out_of_range_implementation": 0.8,
+        "out_of_scope": 0.8,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-004",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-003",
+        "dev-pos-005",
+        "dev-pos-010",
+        "dev-pos-014"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 6
+      },
+      "full_acceptance_rate": 0.6667,
+      "partial_boundary_detection_rate": 0.3,
+      "none_rejection_rate": 0.7714,
+      "macro_accuracy": 0.3889,
+      "confusion_matrix": {
+        "full": {
+          "full": 10,
+          "partial": 4,
+          "none": 1
+        },
+        "partial": {
+          "full": 7,
+          "partial": 3,
+          "none": 0
+        },
+        "none": {
+          "full": 8,
+          "partial": 20,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.5,
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 0.7143,
+        "out_of_range_implementation": 0.8,
+        "out_of_scope": 1.0,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-008",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-019",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-003",
+        "dev-pos-005",
+        "dev-pos-006",
+        "dev-pos-010",
+        "dev-pos-014"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 7
+      },
+      "full_acceptance_rate": 0.3333,
+      "partial_boundary_detection_rate": 0.7,
+      "none_rejection_rate": 0.8286,
+      "macro_accuracy": 0.4111,
+      "confusion_matrix": {
+        "full": {
+          "full": 5,
+          "partial": 9,
+          "none": 1
+        },
+        "partial": {
+          "full": 3,
+          "partial": 7,
+          "none": 0
+        },
+        "none": {
+          "full": 6,
+          "partial": 22,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.5,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 0.7143,
+        "out_of_range_implementation": 1.0,
+        "out_of_scope": 1.0,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-017",
+        "dev-neg-019",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-031",
+        "dev-neg-039",
+        "dev-pt-007",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-001",
+        "dev-pos-002",
+        "dev-pos-003",
+        "dev-pos-005",
+        "dev-pos-006",
+        "dev-pos-007",
+        "dev-pos-009",
+        "dev-pos-010",
+        "dev-pos-012",
+        "dev-pos-014"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 8
+      },
+      "full_acceptance_rate": 0.3333,
+      "partial_boundary_detection_rate": 0.8,
+      "none_rejection_rate": 0.8571,
+      "macro_accuracy": 0.4444,
+      "confusion_matrix": {
+        "full": {
+          "full": 5,
+          "partial": 9,
+          "none": 1
+        },
+        "partial": {
+          "full": 2,
+          "partial": 8,
+          "none": 0
+        },
+        "none": {
+          "full": 5,
+          "partial": 23,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.625,
+        "in_domain_no_conclusion": 1.0,
+        "in_domain_value_missing": 0.7143,
+        "out_of_range_implementation": 1.0,
+        "out_of_scope": 1.0,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-017",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-031",
+        "dev-neg-039",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-001",
+        "dev-pos-002",
+        "dev-pos-003",
+        "dev-pos-005",
+        "dev-pos-006",
+        "dev-pos-007",
+        "dev-pos-009",
+        "dev-pos-010",
+        "dev-pos-012",
+        "dev-pos-014"
+      ]
+    },
+    {
+      "policy": "numeric_demand_coverage",
+      "parameters": {},
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.2571,
+      "macro_accuracy": 0.3778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 10,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 26,
+          "partial": 2,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.4,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.2
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-025",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-035",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-005",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-008",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "clause_demand_v1",
+      "parameters": {},
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.9,
+      "none_rejection_rate": 0.4571,
+      "macro_accuracy": 0.6778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 1,
+          "partial": 9,
+          "none": 0
+        },
+        "none": {
+          "full": 19,
+          "partial": 9,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.375,
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.4,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    }
+  ],
+  "eligible_candidates": [
+    {
+      "policy": "clause_demand_v1",
+      "parameters": {},
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.9,
+      "none_rejection_rate": 0.4571,
+      "macro_accuracy": 0.6778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 1,
+          "partial": 9,
+          "none": 0
+        },
+        "none": {
+          "full": 19,
+          "partial": 9,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.375,
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.4,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.3
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.7,
+      "none_rejection_rate": 0.6286,
+      "macro_accuracy": 0.6111,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 3,
+          "partial": 7,
+          "none": 0
+        },
+        "none": {
+          "full": 13,
+          "partial": 15,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.375,
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 0.7143,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.8,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-005",
+        "dev-neg-008",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-036",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.25
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.5,
+      "none_rejection_rate": 0.5143,
+      "macro_accuracy": 0.5444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 5,
+          "partial": 5,
+          "none": 0
+        },
+        "none": {
+          "full": 17,
+          "partial": 11,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.6,
+        "in_domain_value_missing": 0.5714,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.6,
+        "version_not_released": 0.6
+      },
+      "false_full_case_ids": [
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-036",
+        "dev-neg-039",
+        "dev-pt-007",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.2
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.3,
+      "none_rejection_rate": 0.3429,
+      "macro_accuracy": 0.4778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 7,
+          "partial": 3,
+          "none": 0
+        },
+        "none": {
+          "full": 23,
+          "partial": 5,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.6
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_covered_terms",
+      "parameters": {
+        "minimum": 3
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.2,
+      "none_rejection_rate": 0.4,
+      "macro_accuracy": 0.4444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 8,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 21,
+          "partial": 7,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.4,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "specific_coverage_ratio",
+      "parameters": {
+        "minimum": 0.15
+      },
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.2,
+      "none_rejection_rate": 0.2286,
+      "macro_accuracy": 0.4444,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 8,
+          "partial": 2,
+          "none": 0
+        },
+        "none": {
+          "full": 27,
+          "partial": 1,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.1429,
+        "out_of_range_implementation": 0.4,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.2
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-035",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    {
+      "policy": "numeric_demand_coverage",
+      "parameters": {},
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.0,
+      "none_rejection_rate": 0.2571,
+      "macro_accuracy": 0.3778,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 10,
+          "partial": 0,
+          "none": 0
+        },
+        "none": {
+          "full": 26,
+          "partial": 2,
+          "none": 7
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.25,
+        "in_domain_no_conclusion": 0.2,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.4,
+        "out_of_scope": 0.2,
+        "version_not_released": 0.2
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-025",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-028",
+        "dev-neg-029",
+        "dev-neg-030",
+        "dev-neg-031",
+        "dev-neg-032",
+        "dev-neg-034",
+        "dev-neg-035",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-neg-039",
+        "dev-pt-005",
+        "dev-pt-006",
+        "dev-pt-007",
+        "dev-pt-008",
+        "dev-pt-009",
+        "dev-pt-010"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    }
+  ]
+}
