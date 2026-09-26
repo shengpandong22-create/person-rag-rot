@@ -16,6 +16,7 @@ from agent_mentor.domain.knowledge import TrustLevel
 
 class RetrievalMode(StrEnum):
     """检索模式：VECTOR=仅向量检索, HYBRID=向量+全文混合检索（默认）"""
+
     VECTOR = "vector"
     HYBRID = "hybrid"
 
@@ -23,12 +24,13 @@ class RetrievalMode(StrEnum):
 @dataclass(frozen=True, slots=True)
 class RetrievalQuery:
     """检索请求参数。
-    
+
     top_k=6:     最终返回的 chunk 数量
     candidate_k=20: 向量和全文各召回候选数，两路共最多 40 个候选，RRF 融合后取前 top_k
     mode:        默认 HYBRID，同时走向量和全文两路
     trust_levels: 可选，按资料可信等级过滤（OFFICIAL/CURATED/COMMUNITY/UNKNOWN）
     """
+
     knowledge_base_id: UUID
     query: str
     top_k: int = 6
@@ -40,12 +42,13 @@ class RetrievalQuery:
 @dataclass(frozen=True, slots=True)
 class RetrievedChunk:
     """单个检索结果 — 包含 chunk 内容、来源、排名、分数等完整信息。
-    
+
     score:           RRF 融合后的最终分数（用于排序）
     vector_rank:     向量检索中的排名（None 表示未从向量路召回）
     text_rank:       全文检索中的排名（None 表示未从全文路召回）
     retrieval_explanation: 可读的检索解释，如 "RRF=0.0328 | vector_rank=1 | text_rank=3"
     """
+
     chunk_id: UUID
     document_id: UUID
     document_title: str
@@ -62,11 +65,15 @@ class RetrievedChunk:
     text_rank: int | None = None
     vector_score: float | None = None
     text_score: float | None = None
+    document_logical_name: str | None = None
+    rrf_score: float | None = None
+    heuristic_rerank_score: float | None = None
 
 
 class KnowledgeRetriever(Protocol):
     """知识检索器接口（Protocol 协议类，无需继承，鸭子类型）。
-    
+
     实现类：PostgresHybridRetriever（生产）、FakeKnowledgeRetriever（测试）
     """
+
     async def retrieve(self, query: RetrievalQuery) -> list[RetrievedChunk]: ...

@@ -1,0 +1,82 @@
+{
+  "vector-only": {
+    "total": 22,
+    "recall_at_1": 0.3529,
+    "recall_at_3": 0.5294,
+    "recall_at_6": 0.7059,
+    "mrr": 0.4853,
+    "evidence_sufficient_accuracy": 1.0,
+    "negative_rejection_accuracy": 1.0,
+    "full_answerability_accuracy": 1.0,
+    "partial_answerability_accuracy": 1.0,
+    "rejection_by_negative_reason": {
+      "conflicting_sources": 1.0,
+      "false_premise": 1.0,
+      "in_domain_no_conclusion": 1.0,
+      "in_domain_value_missing": 1.0
+    },
+    "latency_p50_ms": 36.2275,
+    "latency_p95_ms": 44.3088,
+    "average_candidate_count": 6.0
+  },
+  "text-only": {
+    "total": 22,
+    "recall_at_1": 0.1765,
+    "recall_at_3": 0.3529,
+    "recall_at_6": 0.4118,
+    "mrr": 0.2667,
+    "evidence_sufficient_accuracy": 1.0,
+    "negative_rejection_accuracy": 1.0,
+    "full_answerability_accuracy": 1.0,
+    "partial_answerability_accuracy": 1.0,
+    "rejection_by_negative_reason": {
+      "conflicting_sources": 1.0,
+      "false_premise": 1.0,
+      "in_domain_no_conclusion": 1.0,
+      "in_domain_value_missing": 1.0
+    },
+    "latency_p50_ms": 43.28,
+    "latency_p95_ms": 64.7907,
+    "average_candidate_count": 6.0
+  },
+  "rrf": {
+    "total": 22,
+    "recall_at_1": 0.2941,
+    "recall_at_3": 0.5294,
+    "recall_at_6": 0.7059,
+    "mrr": 0.4461,
+    "evidence_sufficient_accuracy": 1.0,
+    "negative_rejection_accuracy": 1.0,
+    "full_answerability_accuracy": 1.0,
+    "partial_answerability_accuracy": 1.0,
+    "rejection_by_negative_reason": {
+      "conflicting_sources": 1.0,
+      "false_premise": 1.0,
+      "in_domain_no_conclusion": 1.0,
+      "in_domain_value_missing": 1.0
+    },
+    "latency_p50_ms": 122.2542,
+    "latency_p95_ms": 396.1077,
+    "average_candidate_count": 6.0
+  },
+  "rrf-heuristic": {
+    "total": 22,
+    "recall_at_1": 0.1765,
+    "recall_at_3": 0.5294,
+    "recall_at_6": 0.7059,
+    "mrr": 0.3647,
+    "evidence_sufficient_accuracy": 1.0,
+    "negative_rejection_accuracy": 1.0,
+    "full_answerability_accuracy": 1.0,
+    "partial_answerability_accuracy": 1.0,
+    "rejection_by_negative_reason": {
+      "conflicting_sources": 1.0,
+      "false_premise": 1.0,
+      "in_domain_no_conclusion": 1.0,
+      "in_domain_value_missing": 1.0
+    },
+    "latency_p50_ms": 67.9822,
+    "latency_p95_ms": 118.7112,
+    "average_candidate_count": 6.0
+  }
+}

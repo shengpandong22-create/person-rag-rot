@@ -8,6 +8,7 @@ from evals.runners.retrieval_runner import (
     _first_relevant_rank_by_id,
     _heading_matches,
     _is_graded,
+    _source_heading_matches,
 )
 from evals.schema import Answerability, LabelOrigin, RelevantSource, RetrievalEvalCase
 
@@ -45,6 +46,17 @@ def test_heading_matches_is_a_contiguous_subsequence() -> None:
 
 def test_heading_matches_tolerates_whitespace_differences() -> None:
     assert _heading_matches(("证据门禁",), ("检索", " 证据门禁 ")) is True
+
+
+def test_source_heading_matches_parser_full_path_with_document_title() -> None:
+    assert (
+        _source_heading_matches(
+            ("第 3 课", "检索", "证据门禁"),
+            ("检索", "证据门禁"),
+            "第 3 课",
+        )
+        is True
+    )
 
 
 def test_first_relevant_rank_by_id_uses_human_labels_not_keywords() -> None:

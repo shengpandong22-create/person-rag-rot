@@ -1,0 +1,3822 @@
+{
+  "dataset": "evals\\datasets\\retrieval_validation_v1.jsonl",
+  "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "metadata": {
+    "generated_at": "2026-09-26T10:43:44.138094+00:00",
+    "app_version": "0.1.0",
+    "git_commit": "d0c9061b9cc02f1986c3a7f41ee2042a2de64371",
+    "git_short_commit": "d0c9061b9cc0",
+    "git_dirty": true,
+    "git_branch": "codex/eval-foundation-rebuild",
+    "dataset_sha256": "4ab6e481a792a60f612e6b1f29efaa7397371561662991eb682d3b72b617d441",
+    "holdout_present": true,
+    "holdout_intact": true,
+    "holdout_sha256": "9f9d1dbb04df5147bc7b7f61998f74302d5e45ec8138e4fd7452bd48fadb37c9",
+    "holdout_detail": "intact: 19 cases, sha256=9f9d1dbb04df5147..., frozen_at=2026-09-19T06:25:25.284526+00:00",
+    "embedding_provider": "bge",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_dimension": 512,
+    "experiment_mode": "rrf-heuristic",
+    "retrieval_top_k": 6,
+    "retrieval_candidate_k": 20,
+    "retrieval_min_score": 0.013,
+    "rrf_k": 60,
+    "heuristic_weights": {
+      "vector": 0.003,
+      "text": 0.004,
+      "lexical": 0.006
+    },
+    "freeze_manifest_sha256": "e04fd574249bc4cc72a7e7c8a5eb9e79cc3341d9e66bad5c78e0b4fbe82abd32",
+    "run_duration_ms": 8294.271,
+    "retrieval_max_chunks_per_document": 3,
+    "knowledge_base": {
+      "id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+      "exists": true,
+      "name": "AgentMentor BGE 验收知识库",
+      "document_count": 7,
+      "active_document_count": 7,
+      "ready_document_count": 7,
+      "chunk_count": 195,
+      "catalog_point_count": 195,
+      "document_hash_sha256": "c7ad10b8c60db236b797763c38a3eb3578827b2f6d2aa6535e0885ebce13ae27",
+      "documents": [
+        {
+          "title": "第 1 课：项目全景与架构地图",
+          "logical_name": "第 1 课：项目全景与架构地图",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "23e629defa25a7f9b6a3b36ae7e3800376b8687c7556c13f390435d3d45410c2"
+        },
+        {
+          "title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "b04f184e397c458d8b5b18bb9c3de0711a7701d464931ce0365676cdebb30a72"
+        },
+        {
+          "title": "第 3 课：混合检索与可信 RAG 回答",
+          "logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "f0ef6b515c3b004b6573dbcdb16c4c821f095e05c3698aea2704bf26f29d9387"
+        },
+        {
+          "title": "第 4 课：可恢复模拟面试工作流",
+          "logical_name": "第 4 课：可恢复模拟面试工作流",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "4dbcb6c46f07886fd3971a1f47fb1385365ea6aae50cab22e3b53d00721e5611"
+        },
+        {
+          "title": "第 5 课：可信评分与报告",
+          "logical_name": "第 5 课：可信评分与报告",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "62e9d7eb7a9dd7c12ec9ff93ac7fd07794e7e1f51b15890620db7defe44fe87b"
+        },
+        {
+          "title": "第 6 课：两层画像与复习闭环",
+          "logical_name": "第 6 课：两层画像与复习闭环",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "df1c34601fe13e54931a228bd1de781a36f1ca1073c3c374882b0c7ef393f8f9"
+        },
+        {
+          "title": "第 7 课：工程化专题 + 面试实战",
+          "logical_name": "第 7 课：工程化专题 + 面试实战",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "ef0ab6bdde4cdd1972bb8535c0e6afd9172fc5ede2b75b72bec28239ce729c11"
+        }
+      ]
+    },
+    "grading_counts": {
+      "graded": 22,
+      "ungraded": 0
+    },
+    "ground_truth_counts": {
+      "resolved": 17,
+      "absent": 5
+    },
+    "metrics_scope": "graded_rows_only"
+  },
+  "metrics": {
+    "total": 22,
+    "recall_at_1": 0.1765,
+    "recall_at_3": 0.5294,
+    "recall_at_6": 0.7059,
+    "mrr": 0.3647,
+    "evidence_sufficient_accuracy": 1.0,
+    "negative_rejection_accuracy": 1.0,
+    "full_answerability_accuracy": 1.0,
+    "partial_answerability_accuracy": 1.0,
+    "rejection_by_negative_reason": {
+      "conflicting_sources": 1.0,
+      "false_premise": 1.0,
+      "in_domain_no_conclusion": 1.0,
+      "in_domain_value_missing": 1.0
+    },
+    "latency_p50_ms": 67.9822,
+    "latency_p95_ms": 118.7112,
+    "average_candidate_count": 6.0
+  },
+  "cases": [
+    {
+      "id": "va-pt-001",
+      "question": "系统支持哪些 PDF 能力，以及有哪些明确不支持？",
+      "answerability": "partial",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": "partial_evidence_only",
+      "tags": [
+        "human_verified",
+        "partial_answer",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "PDF",
+        "OCR",
+        "解析"
+      ],
+      "expected_keyword_coverage": {
+        "PDF": 6,
+        "OCR": 6,
+        "解析": 11
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 6795.6979,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": "retrieval_miss",
+      "supported_chunk_count": 1,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c2680ad2-451b-47a5-843b-3ae7110e42da",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.4 不要使用的表述（红线清单）"
+          ],
+          "score": 0.03744349873884588,
+          "vector_rank": 2,
+          "vector_score": 0.5986746192768454,
+          "text_rank": 1,
+          "text_score": 5.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.03744349873884588,
+          "matched_keywords": [
+            "PDF",
+            "OCR"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "7eeb094b-2097-432c-8fe1-3fe063c69237",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.3 企业级 RAG 演进路线",
+            "当前项目的真实边界"
+          ],
+          "score": 0.034126467748979185,
+          "vector_rank": 9,
+          "vector_score": 0.5529047085969259,
+          "text_rank": 4,
+          "text_score": 4.0,
+          "rrf_score": 0.030117753623188408,
+          "heuristic_rerank_score": 0.034126467748979185,
+          "matched_keywords": [
+            "OCR",
+            "解析"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "e2177aa7-ded6-4359-87a6-66a57e21d708",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.7 第二道防线：证据门禁"
+          ],
+          "score": 0.03161454133674598,
+          "vector_rank": 3,
+          "vector_score": 0.5820042144057633,
+          "text_rank": 18,
+          "text_score": 2.0,
+          "rrf_score": 0.028693528693528692,
+          "heuristic_rerank_score": 0.03161454133674598,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.3 文档状态机"
+          ],
+          "score": 0.03022576248644853,
+          "vector_rank": 14,
+          "vector_score": 0.5494533613487098,
+          "text_rank": 12,
+          "text_score": 2.0,
+          "rrf_score": 0.027402402402402402,
+          "heuristic_rerank_score": 0.03022576248644853,
+          "matched_keywords": [
+            "解析"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "072b9729-4754-4bec-9c51-2bab588ec677",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "关键区分：它不是什么"
+          ],
+          "score": 0.030157397392637616,
+          "vector_rank": 19,
+          "vector_score": 0.539429063865058,
+          "text_rank": 8,
+          "text_score": 2.0,
+          "rrf_score": 0.027364110201042444,
+          "heuristic_rerank_score": 0.030157397392637616,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.6 Embedding 阶段：当前的真实实现",
+            "它的限制"
+          ],
+          "score": 0.029414852523250427,
+          "vector_rank": 11,
+          "vector_score": 0.5517818269989697,
+          "text_rank": 20,
+          "text_score": 2.0,
+          "rrf_score": 0.02658450704225352,
+          "heuristic_rerank_score": 0.029414852523250427,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pt-002",
+      "question": "三道防线在强 Embedding 下是否仍有必要，以及各自的失效边界是什么？",
+      "answerability": "partial",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": "partial_evidence_only",
+      "tags": [
+        "human_verified",
+        "partial_answer",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "三道防线",
+        "Embedding",
+        "失效边界"
+      ],
+      "expected_keyword_coverage": {
+        "三道防线": 10,
+        "Embedding": 24,
+        "失效边界": 0
+      },
+      "first_relevant_rank": 2,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 79.6329,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": "partial_answer_boundary",
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "d9ec0fab-b2f3-43ac-8c15-2f2fe7feaf92",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "RAG"
+          ],
+          "score": 0.040954261518494045,
+          "vector_rank": 3,
+          "vector_score": 0.6876010075091163,
+          "text_rank": 1,
+          "text_score": 13.0,
+          "rrf_score": 0.032266458495966696,
+          "heuristic_rerank_score": 0.040954261518494045,
+          "matched_keywords": [
+            "三道防线",
+            "Embedding"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "d90b61cd-9bff-4b7d-836d-f095401b29e5",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "二、学员疑问与讨论记录",
+            "Q2：三道防线在 Embedding 强的时候是否仍然具备存在意义？"
+          ],
+          "score": 0.03889421716581991,
+          "vector_rank": 1,
+          "vector_score": 0.7759195566177368,
+          "text_rank": 3,
+          "text_score": 7.0,
+          "rrf_score": 0.032266458495966696,
+          "heuristic_rerank_score": 0.03889421716581991,
+          "matched_keywords": [
+            "三道防线",
+            "Embedding"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 3,
+          "chunk_id": "9260bbc2-c702-42c1-9f1b-d781baa442e3",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.11 本课自测"
+          ],
+          "score": 0.038713333414421285,
+          "vector_rank": 2,
+          "vector_score": 0.7184229660974177,
+          "text_rank": 2,
+          "text_score": 7.0,
+          "rrf_score": 0.03225806451612903,
+          "heuristic_rerank_score": 0.038713333414421285,
+          "matched_keywords": [
+            "三道防线",
+            "Embedding"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "四、本课结论"
+          ],
+          "score": 0.03521231062583506,
+          "vector_rank": 7,
+          "vector_score": 0.6121881190594473,
+          "text_rank": 7,
+          "text_score": 6.0,
+          "rrf_score": 0.029850746268656716,
+          "heuristic_rerank_score": 0.03521231062583506,
+          "matched_keywords": [
+            "三道防线"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+            "面试策略"
+          ],
+          "score": 0.03408984525030938,
+          "vector_rank": 4,
+          "vector_score": 0.6740305423736572,
+          "text_rank": 9,
+          "text_score": 3.0,
+          "rrf_score": 0.030117753623188408,
+          "heuristic_rerank_score": 0.03408984525030938,
+          "matched_keywords": [
+            "Embedding"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "score": 0.028145141417105373,
+          "vector_rank": 18,
+          "vector_score": 0.4971335828304291,
+          "text_rank": 19,
+          "text_score": 2.0,
+          "rrf_score": 0.025478740668614087,
+          "heuristic_rerank_score": 0.028145141417105373,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-neg-001",
+      "question": "本项目实测的 embedding 单条平均耗时是多少毫秒？",
+      "answerability": "none",
+      "answerable": false,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "absent",
+      "ground_truth_chunk_count": 0,
+      "negative_reason": "in_domain_value_missing",
+      "tags": [
+        "human_verified",
+        "hard_negative",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "embedding",
+        "耗时",
+        "BGE"
+      ],
+      "expected_keyword_coverage": {
+        "embedding": 24,
+        "耗时": 0,
+        "BGE": 12
+      },
+      "first_relevant_rank": 2,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 81.9034,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": false,
+      "evidence_decision": "reject",
+      "failure_category": "correct_rejection",
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "b22d9117-b6c8-4942-b044-1d80fcc86108",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "项目介绍"
+          ],
+          "score": 0.03257723803430761,
+          "vector_rank": 11,
+          "vector_score": 0.48157170634607005,
+          "text_rank": 3,
+          "text_score": 2.0,
+          "rrf_score": 0.029957522915269395,
+          "heuristic_rerank_score": 0.03257723803430761,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.5 面试必背：三个亮点 + 三个边界",
+            "三条真实边界"
+          ],
+          "score": 0.031825524079671486,
+          "vector_rank": 2,
+          "vector_score": 0.5293861627578773,
+          "text_rank": 15,
+          "text_score": 1.0,
+          "rrf_score": 0.02946236559139785,
+          "heuristic_rerank_score": 0.031825524079671486,
+          "matched_keywords": [
+            "embedding",
+            "BGE"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.9 掌握度和覆盖度为什么必须分开",
+            "覆盖度六种状态"
+          ],
+          "score": 0.0313490576752484,
+          "vector_rank": 16,
+          "vector_score": 0.4637209794687649,
+          "text_rank": 4,
+          "text_score": 2.0,
+          "rrf_score": 0.028782894736842105,
+          "heuristic_rerank_score": 0.0313490576752484,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "07ee7bef-492a-418f-a9e3-775bd744b4b5",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.4 检索代码的核心流程",
+            "向量查询"
+          ],
+          "score": 0.029777243616123238,
+          "vector_rank": 14,
+          "vector_score": 0.46807435345206616,
+          "text_rank": 11,
+          "text_score": 1.0,
+          "rrf_score": 0.027598020555767037,
+          "heuristic_rerank_score": 0.029777243616123238,
+          "matched_keywords": [
+            "embedding"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "9260bbc2-c702-42c1-9f1b-d781baa442e3",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.11 本课自测"
+          ],
+          "score": 0.028002407189916707,
+          "vector_rank": 15,
+          "vector_score": 0.4646912855277914,
+          "text_rank": 20,
+          "text_score": 1.0,
+          "rrf_score": 0.025833333333333333,
+          "heuristic_rerank_score": 0.028002407189916707,
+          "matched_keywords": [
+            "embedding"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "30b281b6-3e4e-4f02-bcfb-c4e0a9c8a1a0",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+            "Embedding 层确实基础，但工程防御层不 LOW"
+          ],
+          "score": 0.018460494666382575,
+          "vector_rank": 1,
+          "vector_score": 0.5640173478105845,
+          "text_rank": null,
+          "text_score": null,
+          "rrf_score": 0.01639344262295082,
+          "heuristic_rerank_score": 0.018460494666382575,
+          "matched_keywords": [
+            "embedding"
+          ],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-neg-002",
+      "question": "两份资料对同一配置描述冲突时系统采用哪一份？",
+      "answerability": "none",
+      "answerable": false,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "absent",
+      "ground_truth_chunk_count": 0,
+      "negative_reason": "conflicting_sources",
+      "tags": [
+        "human_verified",
+        "hard_negative",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "冲突",
+        "配置",
+        "版本"
+      ],
+      "expected_keyword_coverage": {
+        "冲突": 1,
+        "配置": 3,
+        "版本": 11
+      },
+      "first_relevant_rank": 2,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 71.1209,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": false,
+      "evidence_decision": "reject",
+      "failure_category": "correct_rejection",
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.10 完整证据链"
+          ],
+          "score": 0.03322941303940221,
+          "vector_rank": 14,
+          "vector_score": 0.4976278842909414,
+          "text_rank": 3,
+          "text_score": 4.0,
+          "rrf_score": 0.029386529386529386,
+          "heuristic_rerank_score": 0.03322941303940221,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "3bde6f99-20b7-41d9-8bf3-44d29c2d40f7",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施",
+            "版本管理"
+          ],
+          "score": 0.032339205155447,
+          "vector_rank": 1,
+          "vector_score": 0.5376225985513579,
+          "text_rank": 16,
+          "text_score": 2.0,
+          "rrf_score": 0.029551337359792925,
+          "heuristic_rerank_score": 0.032339205155447,
+          "matched_keywords": [
+            "版本"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 1：幂等 ≠ 按钮防抖"
+          ],
+          "score": 0.031912440277590326,
+          "vector_rank": 11,
+          "vector_score": 0.5004726946072173,
+          "text_rank": 6,
+          "text_score": 2.0,
+          "rrf_score": 0.029236022193768675,
+          "heuristic_rerank_score": 0.031912440277590326,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.2 为什么旧画像会出现问题"
+          ],
+          "score": 0.031669690682461595,
+          "vector_rank": 9,
+          "vector_score": 0.5030611453615945,
+          "text_rank": 9,
+          "text_score": 2.0,
+          "rrf_score": 0.028985507246376812,
+          "heuristic_rerank_score": 0.031669690682461595,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "d41dc330-b673-432c-a1a6-ecb3452652fd",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 4：事务边界比\"调用顺序正确\"更重要"
+          ],
+          "score": 0.028822040266722946,
+          "vector_rank": 20,
+          "vector_score": 0.48280337657888217,
+          "text_rank": 13,
+          "text_score": 2.0,
+          "rrf_score": 0.0261986301369863,
+          "heuristic_rerank_score": 0.028822040266722946,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.1 一句话讲清这个项目是什么"
+          ],
+          "score": 0.018743442622950822,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 1,
+          "text_score": 4.0,
+          "rrf_score": 0.01639344262295082,
+          "heuristic_rerank_score": 0.018743442622950822,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-neg-003",
+      "question": "当前系统在并发面试评分下的吞吐上限是多少？",
+      "answerability": "none",
+      "answerable": false,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "absent",
+      "ground_truth_chunk_count": 0,
+      "negative_reason": "in_domain_value_missing",
+      "tags": [
+        "human_verified",
+        "hard_negative",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "并发",
+        "吞吐",
+        "评分"
+      ],
+      "expected_keyword_coverage": {
+        "并发": 6,
+        "吞吐": 0,
+        "评分": 48
+      },
+      "first_relevant_rank": 1,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 88.7607,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": false,
+      "evidence_decision": "reject",
+      "failure_category": "correct_rejection",
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 1：幂等 ≠ 按钮防抖"
+          ],
+          "score": 0.03722301794700936,
+          "vector_rank": 4,
+          "vector_score": 0.5598584413528442,
+          "text_rank": 1,
+          "text_score": 6.0,
+          "rrf_score": 0.032018442622950824,
+          "heuristic_rerank_score": 0.03722301794700936,
+          "matched_keywords": [
+            "并发"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "二、学员疑问与讨论记录",
+            "Q1：为什么设计成断点重连的思路？面试中断可恢复怎么回答？"
+          ],
+          "score": 0.03557197238469305,
+          "vector_rank": 3,
+          "vector_score": 0.5604009628295898,
+          "text_rank": 9,
+          "text_score": 6.0,
+          "rrf_score": 0.03036576949620428,
+          "heuristic_rerank_score": 0.03557197238469305,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "score": 0.035474046534650465,
+          "vector_rank": 8,
+          "vector_score": 0.5393880605697632,
+          "text_rank": 4,
+          "text_score": 6.0,
+          "rrf_score": 0.030330882352941176,
+          "heuristic_rerank_score": 0.035474046534650465,
+          "matched_keywords": [
+            "并发",
+            "评分"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "score": 0.03333110310083732,
+          "vector_rank": 14,
+          "vector_score": 0.5289024114608765,
+          "text_rank": 8,
+          "text_score": 6.0,
+          "rrf_score": 0.02821939586645469,
+          "heuristic_rerank_score": 0.03333110310083732,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.1 先说结论"
+          ],
+          "score": 0.03310139141660596,
+          "vector_rank": 5,
+          "vector_score": 0.5560486316680908,
+          "text_rank": 13,
+          "text_score": 4.0,
+          "rrf_score": 0.029083245521601686,
+          "heuristic_rerank_score": 0.03310139141660596,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "5c78df7d-1f54-44ab-96d7-bd5d76f67e75",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "两条消费路径的关键区别"
+          ],
+          "score": 0.032670341406958917,
+          "vector_rank": 19,
+          "vector_score": 0.5205801415097638,
+          "text_rank": 7,
+          "text_score": 6.0,
+          "rrf_score": 0.027583600982429624,
+          "heuristic_rerank_score": 0.032670341406958917,
+          "matched_keywords": [
+            "评分"
+          ],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-neg-004",
+      "question": "为什么本项目选择 Kafka 作为摄入任务的消息队列？",
+      "answerability": "none",
+      "answerable": false,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "absent",
+      "ground_truth_chunk_count": 0,
+      "negative_reason": "false_premise",
+      "tags": [
+        "human_verified",
+        "false_premise",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "Kafka",
+        "消息队列",
+        "摄入"
+      ],
+      "expected_keyword_coverage": {
+        "Kafka": 0,
+        "消息队列": 1,
+        "摄入": 1
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 60.324,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": false,
+      "evidence_decision": "reject",
+      "failure_category": "correct_rejection",
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "Checkpoint 不能做什么"
+          ],
+          "score": 0.03692408977561311,
+          "vector_rank": 4,
+          "vector_score": 0.46021571755409574,
+          "text_rank": 1,
+          "text_score": 6.0,
+          "rrf_score": 0.032018442622950824,
+          "heuristic_rerank_score": 0.03692408977561311,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.3 两层模型",
+            "分别解决什么问题"
+          ],
+          "score": 0.03161764617285245,
+          "vector_rank": 18,
+          "vector_score": 0.4318727336081585,
+          "text_rank": 6,
+          "text_score": 4.0,
+          "rrf_score": 0.027972027972027972,
+          "heuristic_rerank_score": 0.03161764617285245,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "score": 0.031060011429304268,
+          "vector_rank": 13,
+          "vector_score": 0.4375837184438881,
+          "text_rank": 13,
+          "text_score": 4.0,
+          "rrf_score": 0.0273972602739726,
+          "heuristic_rerank_score": 0.031060011429304268,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.7 学完整个项目后应该形成的认知"
+          ],
+          "score": 0.030460820052660025,
+          "vector_rank": 10,
+          "vector_score": 0.4417019223152453,
+          "text_rank": 20,
+          "text_score": 4.0,
+          "rrf_score": 0.026785714285714288,
+          "heuristic_rerank_score": 0.030460820052660025,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "三、自测结果"
+          ],
+          "score": 0.029971620327677338,
+          "vector_rank": 15,
+          "vector_score": 0.4337580024436716,
+          "text_rank": 17,
+          "text_score": 4.0,
+          "rrf_score": 0.02632034632034632,
+          "heuristic_rerank_score": 0.029971620327677338,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "长期画像数据"
+          ],
+          "score": 0.019654032258064516,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 2,
+          "text_score": 6.0,
+          "rrf_score": 0.016129032258064516,
+          "heuristic_rerank_score": 0.019654032258064516,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-neg-005",
+      "question": "pg_jieba 与 zhparser 插件在本项目中的分词效果对比结论是什么？",
+      "answerability": "none",
+      "answerable": false,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "absent",
+      "ground_truth_chunk_count": 0,
+      "negative_reason": "in_domain_no_conclusion",
+      "tags": [
+        "human_verified",
+        "hard_negative",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "pg_jieba",
+        "zhparser",
+        "分词"
+      ],
+      "expected_keyword_coverage": {
+        "pg_jieba": 0,
+        "zhparser": 0,
+        "分词": 0
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 61.5045,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": false,
+      "evidence_decision": "reject",
+      "failure_category": "correct_rejection",
+      "supported_chunk_count": 0,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "b22d9117-b6c8-4942-b044-1d80fcc86108",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "项目介绍"
+          ],
+          "score": 0.03164527730009344,
+          "vector_rank": 18,
+          "vector_score": 0.5069107405053687,
+          "text_rank": 2,
+          "text_score": 2.0,
+          "rrf_score": 0.028949545078577336,
+          "heuristic_rerank_score": 0.03164527730009344,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.2 为什么旧画像会出现问题"
+          ],
+          "score": 0.01800529421907669,
+          "vector_rank": 1,
+          "vector_score": 0.5372838653752894,
+          "text_rank": null,
+          "text_score": null,
+          "rrf_score": 0.01639344262295082,
+          "heuristic_rerank_score": 0.01800529421907669,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "f2c986d1-944b-45e8-b769-3e3a77ab130b",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.6 ProfileService 如何应用评分"
+          ],
+          "score": 0.017736930801917346,
+          "vector_rank": 2,
+          "vector_score": 0.535966181284277,
+          "text_rank": null,
+          "text_score": null,
+          "rrf_score": 0.016129032258064516,
+          "heuristic_rerank_score": 0.017736930801917346,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "为什么这样分层？"
+          ],
+          "score": 0.01756844262295082,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 1,
+          "text_score": 2.0,
+          "rrf_score": 0.01639344262295082,
+          "heuristic_rerank_score": 0.01756844262295082,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "ef60fbe4-c453-46ef-81c3-a29af271152a",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "三、自测结果"
+          ],
+          "score": 0.017466911332554843,
+          "vector_rank": 3,
+          "vector_score": 0.5312984865129906,
+          "text_rank": null,
+          "text_score": null,
+          "rrf_score": 0.015873015873015872,
+          "heuristic_rerank_score": 0.017466911332554843,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "c4e982e3-a5e9-4289-8a74-a1f96697c265",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.4 解析阶段：四种格式怎么处理"
+          ],
+          "score": 0.017215644432787107,
+          "vector_rank": 4,
+          "vector_score": 0.5302148109290351,
+          "text_rank": null,
+          "text_score": null,
+          "rrf_score": 0.015625,
+          "heuristic_rerank_score": 0.017215644432787107,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-001",
+      "question": "为什么并发重复提交答案时数据库唯一约束是必要的？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "幂等",
+        "唯一约束",
+        "并发"
+      ],
+      "expected_keyword_coverage": {
+        "幂等": 16,
+        "唯一约束": 4,
+        "并发": 6
+      },
+      "first_relevant_rank": 4,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 58.4624,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 5,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "score": 0.04050801093897033,
+          "vector_rank": 5,
+          "vector_score": 0.5766509771347046,
+          "text_rank": 1,
+          "text_score": 16.0,
+          "rrf_score": 0.03177805800756621,
+          "heuristic_rerank_score": 0.04050801093897033,
+          "matched_keywords": [
+            "幂等",
+            "唯一约束",
+            "并发"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 1：幂等 ≠ 按钮防抖"
+          ],
+          "score": 0.04033110690885974,
+          "vector_rank": 2,
+          "vector_score": 0.6076807975769043,
+          "text_rank": 2,
+          "text_score": 12.0,
+          "rrf_score": 0.03225806451612903,
+          "heuristic_rerank_score": 0.04033110690885974,
+          "matched_keywords": [
+            "幂等",
+            "唯一约束",
+            "并发"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "score": 0.04004891358267476,
+          "vector_rank": 1,
+          "vector_score": 0.635818362236023,
+          "text_rank": 3,
+          "text_score": 10.0,
+          "rrf_score": 0.032266458495966696,
+          "heuristic_rerank_score": 0.04004891358267476,
+          "matched_keywords": [
+            "唯一约束"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.5 幂等答题：三层防护",
+            "三层防护总结"
+          ],
+          "score": 0.036777928898265116,
+          "vector_rank": 4,
+          "vector_score": 0.5823488484413128,
+          "text_rank": 8,
+          "text_score": 8.0,
+          "rrf_score": 0.030330882352941176,
+          "heuristic_rerank_score": 0.036777928898265116,
+          "matched_keywords": [
+            "幂等",
+            "并发"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 5,
+          "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.1 先说结论"
+          ],
+          "score": 0.03463366947945986,
+          "vector_rank": 16,
+          "vector_score": 0.5414198637008667,
+          "text_rank": 6,
+          "text_score": 8.0,
+          "rrf_score": 0.028309409888357256,
+          "heuristic_rerank_score": 0.03463366947945986,
+          "matched_keywords": [
+            "幂等"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "面试重点：为什么需要 ProfileUpdateEvent？"
+          ],
+          "score": 0.03255995922037764,
+          "vector_rank": 14,
+          "vector_score": 0.5441856059917456,
+          "text_rank": 12,
+          "text_score": 6.0,
+          "rrf_score": 0.027402402402402402,
+          "heuristic_rerank_score": 0.03255995922037764,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-002",
+      "question": "用户刷新页面后面试如何恢复？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "刷新",
+        "恢复",
+        "session_id"
+      ],
+      "expected_keyword_coverage": {
+        "刷新": 13,
+        "恢复": 30,
+        "session_id": 1
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 74.5819,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": "retrieval_miss",
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.1 先说结论"
+          ],
+          "score": 0.041862652728804225,
+          "vector_rank": 1,
+          "vector_score": 0.7031362056732178,
+          "text_rank": 2,
+          "text_score": 14.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.041862652728804225,
+          "matched_keywords": [
+            "刷新",
+            "恢复"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "1b0925ed-649e-49f1-85af-9eee61e0e56a",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.8 故障场景"
+          ],
+          "score": 0.041274877677458605,
+          "vector_rank": 2,
+          "vector_score": 0.6806867718696594,
+          "text_rank": 3,
+          "text_score": 14.0,
+          "rrf_score": 0.03200204813108039,
+          "heuristic_rerank_score": 0.041274877677458605,
+          "matched_keywords": [
+            "刷新",
+            "恢复"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3b51147a-9da3-42da-8a10-95bee2cd04d6",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "Checkpoint 能做什么"
+          ],
+          "score": 0.040289321340332744,
+          "vector_rank": 3,
+          "vector_score": 0.6740248993620348,
+          "text_rank": 4,
+          "text_score": 12.0,
+          "rrf_score": 0.03149801587301587,
+          "heuristic_rerank_score": 0.040289321340332744,
+          "matched_keywords": [
+            "刷新",
+            "恢复"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 2：Checkpoint ≠ 完整工作流引擎"
+          ],
+          "score": 0.03527536769897678,
+          "vector_rank": 10,
+          "vector_score": 0.6068075480105745,
+          "text_rank": 5,
+          "text_score": 6.0,
+          "rrf_score": 0.02967032967032967,
+          "heuristic_rerank_score": 0.03527536769897678,
+          "matched_keywords": [
+            "刷新",
+            "恢复"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "Agent 工作流"
+          ],
+          "score": 0.03459274684810759,
+          "vector_rank": 9,
+          "vector_score": 0.6075414057051308,
+          "text_rank": 9,
+          "text_score": 6.0,
+          "rrf_score": 0.028985507246376812,
+          "heuristic_rerank_score": 0.03459274684810759,
+          "matched_keywords": [
+            "刷新",
+            "恢复"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "score": 0.03418210205150653,
+          "vector_rank": 13,
+          "vector_score": 0.5911611318588257,
+          "text_rank": 7,
+          "text_score": 6.0,
+          "rrf_score": 0.02862400327131466,
+          "heuristic_rerank_score": 0.03418210205150653,
+          "matched_keywords": [
+            "刷新",
+            "恢复",
+            "session_id"
+          ],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-003",
+      "question": "Checkpoint 能做到什么、又不能做到什么？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "checkpoint",
+        "恢复",
+        "工作流"
+      ],
+      "expected_keyword_coverage": {
+        "checkpoint": 27,
+        "恢复": 30,
+        "工作流": 30
+      },
+      "first_relevant_rank": 3,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 67.9822,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 2,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "score": 0.03800279354672353,
+          "vector_rank": 3,
+          "vector_score": 0.6669151385477115,
+          "text_rank": 2,
+          "text_score": 5.0,
+          "rrf_score": 0.03200204813108039,
+          "heuristic_rerank_score": 0.03800279354672353,
+          "matched_keywords": [
+            "checkpoint",
+            "恢复",
+            "工作流"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 2：Checkpoint ≠ 完整工作流引擎"
+          ],
+          "score": 0.034759864002034804,
+          "vector_rank": 2,
+          "vector_score": 0.6709971227944782,
+          "text_rank": 11,
+          "text_score": 3.0,
+          "rrf_score": 0.03021353930031804,
+          "heuristic_rerank_score": 0.034759864002034804,
+          "matched_keywords": [
+            "checkpoint",
+            "恢复",
+            "工作流"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "Checkpoint 不能做什么"
+          ],
+          "score": 0.034512232101181935,
+          "vector_rank": 10,
+          "vector_score": 0.6361896991729782,
+          "text_rank": 5,
+          "text_score": 4.0,
+          "rrf_score": 0.02967032967032967,
+          "heuristic_rerank_score": 0.034512232101181935,
+          "matched_keywords": [
+            "checkpoint",
+            "恢复",
+            "工作流"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 4,
+          "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "Agent 工作流"
+          ],
+          "score": 0.03395950575999464,
+          "vector_rank": 1,
+          "vector_score": 0.6819056055658334,
+          "text_rank": 17,
+          "text_score": 3.0,
+          "rrf_score": 0.02938045560996381,
+          "heuristic_rerank_score": 0.03395950575999464,
+          "matched_keywords": [
+            "checkpoint",
+            "恢复",
+            "工作流"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "三、自测结果"
+          ],
+          "score": 0.03272160248691074,
+          "vector_rank": 5,
+          "vector_score": 0.6610469828164024,
+          "text_rank": 18,
+          "text_score": 3.0,
+          "rrf_score": 0.028205128205128206,
+          "heuristic_rerank_score": 0.03272160248691074,
+          "matched_keywords": [
+            "checkpoint",
+            "恢复",
+            "工作流"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.7 本课自测"
+          ],
+          "score": 0.032435650524654316,
+          "vector_rank": 18,
+          "vector_score": 0.5854770788266026,
+          "text_rank": 7,
+          "text_score": 4.0,
+          "rrf_score": 0.027745885954841176,
+          "heuristic_rerank_score": 0.032435650524654316,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-004",
+      "question": "四维评分分别评什么，总分由谁重算？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "四维",
+        "Rubric",
+        "总分"
+      ],
+      "expected_keyword_coverage": {
+        "四维": 9,
+        "Rubric": 8,
+        "总分": 11
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 84.1941,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": "retrieval_miss",
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "四、本课结论"
+          ],
+          "score": 0.04038190597736464,
+          "vector_rank": 1,
+          "vector_score": 0.6198103654497655,
+          "text_rank": 2,
+          "text_score": 10.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.04038190597736464,
+          "matched_keywords": [
+            "四维",
+            "总分"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.1 先说结论"
+          ],
+          "score": 0.03969706956792868,
+          "vector_rank": 4,
+          "vector_score": 0.5595423149926163,
+          "text_rank": 1,
+          "text_score": 10.0,
+          "rrf_score": 0.032018442622950824,
+          "heuristic_rerank_score": 0.03969706956792868,
+          "matched_keywords": [
+            "四维",
+            "Rubric",
+            "总分"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.4 三种评分状态",
+            "判定流程"
+          ],
+          "score": 0.03658130102501102,
+          "vector_rank": 3,
+          "vector_score": 0.5745565891265869,
+          "text_rank": 5,
+          "text_score": 6.0,
+          "rrf_score": 0.03125763125763126,
+          "heuristic_rerank_score": 0.03658130102501102,
+          "matched_keywords": [
+            "四维",
+            "总分"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "8c35c35f-600c-414a-817b-f13884f6b3fc",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "评分与画像"
+          ],
+          "score": 0.033800048565843774,
+          "vector_rank": 2,
+          "vector_score": 0.585834264755249,
+          "text_rank": 14,
+          "text_score": 4.0,
+          "rrf_score": 0.02964254577157803,
+          "heuristic_rerank_score": 0.033800048565843774,
+          "matched_keywords": [
+            "四维",
+            "Rubric"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "score": 0.033093230312416386,
+          "vector_rank": 13,
+          "vector_score": 0.5029619632386,
+          "text_rank": 10,
+          "text_score": 6.0,
+          "rrf_score": 0.027984344422700584,
+          "heuristic_rerank_score": 0.033093230312416386,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.1 先说结论"
+          ],
+          "score": 0.029535357233051743,
+          "vector_rank": 10,
+          "vector_score": 0.5165476491124849,
+          "text_rank": 20,
+          "text_score": 2.0,
+          "rrf_score": 0.026785714285714288,
+          "heuristic_rerank_score": 0.029535357233051743,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-005",
+      "question": "为什么评分要区分 FINAL、REVIEW_PENDING 和 DISPUTED 三种状态？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "REVIEW_PENDING",
+        "画像",
+        "评分状态"
+      ],
+      "expected_keyword_coverage": {
+        "REVIEW_PENDING": 11,
+        "画像": 64,
+        "评分状态": 3
+      },
+      "first_relevant_rank": 3,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 66.4192,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "四、本课结论"
+          ],
+          "score": 0.039792105993477954,
+          "vector_rank": 2,
+          "vector_score": 0.7300192874658545,
+          "text_rank": 3,
+          "text_score": 9.0,
+          "rrf_score": 0.03200204813108039,
+          "heuristic_rerank_score": 0.039792105993477954,
+          "matched_keywords": [
+            "REVIEW_PENDING",
+            "画像",
+            "评分状态"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "8c35c35f-600c-414a-817b-f13884f6b3fc",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "评分与画像"
+          ],
+          "score": 0.038369647741448035,
+          "vector_rank": 15,
+          "vector_score": 0.6142905950546265,
+          "text_rank": 1,
+          "text_score": 12.0,
+          "rrf_score": 0.029726775956284153,
+          "heuristic_rerank_score": 0.038369647741448035,
+          "matched_keywords": [
+            "画像"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "4ba9d8ca-b5a2-40cb-a329-5bbc6545527c",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.4 三种评分状态",
+            "三种状态对画像的影响"
+          ],
+          "score": 0.03723499544869478,
+          "vector_rank": 4,
+          "vector_score": 0.7013710319178694,
+          "text_rank": 8,
+          "text_score": 7.0,
+          "rrf_score": 0.030330882352941176,
+          "heuristic_rerank_score": 0.03723499544869478,
+          "matched_keywords": [
+            "REVIEW_PENDING",
+            "画像",
+            "评分状态"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 4,
+          "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.1 先说结论"
+          ],
+          "score": 0.03718623740541719,
+          "vector_rank": 5,
+          "vector_score": 0.6920829621578148,
+          "text_rank": 7,
+          "text_score": 7.0,
+          "rrf_score": 0.030309988518943745,
+          "heuristic_rerank_score": 0.03718623740541719,
+          "matched_keywords": [
+            "REVIEW_PENDING",
+            "画像",
+            "评分状态"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "score": 0.033855618580189414,
+          "vector_rank": 3,
+          "vector_score": 0.7081249530240934,
+          "text_rank": 19,
+          "text_score": 5.0,
+          "rrf_score": 0.028531243721117136,
+          "heuristic_rerank_score": 0.033855618580189414,
+          "matched_keywords": [
+            "画像"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "e17e3acf-51c9-4543-a8dd-b358bab0073f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.11 数据流全景"
+          ],
+          "score": 0.03063557052889352,
+          "vector_rank": 18,
+          "vector_score": 0.5981816292892926,
+          "text_rank": 18,
+          "text_score": 5.0,
+          "rrf_score": 0.02564102564102564,
+          "heuristic_rerank_score": 0.03063557052889352,
+          "matched_keywords": [
+            "画像"
+          ],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-006",
+      "question": "为什么一次高分不会让掌握度立刻变成满分？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "掌握度",
+        "渐进",
+        "画像"
+      ],
+      "expected_keyword_coverage": {
+        "掌握度": 13,
+        "渐进": 10,
+        "画像": 64
+      },
+      "first_relevant_rank": 2,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 58.809,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 4,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "score": 0.041185502220560596,
+          "vector_rank": 3,
+          "vector_score": 0.6396812415312992,
+          "text_rank": 1,
+          "text_score": 16.0,
+          "rrf_score": 0.032266458495966696,
+          "heuristic_rerank_score": 0.041185502220560596,
+          "matched_keywords": [
+            "掌握度",
+            "画像"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.5 为什么高分后画像不会立刻满分——渐进更新",
+            "一个具体例子"
+          ],
+          "score": 0.04033131349083961,
+          "vector_rank": 1,
+          "vector_score": 0.6446128699414223,
+          "text_rank": 2,
+          "text_score": 10.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.04033131349083961,
+          "matched_keywords": [
+            "掌握度",
+            "渐进",
+            "画像"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 3,
+          "chunk_id": "875f34a8-794d-4464-b1e5-3a75dd9084ce",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.7 复习任务：为什么需要两次验证",
+            "为什么不是一次高分就完成"
+          ],
+          "score": 0.03751506016162726,
+          "vector_rank": 4,
+          "vector_score": 0.6018149256706238,
+          "text_rank": 5,
+          "text_score": 8.0,
+          "rrf_score": 0.031009615384615385,
+          "heuristic_rerank_score": 0.03751506016162726,
+          "matched_keywords": [
+            "画像"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "score": 0.03191570048386171,
+          "vector_rank": 6,
+          "vector_score": 0.5853191614151001,
+          "text_rank": 19,
+          "text_score": 4.0,
+          "rrf_score": 0.027809742999616416,
+          "heuristic_rerank_score": 0.03191570048386171,
+          "matched_keywords": [
+            "渐进",
+            "画像"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "面试重点：为什么需要 ProfileUpdateEvent？"
+          ],
+          "score": 0.020325000000000003,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 4,
+          "text_score": 8.0,
+          "rrf_score": 0.015625,
+          "heuristic_rerank_score": 0.020325000000000003,
+          "matched_keywords": [
+            "掌握度",
+            "画像"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.1 先说结论"
+          ],
+          "score": 0.018230882352941177,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 8,
+          "text_score": 6.0,
+          "rrf_score": 0.014705882352941176,
+          "heuristic_rerank_score": 0.018230882352941177,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-007",
+      "question": "掌握度和覆盖度为什么要分开？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 3,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "掌握度",
+        "覆盖度",
+        "证据链"
+      ],
+      "expected_keyword_coverage": {
+        "掌握度": 13,
+        "覆盖度": 7,
+        "证据链": 1
+      },
+      "first_relevant_rank": 2,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 62.1264,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "8c35c35f-600c-414a-817b-f13884f6b3fc",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "评分与画像"
+          ],
+          "score": 0.039468968888757554,
+          "vector_rank": 8,
+          "vector_score": 0.5334710478782654,
+          "text_rank": 1,
+          "text_score": 12.0,
+          "rrf_score": 0.031099324975891997,
+          "heuristic_rerank_score": 0.039468968888757554,
+          "matched_keywords": [
+            "掌握度",
+            "覆盖度"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "962cc6cd-7b45-4473-b6fa-680cc04224f1",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.9 掌握度和覆盖度为什么必须分开"
+          ],
+          "score": 0.039002954264130134,
+          "vector_rank": 7,
+          "vector_score": 0.5469521880149841,
+          "text_rank": 2,
+          "text_score": 10.0,
+          "rrf_score": 0.031054405392392875,
+          "heuristic_rerank_score": 0.039002954264130134,
+          "matched_keywords": [
+            "掌握度",
+            "覆盖度"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 3,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "score": 0.03899242478279765,
+          "vector_rank": 6,
+          "vector_score": 0.5534004835247716,
+          "text_rank": 3,
+          "text_score": 10.0,
+          "rrf_score": 0.031024531024531024,
+          "heuristic_rerank_score": 0.03899242478279765,
+          "matched_keywords": [
+            "掌握度"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.9 掌握度和覆盖度为什么必须分开",
+            "核心认知"
+          ],
+          "score": 0.03776165871172427,
+          "vector_rank": 4,
+          "vector_score": 0.5686298269850129,
+          "text_rank": 5,
+          "text_score": 8.0,
+          "rrf_score": 0.031009615384615385,
+          "heuristic_rerank_score": 0.03776165871172427,
+          "matched_keywords": [
+            "掌握度",
+            "覆盖度"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 5,
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "score": 0.03580852560702205,
+          "vector_rank": 2,
+          "vector_score": 0.603456974029541,
+          "text_rank": 11,
+          "text_score": 6.0,
+          "rrf_score": 0.03021353930031804,
+          "heuristic_rerank_score": 0.03580852560702205,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "面试重点：为什么需要 ProfileUpdateEvent？"
+          ],
+          "score": 0.020671153846153846,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 4,
+          "text_score": 8.0,
+          "rrf_score": 0.015625,
+          "heuristic_rerank_score": 0.020671153846153846,
+          "matched_keywords": [
+            "掌握度"
+          ],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-008",
+      "question": "为什么复习任务需要两次验证才算完成？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "复习任务",
+        "两次验证"
+      ],
+      "expected_keyword_coverage": {
+        "复习任务": 14,
+        "两次验证": 7
+      },
+      "first_relevant_rank": 5,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 66.6695,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "长期画像数据"
+          ],
+          "score": 0.04085127783036335,
+          "vector_rank": 4,
+          "vector_score": 0.6109450691375106,
+          "text_rank": 1,
+          "text_score": 16.0,
+          "rrf_score": 0.032018442622950824,
+          "heuristic_rerank_score": 0.04085127783036335,
+          "matched_keywords": [
+            "复习任务"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "1edcb521-2164-4e63-ba13-c212c1acd91d",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "四、本课结论"
+          ],
+          "score": 0.03961973420340091,
+          "vector_rank": 2,
+          "vector_score": 0.6186955202403366,
+          "text_rank": 5,
+          "text_score": 12.0,
+          "rrf_score": 0.0315136476426799,
+          "heuristic_rerank_score": 0.03961973420340091,
+          "matched_keywords": [
+            "复习任务",
+            "两次验证"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "8c35c35f-600c-414a-817b-f13884f6b3fc",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "评分与画像"
+          ],
+          "score": 0.039583071234104664,
+          "vector_rank": 3,
+          "vector_score": 0.6116851203629313,
+          "text_rank": 4,
+          "text_score": 12.0,
+          "rrf_score": 0.03149801587301587,
+          "heuristic_rerank_score": 0.039583071234104664,
+          "matched_keywords": [
+            "复习任务",
+            "两次验证"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "e17e3acf-51c9-4543-a8dd-b358bab0073f",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.11 数据流全景"
+          ],
+          "score": 0.03914187579727005,
+          "vector_rank": 10,
+          "vector_score": 0.5757097511637508,
+          "text_rank": 2,
+          "text_score": 16.0,
+          "rrf_score": 0.0304147465437788,
+          "heuristic_rerank_score": 0.03914187579727005,
+          "matched_keywords": [
+            "复习任务",
+            "两次验证"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "875f34a8-794d-4464-b1e5-3a75dd9084ce",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.7 复习任务：为什么需要两次验证",
+            "为什么不是一次高分就完成"
+          ],
+          "score": 0.03741892810552094,
+          "vector_rank": 1,
+          "vector_score": 0.6799237322852784,
+          "text_rank": 10,
+          "text_score": 8.0,
+          "rrf_score": 0.030679156908665108,
+          "heuristic_rerank_score": 0.03741892810552094,
+          "matched_keywords": [
+            "复习任务",
+            "两次验证"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 6,
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "score": 0.03563216240068498,
+          "vector_rank": 9,
+          "vector_score": 0.5778421415184662,
+          "text_rank": 8,
+          "text_score": 8.0,
+          "rrf_score": 0.02919863597612958,
+          "heuristic_rerank_score": 0.03563216240068498,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-009",
+      "question": "幂等和按钮防抖有什么区别？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "幂等",
+        "按钮防抖",
+        "并发"
+      ],
+      "expected_keyword_coverage": {
+        "幂等": 16,
+        "按钮防抖": 2,
+        "并发": 6
+      },
+      "first_relevant_rank": 1,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 67.2826,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 1：幂等 ≠ 按钮防抖"
+          ],
+          "score": 0.04046111273734157,
+          "vector_rank": 2,
+          "vector_score": 0.4795459521087445,
+          "text_rank": 1,
+          "text_score": 10.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.04046111273734157,
+          "matched_keywords": [
+            "幂等",
+            "按钮防抖",
+            "并发"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.5 幂等答题：三层防护",
+            "三层防护总结"
+          ],
+          "score": 0.038603102346385934,
+          "vector_rank": 3,
+          "vector_score": 0.46701807176851373,
+          "text_rank": 2,
+          "text_score": 8.0,
+          "rrf_score": 0.03200204813108039,
+          "heuristic_rerank_score": 0.038603102346385934,
+          "matched_keywords": [
+            "幂等",
+            "按钮防抖",
+            "并发"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.10 本课自测"
+          ],
+          "score": 0.03331751890342511,
+          "vector_rank": 7,
+          "vector_score": 0.43313071530278313,
+          "text_rank": 9,
+          "text_score": 4.0,
+          "rrf_score": 0.029418126757516764,
+          "heuristic_rerank_score": 0.03331751890342511,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "Agent 工作流"
+          ],
+          "score": 0.032270601897599234,
+          "vector_rank": 13,
+          "vector_score": 0.42202980255725353,
+          "text_rank": 8,
+          "text_score": 4.0,
+          "rrf_score": 0.028404512489927477,
+          "heuristic_rerank_score": 0.032270601897599234,
+          "matched_keywords": [
+            "幂等"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "7eeb094b-2097-432c-8fe1-3fe063c69237",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.3 企业级 RAG 演进路线",
+            "当前项目的真实边界"
+          ],
+          "score": 0.03182424099556499,
+          "vector_rank": 18,
+          "vector_score": 0.4174043411790047,
+          "text_rank": 6,
+          "text_score": 4.0,
+          "rrf_score": 0.027972027972027972,
+          "heuristic_rerank_score": 0.03182424099556499,
+          "matched_keywords": [
+            "幂等"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "score": 0.030605429377930413,
+          "vector_rank": 20,
+          "vector_score": 0.40657169740537435,
+          "text_rank": 10,
+          "text_score": 4.0,
+          "rrf_score": 0.026785714285714288,
+          "heuristic_rerank_score": 0.030605429377930413,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-010",
+      "question": "降级为什么必须可观测？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "降级",
+        "可观测",
+        "确定性"
+      ],
+      "expected_keyword_coverage": {
+        "降级": 9,
+        "可观测": 1,
+        "确定性": 5
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 74.2006,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": "retrieval_miss",
+      "supported_chunk_count": 2,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "score": 0.03861068858587156,
+          "vector_rank": 1,
+          "vector_score": 0.5412677799899719,
+          "text_rank": 1,
+          "text_score": 6.0,
+          "rrf_score": 0.03278688524590164,
+          "heuristic_rerank_score": 0.03861068858587156,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "score": 0.03480603499115886,
+          "vector_rank": 2,
+          "vector_score": 0.530429482460022,
+          "text_rank": 10,
+          "text_score": 4.0,
+          "rrf_score": 0.0304147465437788,
+          "heuristic_rerank_score": 0.03480603499115886,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "面试重点：为什么需要 ProfileUpdateEvent？"
+          ],
+          "score": 0.03468583714669511,
+          "vector_rank": 4,
+          "vector_score": 0.5183182645846457,
+          "text_rank": 8,
+          "text_score": 4.0,
+          "rrf_score": 0.030330882352941176,
+          "heuristic_rerank_score": 0.03468583714669511,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "长期画像数据"
+          ],
+          "score": 0.03165059350462102,
+          "vector_rank": 20,
+          "vector_score": 0.4750734567642212,
+          "text_rank": 7,
+          "text_score": 4.0,
+          "rrf_score": 0.027425373134328357,
+          "heuristic_rerank_score": 0.03165059350462102,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 2：Checkpoint ≠ 完整工作流引擎"
+          ],
+          "score": 0.018929032258064516,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 2,
+          "text_score": 4.0,
+          "rrf_score": 0.016129032258064516,
+          "heuristic_rerank_score": 0.018929032258064516,
+          "matched_keywords": [
+            "可观测"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "3860b1a2-f212-4f53-9055-d9348187e3ae",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施",
+            "面试要能讲清的三点"
+          ],
+          "score": 0.018673015873015873,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 3,
+          "text_score": 4.0,
+          "rrf_score": 0.015873015873015872,
+          "heuristic_rerank_score": 0.018673015873015873,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-011",
+      "question": "为什么历史可追溯需要稳定标识和版本？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "历史",
+        "稳定标识",
+        "版本"
+      ],
+      "expected_keyword_coverage": {
+        "历史": 11,
+        "稳定标识": 1,
+        "版本": 11
+      },
+      "first_relevant_rank": 1,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 72.8204,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "cb6f15f2-fdf8-47b9-ac9d-c45e7c80c49d",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 5：历史可追溯需要稳定标识和版本"
+          ],
+          "score": 0.04040659677585176,
+          "vector_rank": 2,
+          "vector_score": 0.5447072982788086,
+          "text_rank": 1,
+          "text_score": 12.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.04040659677585176,
+          "matched_keywords": [
+            "历史",
+            "稳定标识",
+            "版本"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "document_title": "第 5 课：可信评分与报告",
+          "document_logical_name": "第 5 课：可信评分与报告",
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "score": 0.036627212719501014,
+          "vector_rank": 3,
+          "vector_score": 0.5347322821617126,
+          "text_rank": 4,
+          "text_score": 6.0,
+          "rrf_score": 0.03149801587301587,
+          "heuristic_rerank_score": 0.036627212719501014,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "长期画像数据"
+          ],
+          "score": 0.033947259865896647,
+          "vector_rank": 16,
+          "vector_score": 0.4637830853462219,
+          "text_rank": 3,
+          "text_score": 6.0,
+          "rrf_score": 0.029030910609857977,
+          "heuristic_rerank_score": 0.033947259865896647,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "03c78675-6eda-45d3-be0a-3175b2a455b3",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.7 重新索引时为什么尽量保留 Chunk ID",
+            "为什么这么做"
+          ],
+          "score": 0.03211084560054463,
+          "vector_rank": 5,
+          "vector_score": 0.5185724651388071,
+          "text_rank": 18,
+          "text_score": 4.0,
+          "rrf_score": 0.028205128205128206,
+          "heuristic_rerank_score": 0.03211084560054463,
+          "matched_keywords": [
+            "历史"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "3860b1a2-f212-4f53-9055-d9348187e3ae",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施",
+            "面试要能讲清的三点"
+          ],
+          "score": 0.019654032258064516,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 2,
+          "text_score": 6.0,
+          "rrf_score": 0.016129032258064516,
+          "heuristic_rerank_score": 0.019654032258064516,
+          "matched_keywords": [
+            "历史",
+            "版本"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "score": 0.018909615384615386,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 5,
+          "text_score": 6.0,
+          "rrf_score": 0.015384615384615385,
+          "heuristic_rerank_score": 0.018909615384615386,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-012",
+      "question": "为什么不能一开始就把系统拆成微服务？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "微服务",
+        "模块边界",
+        "演进"
+      ],
+      "expected_keyword_coverage": {
+        "微服务": 1,
+        "模块边界": 1,
+        "演进": 2
+      },
+      "first_relevant_rank": null,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 62.038,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": "retrieval_miss",
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "score": 0.038474404950426505,
+          "vector_rank": 8,
+          "vector_score": 0.5000266581781705,
+          "text_rank": 1,
+          "text_score": 10.0,
+          "rrf_score": 0.031099324975891997,
+          "heuristic_rerank_score": 0.038474404950426505,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "Checkpoint 不能做什么"
+          ],
+          "score": 0.03644213808458397,
+          "vector_rank": 3,
+          "vector_score": 0.5531689423175703,
+          "text_rank": 5,
+          "text_score": 6.0,
+          "rrf_score": 0.03125763125763126,
+          "heuristic_rerank_score": 0.03644213808458397,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3860b1a2-f212-4f53-9055-d9348187e3ae",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施",
+            "面试要能讲清的三点"
+          ],
+          "score": 0.035818459578609955,
+          "vector_rank": 14,
+          "vector_score": 0.4919712690106415,
+          "text_rank": 2,
+          "text_score": 8.0,
+          "rrf_score": 0.02964254577157803,
+          "heuristic_rerank_score": 0.035818459578609955,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "bb13b4db-c322-4414-b7cc-c70048218628",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.8 第三道防线：引用白名单",
+            "引用白名单不能做什么"
+          ],
+          "score": 0.035484399552353676,
+          "vector_rank": 4,
+          "vector_score": 0.5428390664708339,
+          "text_rank": 8,
+          "text_score": 6.0,
+          "rrf_score": 0.030330882352941176,
+          "heuristic_rerank_score": 0.035484399552353676,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 1：幂等 ≠ 按钮防抖"
+          ],
+          "score": 0.03289525301601402,
+          "vector_rank": 7,
+          "vector_score": 0.511790946477382,
+          "text_rank": 11,
+          "text_score": 4.0,
+          "rrf_score": 0.02900988017658188,
+          "heuristic_rerank_score": 0.03289525301601402,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.7 本课自测"
+          ],
+          "score": 0.020573015873015875,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 3,
+          "text_score": 8.0,
+          "rrf_score": 0.015873015873015872,
+          "heuristic_rerank_score": 0.020573015873015875,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-013",
+      "question": "文档状态机如何处理服务重启时遗留的处理中文档？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 1,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "状态机",
+        "重启",
+        "重新索引"
+      ],
+      "expected_keyword_coverage": {
+        "状态机": 11,
+        "重启": 2,
+        "重新索引": 5
+      },
+      "first_relevant_rank": 1,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 60.4837,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 3,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.3 文档状态机"
+          ],
+          "score": 0.04069424800597944,
+          "vector_rank": 1,
+          "vector_score": 0.677454253359266,
+          "text_rank": 1,
+          "text_score": 10.0,
+          "rrf_score": 0.03278688524590164,
+          "heuristic_rerank_score": 0.04069424800597944,
+          "matched_keywords": [
+            "状态机",
+            "重新索引"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "score": 0.03858128566369605,
+          "vector_rank": 2,
+          "vector_score": 0.6264125108718872,
+          "text_rank": 3,
+          "text_score": 8.0,
+          "rrf_score": 0.03200204813108039,
+          "heuristic_rerank_score": 0.03858128566369605,
+          "matched_keywords": [
+            "重启",
+            "重新索引"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "1b0925ed-649e-49f1-85af-9eee61e0e56a",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.8 故障场景"
+          ],
+          "score": 0.03780286299979238,
+          "vector_rank": 11,
+          "vector_score": 0.5714412331581116,
+          "text_rank": 2,
+          "text_score": 10.0,
+          "rrf_score": 0.03021353930031804,
+          "heuristic_rerank_score": 0.03780286299979238,
+          "matched_keywords": [
+            "状态机",
+            "重启"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "三、自测结果"
+          ],
+          "score": 0.03427822996899364,
+          "vector_rank": 12,
+          "vector_score": 0.5709419761965344,
+          "text_rank": 6,
+          "text_score": 6.0,
+          "rrf_score": 0.02904040404040404,
+          "heuristic_rerank_score": 0.03427822996899364,
+          "matched_keywords": [
+            "状态机"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+          "document_title": "第 4 课：可恢复模拟面试工作流",
+          "document_logical_name": "第 4 课：可恢复模拟面试工作流",
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "二、学员疑问与讨论记录",
+            "Q2：刷新恢复的具体交互是怎样的？"
+          ],
+          "score": 0.03262521932070293,
+          "vector_rank": 4,
+          "vector_score": 0.6099021667300374,
+          "text_rank": 18,
+          "text_score": 4.0,
+          "rrf_score": 0.02844551282051282,
+          "heuristic_rerank_score": 0.03262521932070293,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 2：Checkpoint ≠ 完整工作流引擎"
+          ],
+          "score": 0.032231399901411016,
+          "vector_rank": 13,
+          "vector_score": 0.5633387137454368,
+          "text_rank": 9,
+          "text_score": 4.0,
+          "rrf_score": 0.02819138376017471,
+          "heuristic_rerank_score": 0.032231399901411016,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-014",
+      "question": "增量知识目录是如何从新文档构建的？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "增量",
+        "知识目录",
+        "覆盖度"
+      ],
+      "expected_keyword_coverage": {
+        "增量": 11,
+        "知识目录": 8,
+        "覆盖度": 7
+      },
+      "first_relevant_rank": 4,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 60.5455,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 5,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "9dbafe6b-3c9c-43b5-bce1-6dde21ac3424",
+          "document_title": "第 1 课：项目全景与架构地图",
+          "document_logical_name": "第 1 课：项目全景与架构地图",
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "知识数据"
+          ],
+          "score": 0.03986569261523165,
+          "vector_rank": 4,
+          "vector_score": 0.6205534523890454,
+          "text_rank": 2,
+          "text_score": 12.0,
+          "rrf_score": 0.031754032258064516,
+          "heuristic_rerank_score": 0.03986569261523165,
+          "matched_keywords": [
+            "增量",
+            "知识目录"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.1 先说结论"
+          ],
+          "score": 0.036557770495090895,
+          "vector_rank": 1,
+          "vector_score": 0.6444818397329665,
+          "text_rank": 8,
+          "text_score": 6.0,
+          "rrf_score": 0.031099324975891997,
+          "heuristic_rerank_score": 0.036557770495090895,
+          "matched_keywords": [
+            "增量"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.7 学完整个项目后应该形成的认知"
+          ],
+          "score": 0.036198901513872075,
+          "vector_rank": 20,
+          "vector_score": 0.5252952136187321,
+          "text_rank": 3,
+          "text_score": 12.0,
+          "rrf_score": 0.028373015873015873,
+          "heuristic_rerank_score": 0.036198901513872075,
+          "matched_keywords": [
+            "增量",
+            "知识目录"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "4141045f-9876-42b8-b1d1-378d7ebc71dd",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.8 增量知识目录：新文档如何进入查漏体系",
+            "关键规则"
+          ],
+          "score": 0.034537885225658566,
+          "vector_rank": 6,
+          "vector_score": 0.5922876772966291,
+          "text_rank": 11,
+          "text_score": 6.0,
+          "rrf_score": 0.029236022193768675,
+          "heuristic_rerank_score": 0.034537885225658566,
+          "matched_keywords": [
+            "增量",
+            "知识目录"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 5,
+          "chunk_id": "4cfb4a20-295e-4409-b055-8322f3ab8ef2",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.8 增量知识目录：新文档如何进入查漏体系"
+          ],
+          "score": 0.03448697307803518,
+          "vector_rank": 7,
+          "vector_score": 0.5836285526641775,
+          "text_rank": 10,
+          "text_score": 6.0,
+          "rrf_score": 0.029211087420042643,
+          "heuristic_rerank_score": 0.03448697307803518,
+          "matched_keywords": [
+            "增量",
+            "知识目录"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 6,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "document_title": "第 6 课：两层画像与复习闭环",
+          "document_logical_name": "第 6 课：两层画像与复习闭环",
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.2 为什么旧画像会出现问题"
+          ],
+          "score": 0.03383841664455711,
+          "vector_rank": 3,
+          "vector_score": 0.6389235448516475,
+          "text_rank": 13,
+          "text_score": 4.0,
+          "rrf_score": 0.029571646010002173,
+          "heuristic_rerank_score": 0.03383841664455711,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        }
+      ]
+    },
+    {
+      "id": "va-pos-015",
+      "question": "为什么重新索引时要尽量保留 Chunk ID？",
+      "answerability": "full",
+      "answerable": true,
+      "graded": true,
+      "label_origin": "human",
+      "ground_truth_mode": "resolved",
+      "ground_truth_chunk_count": 2,
+      "negative_reason": null,
+      "tags": [
+        "human_verified",
+        "in_domain"
+      ],
+      "diagnostic_keywords": [
+        "Chunk ID",
+        "重新索引",
+        "稳定"
+      ],
+      "expected_keyword_coverage": {
+        "Chunk ID": 6,
+        "重新索引": 5,
+        "稳定": 21
+      },
+      "first_relevant_rank": 3,
+      "experiment_mode": "rrf-heuristic",
+      "latency_ms": 118.7112,
+      "retrieved_candidate_count": 6,
+      "evidence_sufficient": true,
+      "evidence_decision": "accept",
+      "failure_category": null,
+      "supported_chunk_count": 6,
+      "top_chunks": [
+        {
+          "rank": 1,
+          "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.10 本课自测"
+          ],
+          "score": 0.04224508949582303,
+          "vector_rank": 2,
+          "vector_score": 0.7075382049358974,
+          "text_rank": 1,
+          "text_score": 16.0,
+          "rrf_score": 0.03252247488101534,
+          "heuristic_rerank_score": 0.04224508949582303,
+          "matched_keywords": [
+            "Chunk ID",
+            "重新索引"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "score": 0.03730074712871549,
+          "vector_rank": 7,
+          "vector_score": 0.5969195365905804,
+          "text_rank": 5,
+          "text_score": 8.0,
+          "rrf_score": 0.030309988518943745,
+          "heuristic_rerank_score": 0.03730074712871549,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "03c78675-6eda-45d3-be0a-3175b2a455b3",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.7 重新索引时为什么尽量保留 Chunk ID",
+            "为什么这么做"
+          ],
+          "score": 0.03725070080155415,
+          "vector_rank": 1,
+          "vector_score": 0.7171252752207167,
+          "text_rank": 8,
+          "text_score": 6.0,
+          "rrf_score": 0.031099324975891997,
+          "heuristic_rerank_score": 0.03725070080155415,
+          "matched_keywords": [
+            "Chunk ID",
+            "重新索引",
+            "稳定"
+          ],
+          "matched_ground_truth": true
+        },
+        {
+          "rank": 4,
+          "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+          "document_title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.3 文档状态机"
+          ],
+          "score": 0.03500891485048989,
+          "vector_rank": 8,
+          "vector_score": 0.5925531210734534,
+          "text_rank": 7,
+          "text_score": 6.0,
+          "rrf_score": 0.029631255487269532,
+          "heuristic_rerank_score": 0.03500891485048989,
+          "matched_keywords": [
+            "重新索引"
+          ],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "bb13b4db-c322-4414-b7cc-c70048218628",
+          "document_title": "第 3 课：混合检索与可信 RAG 回答",
+          "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.8 第三道防线：引用白名单",
+            "引用白名单不能做什么"
+          ],
+          "score": 0.032650741526253996,
+          "vector_rank": 13,
+          "vector_score": 0.5558681156713904,
+          "text_rank": 11,
+          "text_score": 5.0,
+          "rrf_score": 0.027783137179239824,
+          "heuristic_rerank_score": 0.032650741526253996,
+          "matched_keywords": [],
+          "matched_ground_truth": false
+        },
+        {
+          "rank": 6,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "document_title": "第 7 课：工程化专题 + 面试实战",
+          "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "score": 0.023329032258064517,
+          "vector_rank": null,
+          "vector_score": null,
+          "text_rank": 2,
+          "text_score": 14.0,
+          "rrf_score": 0.016129032258064516,
+          "heuristic_rerank_score": 0.023329032258064517,
+          "matched_keywords": [
+            "重新索引",
+            "稳定"
+          ],
+          "matched_ground_truth": false
+        }
+      ]
+    }
+  ]
+}

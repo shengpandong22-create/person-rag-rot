@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import replace
 from types import SimpleNamespace
 from typing import Any, cast
+from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
@@ -11,13 +12,15 @@ from agent_mentor.api.errors import AppError
 from agent_mentor.application.answer_service import AnswerService, ensure_citations_are_valid
 from agent_mentor.infrastructure.retriever import (
     PostgresHybridRetriever,
+    RetrievalExperimentMode,
+    _Candidate,
     _infer_retrieved_block_type,
     _lexical_overlap,
     _lexical_terms,
     _rerank_score,
     _retrieval_explanation,
 )
-from agent_mentor.ports.knowledge_retriever import RetrievedChunk
+from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
 from agent_mentor.rag.retrieval import normalize_query, reciprocal_rank_fusion, validate_citations
 
 
@@ -52,6 +55,72 @@ def test_rrf_is_deterministic_for_fixed_rankings() -> None:
 
     assert scores[second] > scores[first] > scores[third]
     assert scores == reciprocal_rank_fusion([[first, second], [second, third]])
+
+
+def test_eval_experiment_default_is_current_heuristic_rerank() -> None:
+    import inspect
+
+    parameter = inspect.signature(PostgresHybridRetriever.retrieve).parameters["experiment_mode"]
+
+    assert parameter.default is RetrievalExperimentMode.RRF_HEURISTIC
+
+
+@pytest.mark.asyncio
+async def test_default_retrieval_path_equals_explicit_current_heuristic(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(),
+        title="RAG Guide",
+        logical_name="rag-guide",
+        source_url=None,
+        trust_level="curated",
+    )
+    first = SimpleNamespace(
+        id=uuid4(),
+        content="RAG evidence",
+        heading_path=["RAG"],
+        page_number=None,
+        chunk_index=0,
+    )
+    second = SimpleNamespace(
+        id=uuid4(),
+        content="retrieval ranking",
+        heading_path=["Retrieval"],
+        page_number=None,
+        chunk_index=2,
+    )
+    vector = [
+        _Candidate(cast(Any, first), cast(Any, document), 1, 0.8),
+        _Candidate(cast(Any, second), cast(Any, document), 2, 0.7),
+    ]
+    text = [
+        _Candidate(cast(Any, second), cast(Any, document), 1, 2.0),
+        _Candidate(cast(Any, first), cast(Any, document), 2, 1.0),
+    ]
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=3
+    )
+    monkeypatch.setattr(retriever, "_vector_candidates", AsyncMock(return_value=vector))
+    monkeypatch.setattr(retriever, "_text_candidates", AsyncMock(return_value=text))
+    query = RetrievalQuery(uuid4(), "RAG retrieval", top_k=2, candidate_k=2)
+
+    default = await retriever.retrieve(query)
+    explicit = await retriever.retrieve(
+        query, experiment_mode=RetrievalExperimentMode.RRF_HEURISTIC
+    )
+
+    assert default == explicit
 
 
 def test_retrieval_explanation_contains_rank_signals() -> None:

@@ -5,6 +5,7 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
+from time import perf_counter
 from typing import Any
 from uuid import UUID
 
@@ -24,7 +25,10 @@ from agent_mentor.infrastructure.database.session import (
     create_database_engine,
     create_session_factory,
 )
-from agent_mentor.infrastructure.retriever import PostgresHybridRetriever
+from agent_mentor.infrastructure.retriever import (
+    PostgresHybridRetriever,
+    RetrievalExperimentMode,
+)
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
 from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
 from evals.provenance import build_provenance
@@ -58,6 +62,7 @@ async def run_retrieval_eval(
     top_k: int = 6,
     candidate_k: int = 20,
     min_evidence_score: float | None = None,
+    experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -84,6 +89,7 @@ async def run_retrieval_eval(
     metric_inputs: list[RetrievalCaseResult] = []
     grading_counts = {"graded": 0, "ungraded": 0}
     ground_truth_counts: dict[str, int] = {}
+    total_retrieval_ms = 0.0
     try:
         knowledge_base_fingerprint = await _knowledge_base_fingerprint(sessions, knowledge_base_id)
         all_keywords = sorted({keyword for case in cases for keyword in case.diagnostic_keywords})
@@ -91,14 +97,18 @@ async def run_retrieval_eval(
             sessions, knowledge_base_id, all_keywords
         )
         for case in cases:
+            started = perf_counter()
             chunks = await retriever.retrieve(
                 RetrievalQuery(
                     knowledge_base_id=knowledge_base_id,
                     query=case.question,
                     top_k=top_k,
                     candidate_k=candidate_k,
-                )
+                ),
+                experiment_mode=experiment_mode,
             )
+            latency_ms = (perf_counter() - started) * 1000
+            total_retrieval_ms += latency_ms
             ground_truth, ground_truth_mode = await _resolve_ground_truth(
                 sessions,
                 knowledge_base_id=knowledge_base_id,
@@ -119,15 +129,32 @@ async def run_retrieval_eval(
             supported_chunks, evidence_sufficient = answer_service.assess_evidence(
                 case.question, chunks
             )
-            if graded:
+            formally_scorable = graded and (
+                case.answerability is Answerability.NONE
+                or ground_truth_mode == GROUND_TRUTH_RESOLVED
+            )
+            if formally_scorable:
                 metric_inputs.append(
                     RetrievalCaseResult(
                         case_id=case.case_id,
                         answerable=case.answerable,
                         first_relevant_rank=first_rank,
                         evidence_sufficient=evidence_sufficient,
+                        answerability=case.answerability.value,
+                        negative_reason=(
+                            case.negative_reason.value if case.negative_reason else None
+                        ),
+                        latency_ms=latency_ms,
+                        candidate_count=len(chunks),
                     )
                 )
+            failure_category = _failure_category(
+                case=case,
+                ground_truth_mode=ground_truth_mode,
+                first_rank=first_rank,
+                evidence_sufficient=evidence_sufficient,
+                top_k=top_k,
+            )
             case_rows.append(
                 {
                     "id": case.case_id,
@@ -148,15 +175,27 @@ async def run_retrieval_eval(
                         for keyword in case.diagnostic_keywords
                     },
                     "first_relevant_rank": first_rank,
+                    "experiment_mode": experiment_mode.value,
+                    "latency_ms": round(latency_ms, 4),
+                    "retrieved_candidate_count": len(chunks),
                     "evidence_sufficient": evidence_sufficient,
+                    "evidence_decision": "accept" if evidence_sufficient else "reject",
+                    "failure_category": failure_category,
                     "supported_chunk_count": len(supported_chunks),
                     "top_chunks": [
                         {
                             "rank": index,
                             "chunk_id": str(chunk.chunk_id),
                             "document_title": chunk.document_title,
+                            "document_logical_name": chunk.document_logical_name,
                             "heading_path": list(chunk.heading_path),
                             "score": chunk.score,
+                            "vector_rank": chunk.vector_rank,
+                            "vector_score": chunk.vector_score,
+                            "text_rank": chunk.text_rank,
+                            "text_score": chunk.text_score,
+                            "rrf_score": chunk.rrf_score,
+                            "heuristic_rerank_score": chunk.heuristic_rerank_score,
                             "matched_keywords": _matched_keywords(chunk, case.diagnostic_keywords),
                             "matched_ground_truth": chunk.chunk_id in set(ground_truth),
                         }
@@ -184,9 +223,18 @@ async def run_retrieval_eval(
             "embedding_provider": settings.embedding_provider.value,
             "embedding_model": settings.embedding_model,
             "embedding_dimension": settings.embedding_dimension,
+            "experiment_mode": experiment_mode.value,
             "retrieval_top_k": top_k,
             "retrieval_candidate_k": candidate_k,
             "retrieval_min_score": threshold,
+            "rrf_k": 60,
+            "heuristic_weights": {
+                "vector": 0.003,
+                "text": 0.004,
+                "lexical": 0.006,
+            },
+            "freeze_manifest_sha256": _freeze_manifest_sha256(dataset_path),
+            "run_duration_ms": round(total_retrieval_ms, 4),
             "retrieval_max_chunks_per_document": settings.retrieval_max_chunks_per_document,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
@@ -198,6 +246,40 @@ async def run_retrieval_eval(
     )
     _write_report(report, output_dir)
     return report
+
+
+def _freeze_manifest_sha256(dataset_path: Path) -> str | None:
+    name = dataset_path.name.lower()
+    if "validation" in name:
+        manifest = dataset_path.with_name("VALIDATION_FREEZE.json")
+    elif "holdout" in name:
+        manifest = dataset_path.with_name("HOLDOUT_FREEZE.json")
+    else:
+        return None
+    return _file_sha256(manifest) if manifest.exists() else None
+
+
+def _failure_category(
+    *,
+    case: RetrievalEvalCase,
+    ground_truth_mode: str,
+    first_rank: int | None,
+    evidence_sufficient: bool,
+    top_k: int,
+) -> str | None:
+    if case.answerability is not Answerability.NONE and ground_truth_mode != GROUND_TRUTH_RESOLVED:
+        return "source_label_unresolved"
+    if case.answerability is Answerability.NONE:
+        return "false_acceptance" if evidence_sufficient else "correct_rejection"
+    if first_rank is None:
+        return "retrieval_miss"
+    if first_rank > top_k:
+        return "ranking_miss"
+    if not evidence_sufficient:
+        return "evidence_gate_rejection"
+    if case.answerability is Answerability.PARTIAL:
+        return "partial_answer_boundary"
+    return None
 
 
 def _is_graded(case: RetrievalEvalCase) -> bool:
@@ -249,8 +331,12 @@ async def _resolve_ground_truth(
             if not rows:
                 unresolved.append(source.document_logical_name)
                 continue
-            for chunk, _document in rows:
-                if _heading_matches(source.heading_path, tuple(chunk.heading_path)):
+            for chunk, document in rows:
+                if _source_heading_matches(
+                    source.heading_path,
+                    tuple(chunk.heading_path),
+                    document.title,
+                ):
                     matched.add(chunk.id)
     if unresolved and not matched:
         return (), GROUND_TRUTH_KEYWORD_FALLBACK
@@ -276,6 +362,17 @@ def _heading_matches(expected: tuple[str, ...], actual: tuple[str, ...]) -> bool
             for index in range(len(expected))
         ):
             return True
+    return False
+
+
+def _source_heading_matches(
+    expected: tuple[str, ...], actual: tuple[str, ...], document_title: str
+) -> bool:
+    """Resolve both canonical heading-only and parser full-path labels."""
+    if _heading_matches(expected, actual):
+        return True
+    if expected and expected[0].strip() == document_title.strip():
+        return _heading_matches(expected[1:], actual)
     return False
 
 
@@ -443,8 +540,10 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- git_branch: `{metadata.get('git_branch', 'unknown')}`",
         f"- dataset: `{report.dataset}`",
         f"- dataset_sha256: `{metadata.get('dataset_sha256', 'unknown')}`",
+        f"- freeze_manifest_sha256: `{metadata.get('freeze_manifest_sha256', 'n/a')}`",
         f"- app_version: {metadata['app_version']}",
         f"- generated_at: {metadata['generated_at']}",
+        f"- run_duration_ms: {metadata.get('run_duration_ms', 'n/a')}",
         f"- holdout_intact: {metadata.get('holdout_intact', 'n/a')}",
         f"- holdout_detail: {metadata.get('holdout_detail', 'n/a')}",
         "",
@@ -461,10 +560,14 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         "## Configuration",
         "",
         f"- embedding: {metadata['embedding_provider']} / {metadata['embedding_model']}",
+        f"- embedding_dimension: {metadata['embedding_dimension']}",
+        f"- experiment_mode: {metadata['experiment_mode']}",
         "- retrieval: "
         f"top_k={metadata['retrieval_top_k']}, "
         f"candidate_k={metadata['retrieval_candidate_k']}, "
         f"min_score={metadata['retrieval_min_score']}",
+        f"- rrf_k: {metadata['rrf_k']}",
+        f"- heuristic_weights: {metadata['heuristic_weights']}",
         f"- knowledge_base: {_knowledge_base_summary(metadata['knowledge_base'])}",
         "",
         "## Metrics (graded rows only)",
@@ -474,8 +577,14 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Recall@3: {metrics['recall_at_3']}",
         f"- Recall@6: {metrics['recall_at_6']}",
         f"- MRR: {metrics['mrr']}",
+        f"- Full answerability accuracy: {metrics['full_answerability_accuracy']}",
+        f"- Partial answerability accuracy: {metrics['partial_answerability_accuracy']}",
         f"- Evidence sufficient accuracy: {metrics['evidence_sufficient_accuracy']}",
         f"- Negative rejection accuracy: {metrics['negative_rejection_accuracy']}",
+        f"- Rejection by negative reason: {metrics['rejection_by_negative_reason']}",
+        f"- Retrieval latency P50/P95 ms: {metrics['latency_p50_ms']} / "
+        f"{metrics['latency_p95_ms']}",
+        f"- Average candidate count: {metrics['average_candidate_count']}",
         "",
     ]
     rows: list[dict[str, Any]] = [dict(row) for row in report.cases]
@@ -511,6 +620,15 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
                     "",
                 ]
             )
+    attributed = [row for row in rows if row.get("failure_category")]
+    if attributed:
+        lines.extend(["## Failure Attribution", ""])
+        for row in attributed:
+            lines.append(
+                f"- `{row['id']}`: {row['failure_category']} "
+                f"(decision={row['evidence_decision']}, rank={row['first_relevant_rank']})"
+            )
+        lines.append("")
     markdown_path.write_text("\n".join(lines), encoding="utf-8")
 
 

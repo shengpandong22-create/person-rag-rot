@@ -27,6 +27,9 @@ def test_compute_retrieval_metrics_reports_recall_mrr_and_rejection_accuracy() -
     assert metrics.mrr == 0.4167
     assert metrics.evidence_sufficient_accuracy == 0.75
     assert metrics.negative_rejection_accuracy == 1.0
+    assert metrics.full_answerability_accuracy == 0.0
+    assert metrics.partial_answerability_accuracy == 0.0
+    assert metrics.average_candidate_count == 0.0
 
 
 def test_compute_retrieval_metrics_rejects_empty_results() -> None:

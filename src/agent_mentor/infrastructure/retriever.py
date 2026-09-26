@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from enum import StrEnum
 from uuid import UUID
 
 from sqlalchemy import Select, case, func, literal, or_, select
@@ -39,15 +40,25 @@ from agent_mentor.rag.retrieval import normalize_query, reciprocal_rank_fusion
 @dataclass(frozen=True, slots=True)
 class _Candidate:
     """内部候选结构 — 关联 chunk 和 document，携带排名和分数"""
+
     chunk: KnowledgeChunkModel
     document: SourceDocumentModel
-    rank: int      # 在该路检索中的排名（1-based）
-    score: float   # 该路检索的原始分数（向量=1-距离, 全文=ts_rank）
+    rank: int  # 在该路检索中的排名（1-based）
+    score: float  # 该路检索的原始分数（向量=1-距离, 全文=ts_rank）
+
+
+class RetrievalExperimentMode(StrEnum):
+    """Eval-only ranking variants; the default exactly matches production."""
+
+    VECTOR_ONLY = "vector-only"
+    TEXT_ONLY = "text-only"
+    RRF = "rrf"
+    RRF_HEURISTIC = "rrf-heuristic"
 
 
 class PostgresHybridRetriever:
     """PostgreSQL 混合检索器 — 生产环境的核心检索实现。
-    
+
     依赖：
         - pgvector 扩展（向量检索）
         - PostgreSQL 全文检索（tsvector + tsquery）
@@ -65,9 +76,14 @@ class PostgresHybridRetriever:
         self._embedding = embedding
         self._max_chunks_per_document = max_chunks_per_document
 
-    async def retrieve(self, query: RetrievalQuery) -> list[RetrievedChunk]:
+    async def retrieve(
+        self,
+        query: RetrievalQuery,
+        *,
+        experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
+    ) -> list[RetrievedChunk]:
         """执行混合检索，返回 top_k 个去重后的 RetrievedChunk。
-        
+
         步骤：
             1. 查询归一化
             2. 向量检索（pgvector cosine_distance）
@@ -82,9 +98,14 @@ class PostgresHybridRetriever:
 
         # 并行执行向量和全文检索（注意：这里实际上是串行的，优化空间）
         async with self._sessions() as session:
-            vector_candidates = await self._vector_candidates(session, query, normalized)
+            vector_candidates: list[_Candidate] = []
+            if experiment_mode is not RetrievalExperimentMode.TEXT_ONLY:
+                vector_candidates = await self._vector_candidates(session, query, normalized)
             text_candidates: list[_Candidate] = []
-            if query.mode is RetrievalMode.HYBRID:
+            if (
+                experiment_mode is not RetrievalExperimentMode.VECTOR_ONLY
+                and query.mode is RetrievalMode.HYBRID
+            ):
                 text_candidates = await self._text_candidates(session, query, normalized)
 
         # 构建 chunk_id → candidate 映射（去重：同一 chunk 可能同时在两路出现）
@@ -99,7 +120,7 @@ class PostgresHybridRetriever:
 
         # RRF 融合：综合两路排名计算召回分数
         fused = reciprocal_rank_fusion([list(vector_ranks), list(text_ranks)])
-        reranked_scores = {
+        heuristic_scores = {
             chunk_id: _rerank_score(
                 normalized=normalized,
                 content=by_id[chunk_id].chunk.content,
@@ -109,11 +130,19 @@ class PostgresHybridRetriever:
             )
             for chunk_id in fused
         }
+        if experiment_mode is RetrievalExperimentMode.VECTOR_ONLY:
+            final_scores = vector_scores
+        elif experiment_mode is RetrievalExperimentMode.TEXT_ONLY:
+            final_scores = text_scores
+        elif experiment_mode is RetrievalExperimentMode.RRF:
+            final_scores = fused
+        else:
+            final_scores = heuristic_scores
         ordered_ids = sorted(
-            fused,
+            final_scores,
             key=lambda chunk_id: (
-                reranked_scores[chunk_id],
-                fused[chunk_id],
+                final_scores[chunk_id],
+                fused.get(chunk_id, 0.0),
                 vector_scores.get(chunk_id) or 0.0,
                 text_scores.get(chunk_id) or 0.0,
             ),
@@ -151,10 +180,10 @@ class PostgresHybridRetriever:
                     block_type=_infer_retrieved_block_type(candidate.chunk.content),
                     chunk_index=candidate.chunk.chunk_index,
                     content=candidate.chunk.content,
-                    score=reranked_scores[chunk_id],
+                    score=final_scores[chunk_id],
                     retrieval_explanation=_retrieval_explanation(
                         fused_score=fused[chunk_id],
-                        rerank_score=reranked_scores[chunk_id],
+                        rerank_score=heuristic_scores[chunk_id],
                         lexical_overlap=_lexical_overlap(normalized, candidate.chunk.content),
                         vector_rank=vector_ranks.get(chunk_id),
                         text_rank=text_ranks.get(chunk_id),
@@ -165,6 +194,9 @@ class PostgresHybridRetriever:
                     text_rank=text_ranks.get(chunk_id),
                     vector_score=vector_scores.get(chunk_id),
                     text_score=text_scores.get(chunk_id),
+                    document_logical_name=candidate.document.logical_name,
+                    rrf_score=fused.get(chunk_id),
+                    heuristic_rerank_score=heuristic_scores.get(chunk_id),
                 )
             )
             if len(results) >= query.top_k:
@@ -195,7 +227,7 @@ class PostgresHybridRetriever:
         self, session: AsyncSession, query: RetrievalQuery, normalized: str
     ) -> list[_Candidate]:
         """向量检索：将查询文本转为向量，用 pgvector cosine_distance 排序，取前 candidate_k 个。
-        
+
         score = 1 - cosine_distance（距离越小越相关，转换为分数越高越相关）
         """
         vector = await self._embedding.embed_query(normalized)
@@ -219,7 +251,7 @@ class PostgresHybridRetriever:
         """全文检索：使用 PostgreSQL websearch_to_tsquery 解析查询。
 
         排序使用 ts_rank_cd，最终取前 candidate_k 个。
-        
+
         websearch_to_tsquery：将用户查询转为 PostgreSQL 全文搜索语法
         ts_rank_cd：基于覆盖密度的排名函数
         coalesce：优先用预计算的 search_text 列，回退到运行时生成 tsvector
@@ -312,7 +344,7 @@ def _retrieval_explanation(
     text_score: float | None,
 ) -> str:
     """生成检索结果的可读解释字符串。
-    
+
     格式示例："RRF=0.0328 | vector_rank=1 | text_rank=3 | vector_score=0.8560 | text_score=0.4320"
     """
     signals: list[str] = [f"RRF={fused_score:.4f}", f"rerank={rerank_score:.4f}"]

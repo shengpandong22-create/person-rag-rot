@@ -10,6 +10,10 @@ class RetrievalCaseResult:
     answerable: bool
     first_relevant_rank: int | None
     evidence_sufficient: bool
+    answerability: str | None = None
+    negative_reason: str | None = None
+    latency_ms: float = 0.0
+    candidate_count: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,6 +25,12 @@ class RetrievalMetrics:
     mrr: float
     evidence_sufficient_accuracy: float
     negative_rejection_accuracy: float
+    full_answerability_accuracy: float
+    partial_answerability_accuracy: float
+    rejection_by_negative_reason: dict[str, float]
+    latency_p50_ms: float
+    latency_p95_ms: float
+    average_candidate_count: float
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,6 +62,12 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
     answerable = [item for item in results if item.answerable]
     negatives = [item for item in results if not item.answerable]
 
+    full = [item for item in results if item.answerability == "full"]
+    partial = [item for item in results if item.answerability == "partial"]
+    grouped_negatives: dict[str, list[RetrievalCaseResult]] = {}
+    for item in negatives:
+        grouped_negatives.setdefault(item.negative_reason or "unspecified", []).append(item)
+    latencies = sorted(item.latency_ms for item in results)
     return RetrievalMetrics(
         total=total,
         recall_at_1=_recall_at(answerable, 1),
@@ -61,19 +77,31 @@ def compute_retrieval_metrics(results: list[RetrievalCaseResult]) -> RetrievalMe
         evidence_sufficient_accuracy=_accuracy(
             item.evidence_sufficient == item.answerable for item in results
         ),
-        negative_rejection_accuracy=_accuracy(
-            not item.evidence_sufficient for item in negatives
-        ),
+        negative_rejection_accuracy=_accuracy(not item.evidence_sufficient for item in negatives),
+        full_answerability_accuracy=_accuracy(item.evidence_sufficient for item in full),
+        partial_answerability_accuracy=_accuracy(item.evidence_sufficient for item in partial),
+        rejection_by_negative_reason={
+            reason: _accuracy(not item.evidence_sufficient for item in items)
+            for reason, items in sorted(grouped_negatives.items())
+        },
+        latency_p50_ms=_percentile(latencies, 0.50),
+        latency_p95_ms=_percentile(latencies, 0.95),
+        average_candidate_count=round(sum(item.candidate_count for item in results) / total, 4),
     )
+
+
+def _percentile(values: list[float], quantile: float) -> float:
+    if not values:
+        return 0.0
+    index = max(0, min(len(values) - 1, int((len(values) - 1) * quantile + 0.999999)))
+    return round(values[index], 4)
 
 
 def compute_scoring_metrics(results: list[ScoringCaseResult]) -> ScoringMetrics:
     total = len(results)
     if total == 0:
         raise ValueError("results must not be empty.")
-    absolute_errors = [
-        abs(item.predicted_total - item.human_total) for item in results
-    ]
+    absolute_errors = [abs(item.predicted_total - item.human_total) for item in results]
     return ScoringMetrics(
         total=total,
         mean_absolute_error=round(sum(absolute_errors) / total, 4),
@@ -94,8 +122,7 @@ def _recall_at(results: list[RetrievalCaseResult], k: int) -> float:
     if not results:
         return 0.0
     hits = sum(
-        item.first_relevant_rank is not None and item.first_relevant_rank <= k
-        for item in results
+        item.first_relevant_rank is not None and item.first_relevant_rank <= k for item in results
     )
     return round(hits / len(results), 4)
 
@@ -104,9 +131,7 @@ def _mrr(results: list[RetrievalCaseResult]) -> float:
     if not results:
         return 0.0
     score = sum(
-        1 / item.first_relevant_rank
-        for item in results
-        if item.first_relevant_rank is not None
+        1 / item.first_relevant_rank for item in results if item.first_relevant_rank is not None
     )
     return round(score / len(results), 4)
 
