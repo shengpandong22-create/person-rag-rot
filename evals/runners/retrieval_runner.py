@@ -14,6 +14,7 @@ from sqlalchemy import func, or_, select
 from agent_mentor import __version__
 from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.config import get_settings
+from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.domain.knowledge import DocumentStatus
 from agent_mentor.infrastructure.database.models import (
     KnowledgeBaseModel,
@@ -64,12 +65,14 @@ async def run_retrieval_eval(
     candidate_k: int = 20,
     min_evidence_score: float | None = None,
     experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
+    evidence_gate_policy: EvidenceGatePolicy | None = None,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
     threshold = (
         min_evidence_score if min_evidence_score is not None else settings.retrieval_min_score
     )
+    gate_policy = evidence_gate_policy or settings.evidence_gate_policy
     engine = create_database_engine(settings.database_url)
     sessions = create_session_factory(engine)
     embedding = create_embedding_gateway(settings)
@@ -85,6 +88,7 @@ async def run_retrieval_eval(
         default_candidate_k=candidate_k,
         min_evidence_score=threshold,
         default_model=settings.llm_default_model,
+        evidence_gate_policy=gate_policy,
     )
     case_rows: list[dict[str, object]] = []
     metric_inputs: list[RetrievalCaseResult] = []
@@ -288,6 +292,7 @@ async def run_retrieval_eval(
             "retrieval_top_k": top_k,
             "retrieval_candidate_k": candidate_k,
             "retrieval_min_score": threshold,
+            "evidence_gate_policy": gate_policy.value,
             "rrf_k": 60,
             "heuristic_weights": {
                 "vector": 0.003,

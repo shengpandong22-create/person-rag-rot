@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from agent_mentor.config import AppEnvironment, EmbeddingProvider, Settings
+from agent_mentor.domain.evidence import EvidenceGatePolicy
 
 
 def test_test_environment_discards_model_credential(monkeypatch) -> None:
@@ -30,3 +31,9 @@ def test_retrieval_min_score_filters_rrf_tail_but_keeps_vector_top_hit() -> None
     assert settings.retrieval_min_score == 0.013
     assert settings.retrieval_min_score > 1 / (60 + settings.retrieval_candidate_k)
     assert settings.retrieval_min_score < 1 / (60 + 1)
+
+
+def test_evidence_gate_policy_defaults_to_current_binary_behavior() -> None:
+    settings = Settings()
+
+    assert settings.evidence_gate_policy is EvidenceGatePolicy.CURRENT_BINARY_V1

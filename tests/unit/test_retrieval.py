@@ -10,6 +10,7 @@ import pytest
 
 from agent_mentor.api.errors import AppError
 from agent_mentor.application.answer_service import AnswerService, ensure_citations_are_valid
+from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.retriever import (
     PostgresHybridRetriever,
     RetrievalExperimentMode,
@@ -439,6 +440,43 @@ def test_evidence_diagnostics_record_clause_level_support() -> None:
         "date",
         "future_version",
     }
+
+
+def test_clause_demand_policy_rejects_partial_evidence_when_explicitly_enabled() -> None:
+    evidence = replace(
+        chunk(),
+        content="checkpoint 保存流程轨迹并恢复业务状态。",
+        score=0.5,
+    )
+    current = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    candidate = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+        evidence_gate_policy=EvidenceGatePolicy.CLAUSE_DEMAND_V1,
+    )
+    question = "checkpoint 如何恢复，未来版本何时提供分布式任务租约？"
+
+    _, current_sufficient = current.assess_evidence(question, [evidence])
+    supported, candidate_sufficient = candidate.assess_evidence(question, [evidence])
+    assessment = candidate.assess_evidence_diagnostics(question, [evidence])
+
+    assert current_sufficient is True
+    assert supported == [evidence]
+    assert candidate_sufficient is False
+    assert assessment.decision.value == "partial"
+    assert assessment.rejection_reasons == (
+        "uncovered_question_clause",
+        "unmet_explicit_demand",
+    )
 
 
 def test_answer_service_expands_rrf_retrieval_aliases() -> None:

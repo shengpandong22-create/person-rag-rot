@@ -126,6 +126,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         default_candidate_k=settings.retrieval_candidate_k,
         min_evidence_score=settings.retrieval_min_score,
         default_model=settings.llm_default_model,
+        evidence_gate_policy=settings.evidence_gate_policy,
     )
     app.state.interview_service = InterviewService(
         session_factory,

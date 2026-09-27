@@ -7,6 +7,8 @@ from functools import lru_cache
 from pydantic import SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from agent_mentor.domain.evidence import EvidenceGatePolicy
+
 
 class AppEnvironment(StrEnum):
     DEVELOPMENT = "development"
@@ -54,6 +56,7 @@ class Settings(BaseSettings):
     retrieval_top_k: int = 6
     retrieval_min_score: float = 0.013
     retrieval_max_chunks_per_document: int = 3
+    evidence_gate_policy: EvidenceGatePolicy = EvidenceGatePolicy.CURRENT_BINARY_V1
 
     @model_validator(mode="after")
     def clear_model_credentials_in_test(self) -> Settings:

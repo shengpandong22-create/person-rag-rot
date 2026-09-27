@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
+from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.database.models import (
     ChatCitationModel,
     ChatMessageModel,
@@ -179,6 +180,7 @@ class AnswerService:
         default_candidate_k: int,
         min_evidence_score: float,
         default_model: str | None = None,
+        evidence_gate_policy: EvidenceGatePolicy = EvidenceGatePolicy.CURRENT_BINARY_V1,
     ) -> None:
         self._sessions = sessions
         self._retriever = retriever
@@ -187,6 +189,7 @@ class AnswerService:
         self._default_candidate_k = default_candidate_k
         self._min_evidence_score = min_evidence_score
         self._default_model = default_model
+        self._evidence_gate_policy = evidence_gate_policy
 
     async def answer(
         self,
@@ -484,7 +487,7 @@ class AnswerService:
                 )
             )
         top_supported_score = supported_candidates[0].score if supported_candidates else None
-        sufficient = bool(supported_candidates) and bool(
+        current_sufficient = bool(supported_candidates) and bool(
             top_supported_score is not None and top_supported_score >= self._min_evidence_score
         )
         numeric_tokens = set(re.findall(r"\d+(?:\.\d+)?%?", question))
@@ -507,12 +510,23 @@ class AnswerService:
         rejection_reasons: list[str] = []
         if not supported_candidates:
             rejection_reasons.append("no_lexically_supported_candidate")
-        elif not sufficient:
+        elif not current_sufficient:
             rejection_reasons.append("top_supported_score_below_threshold")
+        decision = EvidenceDecision.FULL if current_sufficient else EvidenceDecision.NONE
+        if self._evidence_gate_policy is EvidenceGatePolicy.CLAUSE_DEMAND_V1 and current_sufficient:
+            uncovered_clause = any(not clause.lexical_support for clause in clause_assessments)
+            unmet_demand = any(not demand.matched for demand in demand_assessments)
+            if uncovered_clause:
+                rejection_reasons.append("uncovered_question_clause")
+            if unmet_demand:
+                rejection_reasons.append("unmet_explicit_demand")
+            if uncovered_clause or unmet_demand:
+                decision = EvidenceDecision.PARTIAL
+        production_sufficient = decision is EvidenceDecision.FULL
         return EvidenceAssessment(
-            policy_name="current_binary_v1",
-            decision=EvidenceDecision.FULL if sufficient else EvidenceDecision.NONE,
-            production_sufficient=sufficient,
+            policy_name=self._evidence_gate_policy.value,
+            decision=decision,
+            production_sufficient=production_sufficient,
             supported_chunk_ids=tuple(str(item.chunk_id) for item in supported_candidates),
             top_supported_score=top_supported_score,
             query_terms=tuple(sorted(query_terms)),

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from uuid import UUID
 
+from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.retriever import RetrievalExperimentMode
 from evals.runners.retrieval_runner import run_retrieval_eval
 from evals.runners.scoring_runner import run_scoring_eval
@@ -39,6 +40,12 @@ def main() -> None:
         choices=tuple(RetrievalExperimentMode),
         default=RetrievalExperimentMode.RRF_HEURISTIC,
     )
+    parser.add_argument(
+        "--evidence-gate-policy",
+        type=EvidenceGatePolicy,
+        choices=tuple(EvidenceGatePolicy),
+        default=None,
+    )
     args = parser.parse_args()
 
     if args.suite in {"retrieval", "retrieval-ablation", "all"}:
@@ -57,6 +64,7 @@ def main() -> None:
                         top_k=args.top_k,
                         candidate_k=args.candidate_k,
                         experiment_mode=mode,
+                        evidence_gate_policy=args.evidence_gate_policy,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -99,6 +107,7 @@ def main() -> None:
                     top_k=args.top_k,
                     candidate_k=args.candidate_k,
                     experiment_mode=args.experiment_mode,
+                    evidence_gate_policy=args.evidence_gate_policy,
                 )
             )
             print({"retrieval": report.metrics})
