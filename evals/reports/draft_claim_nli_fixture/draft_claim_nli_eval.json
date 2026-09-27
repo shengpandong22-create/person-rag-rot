@@ -1,0 +1,366 @@
+{
+  "generated_at": "2026-09-27T08:08:10.951261+00:00",
+  "dataset": "evals\\datasets\\draft_claim_nli_development_v1.jsonl",
+  "dataset_sha256": "7437d45718ef79c41b5aa435254ef1d9297af0b165ff21f3acb718ad8ed2f5ea",
+  "label_distribution": {
+    "contradicted": 5,
+    "supported": 5,
+    "unknown": 5
+  },
+  "model": {
+    "name": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
+    "labels": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ],
+    "transformers_version": "4.57.6",
+    "device": "cpu",
+    "batch_size": 8
+  },
+  "inference_duration_ms": 42662.8049,
+  "metrics": {
+    "total": 15,
+    "accuracy": 0.8667,
+    "macro_accuracy": 0.8667,
+    "per_class_accuracy": {
+      "supported": 0.8,
+      "contradicted": 0.8,
+      "unknown": 1.0
+    },
+    "confusion_matrix": {
+      "supported": {
+        "supported": 4,
+        "contradicted": 0,
+        "unknown": 1
+      },
+      "contradicted": {
+        "supported": 0,
+        "contradicted": 4,
+        "unknown": 1
+      },
+      "unknown": {
+        "supported": 0,
+        "contradicted": 0,
+        "unknown": 5
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "dc-001",
+      "evidence": "Embedding 默认使用本地 BGE-small-zh，但不是企业级向量服务，仍保留 development 特征哈希 fallback。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "AgentMentor 默认使用本地 BGE-small-zh。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "supported",
+      "predicted_status": "supported",
+      "correct": true,
+      "note": "证据直接支持默认 Embedding。",
+      "nli": {
+        "chunk_id": "dc-001",
+        "entailment": 0.778833,
+        "neutral": 0.123811,
+        "contradiction": 0.097356,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dc-002",
+      "evidence": "当前 checkpoint 让流程可观测，并为恢复提供轨迹证据；刷新后真正恢复当前题目依赖服务端持久化状态、题目和答案数据。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "Checkpoint 提供流程轨迹和排障证据。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "supported",
+      "predicted_status": "supported",
+      "correct": true,
+      "note": "证据直接支持 checkpoint 的职责。",
+      "nli": {
+        "chunk_id": "dc-002",
+        "entailment": 0.689088,
+        "neutral": 0.304659,
+        "contradiction": 0.006253,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dc-003",
+      "evidence": "REVIEW_PENDING 不是丢弃评分，是保留证据但阻断传播，给未来复核留操作空间。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "REVIEW_PENDING 会保留证据并阻断画像传播。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "supported",
+      "predicted_status": "supported",
+      "correct": true,
+      "note": "证据同义支持该声明。",
+      "nli": {
+        "chunk_id": "dc-003",
+        "entailment": 0.971108,
+        "neutral": 0.026647,
+        "contradiction": 0.002245,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dc-004",
+      "evidence": "引用白名单校验 chunk_id 必须属于本轮检索上下文。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "引用白名单限制引用只能来自本轮检索上下文。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "supported",
+      "predicted_status": "unknown",
+      "correct": false,
+      "note": "证据直接支持引用范围限制。",
+      "nli": {
+        "chunk_id": "dc-004",
+        "entailment": 0.322573,
+        "neutral": 0.642659,
+        "contradiction": 0.034768,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dc-005",
+      "evidence": "低置信 FINAL 根据最终置信度决定权重；低于 0.70 时降权 0.5。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "低于 0.70 的 FINAL 会以 0.5 权重更新。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "supported",
+      "predicted_status": "supported",
+      "correct": true,
+      "note": "证据直接给出阈值和权重。",
+      "nli": {
+        "chunk_id": "dc-005",
+        "entailment": 0.874141,
+        "neutral": 0.014093,
+        "contradiction": 0.111766,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dc-006",
+      "evidence": "当前由模块化单体提供服务，本机用户优先。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "AgentMentor 当前已经部署为多个微服务。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "contradicted",
+      "predicted_status": "unknown",
+      "correct": false,
+      "note": "模块化单体与已部署多个微服务相矛盾。",
+      "nli": {
+        "chunk_id": "dc-006",
+        "entailment": 0.039498,
+        "neutral": 0.957949,
+        "contradiction": 0.002553,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dc-007",
+      "evidence": "工作流是显式节点加 checkpoint，不是 LangGraph Runtime。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "当前工作流直接运行在 LangGraph Runtime 上。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "contradicted",
+      "predicted_status": "contradicted",
+      "correct": true,
+      "note": "证据明确否定 LangGraph Runtime。",
+      "nli": {
+        "chunk_id": "dc-007",
+        "entailment": 0.000166,
+        "neutral": 0.001839,
+        "contradiction": 0.997995,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dc-008",
+      "evidence": "当前没有任务租约、分布式调度和节点级补偿。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "当前 checkpoint 已提供节点级自动补偿。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "contradicted",
+      "predicted_status": "contradicted",
+      "correct": true,
+      "note": "证据明确说明该能力不存在。",
+      "nli": {
+        "chunk_id": "dc-008",
+        "entailment": 0.009243,
+        "neutral": 0.008068,
+        "contradiction": 0.982689,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dc-009",
+      "evidence": "默认 BGE-small-zh 适合本地 CPU 和 Docker 演示，但不能等同于企业级向量服务。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "当前 Embedding 已经具备完整企业级向量治理。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "contradicted",
+      "predicted_status": "contradicted",
+      "correct": true,
+      "note": "证据明确限制企业级结论。",
+      "nli": {
+        "chunk_id": "dc-009",
+        "entailment": 0.007555,
+        "neutral": 0.011479,
+        "contradiction": 0.980966,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dc-010",
+      "evidence": "REVIEW_PENDING 保留评分和证据，但阻断画像更新。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "REVIEW_PENDING 会立即更新用户画像。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "contradicted",
+      "predicted_status": "contradicted",
+      "correct": true,
+      "note": "证据明确说明阻断更新。",
+      "nli": {
+        "chunk_id": "dc-010",
+        "entailment": 9.7e-05,
+        "neutral": 0.000379,
+        "contradiction": 0.999524,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dc-011",
+      "evidence": "系统使用 pgvector 保存向量，并通过向量检索和全文检索召回候选。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "生产环境的 HNSW ef_search 固定为 128。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "unknown",
+      "predicted_status": "unknown",
+      "correct": true,
+      "note": "证据没有给出 ef_search 数值。",
+      "nli": {
+        "chunk_id": "dc-011",
+        "entailment": 0.000464,
+        "neutral": 0.995111,
+        "contradiction": 0.004425,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dc-012",
+      "evidence": "下一步可以补充 reranker、查询改写和更稳定的标注评测集。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "下一版本将在 2027 年 1 月 1 日发布。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "unknown",
+      "predicted_status": "unknown",
+      "correct": true,
+      "note": "演进方向不包含发布日期。",
+      "nli": {
+        "chunk_id": "dc-012",
+        "entailment": 0.000154,
+        "neutral": 0.999518,
+        "contradiction": 0.000328,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dc-013",
+      "evidence": "ProfileUpdateEvent 记录画像更新是否应用、跳过原因以及更新前后状态。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "ProfileUpdateEvent 的 P95 写入延迟是 12 毫秒。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "unknown",
+      "predicted_status": "unknown",
+      "correct": true,
+      "note": "证据没有性能数据。",
+      "nli": {
+        "chunk_id": "dc-013",
+        "entailment": 0.000464,
+        "neutral": 0.998198,
+        "contradiction": 0.001338,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dc-014",
+      "evidence": "引用白名单可以防止模型编造本轮上下文之外的 chunk_id。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "引用白名单把所有幻觉降低了 87%。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "unknown",
+      "predicted_status": "unknown",
+      "correct": true,
+      "note": "证据没有量化幻觉降幅。",
+      "nli": {
+        "chunk_id": "dc-014",
+        "entailment": 0.000266,
+        "neutral": 0.99927,
+        "contradiction": 0.000464,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dc-015",
+      "evidence": "显式节点、checkpoint 和幂等共同保证工作流可恢复和可审计。",
+      "draft_claim": {
+        "claim_id": "claim-1",
+        "text": "服务重启后会从第 217 行 Python 代码继续执行。",
+        "required": true,
+        "origin": "human_fixture"
+      },
+      "expected_status": "unknown",
+      "predicted_status": "unknown",
+      "correct": true,
+      "note": "业务恢复证据不包含代码行级续跑。",
+      "nli": {
+        "chunk_id": "dc-015",
+        "entailment": 0.000923,
+        "neutral": 0.996109,
+        "contradiction": 0.002968,
+        "predicted_label": "neutral"
+      }
+    }
+  ]
+}
