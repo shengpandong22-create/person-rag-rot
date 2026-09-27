@@ -1,0 +1,4007 @@
+{
+  "generated_at": "2026-09-27T07:45:17.971421+00:00",
+  "source_report": "evals\\reports\\development_claim_gate_v1\\vector-only\\retrieval_eval.json",
+  "source_report_sha256": "1788b6f57e3188fa86a38564c37558ab9331523acbe3e96598b883c616eeeb44",
+  "source_metadata": {
+    "generated_at": "2026-09-27T07:26:49.461578+00:00",
+    "app_version": "0.1.0",
+    "git_commit": "b9c1b799fa80c5e01ebf1028607a0a4db68a5e32",
+    "git_short_commit": "b9c1b799fa80",
+    "git_dirty": false,
+    "git_branch": "codex/eval-foundation-rebuild",
+    "dataset_sha256": "50c3d73b7bb67a1f5069d52a9c3d21bb1c8a3481d7ecb4250d7accb7a159d705",
+    "holdout_present": true,
+    "holdout_intact": true,
+    "holdout_sha256": "9f9d1dbb04df5147bc7b7f61998f74302d5e45ec8138e4fd7452bd48fadb37c9",
+    "holdout_detail": "intact: 19 cases, sha256=9f9d1dbb04df5147..., frozen_at=2026-09-19T06:25:25.284526+00:00",
+    "embedding_provider": "bge",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_dimension": 512,
+    "experiment_mode": "vector-only",
+    "retrieval_top_k": 6,
+    "retrieval_candidate_k": 20,
+    "retrieval_min_score": 0.013,
+    "evidence_gate_policy": "current_binary_v1",
+    "rrf_k": 60,
+    "heuristic_weights": {
+      "vector": 0.003,
+      "text": 0.004,
+      "lexical": 0.006
+    },
+    "freeze_manifest_sha256": null,
+    "run_duration_ms": 24530.9208,
+    "retrieval_max_chunks_per_document": 3,
+    "knowledge_base": {
+      "id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+      "exists": true,
+      "name": "AgentMentor BGE 验收知识库",
+      "document_count": 7,
+      "active_document_count": 7,
+      "ready_document_count": 7,
+      "chunk_count": 195,
+      "catalog_point_count": 195,
+      "document_hash_sha256": "c7ad10b8c60db236b797763c38a3eb3578827b2f6d2aa6535e0885ebce13ae27",
+      "documents": [
+        {
+          "title": "第 1 课：项目全景与架构地图",
+          "logical_name": "第 1 课：项目全景与架构地图",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "23e629defa25a7f9b6a3b36ae7e3800376b8687c7556c13f390435d3d45410c2"
+        },
+        {
+          "title": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "b04f184e397c458d8b5b18bb9c3de0711a7701d464931ce0365676cdebb30a72"
+        },
+        {
+          "title": "第 3 课：混合检索与可信 RAG 回答",
+          "logical_name": "第 3 课：混合检索与可信 RAG 回答",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "f0ef6b515c3b004b6573dbcdb16c4c821f095e05c3698aea2704bf26f29d9387"
+        },
+        {
+          "title": "第 4 课：可恢复模拟面试工作流",
+          "logical_name": "第 4 课：可恢复模拟面试工作流",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "4dbcb6c46f07886fd3971a1f47fb1385365ea6aae50cab22e3b53d00721e5611"
+        },
+        {
+          "title": "第 5 课：可信评分与报告",
+          "logical_name": "第 5 课：可信评分与报告",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "62e9d7eb7a9dd7c12ec9ff93ac7fd07794e7e1f51b15890620db7defe44fe87b"
+        },
+        {
+          "title": "第 6 课：两层画像与复习闭环",
+          "logical_name": "第 6 课：两层画像与复习闭环",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "df1c34601fe13e54931a228bd1de781a36f1ca1073c3c374882b0c7ef393f8f9"
+        },
+        {
+          "title": "第 7 课：工程化专题 + 面试实战",
+          "logical_name": "第 7 课：工程化专题 + 面试实战",
+          "version": 1,
+          "status": "ready",
+          "is_active": true,
+          "content_hash": "ef0ab6bdde4cdd1972bb8535c0e6afd9172fc5ede2b75b72bec28239ce729c11"
+        }
+      ]
+    },
+    "grading_counts": {
+      "graded": 60,
+      "ungraded": 0
+    },
+    "ground_truth_counts": {
+      "absent": 35,
+      "resolved": 25
+    },
+    "metrics_scope": "graded_rows_only"
+  },
+  "model": {
+    "name": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
+    "labels": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ],
+    "transformers_version": "4.57.6",
+    "device": "cpu",
+    "batch_size": 8
+  },
+  "inference_pair_count": 316,
+  "evidence_contexts": [
+    "individual_top3_chunks",
+    "concatenated_top3_context"
+  ],
+  "inference_duration_ms": 278014.4511,
+  "metrics": {
+    "deterministic_only": {
+      "full_acceptance_rate": 0.9333,
+      "partial_boundary_detection_rate": 0.9,
+      "none_rejection_rate": 0.4571,
+      "macro_accuracy": 0.7349,
+      "confusion_matrix": {
+        "full": {
+          "full": 14,
+          "partial": 0,
+          "none": 1
+        },
+        "partial": {
+          "full": 1,
+          "partial": 9,
+          "none": 0
+        },
+        "none": {
+          "full": 19,
+          "partial": 3,
+          "none": 13
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.375,
+        "in_domain_no_conclusion": 0.4,
+        "in_domain_value_missing": 0.2857,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.4,
+        "version_not_released": 0.8
+      },
+      "false_full_case_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-010",
+        "dev-neg-016",
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-027",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-pt-009"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-010"
+      ]
+    },
+    "semantic_only": {
+      "full_acceptance_rate": 0.8,
+      "partial_boundary_detection_rate": 0.7,
+      "none_rejection_rate": 0.7714,
+      "macro_accuracy": 0.719,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 0,
+          "none": 3
+        },
+        "partial": {
+          "full": 2,
+          "partial": 7,
+          "none": 1
+        },
+        "none": {
+          "full": 8,
+          "partial": 4,
+          "none": 23
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.75,
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 1.0,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.4,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-013",
+        "dev-neg-019",
+        "dev-neg-021",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-neg-038",
+        "dev-pt-005",
+        "dev-pt-006"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-004",
+        "dev-pos-008",
+        "dev-pos-015"
+      ]
+    },
+    "combined": {
+      "full_acceptance_rate": 0.8,
+      "partial_boundary_detection_rate": 0.7,
+      "none_rejection_rate": 0.8,
+      "macro_accuracy": 0.7286,
+      "confusion_matrix": {
+        "full": {
+          "full": 12,
+          "partial": 0,
+          "none": 3
+        },
+        "partial": {
+          "full": 2,
+          "partial": 7,
+          "none": 1
+        },
+        "none": {
+          "full": 7,
+          "partial": 4,
+          "none": 24
+        }
+      },
+      "rejection_by_negative_reason": {
+        "false_premise": 0.75,
+        "in_domain_no_conclusion": 0.8,
+        "in_domain_value_missing": 1.0,
+        "out_of_range_implementation": 0.6,
+        "out_of_scope": 0.6,
+        "version_not_released": 1.0
+      },
+      "false_full_case_ids": [
+        "dev-neg-013",
+        "dev-neg-019",
+        "dev-neg-021",
+        "dev-neg-024",
+        "dev-neg-026",
+        "dev-neg-034",
+        "dev-neg-036",
+        "dev-pt-005",
+        "dev-pt-006"
+      ],
+      "false_rejection_case_ids": [
+        "dev-pos-004",
+        "dev-pos-008",
+        "dev-pos-015"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "dev-neg-001",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "系统当前配置的 HNSW ef_search 精确值是多少",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "a595dfe9-50f9-4474-bc8a-fd2e27b41205",
+              "entailment": 0.017456,
+              "neutral": 0.4342,
+              "contradiction": 0.548344,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "cd038e3e-d8c7-4c17-b139-533e4d98d823",
+              "entailment": 0.325853,
+              "neutral": 0.511676,
+              "contradiction": 0.162471,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "4cfb4a20-295e-4409-b055-8322f3ab8ef2",
+              "entailment": 0.009032,
+              "neutral": 0.952253,
+              "contradiction": 0.038715,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.063765,
+              "neutral": 0.276103,
+              "contradiction": 0.660131,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-002",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "一次最多允许多少名用户并发进行模拟面试",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "5c78df7d-1f54-44ab-96d7-bd5d76f67e75",
+              "entailment": 0.000964,
+              "neutral": 0.996806,
+              "contradiction": 0.002231,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+              "entailment": 0.017234,
+              "neutral": 0.977892,
+              "contradiction": 0.004874,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+              "entailment": 0.013975,
+              "neutral": 0.957434,
+              "contradiction": 0.028591,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.096159,
+              "neutral": 0.877718,
+              "contradiction": 0.026122,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-003",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "RAG 问答的生产 P95 延迟目标具体是多少毫秒",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "9e0fd232-bd45-4b56-b641-e7fd24b67718",
+              "entailment": 0.015724,
+              "neutral": 0.562276,
+              "contradiction": 0.422,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "f695d031-fa43-4132-850f-b4327eb5901f",
+              "entailment": 0.015105,
+              "neutral": 0.605413,
+              "contradiction": 0.379482,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+              "entailment": 0.051618,
+              "neutral": 0.560353,
+              "contradiction": 0.388028,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.068089,
+              "neutral": 0.313953,
+              "contradiction": 0.617957,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-004",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "评分置信度 0.70 是通过多少条人工样本校准出来的",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+              "entailment": 0.009682,
+              "neutral": 0.976963,
+              "contradiction": 0.013355,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "3edfe888-f61e-44d1-a789-31c1b20ec390",
+              "entailment": 0.000599,
+              "neutral": 0.997756,
+              "contradiction": 0.001645,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+              "entailment": 0.000326,
+              "neutral": 0.998909,
+              "contradiction": 0.000765,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.000766,
+              "neutral": 0.996714,
+              "contradiction": 0.00252,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-005",
+      "answerability": "none",
+      "negative_reason": "in_domain_no_conclusion",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "为什么 AgentMentor 选择 FastAPI 而不是 Django",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+              "entailment": 0.040251,
+              "neutral": 0.934548,
+              "contradiction": 0.025201,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+              "entailment": 0.057086,
+              "neutral": 0.9351,
+              "contradiction": 0.007814,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "072b9729-4754-4bec-9c51-2bab588ec677",
+              "entailment": 0.234812,
+              "neutral": 0.710618,
+              "contradiction": 0.054569,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.029234,
+              "neutral": 0.831618,
+              "contradiction": 0.139148,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-006",
+      "answerability": "none",
+      "negative_reason": "in_domain_no_conclusion",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "BGE-small-zh 是否被实验确认是本项目效果最好的中文 Embedding",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "bb1beb07-cd79-44b1-af62-daf2cc10b12d",
+              "entailment": 0.053389,
+              "neutral": 0.861773,
+              "contradiction": 0.084838,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "30b281b6-3e4e-4f02-bcfb-c4e0a9c8a1a0",
+              "entailment": 0.013816,
+              "neutral": 0.84196,
+              "contradiction": 0.144223,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+              "entailment": 0.000545,
+              "neutral": 0.998086,
+              "contradiction": 0.001369,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.001934,
+              "neutral": 0.99108,
+              "contradiction": 0.006986,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-007",
+      "answerability": "none",
+      "negative_reason": "in_domain_no_conclusion",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "把当前模块化单体拆成微服务一定会提高吞吐量吗",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "5390287f-8767-4000-b19c-7dbca6a7a1b4",
+              "entailment": 0.01893,
+              "neutral": 0.812636,
+              "contradiction": 0.168434,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+              "entailment": 0.019424,
+              "neutral": 0.946377,
+              "contradiction": 0.034199,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "bb1beb07-cd79-44b1-af62-daf2cc10b12d",
+              "entailment": 0.013809,
+              "neutral": 0.982095,
+              "contradiction": 0.004095,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.006324,
+              "neutral": 0.926045,
+              "contradiction": 0.067631,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-008",
+      "answerability": "none",
+      "negative_reason": "in_domain_no_conclusion",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Beta 分布是否比当前渐进掌握度公式更准确",
+          "deterministic_status": "unsupported",
+          "semantic_status": "unknown",
+          "combined_status": "unsupported",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "1edcb521-2164-4e63-ba13-c212c1acd91d",
+              "entailment": 0.024145,
+              "neutral": 0.947199,
+              "contradiction": 0.028656,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+              "entailment": 0.020423,
+              "neutral": 0.975553,
+              "contradiction": 0.004024,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "ef60fbe4-c453-46ef-81c3-a29af271152a",
+              "entailment": 0.051516,
+              "neutral": 0.891908,
+              "contradiction": 0.056576,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.148428,
+              "neutral": 0.742173,
+              "contradiction": 0.109399,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-009",
+      "answerability": "none",
+      "negative_reason": "version_not_released",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "AgentMentor V3 会在哪一天发布",
+          "deterministic_status": "unsupported",
+          "semantic_status": "unknown",
+          "combined_status": "unsupported",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+              "entailment": 0.001241,
+              "neutral": 0.998489,
+              "contradiction": 0.000269,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+              "entailment": 0.000391,
+              "neutral": 0.99936,
+              "contradiction": 0.00025,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+              "entailment": 0.003257,
+              "neutral": 0.989952,
+              "contradiction": 0.006791,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.000971,
+              "neutral": 0.998215,
+              "contradiction": 0.000814,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-010",
+      "answerability": "none",
+      "negative_reason": "version_not_released",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "下一版会默认切换到哪个 CrossEncoder 模型",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.003392,
+              "neutral": 0.996255,
+              "contradiction": 0.000353,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+              "entailment": 0.003184,
+              "neutral": 0.995209,
+              "contradiction": 0.001607,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "1a9cc3ab-a83c-4016-ae73-4cd10e314489",
+              "entailment": 0.179719,
+              "neutral": 0.59503,
+              "contradiction": 0.225252,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.008301,
+              "neutral": 0.990116,
+              "contradiction": 0.001584,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-011",
+      "answerability": "none",
+      "negative_reason": "version_not_released",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "未来迁移 LangGraph 时会采用哪个具体版本",
+          "deterministic_status": "unsupported",
+          "semantic_status": "unknown",
+          "combined_status": "unsupported",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+              "entailment": 0.0113,
+              "neutral": 0.985895,
+              "contradiction": 0.002805,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+              "entailment": 0.000432,
+              "neutral": 0.999083,
+              "contradiction": 0.000485,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+              "entailment": 0.086368,
+              "neutral": 0.903742,
+              "contradiction": 0.009891,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.001193,
+              "neutral": 0.998156,
+              "contradiction": 0.000652,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-012",
+      "answerability": "none",
+      "negative_reason": "version_not_released",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "下一次 Embedding 升级的上线日期是什么时候",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+              "entailment": 0.011999,
+              "neutral": 0.968917,
+              "contradiction": 0.019085,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "bb1beb07-cd79-44b1-af62-daf2cc10b12d",
+              "entailment": 0.000387,
+              "neutral": 0.998546,
+              "contradiction": 0.001066,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+              "entailment": 0.000757,
+              "neutral": 0.993323,
+              "contradiction": 0.005919,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.000304,
+              "neutral": 0.998841,
+              "contradiction": 0.000855,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-013",
+      "answerability": "none",
+      "negative_reason": "out_of_range_implementation",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "当前 Redis 缓存的失效策略是什么",
+          "deterministic_status": "unknown",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "8cce11b3-2587-46f7-b7ca-3795815dfed4",
+          "scores": [
+            {
+              "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+              "entailment": 0.056545,
+              "neutral": 0.143926,
+              "contradiction": 0.799529,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "8cce11b3-2587-46f7-b7ca-3795815dfed4",
+              "entailment": 0.363225,
+              "neutral": 0.343859,
+              "contradiction": 0.292917,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "4b4eeb3c-68b7-432e-9386-864c86b4a8f8",
+              "entailment": 0.031538,
+              "neutral": 0.192689,
+              "contradiction": 0.775773,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.118478,
+              "neutral": 0.140209,
+              "contradiction": 0.741313,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-014",
+      "answerability": "none",
+      "negative_reason": "out_of_range_implementation",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Kafka 文档摄入消费者如何保证 exactly-once",
+          "deterministic_status": "unsupported",
+          "semantic_status": "contradicted",
+          "combined_status": "unsupported",
+          "selected_chunk_id": "32fcbe56-dde7-46f3-b935-1064086ec447",
+          "scores": [
+            {
+              "chunk_id": "4cfb4a20-295e-4409-b055-8322f3ab8ef2",
+              "entailment": 0.056074,
+              "neutral": 0.471374,
+              "contradiction": 0.472552,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "32fcbe56-dde7-46f3-b935-1064086ec447",
+              "entailment": 0.186398,
+              "neutral": 0.279786,
+              "contradiction": 0.533816,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.103899,
+              "neutral": 0.42971,
+              "contradiction": 0.466392,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.290499,
+              "neutral": 0.315359,
+              "contradiction": 0.394142,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-015",
+      "answerability": "none",
+      "negative_reason": "out_of_range_implementation",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Kubernetes HPA 根据哪个指标扩缩容 API",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "c8b161ed-b22a-419a-8c79-d9ae611f5a2c",
+          "scores": [
+            {
+              "chunk_id": "b668d853-dd74-4b70-ac33-332b8df6d12a",
+              "entailment": 0.22027,
+              "neutral": 0.609712,
+              "contradiction": 0.170018,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "4e4f757d-00ec-44b8-af49-149c9bede454",
+              "entailment": 0.126177,
+              "neutral": 0.631176,
+              "contradiction": 0.242647,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c8b161ed-b22a-419a-8c79-d9ae611f5a2c",
+              "entailment": 0.101277,
+              "neutral": 0.337099,
+              "contradiction": 0.561624,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.153054,
+              "neutral": 0.600326,
+              "contradiction": 0.246621,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-016",
+      "answerability": "none",
+      "negative_reason": "out_of_range_implementation",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "当前多租户 RBAC 如何隔离不同公司的知识库",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "463ed815-bf9b-49d4-8dfb-702a1a425a72",
+          "scores": [
+            {
+              "chunk_id": "463ed815-bf9b-49d4-8dfb-702a1a425a72",
+              "entailment": 0.045493,
+              "neutral": 0.198937,
+              "contradiction": 0.75557,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+              "entailment": 0.043151,
+              "neutral": 0.500188,
+              "contradiction": 0.456661,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.270566,
+              "neutral": 0.572432,
+              "contradiction": 0.157001,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.081786,
+              "neutral": 0.531004,
+              "contradiction": 0.38721,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-017",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "既然当前工作流运行在 LangGraph 上",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+          "scores": [
+            {
+              "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+              "entailment": 0.949199,
+              "neutral": 0.026969,
+              "contradiction": 0.023832,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "da031b6f-c815-4c5e-85b4-7ec046cf50fa",
+              "entailment": 0.698296,
+              "neutral": 0.223085,
+              "contradiction": 0.078619,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.006972,
+              "neutral": 0.072292,
+              "contradiction": 0.920735,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.215129,
+              "neutral": 0.246854,
+              "contradiction": 0.538017,
+              "predicted_label": "contradiction"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "StateGraph 节点失败后怎样自动补偿",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "scores": [
+            {
+              "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+              "entailment": 0.067307,
+              "neutral": 0.827776,
+              "contradiction": 0.104917,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "da031b6f-c815-4c5e-85b4-7ec046cf50fa",
+              "entailment": 0.218281,
+              "neutral": 0.205829,
+              "contradiction": 0.57589,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.006778,
+              "neutral": 0.305221,
+              "contradiction": 0.688001,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.03896,
+              "neutral": 0.396582,
+              "contradiction": 0.564457,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-018",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Elasticsearch 已经承担全文检索后",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "scores": [
+            {
+              "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+              "entailment": 0.908933,
+              "neutral": 0.082384,
+              "contradiction": 0.008683,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.71752,
+              "neutral": 0.280113,
+              "contradiction": 0.002367,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+              "entailment": 0.674383,
+              "neutral": 0.317929,
+              "contradiction": 0.007688,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.880976,
+              "neutral": 0.110237,
+              "contradiction": 0.008787,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "PostgreSQL 为什么还保留 tsvector",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+              "entailment": 0.07503,
+              "neutral": 0.905765,
+              "contradiction": 0.019205,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.404062,
+              "neutral": 0.554275,
+              "contradiction": 0.041662,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+              "entailment": 0.015641,
+              "neutral": 0.979901,
+              "contradiction": 0.004458,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.385415,
+              "neutral": 0.603739,
+              "contradiction": 0.010846,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-019",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "LLM 直接给出的 total_score 为什么还要原样写入数据库",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "141180c3-1581-420e-aabc-aa107e3a7083",
+              "entailment": 0.198105,
+              "neutral": 0.236332,
+              "contradiction": 0.565563,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "fdb1da69-a97a-4d34-80d9-2dc00f51c556",
+              "entailment": 0.041473,
+              "neutral": 0.93038,
+              "contradiction": 0.028147,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.412512,
+              "neutral": 0.528732,
+              "contradiction": 0.058756,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.515805,
+              "neutral": 0.46464,
+              "contradiction": 0.019554,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-020",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "一次高分已经把 mastery 设置成 100%",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "3edfe888-f61e-44d1-a789-31c1b20ec390",
+          "scores": [
+            {
+              "chunk_id": "3edfe888-f61e-44d1-a789-31c1b20ec390",
+              "entailment": 0.000407,
+              "neutral": 0.012254,
+              "contradiction": 0.987339,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+              "entailment": 0.000591,
+              "neutral": 0.233937,
+              "contradiction": 0.765472,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+              "entailment": 0.001564,
+              "neutral": 0.217242,
+              "contradiction": 0.781195,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.000284,
+              "neutral": 0.020962,
+              "contradiction": 0.978754,
+              "predicted_label": "contradiction"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "之后为什么还要复习",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "3edfe888-f61e-44d1-a789-31c1b20ec390",
+              "entailment": 0.085363,
+              "neutral": 0.868114,
+              "contradiction": 0.046523,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+              "entailment": 0.1543,
+              "neutral": 0.82634,
+              "contradiction": 0.01936,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+              "entailment": 0.009813,
+              "neutral": 0.976463,
+              "contradiction": 0.013724,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.037227,
+              "neutral": 0.953958,
+              "contradiction": 0.008815,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-021",
+      "answerability": "none",
+      "negative_reason": "out_of_scope",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "React Fiber 的 lane 调度算法在本项目里如何定制",
+          "deterministic_status": "unknown",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.167711,
+              "neutral": 0.23501,
+              "contradiction": 0.597279,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+              "entailment": 0.256966,
+              "neutral": 0.492207,
+              "contradiction": 0.250827,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+              "entailment": 0.143573,
+              "neutral": 0.088036,
+              "contradiction": 0.76839,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.410202,
+              "neutral": 0.376192,
+              "contradiction": 0.213606,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-022",
+      "answerability": "none",
+      "negative_reason": "out_of_scope",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "JVM ZGC 的染色指针如何与 RRF 融合",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "32fcbe56-dde7-46f3-b935-1064086ec447",
+          "scores": [
+            {
+              "chunk_id": "32fcbe56-dde7-46f3-b935-1064086ec447",
+              "entailment": 0.287417,
+              "neutral": 0.355198,
+              "contradiction": 0.357385,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "a595dfe9-50f9-4474-bc8a-fd2e27b41205",
+              "entailment": 0.311051,
+              "neutral": 0.658985,
+              "contradiction": 0.029964,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+              "entailment": 0.249597,
+              "neutral": 0.645393,
+              "contradiction": 0.105011,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.349251,
+              "neutral": 0.516074,
+              "contradiction": 0.134675,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-023",
+      "answerability": "none",
+      "negative_reason": "out_of_scope",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "CUDA kernel 的 shared memory 如何优化本地 BGE",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+          "scores": [
+            {
+              "chunk_id": "f98918e3-ebe2-4f8e-b3ca-40edb4706a23",
+              "entailment": 0.22289,
+              "neutral": 0.272888,
+              "contradiction": 0.504222,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+              "entailment": 0.170326,
+              "neutral": 0.425594,
+              "contradiction": 0.40408,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+              "entailment": 0.16578,
+              "neutral": 0.232281,
+              "contradiction": 0.601939,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.219354,
+              "neutral": 0.2908,
+              "contradiction": 0.489846,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-024",
+      "answerability": "none",
+      "negative_reason": "out_of_scope",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "量子退火如何改进面试题调度",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "f70c1790-98ab-4b8b-8d02-6383a74c3f74",
+              "entailment": 0.485781,
+              "neutral": 0.173622,
+              "contradiction": 0.340597,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+              "entailment": 0.630122,
+              "neutral": 0.36169,
+              "contradiction": 0.008188,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+              "entailment": 0.69469,
+              "neutral": 0.271183,
+              "contradiction": 0.034127,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.984282,
+              "neutral": 0.007024,
+              "contradiction": 0.008694,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-025",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "资料一处说默认 BGE、一处展示 DevelopmentEmbeddingGateway",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+          "scores": [
+            {
+              "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+              "entailment": 0.913418,
+              "neutral": 0.07298,
+              "contradiction": 0.013602,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+              "entailment": 0.784847,
+              "neutral": 0.149494,
+              "contradiction": 0.06566,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+              "entailment": 0.64451,
+              "neutral": 0.103079,
+              "contradiction": 0.252411,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.906705,
+              "neutral": 0.024128,
+              "contradiction": 0.069167,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "所以线上究竟固定使用哪一个且永不降级",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+          "scores": [
+            {
+              "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+              "entailment": 0.00075,
+              "neutral": 0.037317,
+              "contradiction": 0.961933,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+              "entailment": 0.000671,
+              "neutral": 0.027391,
+              "contradiction": 0.971938,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+              "entailment": 0.016313,
+              "neutral": 0.214203,
+              "contradiction": 0.769484,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.003042,
+              "neutral": 0.071023,
+              "contradiction": 0.925935,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-026",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "资料既说 checkpoint 支持恢复又说它不能自动续跑",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+              "entailment": 0.945899,
+              "neutral": 0.05066,
+              "contradiction": 0.003442,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.058354,
+              "neutral": 0.934183,
+              "contradiction": 0.007463,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+              "entailment": 0.654517,
+              "neutral": 0.291912,
+              "contradiction": 0.053571,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.99,
+              "neutral": 0.008767,
+              "contradiction": 0.001233,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "所以服务重启后会从哪一行 Python 代码继续",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "scores": [
+            {
+              "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+              "entailment": 0.042214,
+              "neutral": 0.250563,
+              "contradiction": 0.707223,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.025671,
+              "neutral": 0.915274,
+              "contradiction": 0.059055,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+              "entailment": 0.442473,
+              "neutral": 0.373214,
+              "contradiction": 0.184314,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.061645,
+              "neutral": 0.201318,
+              "contradiction": 0.737037,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-027",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Reviewer 默认始终可用但未来又可能不可用",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+              "entailment": 0.045901,
+              "neutral": 0.953385,
+              "contradiction": 0.000714,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.351854,
+              "neutral": 0.647544,
+              "contradiction": 0.000602,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+              "entailment": 0.311121,
+              "neutral": 0.687912,
+              "contradiction": 0.000967,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.280669,
+              "neutral": 0.717395,
+              "contradiction": 0.001936,
+              "predicted_label": "neutral"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "生产环境现在的独立 Reviewer SLA 是多少",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+              "entailment": 0.089511,
+              "neutral": 0.753765,
+              "contradiction": 0.156725,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.103648,
+              "neutral": 0.664577,
+              "contradiction": 0.231775,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+              "entailment": 0.201346,
+              "neutral": 0.673795,
+              "contradiction": 0.124859,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.097976,
+              "neutral": 0.512128,
+              "contradiction": 0.389895,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-028",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "资料既强调模块化单体又讨论迁移工作流框架",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+          "scores": [
+            {
+              "chunk_id": "5390287f-8767-4000-b19c-7dbca6a7a1b4",
+              "entailment": 0.864566,
+              "neutral": 0.122603,
+              "contradiction": 0.012831,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+              "entailment": 0.993897,
+              "neutral": 0.001659,
+              "contradiction": 0.004444,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+              "entailment": 0.908822,
+              "neutral": 0.014978,
+              "contradiction": 0.076201,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.983525,
+              "neutral": 0.003468,
+              "contradiction": 0.013007,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "当前到底部署了多少个微服务",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "5390287f-8767-4000-b19c-7dbca6a7a1b4",
+              "entailment": 0.015246,
+              "neutral": 0.779455,
+              "contradiction": 0.205299,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+              "entailment": 0.003551,
+              "neutral": 0.993639,
+              "contradiction": 0.00281,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+              "entailment": 0.000562,
+              "neutral": 0.995464,
+              "contradiction": 0.003974,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.003469,
+              "neutral": 0.990418,
+              "contradiction": 0.006112,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-029",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "引用白名单能防住哪类伪造引用",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "9260bbc2-c702-42c1-9f1b-d781baa442e3",
+              "entailment": 0.186203,
+              "neutral": 0.80794,
+              "contradiction": 0.005857,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "03c78675-6eda-45d3-be0a-3175b2a455b3",
+              "entailment": 0.1691,
+              "neutral": 0.811526,
+              "contradiction": 0.019374,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+              "entailment": 0.049285,
+              "neutral": 0.92261,
+              "contradiction": 0.028105,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.801247,
+              "neutral": 0.180974,
+              "contradiction": 0.017779,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "它在当前 validation 上把断言级错误降低了多少个百分点",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "9260bbc2-c702-42c1-9f1b-d781baa442e3",
+          "scores": [
+            {
+              "chunk_id": "9260bbc2-c702-42c1-9f1b-d781baa442e3",
+              "entailment": 0.040136,
+              "neutral": 0.300734,
+              "contradiction": 0.65913,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "03c78675-6eda-45d3-be0a-3175b2a455b3",
+              "entailment": 0.007044,
+              "neutral": 0.938366,
+              "contradiction": 0.054589,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+              "entailment": 0.004226,
+              "neutral": 0.971873,
+              "contradiction": 0.023902,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.0067,
+              "neutral": 0.900468,
+              "contradiction": 0.092833,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-030",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "checkpoint 能恢复哪些业务状态",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.940001,
+              "neutral": 0.056724,
+              "contradiction": 0.003275,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+              "entailment": 0.422421,
+              "neutral": 0.115347,
+              "contradiction": 0.462232,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+              "entailment": 0.946777,
+              "neutral": 0.045363,
+              "contradiction": 0.007861,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.990235,
+              "neutral": 0.007792,
+              "contradiction": 0.001973,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "服务故障后的精确 RTO 保证是多少",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+          "scores": [
+            {
+              "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+              "entailment": 0.002411,
+              "neutral": 0.882062,
+              "contradiction": 0.115527,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+              "entailment": 0.108635,
+              "neutral": 0.619823,
+              "contradiction": 0.271542,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+              "entailment": 0.028093,
+              "neutral": 0.348749,
+              "contradiction": 0.623158,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.068531,
+              "neutral": 0.790216,
+              "contradiction": 0.141253,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-031",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "当前默认 Embedding 的适用边界是什么",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+          "scores": [
+            {
+              "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+              "entailment": 0.189254,
+              "neutral": 0.303956,
+              "contradiction": 0.50679,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "bb1beb07-cd79-44b1-af62-daf2cc10b12d",
+              "entailment": 0.128127,
+              "neutral": 0.440522,
+              "contradiction": 0.431352,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+              "entailment": 0.281949,
+              "neutral": 0.212119,
+              "contradiction": 0.505932,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.299177,
+              "neutral": 0.275607,
+              "contradiction": 0.425216,
+              "predicted_label": "contradiction"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "它与企业级方案相比的线上准确率差距是多少",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+              "entailment": 0.00824,
+              "neutral": 0.973747,
+              "contradiction": 0.018013,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "bb1beb07-cd79-44b1-af62-daf2cc10b12d",
+              "entailment": 0.010402,
+              "neutral": 0.974292,
+              "contradiction": 0.015307,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+              "entailment": 0.015028,
+              "neutral": 0.973987,
+              "contradiction": 0.010985,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.045046,
+              "neutral": 0.896516,
+              "contradiction": 0.058438,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-032",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "uncovered 知识点如何进入推荐",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+              "entailment": 0.978093,
+              "neutral": 0.005875,
+              "contradiction": 0.016031,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "2f31a1e3-d97d-492f-9a6b-d3a38162ff5d",
+              "entailment": 0.521572,
+              "neutral": 0.24472,
+              "contradiction": 0.233707,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+              "entailment": 0.438499,
+              "neutral": 0.151517,
+              "contradiction": 0.409984,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.988432,
+              "neutral": 0.001384,
+              "contradiction": 0.010184,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "系统保证它最多等待多少轮就一定被选中",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+          "scores": [
+            {
+              "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+              "entailment": 0.00305,
+              "neutral": 0.232175,
+              "contradiction": 0.764776,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "2f31a1e3-d97d-492f-9a6b-d3a38162ff5d",
+              "entailment": 0.028305,
+              "neutral": 0.519967,
+              "contradiction": 0.451728,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+              "entailment": 0.024349,
+              "neutral": 0.224767,
+              "contradiction": 0.750884,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.037892,
+              "neutral": 0.695307,
+              "contradiction": 0.266801,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-001",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "AgentMentor 与普通聊天 Demo 的核心区别是什么",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "scores": [
+            {
+              "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+              "entailment": 0.622924,
+              "neutral": 0.211697,
+              "contradiction": 0.165378,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+              "entailment": 0.21672,
+              "neutral": 0.7758,
+              "contradiction": 0.00748,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+              "entailment": 0.231063,
+              "neutral": 0.732058,
+              "contradiction": 0.036879,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.149431,
+              "neutral": 0.26973,
+              "contradiction": 0.580839,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-002",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "为什么业务规则适合放在领域层而不是 API Router",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+          "scores": [
+            {
+              "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+              "entailment": 0.285191,
+              "neutral": 0.513763,
+              "contradiction": 0.201046,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c8b161ed-b22a-419a-8c79-d9ae611f5a2c",
+              "entailment": 0.022985,
+              "neutral": 0.963639,
+              "contradiction": 0.013376,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+              "entailment": 0.489463,
+              "neutral": 0.136159,
+              "contradiction": 0.374378,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.442644,
+              "neutral": 0.078383,
+              "contradiction": 0.478974,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-003",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "DevelopmentEmbeddingGateway 的主要能力边界是什么",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "d9ec0fab-b2f3-43ac-8c15-2f2fe7feaf92",
+          "scores": [
+            {
+              "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+              "entailment": 0.718728,
+              "neutral": 0.225021,
+              "contradiction": 0.056251,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+              "entailment": 0.122171,
+              "neutral": 0.138449,
+              "contradiction": 0.73938,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "d9ec0fab-b2f3-43ac-8c15-2f2fe7feaf92",
+              "entailment": 0.783246,
+              "neutral": 0.080387,
+              "contradiction": 0.136367,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.534883,
+              "neutral": 0.222373,
+              "contradiction": 0.242744,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-004",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "RRF 为什么天然奖励两路都命中的候选",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+          "scores": [
+            {
+              "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+              "entailment": 0.273119,
+              "neutral": 0.66531,
+              "contradiction": 0.061571,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+              "entailment": 0.034125,
+              "neutral": 0.345632,
+              "contradiction": 0.620243,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+              "entailment": 0.068639,
+              "neutral": 0.835582,
+              "contradiction": 0.095779,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.07806,
+              "neutral": 0.498161,
+              "contradiction": 0.423779,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-005",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "无 LLM 时回答服务如何降级",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "8cce11b3-2587-46f7-b7ca-3795815dfed4",
+          "scores": [
+            {
+              "chunk_id": "fdb1da69-a97a-4d34-80d9-2dc00f51c556",
+              "entailment": 0.833213,
+              "neutral": 0.044818,
+              "contradiction": 0.121969,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "8cce11b3-2587-46f7-b7ca-3795815dfed4",
+              "entailment": 0.98019,
+              "neutral": 0.011339,
+              "contradiction": 0.008471,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+              "entailment": 0.938206,
+              "neutral": 0.037106,
+              "contradiction": 0.024688,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.438891,
+              "neutral": 0.286664,
+              "contradiction": 0.274444,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-006",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "面试状态机和 checkpoint 分别负责什么",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "3b51147a-9da3-42da-8a10-95bee2cd04d6",
+          "scores": [
+            {
+              "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+              "entailment": 0.989593,
+              "neutral": 0.003362,
+              "contradiction": 0.007045,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "d41dc330-b673-432c-a1a6-ecb3452652fd",
+              "entailment": 0.998042,
+              "neutral": 0.001243,
+              "contradiction": 0.000715,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "3b51147a-9da3-42da-8a10-95bee2cd04d6",
+              "entailment": 0.998586,
+              "neutral": 0.001116,
+              "contradiction": 0.000298,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.998323,
+              "neutral": 0.000815,
+              "contradiction": 0.000863,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-007",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "为什么 REVIEW_PENDING 的评分要保留而不是删除",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "f912f3c9-50f8-41bd-9a3b-ac8366f25de8",
+          "scores": [
+            {
+              "chunk_id": "4ba9d8ca-b5a2-40cb-a329-5bbc6545527c",
+              "entailment": 0.492639,
+              "neutral": 0.476439,
+              "contradiction": 0.030922,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+              "entailment": 0.014796,
+              "neutral": 0.967035,
+              "contradiction": 0.018169,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "f912f3c9-50f8-41bd-9a3b-ac8366f25de8",
+              "entailment": 0.974276,
+              "neutral": 0.023304,
+              "contradiction": 0.002419,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.929958,
+              "neutral": 0.06483,
+              "contradiction": 0.005213,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-008",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "画像为什么需要同时保留稳定主题和动态子知识点",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "scores": [
+            {
+              "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+              "entailment": 0.067471,
+              "neutral": 0.932165,
+              "contradiction": 0.000364,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+              "entailment": 0.079989,
+              "neutral": 0.106458,
+              "contradiction": 0.813553,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+              "entailment": 0.253091,
+              "neutral": 0.58831,
+              "contradiction": 0.158599,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.367562,
+              "neutral": 0.250279,
+              "contradiction": 0.382159,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-009",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "哪些评分状态会阻止画像更新",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "scores": [
+            {
+              "chunk_id": "f912f3c9-50f8-41bd-9a3b-ac8366f25de8",
+              "entailment": 0.571899,
+              "neutral": 0.390114,
+              "contradiction": 0.037988,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+              "entailment": 0.942997,
+              "neutral": 0.026787,
+              "contradiction": 0.030216,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+              "entailment": 0.01859,
+              "neutral": 0.808309,
+              "contradiction": 0.173101,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.882487,
+              "neutral": 0.063806,
+              "contradiction": 0.053707,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-010",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "为什么事务边界比单纯保证调用顺序更重要",
+          "deterministic_status": "unknown",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+          "scores": [
+            {
+              "chunk_id": "b188fd0a-1450-4706-a69d-8a7dd997faae",
+              "entailment": 0.016304,
+              "neutral": 0.976772,
+              "contradiction": 0.006923,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+              "entailment": 0.024309,
+              "neutral": 0.963857,
+              "contradiction": 0.011834,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+              "entailment": 0.547175,
+              "neutral": 0.445658,
+              "contradiction": 0.007167,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.305457,
+              "neutral": 0.690522,
+              "contradiction": 0.004021,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-033",
+      "answerability": "none",
+      "negative_reason": "in_domain_value_missing",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "每个 RAG 请求最多允许消耗多少输入 token",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "0241c1d1-5036-4739-a06f-8e7587461a83",
+          "scores": [
+            {
+              "chunk_id": "0241c1d1-5036-4739-a06f-8e7587461a83",
+              "entailment": 0.083782,
+              "neutral": 0.15428,
+              "contradiction": 0.761938,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+              "entailment": 0.000218,
+              "neutral": 0.99923,
+              "contradiction": 0.000552,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+              "entailment": 0.028491,
+              "neutral": 0.845457,
+              "contradiction": 0.126052,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.019666,
+              "neutral": 0.936207,
+              "contradiction": 0.044128,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-034",
+      "answerability": "none",
+      "negative_reason": "in_domain_no_conclusion",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "独立 Reviewer 应该使用同一模型还是异构模型更好",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+          "scores": [
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.546963,
+              "neutral": 0.361433,
+              "contradiction": 0.091604,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+              "entailment": 0.020193,
+              "neutral": 0.973512,
+              "contradiction": 0.006295,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+              "entailment": 0.115311,
+              "neutral": 0.856503,
+              "contradiction": 0.028185,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.220575,
+              "neutral": 0.770615,
+              "contradiction": 0.008809,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-035",
+      "answerability": "none",
+      "negative_reason": "version_not_released",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "AgentMentor 下一版本会不会删除 development embedding fallback",
+          "deterministic_status": "unsupported",
+          "semantic_status": "unknown",
+          "combined_status": "unsupported",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+              "entailment": 0.000333,
+              "neutral": 0.999277,
+              "contradiction": 0.000391,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+              "entailment": 0.000588,
+              "neutral": 0.998946,
+              "contradiction": 0.000466,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+              "entailment": 0.000181,
+              "neutral": 0.999627,
+              "contradiction": 0.000192,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.000205,
+              "neutral": 0.999549,
+              "contradiction": 0.000246,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-036",
+      "answerability": "none",
+      "negative_reason": "out_of_range_implementation",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "当前 Celery worker 的重试退避参数是多少",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "scores": [
+            {
+              "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+              "entailment": 0.149796,
+              "neutral": 0.259489,
+              "contradiction": 0.590715,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "995e3d19-b544-4636-93e6-bd45bf2a52b5",
+              "entailment": 0.245931,
+              "neutral": 0.329522,
+              "contradiction": 0.424547,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+              "entailment": 0.648077,
+              "neutral": 0.146741,
+              "contradiction": 0.205182,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.16044,
+              "neutral": 0.605187,
+              "contradiction": 0.234373,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-037",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "既然当前使用 Pinecone",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+          "scores": [
+            {
+              "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+              "entailment": 0.012129,
+              "neutral": 0.202598,
+              "contradiction": 0.785272,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "f98918e3-ebe2-4f8e-b3ca-40edb4706a23",
+              "entailment": 0.03436,
+              "neutral": 0.641194,
+              "contradiction": 0.324446,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+              "entailment": 0.003483,
+              "neutral": 0.961683,
+              "contradiction": 0.034833,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.001847,
+              "neutral": 0.964915,
+              "contradiction": 0.033239,
+              "predicted_label": "neutral"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "pgvector 数据如何实时双写",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+              "entailment": 0.240487,
+              "neutral": 0.280628,
+              "contradiction": 0.478885,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "f98918e3-ebe2-4f8e-b3ca-40edb4706a23",
+              "entailment": 0.355419,
+              "neutral": 0.412437,
+              "contradiction": 0.232144,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+              "entailment": 0.234495,
+              "neutral": 0.292271,
+              "contradiction": 0.473233,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.136448,
+              "neutral": 0.120522,
+              "contradiction": 0.743031,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-038",
+      "answerability": "none",
+      "negative_reason": "out_of_scope",
+      "predictions": {
+        "deterministic_only": "none",
+        "semantic_only": "full",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Rust borrow checker 怎样保证画像更新线程安全",
+          "deterministic_status": "unsupported",
+          "semantic_status": "supported",
+          "combined_status": "unsupported",
+          "selected_chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "scores": [
+            {
+              "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+              "entailment": 0.030624,
+              "neutral": 0.946909,
+              "contradiction": 0.022468,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+              "entailment": 0.175915,
+              "neutral": 0.378607,
+              "contradiction": 0.445478,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.534729,
+              "neutral": 0.246547,
+              "contradiction": 0.218724,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.504073,
+              "neutral": 0.387407,
+              "contradiction": 0.10852,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-neg-039",
+      "answerability": "none",
+      "negative_reason": "false_premise",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "资料说新文档进入目录但又不改变已有画像",
+          "deterministic_status": "supported",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "scores": [
+            {
+              "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+              "entailment": 0.065398,
+              "neutral": 0.104627,
+              "contradiction": 0.829975,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.015345,
+              "neutral": 0.264709,
+              "contradiction": 0.719947,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "0241c1d1-5036-4739-a06f-8e7587461a83",
+              "entailment": 0.17211,
+              "neutral": 0.63605,
+              "contradiction": 0.19184,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.373393,
+              "neutral": 0.075897,
+              "contradiction": 0.550711,
+              "predicted_label": "contradiction"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "因此上传后用户掌握度究竟应该立即增加多少",
+          "deterministic_status": "unknown",
+          "semantic_status": "contradicted",
+          "combined_status": "contradicted",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+              "entailment": 0.007763,
+              "neutral": 0.897215,
+              "contradiction": 0.095022,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.035998,
+              "neutral": 0.329914,
+              "contradiction": 0.634088,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "0241c1d1-5036-4739-a06f-8e7587461a83",
+              "entailment": 0.001222,
+              "neutral": 0.987841,
+              "contradiction": 0.010938,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.026385,
+              "neutral": 0.294977,
+              "contradiction": 0.678638,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pt-005",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "overlap 如何降低语义丢失风险",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "322cbb6a-16c9-4087-9e86-aeceb8bacafb",
+          "scores": [
+            {
+              "chunk_id": "322cbb6a-16c9-4087-9e86-aeceb8bacafb",
+              "entailment": 0.969837,
+              "neutral": 0.024176,
+              "contradiction": 0.005986,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+              "entailment": 0.899415,
+              "neutral": 0.045478,
+              "contradiction": 0.055108,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+              "entailment": 0.589203,
+              "neutral": 0.186506,
+              "contradiction": 0.224291,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.93376,
+              "neutral": 0.01912,
+              "contradiction": 0.04712,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "当前语料上跨章节信息的保留率是多少",
+          "deterministic_status": "unknown",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+          "scores": [
+            {
+              "chunk_id": "322cbb6a-16c9-4087-9e86-aeceb8bacafb",
+              "entailment": 0.03826,
+              "neutral": 0.863155,
+              "contradiction": 0.098585,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+              "entailment": 0.485327,
+              "neutral": 0.175551,
+              "contradiction": 0.339121,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+              "entailment": 0.296147,
+              "neutral": 0.426064,
+              "contradiction": 0.27779,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.077292,
+              "neutral": 0.086355,
+              "contradiction": 0.836353,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pt-006",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "内容指纹如何缓解文档重排导致的 ID 漂移",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "scores": [
+            {
+              "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+              "entailment": 0.437451,
+              "neutral": 0.519122,
+              "contradiction": 0.043427,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "cd038e3e-d8c7-4c17-b139-533e4d98d823",
+              "entailment": 0.442845,
+              "neutral": 0.422553,
+              "contradiction": 0.134602,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.692157,
+              "neutral": 0.263595,
+              "contradiction": 0.044248,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.530579,
+              "neutral": 0.419056,
+              "contradiction": 0.050365,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "所建议哈希方案的碰撞概率是多少",
+          "deterministic_status": "unknown",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "cd038e3e-d8c7-4c17-b139-533e4d98d823",
+          "scores": [
+            {
+              "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+              "entailment": 0.148988,
+              "neutral": 0.212851,
+              "contradiction": 0.63816,
+              "predicted_label": "contradiction"
+            },
+            {
+              "chunk_id": "cd038e3e-d8c7-4c17-b139-533e4d98d823",
+              "entailment": 0.469484,
+              "neutral": 0.3203,
+              "contradiction": 0.210216,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+              "entailment": 0.049056,
+              "neutral": 0.912805,
+              "contradiction": 0.038139,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.102034,
+              "neutral": 0.361796,
+              "contradiction": 0.53617,
+              "predicted_label": "contradiction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pt-007",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "词汇化证据判断怎样检查支持度",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "scores": [
+            {
+              "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+              "entailment": 0.209094,
+              "neutral": 0.651511,
+              "contradiction": 0.139395,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+              "entailment": 0.5361,
+              "neutral": 0.153863,
+              "contradiction": 0.310037,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+              "entailment": 0.340981,
+              "neutral": 0.547118,
+              "contradiction": 0.111901,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.453176,
+              "neutral": 0.320041,
+              "contradiction": 0.226783,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "它经过了多少条人工样本的阈值校准",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+              "entailment": 0.003116,
+              "neutral": 0.996227,
+              "contradiction": 0.000657,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+              "entailment": 0.180688,
+              "neutral": 0.816125,
+              "contradiction": 0.003187,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+              "entailment": 0.185786,
+              "neutral": 0.808003,
+              "contradiction": 0.006211,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.279798,
+              "neutral": 0.711641,
+              "contradiction": 0.008561,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pt-008",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "当前 Reviewer 无法消除哪些同源偏差",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+          "scores": [
+            {
+              "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+              "entailment": 0.426624,
+              "neutral": 0.404542,
+              "contradiction": 0.168834,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "08814292-825f-4552-82ab-59c15d55a6d1",
+              "entailment": 0.086261,
+              "neutral": 0.896737,
+              "contradiction": 0.017002,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.28886,
+              "neutral": 0.516718,
+              "contradiction": 0.194422,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.280654,
+              "neutral": 0.518034,
+              "contradiction": 0.201312,
+              "predicted_label": "neutral"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "这些偏差造成的平均分数误差是多少",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+              "entailment": 0.026558,
+              "neutral": 0.962016,
+              "contradiction": 0.011426,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "08814292-825f-4552-82ab-59c15d55a6d1",
+              "entailment": 0.006384,
+              "neutral": 0.990373,
+              "contradiction": 0.003243,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.000612,
+              "neutral": 0.997136,
+              "contradiction": 0.002251,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.100495,
+              "neutral": 0.881059,
+              "contradiction": 0.018446,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pt-009",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "FINAL 与 REVIEW_PENDING 分别如何影响画像更新",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+              "entailment": 0.814399,
+              "neutral": 0.041243,
+              "contradiction": 0.144358,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+              "entailment": 0.914982,
+              "neutral": 0.059141,
+              "contradiction": 0.025878,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+              "entailment": 0.471356,
+              "neutral": 0.472548,
+              "contradiction": 0.056095,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.985743,
+              "neutral": 0.009665,
+              "contradiction": 0.004593,
+              "predicted_label": "entailment"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "低置信降权系数经过了多少轮线上校准",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+              "entailment": 0.00066,
+              "neutral": 0.997645,
+              "contradiction": 0.001694,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+              "entailment": 0.00102,
+              "neutral": 0.997342,
+              "contradiction": 0.001637,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+              "entailment": 0.016141,
+              "neutral": 0.982691,
+              "contradiction": 0.001168,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.0062,
+              "neutral": 0.985295,
+              "contradiction": 0.008506,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pt-010",
+      "answerability": "partial",
+      "negative_reason": "partial_evidence_only",
+      "predictions": {
+        "deterministic_only": "partial",
+        "semantic_only": "partial",
+        "combined": "partial"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "当前个人版与企业级终态的边界是什么",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+          "scores": [
+            {
+              "chunk_id": "b188fd0a-1450-4706-a69d-8a7dd997faae",
+              "entailment": 0.126532,
+              "neutral": 0.860078,
+              "contradiction": 0.013389,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+              "entailment": 0.461043,
+              "neutral": 0.406573,
+              "contradiction": 0.132384,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+              "entailment": 0.01675,
+              "neutral": 0.965418,
+              "contradiction": 0.017832,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.337263,
+              "neutral": 0.522585,
+              "contradiction": 0.140152,
+              "predicted_label": "neutral"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim-2",
+          "text": "完成全部演进项预计需要多少人月",
+          "deterministic_status": "unknown",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "b188fd0a-1450-4706-a69d-8a7dd997faae",
+              "entailment": 0.000675,
+              "neutral": 0.997774,
+              "contradiction": 0.001551,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+              "entailment": 0.000216,
+              "neutral": 0.998075,
+              "contradiction": 0.001709,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+              "entailment": 0.000327,
+              "neutral": 0.998505,
+              "contradiction": 0.001169,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.000575,
+              "neutral": 0.996964,
+              "contradiction": 0.002461,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-011",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "知识数据模型如何把原始文档关联到增量生成的知识目录",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "9dbafe6b-3c9c-43b5-bce1-6dde21ac3424",
+          "scores": [
+            {
+              "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+              "entailment": 0.944576,
+              "neutral": 0.019026,
+              "contradiction": 0.036399,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+              "entailment": 0.951717,
+              "neutral": 0.032161,
+              "contradiction": 0.016122,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "9dbafe6b-3c9c-43b5-bce1-6dde21ac3424",
+              "entailment": 0.976507,
+              "neutral": 0.011324,
+              "contradiction": 0.01217,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.598172,
+              "neutral": 0.035684,
+              "contradiction": 0.366144,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-012",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "文档大幅重排时结构路径匹配如何帮助稳定引用",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "top3-combined",
+          "scores": [
+            {
+              "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+              "entailment": 0.545831,
+              "neutral": 0.432603,
+              "contradiction": 0.021565,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "20fde7d8-b88f-4382-97b6-731c8f41ff6c",
+              "entailment": 0.290265,
+              "neutral": 0.611246,
+              "contradiction": 0.098489,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+              "entailment": 0.149166,
+              "neutral": 0.846649,
+              "contradiction": 0.004185,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.806448,
+              "neutral": 0.186529,
+              "contradiction": 0.007023,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-013",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "RRF 的量纲无关特性解决了什么问题",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "scores": [
+            {
+              "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+              "entailment": 0.905451,
+              "neutral": 0.084797,
+              "contradiction": 0.009751,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+              "entailment": 0.743725,
+              "neutral": 0.078911,
+              "contradiction": 0.177364,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+              "entailment": 0.003173,
+              "neutral": 0.972394,
+              "contradiction": 0.024433,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.273726,
+              "neutral": 0.700209,
+              "contradiction": 0.026066,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-014",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "full",
+        "combined": "full"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "Reviewer 不可用时为什么要进入 REVIEW_PENDING",
+          "deterministic_status": "supported",
+          "semantic_status": "supported",
+          "combined_status": "supported",
+          "selected_chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+          "scores": [
+            {
+              "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+              "entailment": 0.892655,
+              "neutral": 0.074317,
+              "contradiction": 0.033028,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+              "entailment": 0.084958,
+              "neutral": 0.901276,
+              "contradiction": 0.013766,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+              "entailment": 0.976034,
+              "neutral": 0.010441,
+              "contradiction": 0.013525,
+              "predicted_label": "entailment"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.584307,
+              "neutral": 0.386789,
+              "contradiction": 0.028904,
+              "predicted_label": "entailment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev-pos-015",
+      "answerability": "full",
+      "negative_reason": null,
+      "predictions": {
+        "deterministic_only": "full",
+        "semantic_only": "none",
+        "combined": "none"
+      },
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "text": "训练焦点推荐为什么优先处理开放的复习任务",
+          "deterministic_status": "supported",
+          "semantic_status": "unknown",
+          "combined_status": "unknown",
+          "selected_chunk_id": null,
+          "scores": [
+            {
+              "chunk_id": "e4237f63-134b-4f62-92f1-76c552e82f8c",
+              "entailment": 0.274142,
+              "neutral": 0.376837,
+              "contradiction": 0.34902,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+              "entailment": 0.0019,
+              "neutral": 0.986627,
+              "contradiction": 0.011473,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "34edfd35-911e-48a5-9a77-e358dfbd3485",
+              "entailment": 0.019606,
+              "neutral": 0.838006,
+              "contradiction": 0.142388,
+              "predicted_label": "neutral"
+            },
+            {
+              "chunk_id": "top3-combined",
+              "entailment": 0.008208,
+              "neutral": 0.965038,
+              "contradiction": 0.026754,
+              "predicted_label": "neutral"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
