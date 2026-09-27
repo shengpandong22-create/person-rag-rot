@@ -156,6 +156,11 @@ def compute_extractor_metrics(rows: list[dict[str, Any]]) -> dict[str, int | flo
     subject_rejections = sum(
         int(row.get("semantic_duplicate_subject_rejection_count", 0)) for row in rows
     )
+    resolved_signatures = sum(
+        bool(claim.get("signature", {}).get("resolved"))
+        for row in rows
+        for claim in row["extracted_claims"]
+    )
     supported = sum(
         claim.get("nli_status") == "supported"
         for row in rows
@@ -180,6 +185,9 @@ def compute_extractor_metrics(rows: list[dict[str, Any]]) -> dict[str, int | flo
         "semantic_duplicate_subject_rejection_rate": round(
             subject_rejections / total_extracted, 4
         )
+        if total_extracted
+        else 0.0,
+        "subject_signature_resolution_rate": round(resolved_signatures / total_extracted, 4)
         if total_extracted
         else 0.0,
         "total_extracted_claims": total_extracted,

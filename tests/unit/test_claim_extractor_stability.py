@@ -20,6 +20,7 @@ def _run(claims: list[str], recall: float = 1.0) -> dict[str, object]:
             "semantic_duplicate_rate": 0.0,
             "semantic_duplicate_candidate_rate": 0.0,
             "semantic_duplicate_subject_rejection_rate": 0.0,
+            "subject_signature_resolution_rate": 1.0,
         },
         "cases": [
             {
