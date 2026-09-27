@@ -122,3 +122,32 @@ def test_claim_gate_policy_replays_recorded_claim_decision() -> None:
     )
 
     assert result.partial_boundary_detection_rate == 1.0
+
+
+def test_single_demand_ablation_changes_only_targeted_claim_type() -> None:
+    row = _row("partial", "partial", sufficient=True, coverage=0.5)
+    assessment = row["evidence_assessment"]
+    assert isinstance(assessment, dict)
+    assessment["claim_assessments"] = [
+        {
+            "requirement_types": ["date"],
+            "status": "unsupported",
+        }
+    ]
+
+    results = replay_report({"cases": [row]})
+    date = next(
+        item
+        for item in results
+        if item.policy == "claim_demand_only"
+        and item.parameters == {"demand_type": "date"}
+    )
+    exact_value = next(
+        item
+        for item in results
+        if item.policy == "claim_demand_only"
+        and item.parameters == {"demand_type": "exact_value"}
+    )
+
+    assert date.partial_boundary_detection_rate == 1.0
+    assert exact_value.partial_boundary_detection_rate == 0.0

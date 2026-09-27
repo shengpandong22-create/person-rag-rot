@@ -35,6 +35,16 @@ def replay_report(report: dict[str, Any]) -> list[GatePolicyResult]:
     policies.append(("numeric_demand_coverage", {}))
     policies.append(("clause_demand_v1", {}))
     policies.append(("claim_gate_v1", {}))
+    policies.extend(
+        ("claim_demand_only", {"demand_type": demand_type})
+        for demand_type in (
+            "exact_value",
+            "date",
+            "guarantee",
+            "future_version",
+            "comparison",
+        )
+    )
     return [_evaluate_policy(rows, name, parameters) for name, parameters in policies]
 
 
@@ -153,6 +163,17 @@ def _predict(row: dict[str, Any], name: str, parameters: dict[str, object]) -> s
         if decision not in {"full", "partial", "none"}:
             raise ValueError("claim_gate_v1 requires claim-level diagnostics")
         return str(decision)
+    if name == "claim_demand_only":
+        demand_type = parameters.get("demand_type")
+        if not isinstance(demand_type, str):
+            raise TypeError("claim demand type must be a string")
+        claims = assessment.get("claim_assessments", [])
+        targeted = [
+            claim for claim in claims if demand_type in claim.get("requirement_types", [])
+        ]
+        if targeted and any(claim.get("status") != "supported" for claim in targeted):
+            return "partial"
+        return "full"
     raise ValueError(f"Unknown policy: {name}")
 
 
