@@ -10,6 +10,7 @@ from evals.claim_extractor import (
 )
 
 DATASET = Path("evals/datasets/draft_claim_extraction_development_v1.jsonl")
+FROZEN_DATASET = Path("evals/datasets/draft_claim_extraction_development_v2.jsonl")
 
 
 def test_extraction_output_enforces_strict_draft_claim_schema() -> None:
@@ -48,6 +49,19 @@ def test_load_extraction_fixtures_validates_development_dataset() -> None:
 
     assert len(fixtures) == 5
     assert sum(claim.required for fixture in fixtures for claim in fixture.expected_claims) == 10
+
+
+def test_frozen_development_dataset_covers_adversarial_categories() -> None:
+    fixtures = load_extraction_fixtures(FROZEN_DATASET)
+
+    assert len(fixtures) == 15
+    assert {
+        "long_answer",
+        "compound_sentence",
+        "duplicate_claim",
+        "implicit_paraphrase",
+        "format_anomaly",
+    } <= {fixture.category for fixture in fixtures}
 
 
 def test_compute_extractor_metrics() -> None:

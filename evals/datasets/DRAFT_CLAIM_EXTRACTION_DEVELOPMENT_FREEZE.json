@@ -1,0 +1,24 @@
+{
+  "dataset": "evals\\datasets\\draft_claim_extraction_development_v2.jsonl",
+  "sha256": "35db5be33aedcc35122f2cdc4138ee72bb7505d480978996f56f92f1e967aa69",
+  "case_count": 15,
+  "case_ids": [
+    "ce-001",
+    "ce-002",
+    "ce-003",
+    "ce-004",
+    "ce-005",
+    "ce-006",
+    "ce-007",
+    "ce-008",
+    "ce-009",
+    "ce-010",
+    "ce-011",
+    "ce-012",
+    "ce-013",
+    "ce-014",
+    "ce-015"
+  ],
+  "frozen_at": "2026-09-27T16:30:00+08:00",
+  "note": "Frozen Development set for eval-only LLM DraftClaim extraction and repeated-run stability evaluation. Changes invalidate prior extraction stability reports."
+}

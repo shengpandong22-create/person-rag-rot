@@ -49,6 +49,7 @@ class ClaimExtractionFixture(BaseModel):
     evidence: str = Field(min_length=1)
     draft_answer: str = Field(min_length=1)
     expected_claims: list[ExpectedExtractionClaim] = Field(min_length=1, max_length=20)
+    category: str = Field(default="baseline", min_length=1, max_length=64)
 
 
 def _key(text: str) -> str:
