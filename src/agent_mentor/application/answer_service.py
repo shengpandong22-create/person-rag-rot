@@ -117,6 +117,13 @@ class EvidenceDecision(StrEnum):
     NONE = "none"
 
 
+class ClaimEvidenceStatus(StrEnum):
+    SUPPORTED = "supported"
+    UNSUPPORTED = "unsupported"
+    CONTRADICTED = "contradicted"
+    UNKNOWN = "unknown"
+
+
 @dataclass(frozen=True, slots=True)
 class CandidateEvidenceAssessment:
     chunk_id: str
@@ -143,6 +150,16 @@ class DemandEvidenceAssessment:
 
 
 @dataclass(frozen=True, slots=True)
+class ClaimEvidenceAssessment:
+    claim_id: str
+    text: str
+    requirement_types: tuple[str, ...]
+    status: ClaimEvidenceStatus
+    evidence_chunk_ids: tuple[str, ...]
+    reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class EvidenceAssessment:
     policy_name: str
     decision: EvidenceDecision
@@ -159,6 +176,8 @@ class EvidenceAssessment:
     demand_markers: tuple[str, ...]
     clause_assessments: tuple[ClauseEvidenceAssessment, ...]
     demand_assessments: tuple[DemandEvidenceAssessment, ...]
+    claim_decision: EvidenceDecision
+    claim_assessments: tuple[ClaimEvidenceAssessment, ...]
     candidate_assessments: tuple[CandidateEvidenceAssessment, ...]
     rejection_reasons: tuple[str, ...]
 
@@ -507,6 +526,10 @@ class AnswerService:
         clause_assessments = self._clause_assessments(
             question, supported_candidates, query_terms
         )
+        claim_assessments = self._claim_assessments(
+            clause_assessments, supported_candidates, supported_text
+        )
+        claim_decision = self._claim_decision(claim_assessments)
         rejection_reasons: list[str] = []
         if not supported_candidates:
             rejection_reasons.append("no_lexically_supported_candidate")
@@ -541,6 +564,8 @@ class AnswerService:
             demand_markers=demand_markers,
             clause_assessments=clause_assessments,
             demand_assessments=demand_assessments,
+            claim_decision=claim_decision,
+            claim_assessments=claim_assessments,
             candidate_assessments=tuple(candidate_rows),
             rejection_reasons=tuple(rejection_reasons),
         )
@@ -581,6 +606,54 @@ class AnswerService:
                 )
             )
         return tuple(rows)
+
+    def _claim_assessments(
+        self,
+        clauses: tuple[ClauseEvidenceAssessment, ...],
+        candidates: list[RetrievedChunk],
+        evidence_text: str,
+    ) -> tuple[ClaimEvidenceAssessment, ...]:
+        rows: list[ClaimEvidenceAssessment] = []
+        for index, clause in enumerate(clauses, start=1):
+            demands = self._demand_assessments(clause.text, evidence_text)
+            requirement_types = tuple(item.demand_type for item in demands) or ("fact",)
+            supporting_ids = tuple(
+                str(candidate.chunk_id)
+                for candidate in candidates[:3]
+                if self._has_lexical_support(clause.text, [candidate])
+            )
+            reasons: list[str] = []
+            if not clause.lexical_support:
+                status = ClaimEvidenceStatus.UNKNOWN
+                reasons.append("no_lexical_support_for_claim")
+            else:
+                unmet = [item.demand_type for item in demands if not item.matched]
+                if unmet:
+                    status = ClaimEvidenceStatus.UNSUPPORTED
+                    reasons.extend(f"unmet_{demand}_demand" for demand in unmet)
+                else:
+                    status = ClaimEvidenceStatus.SUPPORTED
+                    reasons.append("claim_and_demands_supported")
+            rows.append(
+                ClaimEvidenceAssessment(
+                    claim_id=f"claim-{index}",
+                    text=clause.text,
+                    requirement_types=requirement_types,
+                    status=status,
+                    evidence_chunk_ids=supporting_ids,
+                    reasons=tuple(reasons),
+                )
+            )
+        return tuple(rows)
+
+    def _claim_decision(
+        self, claims: tuple[ClaimEvidenceAssessment, ...]
+    ) -> EvidenceDecision:
+        if claims and all(item.status is ClaimEvidenceStatus.SUPPORTED for item in claims):
+            return EvidenceDecision.FULL
+        if any(item.status is ClaimEvidenceStatus.SUPPORTED for item in claims):
+            return EvidenceDecision.PARTIAL
+        return EvidenceDecision.NONE
 
     def _demand_assessments(
         self, question: str, evidence_text: str

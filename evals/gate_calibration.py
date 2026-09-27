@@ -34,6 +34,7 @@ def replay_report(report: dict[str, Any]) -> list[GatePolicyResult]:
     )
     policies.append(("numeric_demand_coverage", {}))
     policies.append(("clause_demand_v1", {}))
+    policies.append(("claim_gate_v1", {}))
     return [_evaluate_policy(rows, name, parameters) for name, parameters in policies]
 
 
@@ -147,6 +148,11 @@ def _predict(row: dict[str, Any], name: str, parameters: dict[str, object]) -> s
         uncovered_clause = any(not clause["lexical_support"] for clause in clauses)
         unmet_demand = any(not demand["matched"] for demand in demands)
         return "partial" if uncovered_clause or unmet_demand else "full"
+    if name == "claim_gate_v1":
+        decision = assessment.get("claim_decision")
+        if decision not in {"full", "partial", "none"}:
+            raise ValueError("claim_gate_v1 requires claim-level diagnostics")
+        return str(decision)
     raise ValueError(f"Unknown policy: {name}")
 
 

@@ -440,6 +440,37 @@ def test_evidence_diagnostics_record_clause_level_support() -> None:
         "date",
         "future_version",
     }
+    assert [item.status.value for item in assessment.claim_assessments] == [
+        "supported",
+        "unknown",
+    ]
+    assert assessment.claim_decision.value == "partial"
+
+
+def test_claim_diagnostics_mark_unmet_exact_value_as_unsupported() -> None:
+    service = AnswerService(
+        cast(Any, None),
+        cast(Any, None),
+        default_top_k=6,
+        default_candidate_k=20,
+        min_evidence_score=0.01,
+    )
+    evidence = replace(
+        chunk(),
+        content="系统使用 HNSW 索引，ef_search 是检索参数。",
+        score=0.5,
+    )
+
+    assessment = service.assess_evidence_diagnostics(
+        "HNSW ef_search 多少？", [evidence]
+    )
+
+    claim = assessment.claim_assessments[0]
+    assert claim.requirement_types == ("exact_value",)
+    assert claim.status.value == "unsupported"
+    assert claim.reasons == ("unmet_exact_value_demand",)
+    assert claim.evidence_chunk_ids == (str(evidence.chunk_id),)
+    assert assessment.claim_decision.value == "none"
 
 
 def test_clause_demand_policy_rejects_partial_evidence_when_explicitly_enabled() -> None:

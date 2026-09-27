@@ -26,6 +26,8 @@ def _row(
             "numeric_tokens_covered": list(covered_numbers),
             "clause_assessments": [],
             "demand_assessments": [],
+            "claim_decision": "full" if sufficient else "none",
+            "claim_assessments": [],
         },
     }
 
@@ -102,6 +104,21 @@ def test_clause_demand_policy_marks_uncovered_demand_as_partial() -> None:
         item
         for item in replay_report({"cases": [row]})
         if item.policy == "clause_demand_v1"
+    )
+
+    assert result.partial_boundary_detection_rate == 1.0
+
+
+def test_claim_gate_policy_replays_recorded_claim_decision() -> None:
+    row = _row("partial", "partial", sufficient=True, coverage=0.5)
+    assessment = row["evidence_assessment"]
+    assert isinstance(assessment, dict)
+    assessment["claim_decision"] = "partial"
+
+    result = next(
+        item
+        for item in replay_report({"cases": [row]})
+        if item.policy == "claim_gate_v1"
     )
 
     assert result.partial_boundary_detection_rate == 1.0
