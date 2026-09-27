@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
-from typing import Any
+from typing import Any, Protocol
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -16,11 +16,19 @@ from pydantic import BaseModel, ConfigDict, Field
 from agent_mentor.config import get_settings
 from agent_mentor.infrastructure.llm import OpenAICompatibleLLMGateway
 from agent_mentor.ports.llm_gateway import Message, ModelPolicy, TraceContext
-from evals.nli_gate import DEFAULT_NLI_MODEL, NLIModel
+from evals.nli_gate import DEFAULT_NLI_MODEL, NLIModel, NLIPairScore
 from evals.provenance import collect_git_state
 
 NLI_STATUS = {"entailment": "supported", "neutral": "unknown", "contradiction": "contradicted"}
-PROMPT_VERSION = "draft_claim_extractor_v1"
+PROMPT_VERSION = "draft_claim_extractor_boundary_v2"
+SYSTEM_PROMPT = (
+    "将内部草稿答案拆成原子事实声明。逐句完整提取，不遗漏；只复制草稿中明确出现的事实，"
+    "不改写、不补充、不推断。边界规则：一、只有独立谓词或独立结论才拆分；同一谓词后的"
+    "并列对象保持为一条。二、复合句按逗号、分号和转折词拆成最小子句，保留子句原文，"
+    "不要为子句补写主语或语气词。三、JSON 或键值内容每个字段各生成一条“字段 是 值”；"
+    "标题、项目符号、代码围栏不是声明。四、语义重复的声明只保留第一次出现的原文。"
+    "直接回答问题的声明 required=true，补充信息 required=false；所有 origin 必须为 model_draft。"
+)
 
 
 class ExtractedDraftClaim(BaseModel):
@@ -52,6 +60,10 @@ class ClaimExtractionFixture(BaseModel):
     category: str = Field(default="baseline", min_length=1, max_length=64)
 
 
+class NLIScorer(Protocol):
+    def score(self, pairs: list[tuple[str, str, str]], batch_size: int) -> list[NLIPairScore]: ...
+
+
 def _key(text: str) -> str:
     return re.sub(r"[\s。！？!?，,；;]+", "", text).casefold()
 
@@ -77,6 +89,7 @@ def compute_extractor_metrics(rows: list[dict[str, Any]]) -> dict[str, int | flo
     required_hits = sum(int(row["required_hit_count"]) for row in rows)
     total_extracted = sum(len(row["extracted_claims"]) for row in rows)
     total_extra = sum(int(row["extra_count"]) for row in rows)
+    total_duplicates = sum(int(row.get("semantic_duplicate_count", 0)) for row in rows)
     supported = sum(
         claim.get("nli_status") == "supported"
         for row in rows
@@ -92,8 +105,42 @@ def compute_extractor_metrics(rows: list[dict[str, Any]]) -> dict[str, int | flo
         "nli_retained_claim_rate": round(supported / total_extracted, 4)
         if total_extracted
         else 0.0,
+        "semantic_duplicate_rate": round(total_duplicates / total_extracted, 4)
+        if total_extracted
+        else 0.0,
         "total_extracted_claims": total_extracted,
     }
+
+
+def mark_semantic_duplicates(
+    rows: list[dict[str, Any]], nli: NLIScorer, batch_size: int
+) -> None:
+    pairs: list[tuple[str, str, str]] = []
+    locations: list[tuple[int, int, int]] = []
+    for row_index, row in enumerate(rows):
+        claims = row["extracted_claims"]
+        for right in range(1, len(claims)):
+            for left in range(right):
+                pair_id = f"{row['id']}:{left}:{right}"
+                pairs.extend(
+                    [
+                        (pair_id, claims[left]["text"], claims[right]["text"]),
+                        (pair_id, claims[right]["text"], claims[left]["text"]),
+                    ]
+                )
+                locations.append((row_index, left, right))
+    scores = nli.score(pairs, batch_size)
+    for row in rows:
+        row["semantic_duplicate_count"] = 0
+    for pair_index, (row_index, left, right) in enumerate(locations):
+        forward = scores[pair_index * 2]
+        reverse = scores[pair_index * 2 + 1]
+        if forward.predicted_label != "entailment" or reverse.predicted_label != "entailment":
+            continue
+        claim = rows[row_index]["extracted_claims"][right]
+        if "semantic_duplicate_of" not in claim:
+            claim["semantic_duplicate_of"] = rows[row_index]["extracted_claims"][left]["claim_id"]
+            rows[row_index]["semantic_duplicate_count"] += 1
 
 
 async def run_extractor_eval(dataset: Path, output_dir: Path, batch_size: int) -> dict[str, object]:
@@ -116,10 +163,7 @@ async def run_extractor_eval(dataset: Path, output_dir: Path, batch_size: int) -
                     messages=[
                         Message(
                             "system",
-                            "将内部草稿答案拆成原子事实声明。逐句完整提取，不遗漏；只复制草稿中明确"
-                            "出现的事实，不改写、不补充、不推断。每个 claim 必须是可独立验证的"
-                            "陈述句。直接回答问题的声明 required=true，补充信息 required=false；"
-                            "所有 origin 必须为 model_draft。",
+                            SYSTEM_PROMPT,
                         ),
                         Message(
                             "user",
@@ -171,6 +215,7 @@ async def run_extractor_eval(dataset: Path, output_dir: Path, batch_size: int) -
             "neutral": score.neutral,
             "contradiction": score.contradiction,
         }
+    mark_semantic_duplicates(rows, nli, batch_size)
     payload: dict[str, object] = {
         "generated_at": datetime.now(UTC).isoformat(),
         **collect_git_state().to_json(),

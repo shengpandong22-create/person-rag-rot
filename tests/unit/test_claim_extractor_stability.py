@@ -17,6 +17,7 @@ def _run(claims: list[str], recall: float = 1.0) -> dict[str, object]:
             "extra_claim_rate": 0.0,
             "unsupported_claim_rate": 0.0,
             "nli_retained_claim_rate": 1.0,
+            "semantic_duplicate_rate": 0.0,
         },
         "cases": [
             {

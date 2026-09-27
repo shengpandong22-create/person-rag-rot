@@ -7,7 +7,9 @@ from evals.claim_extractor import (
     DraftClaimExtractionOutput,
     compute_extractor_metrics,
     load_extraction_fixtures,
+    mark_semantic_duplicates,
 )
+from evals.nli_gate import NLIPairScore
 
 DATASET = Path("evals/datasets/draft_claim_extraction_development_v1.jsonl")
 FROZEN_DATASET = Path("evals/datasets/draft_claim_extraction_development_v2.jsonl")
@@ -91,5 +93,34 @@ def test_compute_extractor_metrics() -> None:
         "extra_claim_rate": 0.5,
         "unsupported_claim_rate": 0.5,
         "nli_retained_claim_rate": 0.5,
+        "semantic_duplicate_rate": 0.0,
         "total_extracted_claims": 2,
     }
+
+
+class _FakeNLI:
+    def score(
+        self, pairs: list[tuple[str, str, str]], batch_size: int
+    ) -> list[NLIPairScore]:
+        del batch_size
+        return [
+            NLIPairScore(pair_id, 0.9, 0.05, 0.05, "entailment")
+            for pair_id, _premise, _hypothesis in pairs
+        ]
+
+
+def test_mark_semantic_duplicates_requires_bidirectional_entailment() -> None:
+    rows = [
+        {
+            "id": "case-1",
+            "extracted_claims": [
+                {"claim_id": "c1", "text": "默认行为保持不变。"},
+                {"claim_id": "c2", "text": "默认行为没有改变。"},
+            ],
+        }
+    ]
+
+    mark_semantic_duplicates(rows, _FakeNLI(), 8)
+
+    assert rows[0]["semantic_duplicate_count"] == 1
+    assert rows[0]["extracted_claims"][1]["semantic_duplicate_of"] == "c1"
