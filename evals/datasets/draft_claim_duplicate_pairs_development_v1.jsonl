@@ -1,0 +1,22 @@
+{"id":"dup-001","category":"pronoun","left":"Evidence Gate 会在证据不足时拒答。","right":"它会在证据不足时拒答。","expected_duplicate":true,"note":"代词指回同一主体。"}
+{"id":"dup-002","category":"pronoun","left":"Evidence Gate 会在证据不足时拒答。","right":"它会提升检索召回率。","expected_duplicate":false,"note":"同一代词主体但谓词含义不同。"}
+{"id":"dup-003","category":"pronoun","left":"Validation 用于参数选择。","right":"其用途是选择参数。","expected_duplicate":true,"note":"所有格代词改写。"}
+{"id":"dup-004","category":"alias","left":"RRF 融合向量与文本排名。","right":"Reciprocal Rank Fusion 融合向量检索与文本检索的排序。","expected_duplicate":true,"note":"英文全称与缩写。"}
+{"id":"dup-005","category":"alias","left":"BGE-small-zh 是默认嵌入模型。","right":"BM25 是默认嵌入模型。","expected_duplicate":false,"note":"不同组件承担同一表述角色。"}
+{"id":"dup-006","category":"alias","left":"Holdout 不参与调参。","right":"最终验收集不用于参数选择。","expected_duplicate":true,"note":"数据集别名与谓词改写。"}
+{"id":"dup-007","category":"nested_subject","left":"Validation 的冻结清单记录数据集哈希。","right":"Validation 的冻结清单保存数据集哈希。","expected_duplicate":true,"note":"嵌套主语一致。"}
+{"id":"dup-008","category":"nested_subject","left":"Validation 的冻结清单记录数据集哈希。","right":"Holdout 的冻结清单记录数据集哈希。","expected_duplicate":false,"note":"嵌套主语的限定对象不同。"}
+{"id":"dup-009","category":"nested_subject","left":"Evidence Gate 的阈值保持不变。","right":"Retriever 的阈值保持不变。","expected_duplicate":false,"note":"末尾相同但所属组件不同。"}
+{"id":"dup-010","category":"number","left":"最小证据分数是 0.70。","right":"最小证据分数为 70%。","expected_duplicate":true,"note":"等价数字格式。"}
+{"id":"dup-011","category":"number","left":"候选数量是 6。","right":"候选数量是 8。","expected_duplicate":false,"note":"相同主语但数值不同。"}
+{"id":"dup-012","category":"number","left":"RRF k 是 60。","right":"RRF k 的取值为六十。","expected_duplicate":true,"note":"阿拉伯数字与中文数字。"}
+{"id":"dup-013","category":"date","left":"数据集冻结日期是 2026-09-27。","right":"数据集冻结日期为 2026 年 9 月 27 日。","expected_duplicate":true,"note":"等价日期格式。"}
+{"id":"dup-014","category":"date","left":"数据集冻结日期是 2026-09-27。","right":"数据集冻结日期是 2026-09-28。","expected_duplicate":false,"note":"相邻但不同日期。"}
+{"id":"dup-015","category":"negation","left":"Holdout 不用于参数选择。","right":"Holdout 不能用于参数选择。","expected_duplicate":true,"note":"否定情态改写。"}
+{"id":"dup-016","category":"negation","left":"Holdout 不用于参数选择。","right":"Holdout 用于参数选择。","expected_duplicate":false,"note":"肯定与否定相反。"}
+{"id":"dup-017","category":"negation","left":"引用白名单不能证明所有断言正确。","right":"引用白名单可以证明所有断言正确。","expected_duplicate":false,"note":"能力结论相反。"}
+{"id":"dup-018","category":"near_paraphrase","left":"默认检索行为保持不变。","right":"默认检索行为没有改变。","expected_duplicate":true,"note":"同主体状态谓词改写。"}
+{"id":"dup-019","category":"near_paraphrase","left":"生产组装保持不变。","right":"默认检索行为保持不变。","expected_duplicate":false,"note":"相同谓词但主体不同。"}
+{"id":"dup-020","category":"near_paraphrase","left":"报告包含证据决策和失败类别。","right":"报告记录证据判定与失败类型。","expected_duplicate":true,"note":"同主体、同对象的近义改写。"}
+{"id":"dup-021","category":"date","left":"Validation 冻结于 2026-09-27。","right":"Holdout 冻结于 2026-09-27。","expected_duplicate":false,"note":"日期相同但主体不同。"}
+{"id":"dup-022","category":"alias","left":"RRF 融合向量与文本排名。","right":"RRF 只执行向量检索。","expected_duplicate":false,"note":"别名相同但职责结论不同。"}

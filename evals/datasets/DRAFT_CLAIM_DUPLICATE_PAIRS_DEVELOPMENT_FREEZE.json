@@ -1,0 +1,13 @@
+{
+  "dataset": "evals\\datasets\\draft_claim_duplicate_pairs_development_v1.jsonl",
+  "sha256": "927fe6d261e66e84b6b5e126787076f425bb4243b543648d848fa1666e3a09c2",
+  "case_count": 22,
+  "case_ids": [
+    "dup-001", "dup-002", "dup-003", "dup-004", "dup-005", "dup-006",
+    "dup-007", "dup-008", "dup-009", "dup-010", "dup-011", "dup-012",
+    "dup-013", "dup-014", "dup-015", "dup-016", "dup-017", "dup-018",
+    "dup-019", "dup-020", "dup-021", "dup-022"
+  ],
+  "frozen_at": "2026-09-27T17:00:00+08:00",
+  "note": "Frozen balanced Development fixture for eval-only semantic duplicate-pair precision, recall, category analysis, and subject-resolution diagnostics."
+}
