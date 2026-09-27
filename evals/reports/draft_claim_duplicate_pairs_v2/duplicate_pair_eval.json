@@ -1,0 +1,1115 @@
+{
+  "generated_at": "2026-09-27T11:48:56.498722+00:00",
+  "git_commit": "62d59de4e28c3d4184a434913bd2eca91bac922a",
+  "git_short_commit": "62d59de4e28c",
+  "git_dirty": true,
+  "git_branch": "codex/eval-foundation-rebuild",
+  "dataset": "evals\\datasets\\draft_claim_duplicate_pairs_development_v1.jsonl",
+  "dataset_sha256": "927fe6d261e66e84b6b5e126787076f425bb4243b543648d848fa1666e3a09c2",
+  "freeze_manifest": "evals\\datasets\\DRAFT_CLAIM_DUPLICATE_PAIRS_DEVELOPMENT_FREEZE.json",
+  "freeze_manifest_sha256": "798585e335da5b6e2b5446e33159027a67d346e1278b20907b2e257f68393360",
+  "model": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
+  "batch_size": 8,
+  "duration_ms": 14099.0478,
+  "distribution": {
+    "false": 11,
+    "true": 11
+  },
+  "metrics": {
+    "nli_only": {
+      "precision": 0.7778,
+      "recall": 0.6364,
+      "f1": 0.7,
+      "accuracy": 0.7273,
+      "true_positive": 7,
+      "false_positive": 2,
+      "false_negative": 4,
+      "true_negative": 9
+    },
+    "nli_with_subject_conflict_veto": {
+      "precision": 0.75,
+      "recall": 0.2727,
+      "f1": 0.4,
+      "accuracy": 0.5909,
+      "true_positive": 3,
+      "false_positive": 1,
+      "false_negative": 8,
+      "true_negative": 10
+    },
+    "nli_with_subject_guard": {
+      "precision": 1.0,
+      "recall": 0.1818,
+      "f1": 0.3077,
+      "accuracy": 0.5909,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 9,
+      "true_negative": 11
+    }
+  },
+  "subject_unresolved_rate": 0.3182,
+  "metrics_by_category": {
+    "alias": {
+      "nli_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "nli_with_subject_guard": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      }
+    },
+    "date": {
+      "nli_only": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.3333,
+        "true_positive": 0,
+        "false_positive": 1,
+        "false_negative": 1,
+        "true_negative": 1
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.3333,
+        "true_positive": 0,
+        "false_positive": 1,
+        "false_negative": 1,
+        "true_negative": 1
+      },
+      "nli_with_subject_guard": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.6667,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      }
+    },
+    "near_paraphrase": {
+      "nli_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.6667,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 0
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "nli_with_subject_guard": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 1
+      }
+    },
+    "negation": {
+      "nli_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.6667,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "nli_with_subject_guard": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.6667,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      }
+    },
+    "nested_subject": {
+      "nli_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "nli_with_subject_guard": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.6667,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      }
+    },
+    "number": {
+      "nli_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.6667,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 1
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.3333,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 1
+      },
+      "nli_with_subject_guard": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.3333,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 1
+      }
+    },
+    "pronoun": {
+      "nli_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.6667,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 1
+      },
+      "nli_with_subject_conflict_veto": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.3333,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 1
+      },
+      "nli_with_subject_guard": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.3333,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 1
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "dup-001",
+      "category": "pronoun",
+      "left": "Evidence Gate 会在证据不足时拒答。",
+      "right": "它会在证据不足时拒答。",
+      "expected_duplicate": true,
+      "note": "代词指回同一主体。",
+      "left_signature": {
+        "subject": "Evidence Gate",
+        "predicate": "会",
+        "value": "在证据不足时拒答",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "它",
+        "predicate": "会",
+        "value": "在证据不足时拒答",
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-001",
+        "entailment": 0.977505,
+        "neutral": 0.020267,
+        "contradiction": 0.002228,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-001",
+        "entailment": 0.058164,
+        "neutral": 0.941098,
+        "contradiction": 0.000738,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dup-002",
+      "category": "pronoun",
+      "left": "Evidence Gate 会在证据不足时拒答。",
+      "right": "它会提升检索召回率。",
+      "expected_duplicate": false,
+      "note": "同一代词主体但谓词含义不同。",
+      "left_signature": {
+        "subject": "Evidence Gate",
+        "predicate": "会",
+        "value": "在证据不足时拒答",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "它",
+        "predicate": "会",
+        "value": "提升检索召回率",
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-002",
+        "entailment": 0.003215,
+        "neutral": 0.973949,
+        "contradiction": 0.022836,
+        "predicted_label": "neutral"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-002",
+        "entailment": 0.001515,
+        "neutral": 0.977454,
+        "contradiction": 0.021031,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dup-003",
+      "category": "pronoun",
+      "left": "Validation 用于参数选择。",
+      "right": "其用途是选择参数。",
+      "expected_duplicate": true,
+      "note": "所有格代词改写。",
+      "left_signature": {
+        "subject": "Validation",
+        "predicate": "用于",
+        "value": "参数选择",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "其用途",
+        "predicate": "是",
+        "value": "选择参数",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-003",
+        "entailment": 0.990241,
+        "neutral": 0.006542,
+        "contradiction": 0.003217,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-003",
+        "entailment": 0.843468,
+        "neutral": 0.153301,
+        "contradiction": 0.003231,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-004",
+      "category": "alias",
+      "left": "RRF 融合向量与文本排名。",
+      "right": "Reciprocal Rank Fusion 融合向量检索与文本检索的排序。",
+      "expected_duplicate": true,
+      "note": "英文全称与缩写。",
+      "left_signature": {
+        "subject": "RRF",
+        "predicate": "融合",
+        "value": "向量与文本排名",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Reciprocal Rank Fusion",
+        "predicate": "融合",
+        "value": "向量检索与文本检索的排序",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-004",
+        "entailment": 0.847284,
+        "neutral": 0.139276,
+        "contradiction": 0.01344,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-004",
+        "entailment": 0.984735,
+        "neutral": 0.011494,
+        "contradiction": 0.003772,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-005",
+      "category": "alias",
+      "left": "BGE-small-zh 是默认嵌入模型。",
+      "right": "BM25 是默认嵌入模型。",
+      "expected_duplicate": false,
+      "note": "不同组件承担同一表述角色。",
+      "left_signature": {
+        "subject": "BGE-small-zh",
+        "predicate": "是",
+        "value": "默认嵌入模型",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "BM25",
+        "predicate": "是",
+        "value": "默认嵌入模型",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-005",
+        "entailment": 0.258203,
+        "neutral": 0.125854,
+        "contradiction": 0.615944,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-005",
+        "entailment": 0.336733,
+        "neutral": 0.536236,
+        "contradiction": 0.127031,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dup-006",
+      "category": "alias",
+      "left": "Holdout 不参与调参。",
+      "right": "最终验收集不用于参数选择。",
+      "expected_duplicate": true,
+      "note": "数据集别名与谓词改写。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": "最终验收集不",
+        "predicate": "用于",
+        "value": "参数选择",
+        "resolved": true
+      },
+      "subject_compatible": null,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-006",
+        "entailment": 0.328778,
+        "neutral": 0.668124,
+        "contradiction": 0.003098,
+        "predicted_label": "neutral"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-006",
+        "entailment": 0.975232,
+        "neutral": 0.018795,
+        "contradiction": 0.005973,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-007",
+      "category": "nested_subject",
+      "left": "Validation 的冻结清单记录数据集哈希。",
+      "right": "Validation 的冻结清单保存数据集哈希。",
+      "expected_duplicate": true,
+      "note": "嵌套主语一致。",
+      "left_signature": {
+        "subject": "Validation 的冻结清单",
+        "predicate": "记录",
+        "value": "数据集哈希",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": true,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-007",
+        "entailment": 0.963574,
+        "neutral": 0.035383,
+        "contradiction": 0.001044,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-007",
+        "entailment": 0.970327,
+        "neutral": 0.027355,
+        "contradiction": 0.002318,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-008",
+      "category": "nested_subject",
+      "left": "Validation 的冻结清单记录数据集哈希。",
+      "right": "Holdout 的冻结清单记录数据集哈希。",
+      "expected_duplicate": false,
+      "note": "嵌套主语的限定对象不同。",
+      "left_signature": {
+        "subject": "Validation 的冻结清单",
+        "predicate": "记录",
+        "value": "数据集哈希",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Holdout 的冻结清单",
+        "predicate": "记录",
+        "value": "数据集哈希",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-008",
+        "entailment": 0.049044,
+        "neutral": 0.016856,
+        "contradiction": 0.934101,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-008",
+        "entailment": 0.079041,
+        "neutral": 0.072984,
+        "contradiction": 0.847975,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-009",
+      "category": "nested_subject",
+      "left": "Evidence Gate 的阈值保持不变。",
+      "right": "Retriever 的阈值保持不变。",
+      "expected_duplicate": false,
+      "note": "末尾相同但所属组件不同。",
+      "left_signature": {
+        "subject": "Evidence Gate 的阈值",
+        "predicate": "状态不变",
+        "value": null,
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Retriever 的阈值",
+        "predicate": "状态不变",
+        "value": null,
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-009",
+        "entailment": 0.038567,
+        "neutral": 0.561308,
+        "contradiction": 0.400125,
+        "predicted_label": "neutral"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-009",
+        "entailment": 0.103962,
+        "neutral": 0.777939,
+        "contradiction": 0.118099,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "dup-010",
+      "category": "number",
+      "left": "最小证据分数是 0.70。",
+      "right": "最小证据分数为 70%。",
+      "expected_duplicate": true,
+      "note": "等价数字格式。",
+      "left_signature": {
+        "subject": "最小证据分数",
+        "predicate": "是",
+        "value": "0.70",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "最小证据分数",
+        "predicate": "为",
+        "value": "70%",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-010",
+        "entailment": 0.06152,
+        "neutral": 0.060712,
+        "contradiction": 0.877768,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-010",
+        "entailment": 0.277866,
+        "neutral": 0.061536,
+        "contradiction": 0.660599,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-011",
+      "category": "number",
+      "left": "候选数量是 6。",
+      "right": "候选数量是 8。",
+      "expected_duplicate": false,
+      "note": "相同主语但数值不同。",
+      "left_signature": {
+        "subject": "候选数量",
+        "predicate": "是",
+        "value": "6",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "候选数量",
+        "predicate": "是",
+        "value": "8",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-011",
+        "entailment": 0.000753,
+        "neutral": 0.002701,
+        "contradiction": 0.996546,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-011",
+        "entailment": 0.001823,
+        "neutral": 0.013341,
+        "contradiction": 0.984836,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-012",
+      "category": "number",
+      "left": "RRF k 是 60。",
+      "right": "RRF k 的取值为六十。",
+      "expected_duplicate": true,
+      "note": "阿拉伯数字与中文数字。",
+      "left_signature": {
+        "subject": "RRF k",
+        "predicate": "是",
+        "value": "60",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "RRF k 的取值",
+        "predicate": "为",
+        "value": "六十",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-012",
+        "entailment": 0.980254,
+        "neutral": 0.018278,
+        "contradiction": 0.001468,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-012",
+        "entailment": 0.956204,
+        "neutral": 0.039031,
+        "contradiction": 0.004765,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-013",
+      "category": "date",
+      "left": "数据集冻结日期是 2026-09-27。",
+      "right": "数据集冻结日期为 2026 年 9 月 27 日。",
+      "expected_duplicate": true,
+      "note": "等价日期格式。",
+      "left_signature": {
+        "subject": "数据集冻结日期",
+        "predicate": "是",
+        "value": "2026-09-27",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "数据集冻结日期",
+        "predicate": "为",
+        "value": "2026 年 9 月 27 日",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-013",
+        "entailment": 0.779484,
+        "neutral": 0.027604,
+        "contradiction": 0.192912,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-013",
+        "entailment": 0.397495,
+        "neutral": 0.197567,
+        "contradiction": 0.404938,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-014",
+      "category": "date",
+      "left": "数据集冻结日期是 2026-09-27。",
+      "right": "数据集冻结日期是 2026-09-28。",
+      "expected_duplicate": false,
+      "note": "相邻但不同日期。",
+      "left_signature": {
+        "subject": "数据集冻结日期",
+        "predicate": "是",
+        "value": "2026-09-27",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "数据集冻结日期",
+        "predicate": "是",
+        "value": "2026-09-28",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-014",
+        "entailment": 0.003315,
+        "neutral": 0.023621,
+        "contradiction": 0.973064,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-014",
+        "entailment": 0.003473,
+        "neutral": 0.007207,
+        "contradiction": 0.98932,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-015",
+      "category": "negation",
+      "left": "Holdout 不用于参数选择。",
+      "right": "Holdout 不能用于参数选择。",
+      "expected_duplicate": true,
+      "note": "否定情态改写。",
+      "left_signature": {
+        "subject": "Holdout 不",
+        "predicate": "用于",
+        "value": "参数选择",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Holdout",
+        "predicate": "不能",
+        "value": "用于参数选择",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-015",
+        "entailment": 0.877589,
+        "neutral": 0.113475,
+        "contradiction": 0.008935,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-015",
+        "entailment": 0.933775,
+        "neutral": 0.056051,
+        "contradiction": 0.010173,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-016",
+      "category": "negation",
+      "left": "Holdout 不用于参数选择。",
+      "right": "Holdout 用于参数选择。",
+      "expected_duplicate": false,
+      "note": "肯定与否定相反。",
+      "left_signature": {
+        "subject": "Holdout 不",
+        "predicate": "用于",
+        "value": "参数选择",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Holdout",
+        "predicate": "用于",
+        "value": "参数选择",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-016",
+        "entailment": 0.003826,
+        "neutral": 0.003323,
+        "contradiction": 0.992851,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-016",
+        "entailment": 0.003855,
+        "neutral": 0.002497,
+        "contradiction": 0.993648,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-017",
+      "category": "negation",
+      "left": "引用白名单不能证明所有断言正确。",
+      "right": "引用白名单可以证明所有断言正确。",
+      "expected_duplicate": false,
+      "note": "能力结论相反。",
+      "left_signature": {
+        "subject": "引用白名单",
+        "predicate": "不能",
+        "value": "证明所有断言正确",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-017",
+        "entailment": 0.004101,
+        "neutral": 0.013028,
+        "contradiction": 0.982871,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-017",
+        "entailment": 0.00623,
+        "neutral": 0.023521,
+        "contradiction": 0.970248,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "dup-018",
+      "category": "near_paraphrase",
+      "left": "默认检索行为保持不变。",
+      "right": "默认检索行为没有改变。",
+      "expected_duplicate": true,
+      "note": "同主体状态谓词改写。",
+      "left_signature": {
+        "subject": "默认检索行为",
+        "predicate": "状态不变",
+        "value": null,
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "默认检索行为",
+        "predicate": "状态不变",
+        "value": null,
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": true,
+      "combined_duplicate": true,
+      "forward_nli": {
+        "chunk_id": "dup-018",
+        "entailment": 0.997064,
+        "neutral": 0.002468,
+        "contradiction": 0.000467,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-018",
+        "entailment": 0.996383,
+        "neutral": 0.003156,
+        "contradiction": 0.00046,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-019",
+      "category": "near_paraphrase",
+      "left": "生产组装保持不变。",
+      "right": "默认检索行为保持不变。",
+      "expected_duplicate": false,
+      "note": "相同谓词但主体不同。",
+      "left_signature": {
+        "subject": "生产组装",
+        "predicate": "状态不变",
+        "value": null,
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "默认检索行为",
+        "predicate": "状态不变",
+        "value": null,
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-019",
+        "entailment": 0.759368,
+        "neutral": 0.120663,
+        "contradiction": 0.119969,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-019",
+        "entailment": 0.469527,
+        "neutral": 0.192487,
+        "contradiction": 0.337986,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-020",
+      "category": "near_paraphrase",
+      "left": "报告包含证据决策和失败类别。",
+      "right": "报告记录证据判定与失败类型。",
+      "expected_duplicate": true,
+      "note": "同主体、同对象的近义改写。",
+      "left_signature": {
+        "subject": "报告",
+        "predicate": "包含",
+        "value": "证据决策和失败类别",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "报告",
+        "predicate": "记录",
+        "value": "证据判定与失败类型",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": true,
+      "combined_duplicate": true,
+      "forward_nli": {
+        "chunk_id": "dup-020",
+        "entailment": 0.995983,
+        "neutral": 0.003675,
+        "contradiction": 0.000342,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-020",
+        "entailment": 0.994571,
+        "neutral": 0.005082,
+        "contradiction": 0.000347,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-021",
+      "category": "date",
+      "left": "Validation 冻结于 2026-09-27。",
+      "right": "Holdout 冻结于 2026-09-27。",
+      "expected_duplicate": false,
+      "note": "日期相同但主体不同。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "nli_duplicate": true,
+      "conflict_veto_duplicate": true,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-021",
+        "entailment": 0.854629,
+        "neutral": 0.036285,
+        "contradiction": 0.109086,
+        "predicted_label": "entailment"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-021",
+        "entailment": 0.714887,
+        "neutral": 0.037842,
+        "contradiction": 0.247271,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "dup-022",
+      "category": "alias",
+      "left": "RRF 融合向量与文本排名。",
+      "right": "RRF 只执行向量检索。",
+      "expected_duplicate": false,
+      "note": "别名相同但职责结论不同。",
+      "left_signature": {
+        "subject": "RRF",
+        "predicate": "融合",
+        "value": "向量与文本排名",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "nli_duplicate": false,
+      "conflict_veto_duplicate": false,
+      "combined_duplicate": false,
+      "forward_nli": {
+        "chunk_id": "dup-022",
+        "entailment": 0.000224,
+        "neutral": 0.003124,
+        "contradiction": 0.996652,
+        "predicted_label": "contradiction"
+      },
+      "reverse_nli": {
+        "chunk_id": "dup-022",
+        "entailment": 0.011448,
+        "neutral": 0.86214,
+        "contradiction": 0.126412,
+        "predicted_label": "neutral"
+      }
+    }
+  ]
+}
