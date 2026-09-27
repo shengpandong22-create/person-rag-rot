@@ -113,6 +113,7 @@ def run_duplicate_pair_eval(
                 "right_signature": asdict(right_signature),
                 "subject_compatible": compatible,
                 "nli_duplicate": nli_duplicate,
+                "conflict_veto_duplicate": nli_duplicate and compatible is not False,
                 "combined_duplicate": nli_duplicate and compatible is True,
                 "forward_nli": asdict(forward),
                 "reverse_nli": asdict(reverse),
@@ -121,6 +122,9 @@ def run_duplicate_pair_eval(
     expected = [fixture.expected_duplicate for fixture in fixtures]
     policies = {
         "nli_only": [bool(row["nli_duplicate"]) for row in rows],
+        "nli_with_subject_conflict_veto": [
+            bool(row["conflict_veto_duplicate"]) for row in rows
+        ],
         "nli_with_subject_guard": [bool(row["combined_duplicate"]) for row in rows],
     }
     by_category: dict[str, dict[str, object]] = defaultdict(dict)
