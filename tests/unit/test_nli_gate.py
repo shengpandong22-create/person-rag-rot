@@ -43,6 +43,7 @@ def test_combined_policy_keeps_deterministic_missing_value_rejection() -> None:
     assert combined_status("unsupported", "supported") == "unsupported"
     assert combined_status("supported", "contradicted") == "contradicted"
     assert combined_status("unknown", "supported") == "supported"
+    assert combined_status("supported", "unknown", semantic_available=False) == "supported"
 
 
 def test_claim_status_aggregation_is_three_way() -> None:

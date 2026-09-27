@@ -20,6 +20,7 @@ from agent_mentor.infrastructure.database.session import (
     create_database_engine,
     create_session_factory,
 )
+from evals.claim_normalization import NormalizedClaim, normalize_claim
 
 DEFAULT_NLI_MODEL = "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7"
 LABELS = ("entailment", "neutral", "contradiction")
@@ -38,6 +39,9 @@ class NLIPairScore:
 class NLClaimResult:
     claim_id: str
     text: str
+    hypothesis: str | None
+    normalization_strategy: str
+    normalization_reason: str | None
     deterministic_status: str
     semantic_status: str
     combined_status: str
@@ -65,7 +69,9 @@ def semantic_status(scores: list[NLIPairScore]) -> tuple[str, str | None]:
     return "unknown", None
 
 
-def combined_status(deterministic: str, semantic: str) -> str:
+def combined_status(deterministic: str, semantic: str, *, semantic_available: bool = True) -> str:
+    if not semantic_available:
+        return deterministic
     if deterministic == "unsupported":
         return "unsupported"
     if semantic == "contradicted":
@@ -216,17 +222,22 @@ async def run_nli_eval(
 
     pair_keys: list[tuple[str, str, str, str]] = []
     model_pairs: list[tuple[str, str, str]] = []
+    normalizations: dict[tuple[str, str], NormalizedClaim] = {}
     for row in rows:
         for claim in row["evidence_assessment"]["claim_assessments"]:
+            normalization = normalize_claim(claim["text"])
+            normalizations[(row["id"], claim["claim_id"])] = normalization
+            if normalization.hypothesis is None:
+                continue
             top_chunks = row["top_chunks"][:3]
             for chunk in top_chunks:
                 chunk_id = chunk["chunk_id"]
                 pair_keys.append((row["id"], claim["claim_id"], chunk_id, claim["text"]))
-                model_pairs.append((chunk_id, content[chunk_id], claim["text"]))
+                model_pairs.append((chunk_id, content[chunk_id], normalization.hypothesis))
             combined_id = "top3-combined"
             combined_premise = "\n\n".join(content[chunk["chunk_id"]] for chunk in top_chunks)
             pair_keys.append((row["id"], claim["claim_id"], combined_id, claim["text"]))
-            model_pairs.append((combined_id, combined_premise, claim["text"]))
+            model_pairs.append((combined_id, combined_premise, normalization.hypothesis))
 
     started = perf_counter()
     model = NLIModel(model_name)
@@ -244,13 +255,21 @@ async def run_nli_eval(
             pair_scores = grouped_scores[(row["id"], claim["claim_id"])]
             semantic, selected_chunk_id = semantic_status(pair_scores)
             deterministic = claim["status"]
+            normalization = normalizations[(row["id"], claim["claim_id"])]
             claim_results.append(
                 NLClaimResult(
                     claim_id=claim["claim_id"],
                     text=claim["text"],
+                    hypothesis=normalization.hypothesis,
+                    normalization_strategy=normalization.strategy,
+                    normalization_reason=normalization.reason,
                     deterministic_status=deterministic,
                     semantic_status=semantic,
-                    combined_status=combined_status(deterministic, semantic),
+                    combined_status=combined_status(
+                        deterministic,
+                        semantic,
+                        semantic_available=normalization.hypothesis is not None,
+                    ),
                     selected_chunk_id=selected_chunk_id,
                     scores=tuple(pair_scores),
                 )
@@ -288,6 +307,12 @@ async def run_nli_eval(
             "batch_size": batch_size,
         },
         "inference_pair_count": len(model_pairs),
+        "normalized_claim_count": sum(
+            item.hypothesis is not None for item in normalizations.values()
+        ),
+        "unresolved_claim_count": sum(
+            item.hypothesis is None for item in normalizations.values()
+        ),
         "evidence_contexts": ["individual_top3_chunks", "concatenated_top3_context"],
         "inference_duration_ms": duration_ms,
         "metrics": {
