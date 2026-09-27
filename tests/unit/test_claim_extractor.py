@@ -6,8 +6,10 @@ from pydantic import ValidationError
 from evals.claim_extractor import (
     DraftClaimExtractionOutput,
     compute_extractor_metrics,
+    extract_claim_signature,
     load_extraction_fixtures,
     mark_semantic_duplicates,
+    subjects_compatible,
 )
 from evals.nli_gate import NLIPairScore
 
@@ -94,6 +96,8 @@ def test_compute_extractor_metrics() -> None:
         "unsupported_claim_rate": 0.5,
         "nli_retained_claim_rate": 0.5,
         "semantic_duplicate_rate": 0.0,
+        "semantic_duplicate_candidate_rate": 0.0,
+        "semantic_duplicate_subject_rejection_rate": 0.0,
         "total_extracted_claims": 2,
     }
 
@@ -124,3 +128,31 @@ def test_mark_semantic_duplicates_requires_bidirectional_entailment() -> None:
 
     assert rows[0]["semantic_duplicate_count"] == 1
     assert rows[0]["extracted_claims"][1]["semantic_duplicate_of"] == "c1"
+
+
+def test_claim_signature_normalizes_state_predicates_and_checks_subjects() -> None:
+    unchanged = extract_claim_signature("默认检索行为保持不变。")
+    equivalent = extract_claim_signature("默认检索行为没有改变。")
+    different = extract_claim_signature("生产组装保持不变。")
+
+    assert unchanged.predicate == equivalent.predicate == "状态不变"
+    assert subjects_compatible(unchanged, equivalent) is True
+    assert subjects_compatible(unchanged, different) is False
+
+
+def test_semantic_duplicate_rejects_different_resolved_subjects() -> None:
+    rows = [
+        {
+            "id": "case-1",
+            "extracted_claims": [
+                {"claim_id": "c1", "text": "生产组装保持不变。"},
+                {"claim_id": "c2", "text": "默认检索行为保持不变。"},
+            ],
+        }
+    ]
+
+    mark_semantic_duplicates(rows, _FakeNLI(), 8)
+
+    assert rows[0]["semantic_duplicate_candidate_count"] == 1
+    assert rows[0]["semantic_duplicate_count"] == 0
+    assert rows[0]["semantic_duplicate_subject_rejection_count"] == 1

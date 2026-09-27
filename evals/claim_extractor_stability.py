@@ -39,6 +39,8 @@ def compute_stability_metrics(runs: list[dict[str, Any]]) -> dict[str, float | i
         "unsupported_claim_rate",
         "nli_retained_claim_rate",
         "semantic_duplicate_rate",
+        "semantic_duplicate_candidate_rate",
+        "semantic_duplicate_subject_rejection_rate",
     )
     result: dict[str, float | int] = {
         "run_count": len(runs),

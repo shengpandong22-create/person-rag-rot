@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import json
 import re
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
@@ -29,6 +30,37 @@ SYSTEM_PROMPT = (
     "标题、项目符号、代码围栏不是声明。四、语义重复的声明只保留第一次出现的原文。"
     "直接回答问题的声明 required=true，补充信息 required=false；所有 origin 必须为 model_draft。"
 )
+PREDICATE_MARKERS = (
+    "没有改变",
+    "保持不变",
+    "不是",
+    "不能",
+    "不会",
+    "用于",
+    "依赖",
+    "提供",
+    "记录",
+    "包含",
+    "限制",
+    "阻断",
+    "融合",
+    "使用",
+    "负责",
+    "支持",
+    "会",
+    "是",
+    "为",
+)
+PREDICATE_NORMALIZATION = {"没有改变": "状态不变", "保持不变": "状态不变"}
+UNRESOLVED_SUBJECTS = {"", "它", "其", "这", "该项", "该配置", "这个"}
+
+
+@dataclass(frozen=True, slots=True)
+class ClaimSignature:
+    subject: str | None
+    predicate: str | None
+    value: str | None
+    resolved: bool
 
 
 class ExtractedDraftClaim(BaseModel):
@@ -68,6 +100,36 @@ def _key(text: str) -> str:
     return re.sub(r"[\s。！？!?，,；;]+", "", text).casefold()
 
 
+def extract_claim_signature(text: str) -> ClaimSignature:
+    normalized = text.strip().strip("。！？!?，,；;：:")
+    match = next(
+        (
+            (normalized.find(marker), marker)
+            for marker in PREDICATE_MARKERS
+            if normalized.find(marker) > 0
+        ),
+        None,
+    )
+    if match is None:
+        return ClaimSignature(None, None, None, False)
+    index, marker = match
+    subject = normalized[:index].strip()
+    value = normalized[index + len(marker) :].strip() or None
+    resolved = _key(subject) not in {_key(item) for item in UNRESOLVED_SUBJECTS}
+    return ClaimSignature(
+        subject=subject or None,
+        predicate=PREDICATE_NORMALIZATION.get(marker, marker),
+        value=value,
+        resolved=resolved,
+    )
+
+
+def subjects_compatible(left: ClaimSignature, right: ClaimSignature) -> bool | None:
+    if not left.resolved or not right.resolved or left.subject is None or right.subject is None:
+        return None
+    return _key(left.subject) == _key(right.subject)
+
+
 def load_extraction_fixtures(path: Path) -> tuple[ClaimExtractionFixture, ...]:
     fixtures: list[ClaimExtractionFixture] = []
     seen: set[str] = set()
@@ -90,6 +152,10 @@ def compute_extractor_metrics(rows: list[dict[str, Any]]) -> dict[str, int | flo
     total_extracted = sum(len(row["extracted_claims"]) for row in rows)
     total_extra = sum(int(row["extra_count"]) for row in rows)
     total_duplicates = sum(int(row.get("semantic_duplicate_count", 0)) for row in rows)
+    total_candidates = sum(int(row.get("semantic_duplicate_candidate_count", 0)) for row in rows)
+    subject_rejections = sum(
+        int(row.get("semantic_duplicate_subject_rejection_count", 0)) for row in rows
+    )
     supported = sum(
         claim.get("nli_status") == "supported"
         for row in rows
@@ -106,6 +172,14 @@ def compute_extractor_metrics(rows: list[dict[str, Any]]) -> dict[str, int | flo
         if total_extracted
         else 0.0,
         "semantic_duplicate_rate": round(total_duplicates / total_extracted, 4)
+        if total_extracted
+        else 0.0,
+        "semantic_duplicate_candidate_rate": round(total_candidates / total_extracted, 4)
+        if total_extracted
+        else 0.0,
+        "semantic_duplicate_subject_rejection_rate": round(
+            subject_rejections / total_extracted, 4
+        )
         if total_extracted
         else 0.0,
         "total_extracted_claims": total_extracted,
@@ -132,12 +206,33 @@ def mark_semantic_duplicates(
     scores = nli.score(pairs, batch_size)
     for row in rows:
         row["semantic_duplicate_count"] = 0
+        row["semantic_duplicate_candidate_count"] = 0
+        row["semantic_duplicate_subject_rejection_count"] = 0
+        for claim in row["extracted_claims"]:
+            claim["signature"] = asdict(extract_claim_signature(claim["text"]))
     for pair_index, (row_index, left, right) in enumerate(locations):
         forward = scores[pair_index * 2]
         reverse = scores[pair_index * 2 + 1]
         if forward.predicted_label != "entailment" or reverse.predicted_label != "entailment":
             continue
+        rows[row_index]["semantic_duplicate_candidate_count"] += 1
+        left_signature = extract_claim_signature(
+            rows[row_index]["extracted_claims"][left]["text"]
+        )
+        right_signature = extract_claim_signature(
+            rows[row_index]["extracted_claims"][right]["text"]
+        )
+        compatible = subjects_compatible(left_signature, right_signature)
         claim = rows[row_index]["extracted_claims"][right]
+        claim.setdefault("semantic_duplicate_candidates", []).append(
+            {
+                "claim_id": rows[row_index]["extracted_claims"][left]["claim_id"],
+                "subject_compatible": compatible,
+            }
+        )
+        if compatible is not True:
+            rows[row_index]["semantic_duplicate_subject_rejection_count"] += 1
+            continue
         if "semantic_duplicate_of" not in claim:
             claim["semantic_duplicate_of"] = rows[row_index]["extracted_claims"][left]["claim_id"]
             rows[row_index]["semantic_duplicate_count"] += 1
