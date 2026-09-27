@@ -1,0 +1,1227 @@
+{
+  "generated_at": "2026-09-27T11:39:49.740948+00:00",
+  "git_commit": "94352dd79ef989ab6cce7f4df03e0ccd98d99a49",
+  "git_short_commit": "94352dd79ef9",
+  "git_dirty": true,
+  "git_branch": "codex/eval-foundation-rebuild",
+  "dataset": "evals\\datasets\\draft_claim_extraction_development_v2.jsonl",
+  "dataset_sha256": "35db5be33aedcc35122f2cdc4138ee72bb7505d480978996f56f92f1e967aa69",
+  "llm_model": "deepseek-chat",
+  "llm_temperature": 0.2,
+  "prompt_version": "draft_claim_extractor_boundary_v2",
+  "nli_model": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
+  "run_duration_ms": 22113.0084,
+  "metrics": {
+    "schema_valid_rate": 1.0,
+    "required_claim_recall": 0.9697,
+    "extra_claim_rate": 0.1163,
+    "unsupported_claim_rate": 0.0465,
+    "nli_retained_claim_rate": 0.9535,
+    "semantic_duplicate_rate": 0.0233,
+    "semantic_duplicate_candidate_rate": 0.0698,
+    "semantic_duplicate_subject_rejection_rate": 0.0465,
+    "subject_signature_resolution_rate": 0.7907,
+    "total_extracted_claims": 43
+  },
+  "cases": [
+    {
+      "id": "ce-001",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "Embedding 默认使用本地 BGE-small-zh，但不是企业级向量服务，仍保留 development 特征哈希 fallback。",
+      "expected_claims": [
+        {
+          "text": "AgentMentor 默认使用本地 BGE-small-zh。",
+          "required": true
+        },
+        {
+          "text": "当前 Embedding 不是企业级向量服务。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "AgentMentor 默认使用本地 BGE-small-zh。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.778833,
+            "neutral": 0.123811,
+            "contradiction": 0.097356
+          },
+          "signature": {
+            "subject": "AgentMentor 默认",
+            "predicate": "使用",
+            "value": "本地 BGE-small-zh",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "当前 Embedding 不是企业级向量服务。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.993961,
+            "neutral": 0.005084,
+            "contradiction": 0.000955
+          },
+          "signature": {
+            "subject": "当前 Embedding",
+            "predicate": "不是",
+            "value": "企业级向量服务",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-002",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "REVIEW_PENDING 不是丢弃评分，是保留证据但阻断传播，给未来复核留操作空间。",
+      "expected_claims": [
+        {
+          "text": "REVIEW_PENDING 会保留评分证据。",
+          "required": true
+        },
+        {
+          "text": "REVIEW_PENDING 会阻断画像更新。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "REVIEW_PENDING 会保留评分证据。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.962119,
+            "neutral": 0.023387,
+            "contradiction": 0.014494
+          },
+          "signature": {
+            "subject": "REVIEW_PENDING",
+            "predicate": "会",
+            "value": "保留评分证据",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "REVIEW_PENDING 会阻断画像更新。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.807574,
+            "neutral": 0.133499,
+            "contradiction": 0.058927
+          },
+          "signature": {
+            "subject": "REVIEW_PENDING 会",
+            "predicate": "阻断",
+            "value": "画像更新",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-003",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "刷新后真正恢复当前题目依赖服务端持久化状态、题目和答案数据，checkpoint 主要提供流程轨迹和排障证据。",
+      "expected_claims": [
+        {
+          "text": "刷新恢复主要依赖服务端持久化状态。",
+          "required": true
+        },
+        {
+          "text": "Checkpoint 提供流程轨迹和排障证据。",
+          "required": true
+        },
+        {
+          "text": "Checkpoint 保证服务在 30 秒内恢复。",
+          "required": false
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "刷新恢复主要依赖服务端持久化状态。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.94175,
+            "neutral": 0.056854,
+            "contradiction": 0.001396
+          },
+          "signature": {
+            "subject": "刷新恢复主要",
+            "predicate": "依赖",
+            "value": "服务端持久化状态",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "Checkpoint 提供流程轨迹和排障证据。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.994087,
+            "neutral": 0.005038,
+            "contradiction": 0.000875
+          },
+          "signature": {
+            "subject": "Checkpoint",
+            "predicate": "提供",
+            "value": "流程轨迹和排障证据",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "Checkpoint 保证服务在 30 秒内恢复。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "unknown",
+          "nli_scores": {
+            "entailment": 0.000121,
+            "neutral": 0.998334,
+            "contradiction": 0.001545
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-004",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "引用白名单校验 chunk_id 必须属于本轮检索上下文，但不能证明答案中的所有断言都正确。",
+      "expected_claims": [
+        {
+          "text": "引用白名单限制引用来自本轮检索上下文。",
+          "required": true
+        },
+        {
+          "text": "引用白名单不能证明答案中的所有断言都正确。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "引用白名单限制引用来自本轮检索上下文。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.459106,
+            "neutral": 0.411043,
+            "contradiction": 0.129851
+          },
+          "signature": {
+            "subject": "引用白名单",
+            "predicate": "限制",
+            "value": "引用来自本轮检索上下文",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "引用白名单不能证明答案中的所有断言都正确。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.994901,
+            "neutral": 0.004633,
+            "contradiction": 0.000466
+          },
+          "signature": {
+            "subject": "引用白名单",
+            "predicate": "不能",
+            "value": "证明答案中的所有断言都正确",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-005",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "工作流是显式节点加 checkpoint，不是 LangGraph Runtime。",
+      "expected_claims": [
+        {
+          "text": "当前工作流使用显式节点和 checkpoint。",
+          "required": true
+        },
+        {
+          "text": "当前工作流不是 LangGraph Runtime。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "当前工作流使用显式节点和 checkpoint。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.962128,
+            "neutral": 0.035079,
+            "contradiction": 0.002793
+          },
+          "signature": {
+            "subject": "当前工作流",
+            "predicate": "使用",
+            "value": "显式节点和 checkpoint",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "当前工作流不是 LangGraph Runtime。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.94794,
+            "neutral": 0.050935,
+            "contradiction": 0.001124
+          },
+          "signature": {
+            "subject": "当前工作流",
+            "predicate": "不是",
+            "value": "LangGraph Runtime",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-006",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "Regression 用于防回归；Validation 用于参数选择和失败分析；Holdout 只在候选确定后验收一次，不参与调参。三个 split 之间不得有问题文本或 ground-truth 重叠。",
+      "expected_claims": [
+        {
+          "text": "Regression 用于防回归。",
+          "required": true
+        },
+        {
+          "text": "Validation 用于参数选择和失败分析。",
+          "required": true
+        },
+        {
+          "text": "Holdout 只在候选确定后验收一次。",
+          "required": true
+        },
+        {
+          "text": "Holdout 不参与调参。",
+          "required": true
+        },
+        {
+          "text": "三个 split 之间不得有问题文本或 ground-truth 重叠。",
+          "required": false
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "Regression 用于防回归。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996871,
+            "neutral": 0.002334,
+            "contradiction": 0.000795
+          },
+          "signature": {
+            "subject": "Regression",
+            "predicate": "用于",
+            "value": "防回归",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "Validation 用于参数选择和失败分析。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.995052,
+            "neutral": 0.001319,
+            "contradiction": 0.003629
+          },
+          "signature": {
+            "subject": "Validation",
+            "predicate": "用于",
+            "value": "参数选择和失败分析",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "Holdout 只在候选确定后验收一次。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.997081,
+            "neutral": 0.002065,
+            "contradiction": 0.000854
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        },
+        {
+          "claim_id": "c4",
+          "text": "Holdout 不参与调参。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.992665,
+            "neutral": 0.0049,
+            "contradiction": 0.002436
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        },
+        {
+          "claim_id": "c5",
+          "text": "三个 split 之间不得有问题文本或 ground-truth 重叠。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.742245,
+            "neutral": 0.181491,
+            "contradiction": 0.076264
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        }
+      ],
+      "required_hit_count": 4,
+      "required_count": 4,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-007",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "Evidence Gate 会判断证据是否充足，并在证据不足时拒答；它不会提升召回率。",
+      "expected_claims": [
+        {
+          "text": "Evidence Gate 会判断证据是否充足",
+          "required": true
+        },
+        {
+          "text": "在证据不足时拒答",
+          "required": true
+        },
+        {
+          "text": "不会提升召回率",
+          "required": false
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "Evidence Gate 会判断证据是否充足",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996755,
+            "neutral": 0.002124,
+            "contradiction": 0.001121
+          },
+          "signature": {
+            "subject": "Evidence Gate",
+            "predicate": "会",
+            "value": "判断证据是否充足",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "Evidence Gate 在证据不足时拒答",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.98746,
+            "neutral": 0.010451,
+            "contradiction": 0.002089
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "Evidence Gate 不会提升召回率",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.984851,
+            "neutral": 0.014817,
+            "contradiction": 0.000332
+          },
+          "signature": {
+            "subject": "Evidence Gate",
+            "predicate": "不会",
+            "value": "提升召回率",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 1,
+      "required_count": 2,
+      "extra_count": 2,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-008",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "RRF 融合向量与文本排名，不直接使用原始分数，也不负责生成答案。",
+      "expected_claims": [
+        {
+          "text": "RRF 融合向量与文本排名",
+          "required": true
+        },
+        {
+          "text": "不直接使用原始分数",
+          "required": false
+        },
+        {
+          "text": "不负责生成答案",
+          "required": false
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "RRF 融合向量与文本排名",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.99154,
+            "neutral": 0.007074,
+            "contradiction": 0.001386
+          },
+          "signature": {
+            "subject": "RRF",
+            "predicate": "融合",
+            "value": "向量与文本排名",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "RRF 既不直接使用原始分数",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.982957,
+            "neutral": 0.012366,
+            "contradiction": 0.004677
+          },
+          "signature": {
+            "subject": "RRF 既不直接",
+            "predicate": "使用",
+            "value": "原始分数",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "RRF 也不负责生成答案",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996752,
+            "neutral": 0.00295,
+            "contradiction": 0.000298
+          },
+          "signature": {
+            "subject": "RRF 也不",
+            "predicate": "负责",
+            "value": "生成答案",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 1,
+      "required_count": 1,
+      "extra_count": 2,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-009",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "冻结清单记录数据集哈希；哈希变化会使此前基线失效。",
+      "expected_claims": [
+        {
+          "text": "冻结清单记录数据集哈希。",
+          "required": true
+        },
+        {
+          "text": "哈希变化会使此前基线失效。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "冻结清单记录数据集哈希。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.975339,
+            "neutral": 0.018078,
+            "contradiction": 0.006583
+          },
+          "signature": {
+            "subject": "冻结清单",
+            "predicate": "记录",
+            "value": "数据集哈希",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "哈希变化会使此前基线失效。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.994326,
+            "neutral": 0.004659,
+            "contradiction": 0.001015
+          },
+          "signature": {
+            "subject": "哈希变化",
+            "predicate": "会",
+            "value": "使此前基线失效",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-010",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "实验配置只由 eval runner 使用，生产组装和默认检索行为均保持不变。",
+      "expected_claims": [
+        {
+          "text": "实验配置只由 eval runner 使用。",
+          "required": false
+        },
+        {
+          "text": "生产组装保持不变。",
+          "required": true
+        },
+        {
+          "text": "默认检索行为保持不变。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "实验配置只由 eval runner 使用。",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.994552,
+            "neutral": 0.004356,
+            "contradiction": 0.001091
+          },
+          "signature": {
+            "subject": "实验配置只由 eval runner",
+            "predicate": "使用",
+            "value": null,
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "生产组装保持不变。",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.998297,
+            "neutral": 0.001104,
+            "contradiction": 0.000599
+          },
+          "signature": {
+            "subject": "生产组装",
+            "predicate": "状态不变",
+            "value": null,
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "默认检索行为保持不变。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.998313,
+            "neutral": 0.001192,
+            "contradiction": 0.000494
+          },
+          "signature": {
+            "subject": "默认检索行为",
+            "predicate": "状态不变",
+            "value": null,
+            "resolved": true
+          },
+          "semantic_duplicate_candidates": [
+            {
+              "claim_id": "c2",
+              "subject_compatible": false
+            }
+          ]
+        },
+        {
+          "claim_id": "c4",
+          "text": "默认检索行为没有改变。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.998578,
+            "neutral": 0.00117,
+            "contradiction": 0.000252
+          },
+          "signature": {
+            "subject": "默认检索行为",
+            "predicate": "状态不变",
+            "value": null,
+            "resolved": true
+          },
+          "semantic_duplicate_candidates": [
+            {
+              "claim_id": "c2",
+              "subject_compatible": false
+            },
+            {
+              "claim_id": "c3",
+              "subject_compatible": true
+            }
+          ],
+          "semantic_duplicate_of": "c3"
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 1,
+      "semantic_duplicate_count": 1,
+      "semantic_duplicate_candidate_count": 3,
+      "semantic_duplicate_subject_rejection_count": 2
+    },
+    {
+      "id": "ce-011",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "正式 Recall/MRR 必须依据人工 relevant_sources 解析到的 chunk，diagnostic keywords 仅用于诊断。",
+      "expected_claims": [
+        {
+          "text": "正式召回指标以人工标注的相关来源所解析出的 chunk 为准。",
+          "required": true
+        },
+        {
+          "text": "关键词命中只能辅助诊断。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "正式召回指标以人工标注的相关来源所解析出的 chunk 为准。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.985647,
+            "neutral": 0.011417,
+            "contradiction": 0.002936
+          },
+          "signature": {
+            "subject": "正式召回指标以人工标注的相关来源所解析出的 chunk",
+            "predicate": "为",
+            "value": "准",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "关键词命中只能辅助诊断。",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996034,
+            "neutral": 0.003095,
+            "contradiction": 0.00087
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-012",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "partial 表示现有材料只能支持问题的一部分，系统应保留已支持部分并明确缺口。",
+      "expected_claims": [
+        {
+          "text": "材料只覆盖了问题的一部分。",
+          "required": true
+        },
+        {
+          "text": "回答需要说明尚未被证据支持的缺口。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "材料只覆盖了问题的一部分。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.986868,
+            "neutral": 0.012801,
+            "contradiction": 0.000331
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "回答需要说明尚未被证据支持的缺口。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.489673,
+            "neutral": 0.065577,
+            "contradiction": 0.44475
+          },
+          "signature": {
+            "subject": "回答需要说明尚未被证据",
+            "predicate": "支持",
+            "value": "的缺口",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-013",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "候选实现确定后才能运行 holdout，并且每个候选最多运行一次。",
+      "expected_claims": [
+        {
+          "text": "候选实现确定后才能运行 holdout",
+          "required": true
+        },
+        {
+          "text": "每个候选最多运行一次",
+          "required": true
+        },
+        {
+          "text": "holdout 不用于参数选择",
+          "required": false
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "候选实现确定后才能运行 holdout",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.988469,
+            "neutral": 0.007091,
+            "contradiction": 0.00444
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "每个候选最多运行一次",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.991863,
+            "neutral": 0.005871,
+            "contradiction": 0.002265
+          },
+          "signature": {
+            "subject": null,
+            "predicate": null,
+            "value": null,
+            "resolved": false
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "holdout 不用于参数选择",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "contradicted",
+          "nli_scores": {
+            "entailment": 0.002592,
+            "neutral": 0.023128,
+            "contradiction": 0.974279
+          },
+          "signature": {
+            "subject": "holdout 不",
+            "predicate": "用于",
+            "value": "参数选择",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 2,
+      "required_count": 2,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-014",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "当前模式是 combined，阈值为 0.7，但该配置仍然只用于评测。",
+      "expected_claims": [
+        {
+          "text": "mode 是 combined",
+          "required": true
+        },
+        {
+          "text": "threshold 是 0.7",
+          "required": true
+        },
+        {
+          "text": "该配置仍然只用于评测。",
+          "required": true
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "mode 是 combined",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996429,
+            "neutral": 0.003311,
+            "contradiction": 0.00026
+          },
+          "signature": {
+            "subject": "mode",
+            "predicate": "是",
+            "value": "combined",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "threshold 是 0.7",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996231,
+            "neutral": 0.003401,
+            "contradiction": 0.000369
+          },
+          "signature": {
+            "subject": "threshold",
+            "predicate": "是",
+            "value": "0.7",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "该配置仍然只用于评测",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.994809,
+            "neutral": 0.004508,
+            "contradiction": 0.000683
+          },
+          "signature": {
+            "subject": "该配置仍然只",
+            "predicate": "用于",
+            "value": "评测",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 3,
+      "required_count": 3,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    },
+    {
+      "id": "ce-015",
+      "schema_valid": true,
+      "error": null,
+      "evidence": "诊断报告记录检索到的 chunk、来源文档、标题路径、各阶段分数、证据决策和失败类别；运行元数据还需记录数据集哈希和代码提交。",
+      "expected_claims": [
+        {
+          "text": "诊断报告记录检索到的 chunk、来源文档和标题路径。",
+          "required": true
+        },
+        {
+          "text": "它还记录向量、文本、RRF 与 rerank 分数。",
+          "required": true
+        },
+        {
+          "text": "报告包含证据决策和失败类别。",
+          "required": true
+        },
+        {
+          "text": "运行元数据包含数据集哈希。",
+          "required": false
+        },
+        {
+          "text": "运行元数据包含代码提交。",
+          "required": false
+        }
+      ],
+      "extracted_claims": [
+        {
+          "claim_id": "c1",
+          "text": "诊断报告记录检索到的 chunk、来源文档和标题路径。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.988191,
+            "neutral": 0.007986,
+            "contradiction": 0.003822
+          },
+          "signature": {
+            "subject": "诊断报告",
+            "predicate": "记录",
+            "value": "检索到的 chunk、来源文档和标题路径",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c2",
+          "text": "它还记录向量、文本、RRF 与 rerank 分数。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.901982,
+            "neutral": 0.084954,
+            "contradiction": 0.013064
+          },
+          "signature": {
+            "subject": "它还",
+            "predicate": "记录",
+            "value": "向量、文本、RRF 与 rerank 分数",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c3",
+          "text": "报告包含证据决策和失败类别。",
+          "required": true,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.999003,
+            "neutral": 0.000692,
+            "contradiction": 0.000305
+          },
+          "signature": {
+            "subject": "报告",
+            "predicate": "包含",
+            "value": "证据决策和失败类别",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c4",
+          "text": "运行元数据包含数据集哈希。",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.996881,
+            "neutral": 0.002674,
+            "contradiction": 0.000445
+          },
+          "signature": {
+            "subject": "运行元数据",
+            "predicate": "包含",
+            "value": "数据集哈希",
+            "resolved": true
+          }
+        },
+        {
+          "claim_id": "c5",
+          "text": "运行元数据包含代码提交。",
+          "required": false,
+          "origin": "model_draft",
+          "nli_status": "supported",
+          "nli_scores": {
+            "entailment": 0.995885,
+            "neutral": 0.003298,
+            "contradiction": 0.000817
+          },
+          "signature": {
+            "subject": "运行元数据",
+            "predicate": "包含",
+            "value": "代码提交",
+            "resolved": true
+          }
+        }
+      ],
+      "required_hit_count": 3,
+      "required_count": 3,
+      "extra_count": 0,
+      "semantic_duplicate_count": 0,
+      "semantic_duplicate_candidate_count": 0,
+      "semantic_duplicate_subject_rejection_count": 0
+    }
+  ]
+}
