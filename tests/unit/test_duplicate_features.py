@@ -1,4 +1,6 @@
 from evals.duplicate_features import (
+    entity_identities_compatible,
+    extract_entity_identity,
     normalize_alias,
     normalize_date,
     normalize_negation,
@@ -43,3 +45,35 @@ def test_transform_pair_applies_only_requested_feature() -> None:
     )
 
     assert pair.left == pair.right
+
+
+def test_entity_identity_distinguishes_same_predicate_different_subjects() -> None:
+    production = extract_entity_identity("生产组装保持不变。")
+    retrieval = extract_entity_identity("默认检索行为保持不变。")
+
+    assert production.value == "生产组装"
+    assert retrieval.value == "默认检索行为"
+    assert entity_identities_compatible(production, retrieval) is False
+
+
+def test_entity_identity_preserves_alias_and_value_subjects_after_normalization() -> None:
+    alias_pair = transform_pair(
+        "最终验收集不用于参数选择。",
+        "Holdout 不能用于参数选择。",
+        ("alias", "negation"),
+    )
+    left = extract_entity_identity(alias_pair.left)
+    right = extract_entity_identity(alias_pair.right)
+    value_left = extract_entity_identity("RRF k 是 60。")
+    value_right = extract_entity_identity("RRF k 的取值为六十。")
+
+    assert entity_identities_compatible(left, right) is True
+    assert entity_identities_compatible(value_left, value_right) is True
+
+
+def test_entity_identity_keeps_unresolved_pairs_non_destructive() -> None:
+    assert extract_entity_identity("它会拒答。").resolved is False
+    assert entity_identities_compatible(
+        extract_entity_identity("它会拒答。"),
+        extract_entity_identity("Evidence Gate 会拒答。"),
+    ) is None

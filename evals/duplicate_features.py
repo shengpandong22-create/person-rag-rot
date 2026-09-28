@@ -31,10 +31,76 @@ class FeaturePair:
     applied: bool
 
 
+@dataclass(frozen=True, slots=True)
+class EntityIdentity:
+    value: str | None
+    resolved: bool
+
+
+ENTITY_MARKERS = (
+    "保持不变",
+    "没有改变",
+    "禁止用于",
+    "不用于",
+    "不能用于",
+    "冻结于",
+    "不能证明",
+    "无法证明",
+    "可以证明",
+    "融合",
+    "依赖",
+    "提供",
+    "记录",
+    "保存",
+    "包含",
+    "限制",
+    "阻断",
+    "使用",
+    "负责",
+    "支持",
+    "用于",
+    "会",
+    "是",
+    "为",
+)
+ENTITY_SUFFIXES = ("的取值", "的用途", "用途")
+
+
 def normalize_alias(text: str) -> str:
     for alias, canonical in ALIASES.items():
         text = text.replace(alias, canonical)
     return re.sub(r"\s+", " ", text)
+
+
+def extract_entity_identity(text: str) -> EntityIdentity:
+    normalized = text.strip().strip("。！？!?，,；;：:")
+    if normalized.startswith(("它", "其")):
+        return EntityIdentity(None, False)
+    match = next(
+        (
+            (normalized.find(marker), marker)
+            for marker in ENTITY_MARKERS
+            if normalized.find(marker) > 0
+        ),
+        None,
+    )
+    if match is None:
+        return EntityIdentity(None, False)
+    index, _marker = match
+    entity = normalized[:index].strip()
+    for suffix in ENTITY_SUFFIXES:
+        if entity.endswith(suffix):
+            entity = entity[: -len(suffix)].strip()
+            break
+    return EntityIdentity(entity or None, bool(entity))
+
+
+def entity_identities_compatible(left: EntityIdentity, right: EntityIdentity) -> bool | None:
+    if not left.resolved or not right.resolved or left.value is None or right.value is None:
+        return None
+    return re.sub(r"\s+", "", left.value).casefold() == re.sub(
+        r"\s+", "", right.value
+    ).casefold()
 
 
 def normalize_pronoun_pair(left: str, right: str) -> FeaturePair:

@@ -12,7 +12,12 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from evals.claim_extractor import extract_claim_signature, subjects_compatible
-from evals.duplicate_features import FEATURE_NAMES, transform_pair
+from evals.duplicate_features import (
+    FEATURE_NAMES,
+    entity_identities_compatible,
+    extract_entity_identity,
+    transform_pair,
+)
 from evals.freeze import file_sha256
 from evals.nli_gate import DEFAULT_NLI_MODEL, NLIModel
 from evals.provenance import collect_git_state
@@ -121,17 +126,32 @@ def run_duplicate_pair_eval(
                 forward.predicted_label == "entailment"
                 and reverse.predicted_label == "entailment"
             )
+    entity_diagnostics: list[tuple[Any, Any, bool | None]] = []
+    entity_predictions: list[bool] = []
+    for index, feature_pair in enumerate(transformed["combined_typed_features"]):
+        left_entity = extract_entity_identity(feature_pair.left)
+        right_entity = extract_entity_identity(feature_pair.right)
+        compatible = entity_identities_compatible(left_entity, right_entity)
+        entity_diagnostics.append((left_entity, right_entity, compatible))
+        entity_predictions.append(
+            predictions["combined_typed_features"][index] and compatible is not False
+        )
+    predictions["combined_with_entity_veto"] = entity_predictions
     for index, fixture in enumerate(fixtures):
         left_signature = extract_claim_signature(fixture.left)
         right_signature = extract_claim_signature(fixture.right)
         compatible = subjects_compatible(left_signature, right_signature)
         baseline_forward, baseline_reverse = policy_scores["nli_baseline"][index]
+        left_entity, right_entity, entity_compatible = entity_diagnostics[index]
         rows.append(
             {
                 **fixture.model_dump(),
                 "left_signature": asdict(left_signature),
                 "right_signature": asdict(right_signature),
                 "subject_compatible": compatible,
+                "combined_left_entity": asdict(left_entity),
+                "combined_right_entity": asdict(right_entity),
+                "combined_entity_compatible": entity_compatible,
                 "feature_inputs": {
                     policy: {
                         "left": transformed[policy][index].left,
@@ -141,7 +161,8 @@ def run_duplicate_pair_eval(
                     for policy in feature_policies
                 },
                 "predictions": {
-                    policy: predictions[policy][index] for policy in feature_policies
+                    policy: policy_predictions[index]
+                    for policy, policy_predictions in predictions.items()
                 },
                 "baseline_forward_nli": asdict(baseline_forward),
                 "baseline_reverse_nli": asdict(baseline_reverse),
@@ -176,6 +197,14 @@ def run_duplicate_pair_eval(
             policy: sum(pair.applied for pair in feature_pairs)
             for policy, feature_pairs in transformed.items()
         },
+        "entity_veto_count": sum(
+            combined and not vetoed
+            for combined, vetoed in zip(
+                predictions["combined_typed_features"],
+                predictions["combined_with_entity_veto"],
+                strict=True,
+            )
+        ),
         "subject_unresolved_rate": round(unresolved / len(rows), 4),
         "metrics_by_category": by_category,
         "cases": rows,
