@@ -12,6 +12,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from evals.claim_extractor import extract_claim_signature, subjects_compatible
+from evals.duplicate_features import FEATURE_NAMES, transform_pair
 from evals.freeze import file_sha256
 from evals.nli_gate import DEFAULT_NLI_MODEL, NLIModel
 from evals.provenance import collect_git_state
@@ -85,55 +86,75 @@ def run_duplicate_pair_eval(
     if freeze["sha256"] != file_sha256(dataset):
         raise ValueError("duplicate-pair dataset does not match freeze manifest")
     fixtures = load_duplicate_pair_fixtures(dataset)
+    feature_policies = {
+        "nli_baseline": (),
+        **{f"{name}_only": (name,) for name in FEATURE_NAMES},
+        "combined_typed_features": FEATURE_NAMES,
+    }
+    transformed: dict[str, list[Any]] = {
+        policy: [transform_pair(fixture.left, fixture.right, features) for fixture in fixtures]
+        for policy, features in feature_policies.items()
+    }
     pairs = [
         pair
-        for fixture in fixtures
+        for policy, feature_pairs in transformed.items()
+        for fixture, feature_pair in zip(fixtures, feature_pairs, strict=True)
         for pair in (
-            (fixture.id, fixture.left, fixture.right),
-            (fixture.id, fixture.right, fixture.left),
+            (f"{policy}:{fixture.id}", feature_pair.left, feature_pair.right),
+            (f"{policy}:{fixture.id}", feature_pair.right, feature_pair.left),
         )
     ]
     started = perf_counter()
     model = NLIModel(model_name)
     scores = model.score(pairs, batch_size)
     rows: list[dict[str, Any]] = []
+    predictions: dict[str, list[bool]] = {policy: [] for policy in feature_policies}
+    score_offset = 0
+    policy_scores: dict[str, list[tuple[Any, Any]]] = defaultdict(list)
+    for policy in feature_policies:
+        for _fixture in fixtures:
+            forward = scores[score_offset]
+            reverse = scores[score_offset + 1]
+            score_offset += 2
+            policy_scores[policy].append((forward, reverse))
+            predictions[policy].append(
+                forward.predicted_label == "entailment"
+                and reverse.predicted_label == "entailment"
+            )
     for index, fixture in enumerate(fixtures):
-        forward = scores[index * 2]
-        reverse = scores[index * 2 + 1]
-        nli_duplicate = (
-            forward.predicted_label == "entailment" and reverse.predicted_label == "entailment"
-        )
         left_signature = extract_claim_signature(fixture.left)
         right_signature = extract_claim_signature(fixture.right)
         compatible = subjects_compatible(left_signature, right_signature)
+        baseline_forward, baseline_reverse = policy_scores["nli_baseline"][index]
         rows.append(
             {
                 **fixture.model_dump(),
                 "left_signature": asdict(left_signature),
                 "right_signature": asdict(right_signature),
                 "subject_compatible": compatible,
-                "nli_duplicate": nli_duplicate,
-                "conflict_veto_duplicate": nli_duplicate and compatible is not False,
-                "combined_duplicate": nli_duplicate and compatible is True,
-                "forward_nli": asdict(forward),
-                "reverse_nli": asdict(reverse),
+                "feature_inputs": {
+                    policy: {
+                        "left": transformed[policy][index].left,
+                        "right": transformed[policy][index].right,
+                        "applied": transformed[policy][index].applied,
+                    }
+                    for policy in feature_policies
+                },
+                "predictions": {
+                    policy: predictions[policy][index] for policy in feature_policies
+                },
+                "baseline_forward_nli": asdict(baseline_forward),
+                "baseline_reverse_nli": asdict(baseline_reverse),
             }
         )
     expected = [fixture.expected_duplicate for fixture in fixtures]
-    policies = {
-        "nli_only": [bool(row["nli_duplicate"]) for row in rows],
-        "nli_with_subject_conflict_veto": [
-            bool(row["conflict_veto_duplicate"]) for row in rows
-        ],
-        "nli_with_subject_guard": [bool(row["combined_duplicate"]) for row in rows],
-    }
     by_category: dict[str, dict[str, object]] = defaultdict(dict)
     for category in sorted({fixture.category for fixture in fixtures}):
         indexes = [index for index, fixture in enumerate(fixtures) if fixture.category == category]
         category_expected = [expected[index] for index in indexes]
-        for policy, predictions in policies.items():
+        for policy, policy_predictions in predictions.items():
             by_category[category][policy] = binary_metrics(
-                category_expected, [predictions[index] for index in indexes]
+                category_expected, [policy_predictions[index] for index in indexes]
             )
     unresolved = sum(row["subject_compatible"] is None for row in rows)
     payload = {
@@ -148,8 +169,12 @@ def run_duplicate_pair_eval(
         "duration_ms": round((perf_counter() - started) * 1000, 4),
         "distribution": dict(sorted(Counter(expected).items())),
         "metrics": {
-            policy: binary_metrics(expected, predictions)
-            for policy, predictions in policies.items()
+            policy: binary_metrics(expected, policy_predictions)
+            for policy, policy_predictions in predictions.items()
+        },
+        "feature_application_count": {
+            policy: sum(pair.applied for pair in feature_pairs)
+            for policy, feature_pairs in transformed.items()
         },
         "subject_unresolved_rate": round(unresolved / len(rows), 4),
         "metrics_by_category": by_category,
