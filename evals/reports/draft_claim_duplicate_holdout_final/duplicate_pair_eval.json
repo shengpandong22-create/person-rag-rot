@@ -1,0 +1,2791 @@
+{
+  "generated_at": "2026-09-28T00:31:52.222808+00:00",
+  "git_commit": "f6187a5e857f0ffdd9e942956cfa74f0eaecf93f",
+  "git_short_commit": "f6187a5e857f",
+  "git_dirty": false,
+  "git_branch": "codex/eval-foundation-rebuild",
+  "dataset": "evals\\datasets\\draft_claim_duplicate_pairs_holdout_v1.jsonl",
+  "dataset_sha256": "0a264306d2cf3712147115ad8f45a347e1047246070dd58fc3544b3ebfa63a92",
+  "freeze_manifest": "evals\\datasets\\DRAFT_CLAIM_DUPLICATE_PAIRS_HOLDOUT_FREEZE.json",
+  "freeze_manifest_sha256": "9eb8da49cea1d2bc49e8e00ebaec241db594c41533d6d4ed7ffb7cb35fc1d758",
+  "model": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
+  "batch_size": 8,
+  "duration_ms": 38939.1514,
+  "distribution": {
+    "false": 12,
+    "true": 12
+  },
+  "metrics": {
+    "nli_baseline": {
+      "precision": 0.8182,
+      "recall": 0.75,
+      "f1": 0.7826,
+      "accuracy": 0.7917,
+      "true_positive": 9,
+      "false_positive": 2,
+      "false_negative": 3,
+      "true_negative": 10
+    },
+    "alias_only": {
+      "precision": 0.8,
+      "recall": 0.6667,
+      "f1": 0.7273,
+      "accuracy": 0.75,
+      "true_positive": 8,
+      "false_positive": 2,
+      "false_negative": 4,
+      "true_negative": 10
+    },
+    "pronoun_only": {
+      "precision": 0.8182,
+      "recall": 0.75,
+      "f1": 0.7826,
+      "accuracy": 0.7917,
+      "true_positive": 9,
+      "false_positive": 2,
+      "false_negative": 3,
+      "true_negative": 10
+    },
+    "negation_only": {
+      "precision": 0.8182,
+      "recall": 0.75,
+      "f1": 0.7826,
+      "accuracy": 0.7917,
+      "true_positive": 9,
+      "false_positive": 2,
+      "false_negative": 3,
+      "true_negative": 10
+    },
+    "number_only": {
+      "precision": 0.8333,
+      "recall": 0.8333,
+      "f1": 0.8333,
+      "accuracy": 0.8333,
+      "true_positive": 10,
+      "false_positive": 2,
+      "false_negative": 2,
+      "true_negative": 10
+    },
+    "date_only": {
+      "precision": 0.8182,
+      "recall": 0.75,
+      "f1": 0.7826,
+      "accuracy": 0.7917,
+      "true_positive": 9,
+      "false_positive": 2,
+      "false_negative": 3,
+      "true_negative": 10
+    },
+    "combined_typed_features": {
+      "precision": 0.8182,
+      "recall": 0.75,
+      "f1": 0.7826,
+      "accuracy": 0.7917,
+      "true_positive": 9,
+      "false_positive": 2,
+      "false_negative": 3,
+      "true_negative": 10
+    },
+    "combined_with_entity_veto": {
+      "precision": 1.0,
+      "recall": 0.6667,
+      "f1": 0.8,
+      "accuracy": 0.8333,
+      "true_positive": 8,
+      "false_positive": 0,
+      "false_negative": 4,
+      "true_negative": 12
+    }
+  },
+  "feature_application_count": {
+    "nli_baseline": 0,
+    "alias_only": 4,
+    "pronoun_only": 0,
+    "negation_only": 4,
+    "number_only": 2,
+    "date_only": 2,
+    "combined_typed_features": 10
+  },
+  "entity_veto_count": 3,
+  "subject_unresolved_rate": 0.4583,
+  "metrics_by_category": {
+    "alias": {
+      "nli_baseline": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "alias_only": {
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "accuracy": 0.5,
+        "true_positive": 1,
+        "false_positive": 1,
+        "false_negative": 1,
+        "true_negative": 1
+      },
+      "pronoun_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "negation_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "number_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "date_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "combined_typed_features": {
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "accuracy": 0.5,
+        "true_positive": 1,
+        "false_positive": 1,
+        "false_negative": 1,
+        "true_negative": 1
+      },
+      "combined_with_entity_veto": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      }
+    },
+    "date": {
+      "nli_baseline": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "alias_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "pronoun_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "negation_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "number_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "date_only": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "combined_typed_features": {
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "accuracy": 0.75,
+        "true_positive": 2,
+        "false_positive": 1,
+        "false_negative": 0,
+        "true_negative": 1
+      },
+      "combined_with_entity_veto": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      }
+    },
+    "entity_identity": {
+      "nli_baseline": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "alias_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "pronoun_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "negation_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "number_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "date_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "combined_typed_features": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "combined_with_entity_veto": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      }
+    },
+    "negation": {
+      "nli_baseline": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "alias_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "pronoun_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "negation_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "number_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "date_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "combined_typed_features": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "combined_with_entity_veto": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      }
+    },
+    "number": {
+      "nli_baseline": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "alias_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "pronoun_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "negation_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "number_only": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "date_only": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.75,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_negative": 2
+      },
+      "combined_typed_features": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      },
+      "combined_with_entity_veto": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 2
+      }
+    },
+    "pronoun": {
+      "nli_baseline": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "alias_only": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "pronoun_only": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "negation_only": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "number_only": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "date_only": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "combined_typed_features": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      },
+      "combined_with_entity_veto": {
+        "precision": 0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.5,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 2
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "duph-001",
+      "category": "alias",
+      "left": "Reciprocal Rank Fusion 不读取原始相关性分数。",
+      "right": "RRF 不使用原始相关性分数。",
+      "expected_duplicate": true,
+      "note": "缩写与全称，谓词近义。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": "RRF 不",
+        "predicate": "使用",
+        "value": "原始相关性分数",
+        "resolved": true
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": "RRF 不",
+        "resolved": true
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Reciprocal Rank Fusion 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "RRF 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": true
+        },
+        "pronoun_only": {
+          "left": "Reciprocal Rank Fusion 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Reciprocal Rank Fusion 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "Reciprocal Rank Fusion 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Reciprocal Rank Fusion 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "RRF 不读取原始相关性分数。",
+          "right": "RRF 不使用原始相关性分数。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": false,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-001",
+        "entailment": 0.986245,
+        "neutral": 0.011984,
+        "contradiction": 0.001771,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-001",
+        "entailment": 0.787509,
+        "neutral": 0.205665,
+        "contradiction": 0.006826,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-002",
+      "category": "alias",
+      "left": "最终验收集只能运行一次。",
+      "right": "Holdout 最多执行一次最终验收。",
+      "expected_duplicate": true,
+      "note": "数据集别名与语序变化。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "最终验收集只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Holdout 只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": true
+        },
+        "pronoun_only": {
+          "left": "最终验收集只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "最终验收集只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "最终验收集只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "最终验收集只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Holdout 只能运行一次。",
+          "right": "Holdout 最多执行一次最终验收。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-002",
+        "entailment": 0.992861,
+        "neutral": 0.004855,
+        "contradiction": 0.002284,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-002",
+        "entailment": 0.981094,
+        "neutral": 0.012605,
+        "contradiction": 0.006301,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-003",
+      "category": "alias",
+      "left": "RRF 负责融合排序。",
+      "right": "BM25 负责融合排序。",
+      "expected_duplicate": false,
+      "note": "职责相同但组件不同。",
+      "left_signature": {
+        "subject": "RRF 负责",
+        "predicate": "融合",
+        "value": "排序",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "BM25 负责",
+        "predicate": "融合",
+        "value": "排序",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "combined_left_entity": {
+        "value": "RRF 负责",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "BM25 负责",
+        "resolved": true
+      },
+      "combined_entity_compatible": false,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "RRF 负责融合排序。",
+          "right": "BM25 负责融合排序。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-003",
+        "entailment": 0.015155,
+        "neutral": 0.01693,
+        "contradiction": 0.967915,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-003",
+        "entailment": 0.005443,
+        "neutral": 0.01103,
+        "contradiction": 0.983527,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-004",
+      "category": "alias",
+      "left": "最终验收集包含二十四条样本。",
+      "right": "Validation 包含二十四条样本。",
+      "expected_duplicate": false,
+      "note": "数量相同但数据集不同。",
+      "left_signature": {
+        "subject": "最终验收集",
+        "predicate": "包含",
+        "value": "二十四条样本",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Validation",
+        "predicate": "包含",
+        "value": "二十四条样本",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "combined_left_entity": {
+        "value": "Holdout",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "Validation",
+        "resolved": true
+      },
+      "combined_entity_compatible": false,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "最终验收集包含二十四条样本。",
+          "right": "Validation 包含二十四条样本。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Holdout 包含二十四条样本。",
+          "right": "Validation 包含二十四条样本。",
+          "applied": true
+        },
+        "pronoun_only": {
+          "left": "最终验收集包含二十四条样本。",
+          "right": "Validation 包含二十四条样本。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "最终验收集包含二十四条样本。",
+          "right": "Validation 包含二十四条样本。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "最终验收集包含20四条样本。",
+          "right": "Validation 包含20四条样本。",
+          "applied": true
+        },
+        "date_only": {
+          "left": "最终验收集包含二十四条样本。",
+          "right": "Validation 包含二十四条样本。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Holdout 包含20四条样本。",
+          "right": "Validation 包含20四条样本。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-004",
+        "entailment": 0.970059,
+        "neutral": 0.025026,
+        "contradiction": 0.004915,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-004",
+        "entailment": 0.68481,
+        "neutral": 0.307401,
+        "contradiction": 0.00779,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-005",
+      "category": "pronoun",
+      "left": "检索器返回候选证据。",
+      "right": "它会返回候选证据。",
+      "expected_duplicate": true,
+      "note": "代词回指检索器。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": "它",
+        "predicate": "会",
+        "value": "返回候选证据",
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "检索器返回候选证据。",
+          "right": "它会返回候选证据。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-005",
+        "entailment": 0.990256,
+        "neutral": 0.008887,
+        "contradiction": 0.000858,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-005",
+        "entailment": 0.059421,
+        "neutral": 0.940202,
+        "contradiction": 0.000377,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "duph-006",
+      "category": "pronoun",
+      "left": "冻结清单保存文件哈希。",
+      "right": "其职责是保存文件哈希。",
+      "expected_duplicate": true,
+      "note": "所有格代词表达相同职责。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": "其职责",
+        "predicate": "是",
+        "value": "保存文件哈希",
+        "resolved": true
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": "冻结清单",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其职责是保存文件哈希。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-006",
+        "entailment": 0.634175,
+        "neutral": 0.362196,
+        "contradiction": 0.003629,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-006",
+        "entailment": 0.375775,
+        "neutral": 0.623443,
+        "contradiction": 0.000782,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "duph-007",
+      "category": "pronoun",
+      "left": "检索器返回候选证据。",
+      "right": "它会生成最终答案。",
+      "expected_duplicate": false,
+      "note": "同一代词主体但动作不同。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": "它",
+        "predicate": "会",
+        "value": "生成最终答案",
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "检索器返回候选证据。",
+          "right": "它会生成最终答案。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-007",
+        "entailment": 0.4234,
+        "neutral": 0.323433,
+        "contradiction": 0.253166,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-007",
+        "entailment": 0.327169,
+        "neutral": 0.632601,
+        "contradiction": 0.04023,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "duph-008",
+      "category": "pronoun",
+      "left": "冻结清单保存文件哈希。",
+      "right": "其内容是模型权重。",
+      "expected_duplicate": false,
+      "note": "代词回指相同但宾语不同。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": "其内容",
+        "predicate": "是",
+        "value": "模型权重",
+        "resolved": true
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": "冻结清单",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "冻结清单保存文件哈希。",
+          "right": "其内容是模型权重。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-008",
+        "entailment": 0.486946,
+        "neutral": 0.41865,
+        "contradiction": 0.094404,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-008",
+        "entailment": 0.136055,
+        "neutral": 0.750897,
+        "contradiction": 0.113048,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "duph-009",
+      "category": "negation",
+      "left": "Development 不用于最终验收。",
+      "right": "Development 不能作为最终验收集。",
+      "expected_duplicate": true,
+      "note": "否定约束的近义表达。",
+      "left_signature": {
+        "subject": "Development 不",
+        "predicate": "用于",
+        "value": "最终验收",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Development",
+        "predicate": "不能",
+        "value": "作为最终验收集",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "combined_left_entity": {
+        "value": "Development",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "Development 不能作",
+        "resolved": true
+      },
+      "combined_entity_compatible": false,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Development 不用于最终验收。",
+          "right": "Development 不能作为最终验收集。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Development 不用于最终验收。",
+          "right": "Development 不能作为Holdout 。",
+          "applied": true
+        },
+        "pronoun_only": {
+          "left": "Development 不用于最终验收。",
+          "right": "Development 不能作为最终验收集。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Development 禁止用于最终验收。",
+          "right": "Development 不能作为最终验收集。",
+          "applied": true
+        },
+        "number_only": {
+          "left": "Development 不用于最终验收。",
+          "right": "Development 不能作为最终验收集。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Development 不用于最终验收。",
+          "right": "Development 不能作为最终验收集。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Development 禁止用于最终验收。",
+          "right": "Development 不能作为Holdout 。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-009",
+        "entailment": 0.950727,
+        "neutral": 0.04703,
+        "contradiction": 0.002243,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-009",
+        "entailment": 0.923827,
+        "neutral": 0.074958,
+        "contradiction": 0.001215,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-010",
+      "category": "negation",
+      "left": "Evidence Gate 不会修改检索结果。",
+      "right": "Evidence Gate 不能改变检索结果。",
+      "expected_duplicate": true,
+      "note": "否定情态改写。",
+      "left_signature": {
+        "subject": "Evidence Gate",
+        "predicate": "不会",
+        "value": "修改检索结果",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Evidence Gate",
+        "predicate": "不能",
+        "value": "改变检索结果",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Evidence Gate 不会修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Evidence Gate 不会修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "Evidence Gate 不会修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Evidence Gate 不修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": true
+        },
+        "number_only": {
+          "left": "Evidence Gate 不会修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Evidence Gate 不会修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Evidence Gate 不修改检索结果。",
+          "right": "Evidence Gate 不能改变检索结果。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-010",
+        "entailment": 0.984807,
+        "neutral": 0.013204,
+        "contradiction": 0.001989,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-010",
+        "entailment": 0.983387,
+        "neutral": 0.014261,
+        "contradiction": 0.002353,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-011",
+      "category": "negation",
+      "left": "Validation 可以用于失败分析。",
+      "right": "Validation 不能用于失败分析。",
+      "expected_duplicate": false,
+      "note": "肯定与否定相反。",
+      "left_signature": {
+        "subject": "Validation 可以",
+        "predicate": "用于",
+        "value": "失败分析",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Validation",
+        "predicate": "不能",
+        "value": "用于失败分析",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "combined_left_entity": {
+        "value": "Validation 可以",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "Validation",
+        "resolved": true
+      },
+      "combined_entity_compatible": false,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 不能用于失败分析。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 不能用于失败分析。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 不能用于失败分析。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 禁止用于失败分析。",
+          "applied": true
+        },
+        "number_only": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 不能用于失败分析。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 不能用于失败分析。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Validation 可以用于失败分析。",
+          "right": "Validation 禁止用于失败分析。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-011",
+        "entailment": 0.013365,
+        "neutral": 0.012492,
+        "contradiction": 0.974142,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-011",
+        "entailment": 0.010254,
+        "neutral": 0.005531,
+        "contradiction": 0.984215,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-012",
+      "category": "negation",
+      "left": "系统不会自动删除声明。",
+      "right": "系统会自动删除声明。",
+      "expected_duplicate": false,
+      "note": "行为结论相反。",
+      "left_signature": {
+        "subject": "系统",
+        "predicate": "不会",
+        "value": "自动删除声明",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "系统",
+        "predicate": "会",
+        "value": "自动删除声明",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": "系统",
+        "resolved": true
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "系统不会自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "系统不会自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "系统不会自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "系统不自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": true
+        },
+        "number_only": {
+          "left": "系统不会自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "系统不会自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "系统不自动删除声明。",
+          "right": "系统会自动删除声明。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-012",
+        "entailment": 0.002307,
+        "neutral": 0.006105,
+        "contradiction": 0.991589,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-012",
+        "entailment": 0.011272,
+        "neutral": 0.008558,
+        "contradiction": 0.98017,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-013",
+      "category": "number",
+      "left": "覆盖率阈值是 0.30。",
+      "right": "覆盖率阈值为 30%。",
+      "expected_duplicate": true,
+      "note": "小数与百分比等价。",
+      "left_signature": {
+        "subject": "覆盖率阈值",
+        "predicate": "是",
+        "value": "0.30",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "覆盖率阈值",
+        "predicate": "为",
+        "value": "30%",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": "覆盖率阈值",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "覆盖率阈值",
+        "resolved": true
+      },
+      "combined_entity_compatible": true,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "覆盖率阈值是 0.30。",
+          "right": "覆盖率阈值为 30%。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "覆盖率阈值是 0.30。",
+          "right": "覆盖率阈值为 30%。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "覆盖率阈值是 0.30。",
+          "right": "覆盖率阈值为 30%。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "覆盖率阈值是 0.30。",
+          "right": "覆盖率阈值为 30%。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "覆盖率阈值是 0.3。",
+          "right": "覆盖率阈值为 0.3。",
+          "applied": true
+        },
+        "date_only": {
+          "left": "覆盖率阈值是 0.30。",
+          "right": "覆盖率阈值为 30%。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "覆盖率阈值是 0.3。",
+          "right": "覆盖率阈值为 0.3。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": true,
+        "date_only": false,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-013",
+        "entailment": 0.015265,
+        "neutral": 0.023439,
+        "contradiction": 0.961295,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-013",
+        "entailment": 0.056301,
+        "neutral": 0.016141,
+        "contradiction": 0.927558,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-014",
+      "category": "number",
+      "left": "最终返回六个候选。",
+      "right": "最终返回 6 个候选。",
+      "expected_duplicate": true,
+      "note": "中文数字与阿拉伯数字。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "最终返回六个候选。",
+          "right": "最终返回 6 个候选。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-014",
+        "entailment": 0.96658,
+        "neutral": 0.025365,
+        "contradiction": 0.008054,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-014",
+        "entailment": 0.980622,
+        "neutral": 0.014206,
+        "contradiction": 0.005172,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-015",
+      "category": "number",
+      "left": "Top K 是 3。",
+      "right": "Top K 是 6。",
+      "expected_duplicate": false,
+      "note": "相同指标但数值不同。",
+      "left_signature": {
+        "subject": "Top K",
+        "predicate": "是",
+        "value": "3",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Top K",
+        "predicate": "是",
+        "value": "6",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": "Top K",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "Top K",
+        "resolved": true
+      },
+      "combined_entity_compatible": true,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Top K 是 3。",
+          "right": "Top K 是 6。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-015",
+        "entailment": 0.00056,
+        "neutral": 0.001086,
+        "contradiction": 0.998354,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-015",
+        "entailment": 0.000741,
+        "neutral": 0.001515,
+        "contradiction": 0.997745,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-016",
+      "category": "number",
+      "left": "延迟是 20 毫秒。",
+      "right": "延迟是 200 毫秒。",
+      "expected_duplicate": false,
+      "note": "数量级不同。",
+      "left_signature": {
+        "subject": "延迟",
+        "predicate": "是",
+        "value": "20 毫秒",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "延迟",
+        "predicate": "是",
+        "value": "200 毫秒",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": "延迟",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "延迟",
+        "resolved": true
+      },
+      "combined_entity_compatible": true,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "延迟是 20 毫秒。",
+          "right": "延迟是 200 毫秒。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-016",
+        "entailment": 0.004668,
+        "neutral": 0.003071,
+        "contradiction": 0.992261,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-016",
+        "entailment": 0.030837,
+        "neutral": 0.004944,
+        "contradiction": 0.964219,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-017",
+      "category": "date",
+      "left": "报告生成于 2026-10-03。",
+      "right": "报告生成于 2026 年 10 月 3 日。",
+      "expected_duplicate": true,
+      "note": "ISO 与中文日期等价。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026 年 10 月 3 日。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026 年 10 月 3 日。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026 年 10 月 3 日。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026 年 10 月 3 日。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026 年 10 月 3 日。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026-10-03。",
+          "applied": true
+        },
+        "combined_typed_features": {
+          "left": "报告生成于 2026-10-03。",
+          "right": "报告生成于 2026-10-03。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-017",
+        "entailment": 0.984685,
+        "neutral": 0.01301,
+        "contradiction": 0.002305,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-017",
+        "entailment": 0.732264,
+        "neutral": 0.256257,
+        "contradiction": 0.011479,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-018",
+      "category": "date",
+      "left": "冻结时间是 2027-01-09。",
+      "right": "冻结时间为 2027 年 1 月 9 日。",
+      "expected_duplicate": true,
+      "note": "带前导零的日期等价。",
+      "left_signature": {
+        "subject": "冻结时间",
+        "predicate": "是",
+        "value": "2027-01-09",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "冻结时间",
+        "predicate": "为",
+        "value": "2027 年 1 月 9 日",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": "冻结时间",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "冻结时间",
+        "resolved": true
+      },
+      "combined_entity_compatible": true,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027 年 1 月 9 日。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027 年 1 月 9 日。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027 年 1 月 9 日。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027 年 1 月 9 日。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027 年 1 月 9 日。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027-01-09。",
+          "applied": true
+        },
+        "combined_typed_features": {
+          "left": "冻结时间是 2027-01-09。",
+          "right": "冻结时间为 2027-01-09。",
+          "applied": true
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-018",
+        "entailment": 0.980271,
+        "neutral": 0.015407,
+        "contradiction": 0.004322,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-018",
+        "entailment": 0.92254,
+        "neutral": 0.05161,
+        "contradiction": 0.02585,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-019",
+      "category": "date",
+      "left": "发布日是 2026-12-01。",
+      "right": "发布日是 2026-12-02。",
+      "expected_duplicate": false,
+      "note": "相邻日期不同。",
+      "left_signature": {
+        "subject": "发布日",
+        "predicate": "是",
+        "value": "2026-12-01",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "发布日",
+        "predicate": "是",
+        "value": "2026-12-02",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": "发布日",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "发布日",
+        "resolved": true
+      },
+      "combined_entity_compatible": true,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "发布日是 2026-12-01。",
+          "right": "发布日是 2026-12-02。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-019",
+        "entailment": 0.002466,
+        "neutral": 0.006539,
+        "contradiction": 0.990995,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-019",
+        "entailment": 0.002017,
+        "neutral": 0.003984,
+        "contradiction": 0.993999,
+        "predicted_label": "contradiction"
+      }
+    },
+    {
+      "id": "duph-020",
+      "category": "date",
+      "left": "Validation 冻结于 2026-11-08。",
+      "right": "Holdout 冻结于 2026-11-08。",
+      "expected_duplicate": false,
+      "note": "日期相同但数据集实体不同。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": "Validation",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "Holdout",
+        "resolved": true
+      },
+      "combined_entity_compatible": false,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Validation 冻结于 2026-11-08。",
+          "right": "Holdout 冻结于 2026-11-08。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-020",
+        "entailment": 0.873607,
+        "neutral": 0.037435,
+        "contradiction": 0.088959,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-020",
+        "entailment": 0.76169,
+        "neutral": 0.036221,
+        "contradiction": 0.202089,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-021",
+      "category": "entity_identity",
+      "left": "重排器保持关闭。",
+      "right": "重排器没有开启。",
+      "expected_duplicate": true,
+      "note": "同一实体的状态改写。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "重排器保持关闭。",
+          "right": "重排器没有开启。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-021",
+        "entailment": 0.9498,
+        "neutral": 0.034173,
+        "contradiction": 0.016026,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-021",
+        "entailment": 0.836213,
+        "neutral": 0.118984,
+        "contradiction": 0.044804,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-022",
+      "category": "entity_identity",
+      "left": "向量检索使用六个候选。",
+      "right": "向量检索使用 6 个候选。",
+      "expected_duplicate": true,
+      "note": "同一实体与等价数值。",
+      "left_signature": {
+        "subject": "向量检索",
+        "predicate": "使用",
+        "value": "六个候选",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "向量检索",
+        "predicate": "使用",
+        "value": "6 个候选",
+        "resolved": true
+      },
+      "subject_compatible": true,
+      "combined_left_entity": {
+        "value": "向量检索",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "向量检索",
+        "resolved": true
+      },
+      "combined_entity_compatible": true,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "向量检索使用六个候选。",
+          "right": "向量检索使用 6 个候选。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": true,
+        "alias_only": true,
+        "pronoun_only": true,
+        "negation_only": true,
+        "number_only": true,
+        "date_only": true,
+        "combined_typed_features": true,
+        "combined_with_entity_veto": true
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-022",
+        "entailment": 0.974201,
+        "neutral": 0.022875,
+        "contradiction": 0.002925,
+        "predicted_label": "entailment"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-022",
+        "entailment": 0.985016,
+        "neutral": 0.013107,
+        "contradiction": 0.001877,
+        "predicted_label": "entailment"
+      }
+    },
+    {
+      "id": "duph-023",
+      "category": "entity_identity",
+      "left": "向量检索保持启用。",
+      "right": "文本检索保持启用。",
+      "expected_duplicate": false,
+      "note": "状态相同但实体不同。",
+      "left_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "right_signature": {
+        "subject": null,
+        "predicate": null,
+        "value": null,
+        "resolved": false
+      },
+      "subject_compatible": null,
+      "combined_left_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_right_entity": {
+        "value": null,
+        "resolved": false
+      },
+      "combined_entity_compatible": null,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "向量检索保持启用。",
+          "right": "文本检索保持启用。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-023",
+        "entailment": 0.027334,
+        "neutral": 0.640901,
+        "contradiction": 0.331765,
+        "predicted_label": "neutral"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-023",
+        "entailment": 0.041381,
+        "neutral": 0.721475,
+        "contradiction": 0.237144,
+        "predicted_label": "neutral"
+      }
+    },
+    {
+      "id": "duph-024",
+      "category": "entity_identity",
+      "left": "Embedding 模型是 BGE。",
+      "right": "Rerank 模型是 BGE。",
+      "expected_duplicate": false,
+      "note": "值相同但实体角色不同。",
+      "left_signature": {
+        "subject": "Embedding 模型",
+        "predicate": "是",
+        "value": "BGE",
+        "resolved": true
+      },
+      "right_signature": {
+        "subject": "Rerank 模型",
+        "predicate": "是",
+        "value": "BGE",
+        "resolved": true
+      },
+      "subject_compatible": false,
+      "combined_left_entity": {
+        "value": "Embedding 模型",
+        "resolved": true
+      },
+      "combined_right_entity": {
+        "value": "Rerank 模型",
+        "resolved": true
+      },
+      "combined_entity_compatible": false,
+      "feature_inputs": {
+        "nli_baseline": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        },
+        "alias_only": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        },
+        "pronoun_only": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        },
+        "negation_only": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        },
+        "number_only": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        },
+        "date_only": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        },
+        "combined_typed_features": {
+          "left": "Embedding 模型是 BGE。",
+          "right": "Rerank 模型是 BGE。",
+          "applied": false
+        }
+      },
+      "predictions": {
+        "nli_baseline": false,
+        "alias_only": false,
+        "pronoun_only": false,
+        "negation_only": false,
+        "number_only": false,
+        "date_only": false,
+        "combined_typed_features": false,
+        "combined_with_entity_veto": false
+      },
+      "baseline_forward_nli": {
+        "chunk_id": "nli_baseline:duph-024",
+        "entailment": 0.26354,
+        "neutral": 0.120116,
+        "contradiction": 0.616344,
+        "predicted_label": "contradiction"
+      },
+      "baseline_reverse_nli": {
+        "chunk_id": "nli_baseline:duph-024",
+        "entailment": 0.280806,
+        "neutral": 0.203604,
+        "contradiction": 0.51559,
+        "predicted_label": "contradiction"
+      }
+    }
+  ]
+}
