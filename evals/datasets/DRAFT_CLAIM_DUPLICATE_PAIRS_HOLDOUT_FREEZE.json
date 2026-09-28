@@ -1,0 +1,15 @@
+{
+  "dataset": "evals\\datasets\\draft_claim_duplicate_pairs_holdout_v1.jsonl",
+  "sha256": "0a264306d2cf3712147115ad8f45a347e1047246070dd58fc3544b3ebfa63a92",
+  "case_count": 24,
+  "case_ids": [
+    "duph-001", "duph-002", "duph-003", "duph-004", "duph-005", "duph-006",
+    "duph-007", "duph-008", "duph-009", "duph-010", "duph-011", "duph-012",
+    "duph-013", "duph-014", "duph-015", "duph-016", "duph-017", "duph-018",
+    "duph-019", "duph-020", "duph-021", "duph-022", "duph-023", "duph-024"
+  ],
+  "frozen_at": "2026-09-28T00:30:00+08:00",
+  "candidate_commit": "62dbbe25287bab983b52768c9c95a589f62b5f9c",
+  "max_candidate_runs": 1,
+  "note": "Independent one-shot holdout for the fixed eval-only combined typed-feature plus entity-identity-veto duplicate candidate. Not for tuning."
+}

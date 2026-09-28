@@ -8,6 +8,8 @@ from evals.freeze import file_sha256
 
 DATASET = Path("evals/datasets/draft_claim_duplicate_pairs_development_v1.jsonl")
 MANIFEST = Path("evals/datasets/DRAFT_CLAIM_DUPLICATE_PAIRS_DEVELOPMENT_FREEZE.json")
+HOLDOUT = Path("evals/datasets/draft_claim_duplicate_pairs_holdout_v1.jsonl")
+HOLDOUT_MANIFEST = Path("evals/datasets/DRAFT_CLAIM_DUPLICATE_PAIRS_HOLDOUT_FREEZE.json")
 
 
 def test_duplicate_pair_fixture_is_balanced_and_covers_required_categories() -> None:
@@ -59,3 +61,19 @@ def test_duplicate_pair_loader_rejects_unknown_fields(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError):
         load_duplicate_pair_fixtures(path)
+
+
+def test_duplicate_pair_holdout_is_balanced_frozen_and_disjoint() -> None:
+    development = load_duplicate_pair_fixtures(DATASET)
+    holdout = load_duplicate_pair_fixtures(HOLDOUT)
+    record = json.loads(HOLDOUT_MANIFEST.read_text(encoding="utf-8"))
+
+    assert len(holdout) == 24
+    assert sum(fixture.expected_duplicate for fixture in holdout) == 12
+    assert record["sha256"] == file_sha256(HOLDOUT)
+    assert record["case_ids"] == [fixture.id for fixture in holdout]
+    development_claims = {
+        claim for fixture in development for claim in (fixture.left, fixture.right)
+    }
+    holdout_claims = {claim for fixture in holdout for claim in (fixture.left, fixture.right)}
+    assert development_claims.isdisjoint(holdout_claims)
