@@ -28,6 +28,7 @@ def test_negation_normalization_preserves_polarity_boundary() -> None:
 def test_number_normalization_handles_percent_and_chinese_tens() -> None:
     assert normalize_number("阈值为 70%") == "阈值为 0.7"
     assert normalize_number("RRF k 为六十") == "RRF k 为60"
+    assert normalize_number("冻结于 2026-09-07") == "冻结于 2026-09-07"
 
 
 def test_date_normalization_uses_iso_date() -> None:

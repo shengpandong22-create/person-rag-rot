@@ -67,6 +67,14 @@ def _decimal_text(value: Decimal) -> str:
 
 
 def normalize_number(text: str) -> str:
+    protected_dates: list[str] = []
+
+    def protect_date(match: re.Match[str]) -> str:
+        protected_dates.append(match.group(0))
+        return f"__DATE_{chr(65 + len(protected_dates) - 1)}__"
+
+    text = re.sub(r"\d{4}-\d{1,2}-\d{1,2}", protect_date, text)
+    text = re.sub(r"\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日", protect_date, text)
     for chinese, value in sorted(CHINESE_TENS.items(), key=lambda item: len(item[0]), reverse=True):
         text = text.replace(chinese, str(value))
 
@@ -78,7 +86,10 @@ def normalize_number(text: str) -> str:
     def decimal(match: re.Match[str]) -> str:
         return _decimal_text(Decimal(match.group(0)))
 
-    return re.sub(r"\d+(?:\.\d+)?", decimal, text)
+    text = re.sub(r"\d+(?:\.\d+)?", decimal, text)
+    for index, date in enumerate(protected_dates):
+        text = text.replace(f"__DATE_{chr(65 + index)}__", date)
+    return text
 
 
 def normalize_date(text: str) -> str:
