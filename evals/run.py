@@ -33,6 +33,12 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, default=Path("evals/reports"))
     parser.add_argument("--top-k", type=int, default=6)
     parser.add_argument("--candidate-k", type=int, default=20)
+    parser.add_argument(
+        "--max-chunks-per-document",
+        type=int,
+        default=None,
+        help="Eval-only override; 0 disables the per-document limit.",
+    )
     parser.add_argument("--use-llm-scoring", action="store_true")
     parser.add_argument(
         "--experiment-mode",
@@ -65,6 +71,7 @@ def main() -> None:
                         candidate_k=args.candidate_k,
                         experiment_mode=mode,
                         evidence_gate_policy=args.evidence_gate_policy,
+                        max_chunks_per_document=args.max_chunks_per_document,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -108,6 +115,7 @@ def main() -> None:
                     candidate_k=args.candidate_k,
                     experiment_mode=args.experiment_mode,
                     evidence_gate_policy=args.evidence_gate_policy,
+                    max_chunks_per_document=args.max_chunks_per_document,
                 )
             )
             print({"retrieval": report.metrics})

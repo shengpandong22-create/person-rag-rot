@@ -94,7 +94,7 @@ class PostgresHybridRetriever:
         sessions: async_sessionmaker[AsyncSession],
         embedding: EmbeddingGateway,
         *,
-        max_chunks_per_document: int,  # 每篇文档最多返回的 chunk 数，避免单一文档霸榜
+        max_chunks_per_document: int | None,  # None 仅供 eval 关闭单文档限额
     ) -> None:
         self._sessions = sessions
         self._embedding = embedding
@@ -217,7 +217,10 @@ class PostgresHybridRetriever:
             retrieved = converted[chunk_id]
 
             # 每篇文档最多 max_chunks_per_document 个 chunk
-            if per_document.get(document_id, 0) >= self._max_chunks_per_document:
+            if (
+                self._max_chunks_per_document is not None
+                and per_document.get(document_id, 0) >= self._max_chunks_per_document
+            ):
                 filtered_out.append(
                     FilteredRetrievalCandidate(retrieved, RetrievalFilterReason.PER_DOCUMENT_LIMIT)
                 )

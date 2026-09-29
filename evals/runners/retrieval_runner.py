@@ -66,6 +66,7 @@ async def run_retrieval_eval(
     min_evidence_score: float | None = None,
     experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
     evidence_gate_policy: EvidenceGatePolicy | None = None,
+    max_chunks_per_document: int | None = None,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -73,13 +74,20 @@ async def run_retrieval_eval(
         min_evidence_score if min_evidence_score is not None else settings.retrieval_min_score
     )
     gate_policy = evidence_gate_policy or settings.evidence_gate_policy
+    if max_chunks_per_document is not None and max_chunks_per_document < 0:
+        raise ValueError("max_chunks_per_document must be >= 0")
+    effective_document_limit = (
+        settings.retrieval_max_chunks_per_document
+        if max_chunks_per_document is None
+        else (None if max_chunks_per_document == 0 else max_chunks_per_document)
+    )
     engine = create_database_engine(settings.database_url)
     sessions = create_session_factory(engine)
     embedding = create_embedding_gateway(settings)
     retriever = PostgresHybridRetriever(
         sessions,
         embedding,
-        max_chunks_per_document=settings.retrieval_max_chunks_per_document,
+        max_chunks_per_document=effective_document_limit,
     )
     answer_service = AnswerService(
         sessions,
@@ -301,7 +309,7 @@ async def run_retrieval_eval(
             },
             "freeze_manifest_sha256": _freeze_manifest_sha256(dataset_path),
             "run_duration_ms": round(total_retrieval_ms, 4),
-            "retrieval_max_chunks_per_document": settings.retrieval_max_chunks_per_document,
+            "retrieval_max_chunks_per_document": effective_document_limit,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
             "ground_truth_counts": ground_truth_counts,

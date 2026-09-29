@@ -178,6 +178,57 @@ async def test_diagnostics_share_pipeline_and_attribute_filters(
     ]
 
 
+@pytest.mark.asyncio
+async def test_eval_can_disable_per_document_limit_without_changing_other_filters(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(), title="Guide", logical_name="guide", source_url=None, trust_level="curated"
+    )
+    candidates = []
+    for index in range(5):
+        model = SimpleNamespace(
+            id=uuid4(),
+            content=f"evidence {index}",
+            heading_path=["Guide"],
+            page_number=None,
+            chunk_index=index,
+        )
+        candidates.append(
+            _Candidate(cast(Any, model), cast(Any, document), index + 1, 1 - index / 10)
+        )
+    query = RetrievalQuery(uuid4(), "evidence", top_k=5, candidate_k=5)
+
+    limited = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=2
+    )
+    unlimited = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=None
+    )
+    monkeypatch.setattr(limited, "_vector_candidates", AsyncMock(return_value=candidates))
+    monkeypatch.setattr(unlimited, "_vector_candidates", AsyncMock(return_value=candidates))
+
+    limited_result = await limited.retrieve_with_diagnostics(
+        query, experiment_mode=RetrievalExperimentMode.VECTOR_ONLY
+    )
+    unlimited_result = await unlimited.retrieve_with_diagnostics(
+        query, experiment_mode=RetrievalExperimentMode.VECTOR_ONLY
+    )
+
+    assert [item.chunk_index for item in limited_result.final_results] == [0, 2]
+    assert [item.chunk_index for item in unlimited_result.final_results] == [0, 2, 4]
+
+
 def test_retrieval_explanation_contains_rank_signals() -> None:
     explanation = _retrieval_explanation(
         fused_score=0.0325,
