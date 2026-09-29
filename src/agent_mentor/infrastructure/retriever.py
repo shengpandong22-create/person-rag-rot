@@ -74,6 +74,7 @@ class CandidateExpansionStrategy(StrEnum):
 
     NONE = "none"
     HEADING_LEXICAL = "heading-lexical"
+    HEADING_SHADOW = "heading-shadow"
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,6 +94,7 @@ class RetrievalDiagnostics:
     post_filter_candidates: tuple[RetrievedChunk, ...]
     filtered_out: tuple[FilteredRetrievalCandidate, ...]
     final_results: tuple[RetrievedChunk, ...]
+    supplemental_candidates: tuple[RetrievedChunk, ...] = ()
 
 
 def _merge_query_variant_candidates(
@@ -101,11 +103,7 @@ def _merge_query_variant_candidates(
     """RRF-merge eval-only query views into one fixed-size vector candidate list."""
     if len(ranked_variants) <= 1:
         return ranked_variants[0] if ranked_variants else []
-    by_id = {
-        candidate.chunk.id: candidate
-        for ranked in ranked_variants
-        for candidate in ranked
-    }
+    by_id = {candidate.chunk.id: candidate for ranked in ranked_variants for candidate in ranked}
     fused = reciprocal_rank_fusion(
         [[candidate.chunk.id for candidate in ranked] for ranked in ranked_variants]
     )
@@ -189,7 +187,7 @@ class PostgresHybridRetriever:
     ) -> RetrievalDiagnostics:
         normalized = normalize_query(query.query)
         if not normalized:
-            return RetrievalDiagnostics((), (), (), (), (), (), ())
+            return RetrievalDiagnostics((), (), (), (), (), (), (), ())
 
         # 并行执行向量和全文检索（注意：这里实际上是串行的，优化空间）
         async with self._sessions() as session:
@@ -204,17 +202,18 @@ class PostgresHybridRetriever:
                     )
                 )
                 ranked_variants = [
-                    await self._vector_candidates(session, query, variant)
-                    for variant in variants
+                    await self._vector_candidates(session, query, variant) for variant in variants
                 ]
                 vector_candidates = _merge_query_variant_candidates(
                     ranked_variants,
                     candidate_k=query.candidate_k,
                 )
+                if candidate_expansion in {
+                    CandidateExpansionStrategy.HEADING_LEXICAL,
+                    CandidateExpansionStrategy.HEADING_SHADOW,
+                }:
+                    heading_candidates = await self._heading_candidates(session, query, normalized)
                 if candidate_expansion is CandidateExpansionStrategy.HEADING_LEXICAL:
-                    heading_candidates = await self._heading_candidates(
-                        session, query, normalized
-                    )
                     vector_candidates = _merge_query_variant_candidates(
                         [vector_candidates, heading_candidates],
                         candidate_k=query.candidate_k,
@@ -304,9 +303,7 @@ class PostgresHybridRetriever:
 
             # 跳过相邻 chunk：避免返回内容高度重叠的连续分块
             neighbor_key = (document_id, candidate.chunk.chunk_index)
-            previous = selected_by_position.get(
-                (document_id, candidate.chunk.chunk_index - 1)
-            )
+            previous = selected_by_position.get((document_id, candidate.chunk.chunk_index - 1))
             should_filter_adjacent = previous is not None and (
                 adjacent_filter_strategy is AdjacentFilterStrategy.CURRENT
                 or previous.heading_path == retrieved.heading_path
@@ -326,18 +323,46 @@ class PostgresHybridRetriever:
             FilteredRetrievalCandidate(chunk, RetrievalFilterReason.TOP_K_CUTOFF)
             for chunk in post_filter[query.top_k :]
         )
+        shadow_heading_candidates = (
+            tuple(
+                _to_retrieved_chunk(
+                    candidate=item,
+                    normalized=normalized,
+                    score=item.score,
+                    fused_score=0.0,
+                    heuristic_score=0.0,
+                    vector_rank=None,
+                    text_rank=None,
+                    vector_score=None,
+                    text_score=None,
+                    heading_rank=item.rank,
+                    heading_score=item.score,
+                )
+                for item in heading_candidates
+            )
+            if candidate_expansion is CandidateExpansionStrategy.HEADING_SHADOW
+            else ()
+        )
+        primary_candidate_ids = {item.chunk.id for item in vector_candidates}
+        supplemental_candidates = tuple(
+            item for item in shadow_heading_candidates if item.chunk_id not in primary_candidate_ids
+        )
         return RetrievalDiagnostics(
             vector_candidates=tuple(converted[item.chunk.id] for item in vector_candidates),
-            heading_candidates=tuple(
-                converted[item.chunk.id]
-                for item in heading_candidates
-                if item.chunk.id in converted
+            heading_candidates=(
+                shadow_heading_candidates
+                or tuple(
+                    converted[item.chunk.id]
+                    for item in heading_candidates
+                    if item.chunk.id in converted
+                )
             ),
             text_candidates=tuple(converted[item.chunk.id] for item in text_candidates),
             ordered_candidates=tuple(converted[chunk_id] for chunk_id in ordered_ids),
             post_filter_candidates=tuple(post_filter),
             filtered_out=tuple(filtered_out),
             final_results=tuple(results),
+            supplemental_candidates=supplemental_candidates,
         )
 
     def _base_query(
@@ -501,6 +526,8 @@ def _to_retrieved_chunk(
     text_rank: int | None,
     vector_score: float | None,
     text_score: float | None,
+    heading_rank: int | None = None,
+    heading_score: float | None = None,
 ) -> RetrievedChunk:
     return RetrievedChunk(
         chunk_id=candidate.chunk.id,
@@ -530,6 +557,8 @@ def _to_retrieved_chunk(
         document_logical_name=candidate.document.logical_name,
         rrf_score=fused_score,
         heuristic_rerank_score=heuristic_score,
+        heading_rank=heading_rank,
+        heading_score=heading_score,
     )
 
 

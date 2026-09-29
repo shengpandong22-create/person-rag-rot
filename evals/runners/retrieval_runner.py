@@ -108,6 +108,7 @@ async def run_retrieval_eval(
     metric_inputs: list[RetrievalCaseResult] = []
     grading_counts = {"graded": 0, "ungraded": 0}
     ground_truth_counts: dict[str, int] = {}
+    supplemental_metric_rows: list[tuple[int | None, int | None, int]] = []
     total_retrieval_ms = 0.0
     try:
         knowledge_base_fingerprint = await _knowledge_base_fingerprint(sessions, knowledge_base_id)
@@ -148,6 +149,9 @@ async def run_retrieval_eval(
             # excluded from formal Recall/MRR below.
             if ground_truth:
                 first_rank = _first_relevant_rank_by_id(chunks, ground_truth)
+                first_supplemental_rank = _first_relevant_rank_by_id(
+                    list(diagnostics.supplemental_candidates), ground_truth
+                )
                 first_raw_candidate_rank = _first_relevant_rank_by_id(
                     list(diagnostics.ordered_candidates), ground_truth
                 )
@@ -156,15 +160,12 @@ async def run_retrieval_eval(
                 )
             else:
                 first_rank = _first_relevant_rank(chunks, case.diagnostic_keywords)
+                first_supplemental_rank = None
                 first_raw_candidate_rank = None
                 first_post_filter_rank = None
-            evidence_assessment = answer_service.assess_evidence_diagnostics(
-                case.question, chunks
-            )
+            evidence_assessment = answer_service.assess_evidence_diagnostics(case.question, chunks)
             supported_ids = set(evidence_assessment.supported_chunk_ids)
-            supported_chunks = [
-                chunk for chunk in chunks if str(chunk.chunk_id) in supported_ids
-            ]
+            supported_chunks = [chunk for chunk in chunks if str(chunk.chunk_id) in supported_ids]
             evidence_sufficient = evidence_assessment.production_sufficient
             formally_scorable = graded and (
                 case.answerability is Answerability.NONE
@@ -211,6 +212,14 @@ async def run_retrieval_eval(
                         evidence_decision=evidence_assessment.decision.value,
                     )
                 )
+                if case.answerability is not Answerability.NONE:
+                    supplemental_metric_rows.append(
+                        (
+                            first_rank,
+                            first_supplemental_rank,
+                            len(diagnostics.supplemental_candidates),
+                        )
+                    )
             case_rows.append(
                 {
                     "id": case.case_id,
@@ -233,6 +242,7 @@ async def run_retrieval_eval(
                     "first_relevant_rank": first_rank,
                     "first_raw_candidate_rank": first_raw_candidate_rank,
                     "first_post_filter_rank": first_post_filter_rank,
+                    "first_supplemental_rank": first_supplemental_rank,
                     "experiment_mode": experiment_mode.value,
                     "query_strategy": query_strategy.value,
                     "query_variants": list(query_variants),
@@ -251,6 +261,9 @@ async def run_retrieval_eval(
                         ],
                         "heading_candidate_ids": [
                             str(chunk.chunk_id) for chunk in diagnostics.heading_candidates
+                        ],
+                        "supplemental_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.supplemental_candidates
                         ],
                         "text_candidate_ids": [
                             str(chunk.chunk_id) for chunk in diagnostics.text_candidates
@@ -290,6 +303,19 @@ async def run_retrieval_eval(
                         }
                         for index, chunk in enumerate(chunks[:top_k], start=1)
                     ],
+                    "supplemental_chunks": [
+                        {
+                            "rank": index,
+                            "chunk_id": str(chunk.chunk_id),
+                            "document_title": chunk.document_title,
+                            "document_logical_name": chunk.document_logical_name,
+                            "heading_path": list(chunk.heading_path),
+                            "heading_rank": chunk.heading_rank,
+                            "heading_score": chunk.heading_score,
+                            "matched_ground_truth": chunk.chunk_id in ground_truth_ids,
+                        }
+                        for index, chunk in enumerate(diagnostics.supplemental_candidates, start=1)
+                    ],
                 }
             )
     finally:
@@ -300,7 +326,8 @@ async def run_retrieval_eval(
             f"{dataset_path} contains no graded rows. Formal Recall/MRR requires human "
             "labels; run with a dataset whose positive rows carry relevant_sources."
         )
-    metrics = compute_retrieval_metrics(metric_inputs)
+    metric_values = asdict(compute_retrieval_metrics(metric_inputs))
+    metric_values.update(_supplemental_recall_metrics(supplemental_metric_rows))
     provenance = build_provenance(dataset_path=dataset_path)
     report = RetrievalEvalReport(
         dataset=str(dataset_path),
@@ -334,11 +361,38 @@ async def run_retrieval_eval(
             "ground_truth_counts": ground_truth_counts,
             "metrics_scope": "graded_rows_only",
         },
-        metrics=asdict(metrics),
+        metrics=metric_values,
         cases=case_rows,
     )
     _write_report(report, output_dir)
     return report
+
+
+def _supplemental_recall_metrics(
+    rows: list[tuple[int | None, int | None, int]],
+) -> dict[str, float]:
+    """Diagnostic recall for a frozen primary Top-6 plus a separate heading channel."""
+    if not rows:
+        return {
+            "primary_at_6_plus_supplemental_at_1": 0.0,
+            "primary_at_6_plus_supplemental_at_3": 0.0,
+            "primary_at_6_plus_supplemental_at_6": 0.0,
+            "primary_at_6_plus_supplemental_at_20": 0.0,
+            "average_supplemental_candidate_count": 0.0,
+        }
+
+    values: dict[str, float] = {}
+    for limit in (1, 3, 6, 20):
+        hits = sum(
+            (primary_rank is not None and primary_rank <= 6)
+            or (supplemental_rank is not None and supplemental_rank <= limit)
+            for primary_rank, supplemental_rank, _ in rows
+        )
+        values[f"primary_at_6_plus_supplemental_at_{limit}"] = round(hits / len(rows), 4)
+    values["average_supplemental_candidate_count"] = round(
+        sum(count for _, _, count in rows) / len(rows), 4
+    )
+    return values
 
 
 def _freeze_manifest_sha256(dataset_path: Path) -> str | None:
@@ -692,8 +746,7 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Negative rejection accuracy: {metrics['negative_rejection_accuracy']}",
         f"- Full acceptance rate: {metrics['full_acceptance_rate']}",
         f"- Partial acceptance rate: {metrics['partial_acceptance_rate']}",
-        "- Partial boundary detection rate: "
-        f"{metrics['partial_boundary_detection_rate']}",
+        f"- Partial boundary detection rate: {metrics['partial_boundary_detection_rate']}",
         f"- None rejection rate: {metrics['none_rejection_rate']}",
         f"- Evidence macro accuracy: {metrics['evidence_macro_accuracy']}",
         f"- Evidence confusion matrix: {metrics['evidence_confusion_matrix']}",
@@ -704,6 +757,12 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Candidate Recall@20: {metrics['candidate_recall_at_20']}",
         f"- Pre-filter Recall@6: {metrics['pre_filter_recall_at_6']}",
         f"- Post-filter Recall@6: {metrics['post_filter_recall_at_6']}",
+        f"- Primary@6 + supplemental@1: {metrics['primary_at_6_plus_supplemental_at_1']}",
+        f"- Primary@6 + supplemental@3: {metrics['primary_at_6_plus_supplemental_at_3']}",
+        f"- Primary@6 + supplemental@6: {metrics['primary_at_6_plus_supplemental_at_6']}",
+        f"- Primary@6 + supplemental@20: {metrics['primary_at_6_plus_supplemental_at_20']}",
+        "- Average supplemental candidate count: "
+        f"{metrics['average_supplemental_candidate_count']}",
         f"- Diversity filter drop rate: {metrics['diversity_filter_drop_rate']}",
         f"- Failure category counts: {metrics['failure_category_counts']}",
         "",

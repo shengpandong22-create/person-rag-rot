@@ -68,6 +68,8 @@ class RetrievedChunk:
     document_logical_name: str | None = None
     rrf_score: float | None = None
     heuristic_rerank_score: float | None = None
+    heading_rank: int | None = None
+    heading_score: float | None = None
 
 
 class KnowledgeRetriever(Protocol):

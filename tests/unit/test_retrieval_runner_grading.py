@@ -12,6 +12,7 @@ from evals.runners.retrieval_runner import (
     _heading_matches,
     _is_graded,
     _source_heading_matches,
+    _supplemental_recall_metrics,
 )
 from evals.schema import Answerability, LabelOrigin, RelevantSource, RetrievalEvalCase
 
@@ -31,6 +32,23 @@ def _chunk(chunk_id=None) -> RetrievedChunk:  # type: ignore[no-untyped-def]
         score=0.03,
         retrieval_explanation="RRF=0.0300",
     )
+
+
+def test_supplemental_recall_preserves_primary_and_measures_incremental_gain() -> None:
+    metrics = _supplemental_recall_metrics(
+        [
+            (5, None, 3),
+            (None, 2, 4),
+            (None, 8, 10),
+            (None, None, 2),
+        ]
+    )
+
+    assert metrics["primary_at_6_plus_supplemental_at_1"] == 0.25
+    assert metrics["primary_at_6_plus_supplemental_at_3"] == 0.5
+    assert metrics["primary_at_6_plus_supplemental_at_6"] == 0.5
+    assert metrics["primary_at_6_plus_supplemental_at_20"] == 0.75
+    assert metrics["average_supplemental_candidate_count"] == 4.75
 
 
 def test_quota4_acceptance_report_records_its_own_freeze_manifest() -> None:

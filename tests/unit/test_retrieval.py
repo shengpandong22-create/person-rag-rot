@@ -370,6 +370,61 @@ async def test_eval_heading_expansion_merges_into_fixed_candidate_budget(
     assert [item.content for item in diagnostics.heading_candidates] == ["shared"]
 
 
+@pytest.mark.asyncio
+async def test_eval_heading_shadow_never_changes_primary_results(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(), title="Guide", logical_name="guide", source_url=None, trust_level="curated"
+    )
+
+    def candidate(index: int, content: str) -> _Candidate:
+        model = SimpleNamespace(
+            id=uuid4(),
+            content=content,
+            heading_path=[content],
+            page_number=None,
+            chunk_index=index * 2,
+        )
+        return _Candidate(cast(Any, model), cast(Any, document), index + 1, 0.9 - index / 10)
+
+    vector = [candidate(0, "vector-1"), candidate(1, "vector-2")]
+    heading_only = candidate(2, "heading-only")
+    heading = [vector[1], heading_only]
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=3
+    )
+    monkeypatch.setattr(retriever, "_vector_candidates", AsyncMock(return_value=vector))
+    monkeypatch.setattr(retriever, "_heading_candidates", AsyncMock(return_value=heading))
+    query = RetrievalQuery(uuid4(), "evidence", top_k=2, candidate_k=2)
+
+    baseline = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+    )
+    shadow = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+        candidate_expansion=CandidateExpansionStrategy.HEADING_SHADOW,
+    )
+
+    assert shadow.final_results == baseline.final_results
+    assert shadow.ordered_candidates == baseline.ordered_candidates
+    assert [item.content for item in shadow.supplemental_candidates] == ["heading-only"]
+    assert shadow.supplemental_candidates[0].heading_rank == heading_only.rank
+    assert shadow.supplemental_candidates[0].heading_score == heading_only.score
+
+
 def test_retrieval_explanation_contains_rank_signals() -> None:
     explanation = _retrieval_explanation(
         fused_score=0.0325,
@@ -653,9 +708,7 @@ def test_claim_diagnostics_mark_unmet_exact_value_as_unsupported() -> None:
         score=0.5,
     )
 
-    assessment = service.assess_evidence_diagnostics(
-        "HNSW ef_search 多少？", [evidence]
-    )
+    assessment = service.assess_evidence_diagnostics("HNSW ef_search 多少？", [evidence])
 
     claim = assessment.claim_assessments[0]
     assert claim.requirement_types == ("exact_value",)
