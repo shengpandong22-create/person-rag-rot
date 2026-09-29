@@ -85,7 +85,12 @@ def test_funnel_separates_overlapping_stage_loss_from_terminal_cause() -> None:
         "success": 1,
     }
     assert funnel["filter_ground_truth_exposure"] == {"adjacent_chunk": 1}
-    assert funnel["filter_terminal_losses"] == {"adjacent": 1}
+    assert funnel["filter_terminal_losses"] == {"adjacent_chunk": 1}
+    assert funnel["terminal_case_ids"] == {
+        "adjacent_filter_miss": ["filtered"],
+        "candidate_recall_miss": ["candidate-miss"],
+        "success": ["ok"],
+    }
 
 
 def test_gate_metrics_condition_on_relevant_hit_and_group_negatives() -> None:
@@ -140,4 +145,5 @@ def test_gate_metrics_condition_on_relevant_hit_and_group_negatives() -> None:
         "total": 1,
         "rejected": 0,
         "rejection_rate": 0.0,
+        "false_acceptance_ids": ["negative-accepted"],
     }

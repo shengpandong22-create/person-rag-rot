@@ -1,0 +1,181 @@
+{
+  "source": {
+    "dataset": "evals\\datasets\\retrieval_development_v1.jsonl",
+    "dataset_sha256": "50c3d73b7bb67a1f5069d52a9c3d21bb1c8a3481d7ecb4250d7accb7a159d705",
+    "git_commit": "f65ee4a960e1d025f59c07f33424577bf45b30a9",
+    "experiment_mode": "vector-only",
+    "top_k": 6,
+    "candidate_k": 20,
+    "max_chunks_per_document": 3
+  },
+  "population": {
+    "graded": 60,
+    "answerable": 25,
+    "negative": 35
+  },
+  "counterfactual_funnel": {
+    "candidate_hit_at_20": {
+      "hits": 19,
+      "rate": 0.76
+    },
+    "raw_rank_hit_at_6": {
+      "hits": 15,
+      "rate": 0.6
+    },
+    "survived_diversity_filters_any_rank": {
+      "hits": 12,
+      "rate": 0.48
+    },
+    "final_hit_at_6": {
+      "hits": 12,
+      "rate": 0.48
+    },
+    "gate_accept_after_final_hit": {
+      "hits": 12,
+      "rate": 1.0,
+      "denominator": 12
+    }
+  },
+  "counterfactual_losses": {
+    "outside_candidate_pool": 6,
+    "candidate_hit_but_raw_rank_below_top_k": 4,
+    "candidate_hit_but_removed_by_filters": 7,
+    "survived_filters_but_below_final_top_k": 0,
+    "final_hit_but_gate_rejected": 0
+  },
+  "mutually_exclusive_terminal_outcomes": {
+    "adjacent_filter_miss": 2,
+    "candidate_recall_miss": 6,
+    "per_document_filter_miss": 5,
+    "success": 12
+  },
+  "terminal_case_ids": {
+    "adjacent_filter_miss": [
+      "dev-pos-001",
+      "dev-pos-004"
+    ],
+    "candidate_recall_miss": [
+      "dev-neg-031",
+      "dev-pos-006",
+      "dev-pos-009",
+      "dev-pt-010",
+      "dev-pos-012",
+      "dev-pos-013"
+    ],
+    "per_document_filter_miss": [
+      "dev-pos-003",
+      "dev-pos-008",
+      "dev-pos-010",
+      "dev-pt-007",
+      "dev-pt-008"
+    ],
+    "success": [
+      "dev-neg-029",
+      "dev-neg-030",
+      "dev-neg-032",
+      "dev-pos-002",
+      "dev-pos-005",
+      "dev-pos-007",
+      "dev-pt-005",
+      "dev-pt-006",
+      "dev-pt-009",
+      "dev-pos-011",
+      "dev-pos-014",
+      "dev-pos-015"
+    ]
+  },
+  "filter_ground_truth_exposure": {
+    "adjacent_chunk": 3,
+    "per_document_limit": 6
+  },
+  "filter_terminal_losses": {
+    "adjacent_chunk": 2,
+    "per_document_limit": 5
+  },
+  "gate_after_retrieval_hit": {
+    "full": {
+      "retrieval_hits": 6,
+      "accepted_after_hit": 6,
+      "acceptance_rate_after_hit": 1.0
+    },
+    "partial": {
+      "retrieval_hits": 6,
+      "accepted_after_hit": 6,
+      "acceptance_rate_after_hit": 1.0
+    }
+  },
+  "negative_rejection_by_reason": {
+    "false_premise": {
+      "total": 8,
+      "rejected": 1,
+      "rejection_rate": 0.125,
+      "false_acceptance_ids": [
+        "dev-neg-017",
+        "dev-neg-018",
+        "dev-neg-019",
+        "dev-neg-020",
+        "dev-neg-025",
+        "dev-neg-026",
+        "dev-neg-039"
+      ]
+    },
+    "in_domain_no_conclusion": {
+      "total": 5,
+      "rejected": 1,
+      "rejection_rate": 0.2,
+      "false_acceptance_ids": [
+        "dev-neg-005",
+        "dev-neg-007",
+        "dev-neg-008",
+        "dev-neg-034"
+      ]
+    },
+    "in_domain_value_missing": {
+      "total": 7,
+      "rejected": 1,
+      "rejection_rate": 0.1429,
+      "false_acceptance_ids": [
+        "dev-neg-001",
+        "dev-neg-002",
+        "dev-neg-003",
+        "dev-neg-004",
+        "dev-neg-027",
+        "dev-neg-028"
+      ]
+    },
+    "out_of_range_implementation": {
+      "total": 5,
+      "rejected": 2,
+      "rejection_rate": 0.4,
+      "false_acceptance_ids": [
+        "dev-neg-014",
+        "dev-neg-016",
+        "dev-neg-036"
+      ]
+    },
+    "out_of_scope": {
+      "total": 5,
+      "rejected": 1,
+      "rejection_rate": 0.2,
+      "false_acceptance_ids": [
+        "dev-neg-022",
+        "dev-neg-023",
+        "dev-neg-024",
+        "dev-neg-038"
+      ]
+    },
+    "version_not_released": {
+      "total": 5,
+      "rejected": 1,
+      "rejection_rate": 0.2,
+      "false_acceptance_ids": [
+        "dev-neg-009",
+        "dev-neg-010",
+        "dev-neg-011",
+        "dev-neg-035"
+      ]
+    }
+  },
+  "generated_at": "2026-09-29T12:26:32.546093+00:00",
+  "source_report_sha256": "b1e7108f9cfc8a6a0efe548f2f092a2921ffd333a89c4646306f7493a587ee9a"
+}

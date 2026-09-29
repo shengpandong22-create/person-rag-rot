@@ -50,6 +50,15 @@ def build_retrieval_funnel(report: dict[str, Any]) -> dict[str, Any]:
     terminal_losses["success"] += sum(
         case.get("failure_category") == "partial_answer_boundary" for case in positives
     )
+    terminal_case_ids: dict[str, list[str]] = defaultdict(list)
+    for case in positives:
+        category = case.get("failure_category")
+        outcome = (
+            "success"
+            if category in (None, "partial_answer_boundary")
+            else str(category)
+        )
+        terminal_case_ids[outcome].append(str(case["id"]))
 
     filter_exposure: Counter[str] = Counter()
     filter_terminal: Counter[str] = Counter()
@@ -61,8 +70,13 @@ def build_retrieval_funnel(report: dict[str, Any]) -> dict[str, Any]:
         }
         filter_exposure.update(reasons)
         category = str(case.get("failure_category") or "")
-        if category.endswith("_filter_miss"):
-            filter_terminal[category.removesuffix("_filter_miss")] += 1
+        terminal_reason = {
+            "adjacent_filter_miss": "adjacent_chunk",
+            "per_document_filter_miss": "per_document_limit",
+            "diversity_filter_miss": "other_diversity_filter",
+        }.get(category)
+        if terminal_reason:
+            filter_terminal[terminal_reason] += 1
 
     gate_by_answerability: dict[str, dict[str, int | float]] = {}
     for label in ("full", "partial"):
@@ -75,7 +89,7 @@ def build_retrieval_funnel(report: dict[str, Any]) -> dict[str, Any]:
             "acceptance_rate_after_hit": _rate(accepted, len(hit_rows)),
         }
 
-    rejection_by_reason: dict[str, dict[str, int | float]] = {}
+    rejection_by_reason: dict[str, dict[str, Any]] = {}
     grouped_negatives: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for case in negatives:
         grouped_negatives[str(case.get("negative_reason") or "unspecified")].append(case)
@@ -85,6 +99,9 @@ def build_retrieval_funnel(report: dict[str, Any]) -> dict[str, Any]:
             "total": len(rows),
             "rejected": rejected,
             "rejection_rate": _rate(rejected, len(rows)),
+            "false_acceptance_ids": [
+                str(case["id"]) for case in rows if case.get("evidence_sufficient")
+            ],
         }
 
     return {
@@ -135,6 +152,7 @@ def build_retrieval_funnel(report: dict[str, Any]) -> dict[str, Any]:
             "final_hit_but_gate_rejected": final_hits - gate_accepts_after_hit,
         },
         "mutually_exclusive_terminal_outcomes": dict(sorted(terminal_losses.items())),
+        "terminal_case_ids": dict(sorted(terminal_case_ids.items())),
         "filter_ground_truth_exposure": dict(sorted(filter_exposure.items())),
         "filter_terminal_losses": dict(sorted(filter_terminal.items())),
         "gate_after_retrieval_hit": gate_by_answerability,
