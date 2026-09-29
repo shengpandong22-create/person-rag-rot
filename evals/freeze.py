@@ -39,6 +39,12 @@ QUOTA4_ACCEPTANCE_DATASET = Path(
 QUOTA4_ACCEPTANCE_FREEZE_RECORD = Path(
     "evals/datasets/QUOTA4_ACCEPTANCE_FREEZE.json"
 )
+SAME_HEADING_ACCEPTANCE_DATASET = Path(
+    "evals/datasets/retrieval_same_heading_acceptance_v1.jsonl"
+)
+SAME_HEADING_ACCEPTANCE_FREEZE_RECORD = Path(
+    "evals/datasets/SAME_HEADING_ACCEPTANCE_FREEZE.json"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -182,6 +188,14 @@ def freeze_targets() -> dict[str, tuple[Path, Path, str, str]]:
             "Independent one-shot acceptance set for the fixed quota-4 retrieval "
             "candidate at b791ef6. It is not used for tuning or failure-driven "
             "changes; any dataset hash change voids the acceptance result.",
+        ),
+        "same-heading-acceptance": (
+            SAME_HEADING_ACCEPTANCE_DATASET,
+            SAME_HEADING_ACCEPTANCE_FREEZE_RECORD,
+            "acceptance",
+            "Independent one-shot acceptance set for the fixed same-heading "
+            "adjacent-filter candidate at 1fe37f0. It is not used for tuning or "
+            "failure-driven changes; any dataset hash change voids the result.",
         ),
     }
 

@@ -1,0 +1,27 @@
+{
+  "dataset": "evals\\datasets\\retrieval_same_heading_acceptance_v1.jsonl",
+  "sha256": "dce0fafd51b499ac050e183be8897d0f74a3c6809aad29b99951b45e45f4814e",
+  "case_count": 18,
+  "case_ids": [
+    "sha-pos-001",
+    "sha-pos-002",
+    "sha-pos-003",
+    "sha-pos-004",
+    "sha-pos-005",
+    "sha-pos-006",
+    "sha-pos-007",
+    "sha-pos-008",
+    "sha-pos-009",
+    "sha-pos-010",
+    "sha-pos-011",
+    "sha-pos-012",
+    "sha-pt-001",
+    "sha-pt-002",
+    "sha-neg-001",
+    "sha-neg-002",
+    "sha-neg-003",
+    "sha-neg-004"
+  ],
+  "frozen_at": "2026-09-29T13:26:17.352607+00:00",
+  "note": "Independent one-shot acceptance set for the fixed same-heading adjacent-filter candidate at 1fe37f0. It is not used for tuning or failure-driven changes; any dataset hash change voids the result."
+}

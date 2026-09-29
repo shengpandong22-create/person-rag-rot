@@ -27,16 +27,23 @@ DATASETS = REPO_ROOT / "evals" / "datasets"
 DOCS_DIR = REPO_ROOT / "docs" / "learning"
 
 SPLIT_FILES = {
-    "development": DATASETS / "retrieval_development_v1.jsonl",
-    "regression": DATASETS / "retrieval_regression_v1.jsonl",
-    "validation": DATASETS / "retrieval_validation_v1.jsonl",
-    "holdout": DATASETS / "retrieval_holdout_v1.jsonl",
-    "acceptance": DATASETS / "retrieval_quota4_acceptance_v1.jsonl",
+    "development": (DATASETS / "retrieval_development_v1.jsonl", "development"),
+    "regression": (DATASETS / "retrieval_regression_v1.jsonl", "regression"),
+    "validation": (DATASETS / "retrieval_validation_v1.jsonl", "validation"),
+    "holdout": (DATASETS / "retrieval_holdout_v1.jsonl", "holdout"),
+    "quota4_acceptance": (
+        DATASETS / "retrieval_quota4_acceptance_v1.jsonl",
+        "acceptance",
+    ),
+    "same_heading_acceptance": (
+        DATASETS / "retrieval_same_heading_acceptance_v1.jsonl",
+        "acceptance",
+    ),
 }
 
 
 def _load(name: str):  # type: ignore[no-untyped-def]
-    return load_dataset(SPLIT_FILES[name], require_graded=False).cases
+    return load_dataset(SPLIT_FILES[name][0], require_graded=False).cases
 
 
 @pytest.fixture(scope="module")
@@ -66,10 +73,10 @@ def _signature(case) -> frozenset[str]:  # type: ignore[no-untyped-def]
 
 
 @pytest.mark.parametrize("name", sorted(SPLIT_FILES))
-def test_each_file_declares_exactly_one_split(name: str) -> None:
+def test_each_file_declares_expected_split(name: str) -> None:
     cases = _load(name)
 
-    assert {case.split for case in cases} == {name}
+    assert {case.split for case in cases} == {SPLIT_FILES[name][1]}
 
 
 @pytest.mark.parametrize("name", sorted(SPLIT_FILES))
@@ -82,7 +89,7 @@ def test_every_split_is_fully_human_labelled(name: str) -> None:
 def test_no_question_appears_in_two_splits() -> None:
     seen: dict[str, str] = {}
     duplicates: list[str] = []
-    for name, _path in SPLIT_FILES.items():
+    for name in SPLIT_FILES:
         for case in _load(name):
             key = _normalise(case.question)
             if key in seen:
@@ -160,7 +167,9 @@ def test_holdout_covers_topics_absent_from_validation() -> None:
 
 
 def test_quota4_acceptance_is_independent_of_every_existing_split() -> None:
-    acceptance = {_signature(case) for case in _load("acceptance") if _signature(case)}
+    acceptance = {
+        _signature(case) for case in _load("quota4_acceptance") if _signature(case)
+    }
     existing = {
         _signature(case)
         for name in ("development", "regression", "validation", "holdout")
@@ -169,3 +178,25 @@ def test_quota4_acceptance_is_independent_of_every_existing_split() -> None:
     }
 
     assert acceptance.isdisjoint(existing)
+
+
+def test_same_heading_acceptance_is_independent_of_all_prior_datasets() -> None:
+    acceptance = {
+        _signature(case)
+        for case in _load("same_heading_acceptance")
+        if _signature(case)
+    }
+    prior = {
+        _signature(case)
+        for name in (
+            "development",
+            "regression",
+            "validation",
+            "holdout",
+            "quota4_acceptance",
+        )
+        for case in _load(name)
+        if _signature(case)
+    }
+
+    assert acceptance.isdisjoint(prior)
