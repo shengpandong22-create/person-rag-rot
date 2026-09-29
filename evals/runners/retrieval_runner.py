@@ -324,7 +324,9 @@ async def run_retrieval_eval(
 
 def _freeze_manifest_sha256(dataset_path: Path) -> str | None:
     name = dataset_path.name.lower()
-    if "validation" in name:
+    if name == "retrieval_quota4_acceptance_v1.jsonl":
+        manifest = dataset_path.with_name("QUOTA4_ACCEPTANCE_FREEZE.json")
+    elif "validation" in name:
         manifest = dataset_path.with_name("VALIDATION_FREEZE.json")
     elif "holdout" in name:
         manifest = dataset_path.with_name("HOLDOUT_FREEZE.json")

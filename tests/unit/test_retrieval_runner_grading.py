@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from uuid import uuid4
 
 from agent_mentor.ports.knowledge_retriever import RetrievedChunk
@@ -7,6 +8,7 @@ from evals.runners.retrieval_runner import (
     _failure_category,
     _first_relevant_rank,
     _first_relevant_rank_by_id,
+    _freeze_manifest_sha256,
     _heading_matches,
     _is_graded,
     _source_heading_matches,
@@ -29,6 +31,12 @@ def _chunk(chunk_id=None) -> RetrievedChunk:  # type: ignore[no-untyped-def]
         score=0.03,
         retrieval_explanation="RRF=0.0300",
     )
+
+
+def test_quota4_acceptance_report_records_its_own_freeze_manifest() -> None:
+    dataset = Path("evals/datasets/retrieval_quota4_acceptance_v1.jsonl")
+
+    assert _freeze_manifest_sha256(dataset) is not None
 
 
 def test_heading_matches_is_a_contiguous_subsequence() -> None:

@@ -31,6 +31,7 @@ SPLIT_FILES = {
     "regression": DATASETS / "retrieval_regression_v1.jsonl",
     "validation": DATASETS / "retrieval_validation_v1.jsonl",
     "holdout": DATASETS / "retrieval_holdout_v1.jsonl",
+    "acceptance": DATASETS / "retrieval_quota4_acceptance_v1.jsonl",
 }
 
 
@@ -156,3 +157,15 @@ def test_holdout_covers_topics_absent_from_validation() -> None:
     holdout_signatures = {_signature(case) for case in _load("holdout") if _signature(case)}
 
     assert holdout_signatures - validation_signatures == holdout_signatures
+
+
+def test_quota4_acceptance_is_independent_of_every_existing_split() -> None:
+    acceptance = {_signature(case) for case in _load("acceptance") if _signature(case)}
+    existing = {
+        _signature(case)
+        for name in ("development", "regression", "validation", "holdout")
+        for case in _load(name)
+        if _signature(case)
+    }
+
+    assert acceptance.isdisjoint(existing)

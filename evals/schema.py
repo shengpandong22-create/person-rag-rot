@@ -273,7 +273,7 @@ def load_dataset(path: Path, *, require_graded: bool = True) -> DatasetLoadResul
     return DatasetLoadResult(cases=tuple(cases), schema_version="v2")
 
 
-VALID_SPLITS = ("development", "regression", "validation", "holdout")
+VALID_SPLITS = ("development", "regression", "validation", "holdout", "acceptance")
 
 
 def split_cases(

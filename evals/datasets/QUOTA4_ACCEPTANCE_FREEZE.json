@@ -1,0 +1,27 @@
+{
+  "dataset": "evals\\datasets\\retrieval_quota4_acceptance_v1.jsonl",
+  "sha256": "da6f8a563a8fa6b1b66ecc6868e0626797885892282885b7daa883cd8f9d6f1b",
+  "case_count": 18,
+  "case_ids": [
+    "q4a-pos-001",
+    "q4a-pos-002",
+    "q4a-pos-003",
+    "q4a-pos-004",
+    "q4a-pos-005",
+    "q4a-pos-006",
+    "q4a-pos-007",
+    "q4a-pos-008",
+    "q4a-pos-009",
+    "q4a-pos-010",
+    "q4a-pos-011",
+    "q4a-pos-012",
+    "q4a-pt-001",
+    "q4a-pt-002",
+    "q4a-neg-001",
+    "q4a-neg-002",
+    "q4a-neg-003",
+    "q4a-neg-004"
+  ],
+  "frozen_at": "2026-09-29T12:08:45.408858+00:00",
+  "note": "Independent one-shot acceptance set for the fixed quota-4 retrieval candidate at b791ef6. It is not used for tuning or failure-driven changes; any dataset hash change voids the acceptance result."
+}

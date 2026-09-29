@@ -33,6 +33,12 @@ FREEZE_RECORD = Path("evals/datasets/HOLDOUT_FREEZE.json")
 # the same questions to be comparable across experiments.
 VALIDATION_DATASET = Path("evals/datasets/retrieval_validation_v1.jsonl")
 VALIDATION_FREEZE_RECORD = Path("evals/datasets/VALIDATION_FREEZE.json")
+QUOTA4_ACCEPTANCE_DATASET = Path(
+    "evals/datasets/retrieval_quota4_acceptance_v1.jsonl"
+)
+QUOTA4_ACCEPTANCE_FREEZE_RECORD = Path(
+    "evals/datasets/QUOTA4_ACCEPTANCE_FREEZE.json"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -168,6 +174,14 @@ def freeze_targets() -> dict[str, tuple[Path, Path, str, str]]:
             VALIDATION_FREEZE_RECORD,
             "validation",
             VALIDATION_NOTE,
+        ),
+        "acceptance": (
+            QUOTA4_ACCEPTANCE_DATASET,
+            QUOTA4_ACCEPTANCE_FREEZE_RECORD,
+            "acceptance",
+            "Independent one-shot acceptance set for the fixed quota-4 retrieval "
+            "candidate at b791ef6. It is not used for tuning or failure-driven "
+            "changes; any dataset hash change voids the acceptance result.",
         ),
     }
 

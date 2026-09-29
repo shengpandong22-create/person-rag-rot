@@ -31,6 +31,10 @@ DATASETS = {
     "regression": _REPO_ROOT / "evals" / "datasets" / "retrieval_regression_v1.jsonl",
     "validation": _REPO_ROOT / "evals" / "datasets" / "retrieval_validation_v1.jsonl",
     "holdout": _REPO_ROOT / "evals" / "datasets" / "retrieval_holdout_v1.jsonl",
+    "acceptance": _REPO_ROOT
+    / "evals"
+    / "datasets"
+    / "retrieval_quota4_acceptance_v1.jsonl",
 }
 
 
@@ -66,7 +70,7 @@ def main() -> None:
 
     names = [
         name
-        for name in ("development", "regression", "validation", "holdout")
+        for name in ("development", "regression", "validation", "holdout", "acceptance")
         if name in cases
     ]
     problems: list[str] = []
