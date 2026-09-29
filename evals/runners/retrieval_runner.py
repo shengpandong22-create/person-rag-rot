@@ -27,6 +27,7 @@ from agent_mentor.infrastructure.database.session import (
     create_session_factory,
 )
 from agent_mentor.infrastructure.retriever import (
+    AdjacentFilterStrategy,
     PostgresHybridRetriever,
     RetrievalExperimentMode,
     RetrievalFilterReason,
@@ -69,6 +70,7 @@ async def run_retrieval_eval(
     evidence_gate_policy: EvidenceGatePolicy | None = None,
     max_chunks_per_document: int | None = None,
     query_strategy: QueryVariantStrategy = QueryVariantStrategy.ORIGINAL,
+    adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -123,6 +125,7 @@ async def run_retrieval_eval(
                 ),
                 experiment_mode=experiment_mode,
                 query_variants=query_variants,
+                adjacent_filter_strategy=adjacent_filter_strategy,
             )
             chunks = list(diagnostics.final_results)
             latency_ms = (perf_counter() - started) * 1000
@@ -317,6 +320,7 @@ async def run_retrieval_eval(
             "run_duration_ms": round(total_retrieval_ms, 4),
             "retrieval_max_chunks_per_document": effective_document_limit,
             "query_strategy": query_strategy.value,
+            "adjacent_filter_strategy": adjacent_filter_strategy.value,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
             "ground_truth_counts": ground_truth_counts,
@@ -655,6 +659,7 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- embedding_dimension: {metadata['embedding_dimension']}",
         f"- experiment_mode: {metadata['experiment_mode']}",
         f"- query_strategy: {metadata['query_strategy']}",
+        f"- adjacent_filter_strategy: {metadata['adjacent_filter_strategy']}",
         "- retrieval: "
         f"top_k={metadata['retrieval_top_k']}, "
         f"candidate_k={metadata['retrieval_candidate_k']}, "

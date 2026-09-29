@@ -7,7 +7,10 @@ from pathlib import Path
 from uuid import UUID
 
 from agent_mentor.domain.evidence import EvidenceGatePolicy
-from agent_mentor.infrastructure.retriever import RetrievalExperimentMode
+from agent_mentor.infrastructure.retriever import (
+    AdjacentFilterStrategy,
+    RetrievalExperimentMode,
+)
 from evals.query_variants import QueryVariantStrategy
 from evals.runners.retrieval_runner import run_retrieval_eval
 from evals.runners.scoring_runner import run_scoring_eval
@@ -60,6 +63,13 @@ def main() -> None:
         default=QueryVariantStrategy.ORIGINAL,
         help="Eval-only deterministic query view; production always uses original.",
     )
+    parser.add_argument(
+        "--adjacent-filter-strategy",
+        type=AdjacentFilterStrategy,
+        choices=tuple(AdjacentFilterStrategy),
+        default=AdjacentFilterStrategy.CURRENT,
+        help="Eval-only adjacent chunk filter; production always uses current.",
+    )
     args = parser.parse_args()
 
     if args.suite in {"retrieval", "retrieval-ablation", "all"}:
@@ -81,6 +91,7 @@ def main() -> None:
                         evidence_gate_policy=args.evidence_gate_policy,
                         max_chunks_per_document=args.max_chunks_per_document,
                         query_strategy=args.query_strategy,
+                        adjacent_filter_strategy=args.adjacent_filter_strategy,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -126,6 +137,7 @@ def main() -> None:
                     evidence_gate_policy=args.evidence_gate_policy,
                     max_chunks_per_document=args.max_chunks_per_document,
                     query_strategy=args.query_strategy,
+                    adjacent_filter_strategy=args.adjacent_filter_strategy,
                 )
             )
             print({"retrieval": report.metrics})

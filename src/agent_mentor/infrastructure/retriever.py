@@ -62,6 +62,13 @@ class RetrievalFilterReason(StrEnum):
     TOP_K_CUTOFF = "top_k_cutoff"
 
 
+class AdjacentFilterStrategy(StrEnum):
+    """Eval-only adjacent-block variants; CURRENT preserves production behavior."""
+
+    CURRENT = "current"
+    SAME_HEADING = "same-heading"
+
+
 @dataclass(frozen=True, slots=True)
 class FilteredRetrievalCandidate:
     chunk: RetrievedChunk
@@ -151,12 +158,14 @@ class PostgresHybridRetriever:
         *,
         experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
         query_variants: tuple[str, ...] | None = None,
+        adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
     ) -> RetrievalDiagnostics:
         """Return stage diagnostics; query variants are restricted to eval callers."""
         return await self._retrieve_result(
             query,
             experiment_mode=experiment_mode,
             query_variants=query_variants,
+            adjacent_filter_strategy=adjacent_filter_strategy,
         )
 
     async def _retrieve_result(
@@ -165,6 +174,7 @@ class PostgresHybridRetriever:
         *,
         experiment_mode: RetrievalExperimentMode,
         query_variants: tuple[str, ...] | None = None,
+        adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
     ) -> RetrievalDiagnostics:
         normalized = normalize_query(query.query)
         if not normalized:
@@ -256,7 +266,7 @@ class PostgresHybridRetriever:
         post_filter: list[RetrievedChunk] = []
         filtered_out: list[FilteredRetrievalCandidate] = []
         per_document: dict[UUID, int] = {}  # 每篇文档已选 chunk 计数
-        seen_neighbors: set[tuple[UUID, int]] = set()  # 已选 chunk 的相邻标记
+        selected_by_position: dict[tuple[UUID, int], RetrievedChunk] = {}
         for chunk_id in ordered_ids:
             candidate = by_id[chunk_id]
             document_id = candidate.document.id
@@ -274,12 +284,19 @@ class PostgresHybridRetriever:
 
             # 跳过相邻 chunk：避免返回内容高度重叠的连续分块
             neighbor_key = (document_id, candidate.chunk.chunk_index)
-            if (document_id, candidate.chunk.chunk_index - 1) in seen_neighbors:
+            previous = selected_by_position.get(
+                (document_id, candidate.chunk.chunk_index - 1)
+            )
+            should_filter_adjacent = previous is not None and (
+                adjacent_filter_strategy is AdjacentFilterStrategy.CURRENT
+                or previous.heading_path == retrieved.heading_path
+            )
+            if should_filter_adjacent:
                 filtered_out.append(
                     FilteredRetrievalCandidate(retrieved, RetrievalFilterReason.ADJACENT_CHUNK)
                 )
                 continue
-            seen_neighbors.add(neighbor_key)
+            selected_by_position[neighbor_key] = retrieved
             per_document[document_id] = per_document.get(document_id, 0) + 1
 
             post_filter.append(retrieved)

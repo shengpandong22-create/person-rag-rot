@@ -12,6 +12,7 @@ from agent_mentor.api.errors import AppError
 from agent_mentor.application.answer_service import AnswerService, ensure_citations_are_valid
 from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.retriever import (
+    AdjacentFilterStrategy,
     PostgresHybridRetriever,
     RetrievalExperimentMode,
     RetrievalFilterReason,
@@ -249,6 +250,75 @@ async def test_eval_can_disable_per_document_limit_without_changing_other_filter
 
     assert [item.chunk_index for item in limited_result.final_results] == [0, 2]
     assert [item.chunk_index for item in unlimited_result.final_results] == [0, 2, 4]
+
+
+@pytest.mark.asyncio
+async def test_eval_same_heading_filter_keeps_adjacent_cross_heading_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(), title="Guide", logical_name="guide", source_url=None, trust_level="curated"
+    )
+    candidates = [
+        _Candidate(
+            cast(
+                Any,
+                SimpleNamespace(
+                    id=uuid4(),
+                    content="first",
+                    heading_path=["A"],
+                    page_number=None,
+                    chunk_index=0,
+                ),
+            ),
+            cast(Any, document),
+            1,
+            0.9,
+        ),
+        _Candidate(
+            cast(
+                Any,
+                SimpleNamespace(
+                    id=uuid4(),
+                    content="second",
+                    heading_path=["B"],
+                    page_number=None,
+                    chunk_index=1,
+                ),
+            ),
+            cast(Any, document),
+            2,
+            0.8,
+        ),
+    ]
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=3
+    )
+    monkeypatch.setattr(retriever, "_vector_candidates", AsyncMock(return_value=candidates))
+    query = RetrievalQuery(uuid4(), "evidence", top_k=2, candidate_k=2)
+
+    current = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+    )
+    heading_aware = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+        adjacent_filter_strategy=AdjacentFilterStrategy.SAME_HEADING,
+    )
+
+    assert [item.chunk_index for item in current.final_results] == [0]
+    assert [item.chunk_index for item in heading_aware.final_results] == [0, 1]
 
 
 def test_retrieval_explanation_contains_rank_signals() -> None:
