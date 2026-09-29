@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from uuid import UUID
 
-from sqlalchemy import Select, case, func, literal, or_, select
+from sqlalchemy import Select, String, case, cast, func, literal, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.domain.knowledge import DocumentStatus
@@ -69,6 +69,13 @@ class AdjacentFilterStrategy(StrEnum):
     SAME_HEADING = "same-heading"
 
 
+class CandidateExpansionStrategy(StrEnum):
+    """Eval-only candidate sources; production remains vector/text as configured."""
+
+    NONE = "none"
+    HEADING_LEXICAL = "heading-lexical"
+
+
 @dataclass(frozen=True, slots=True)
 class FilteredRetrievalCandidate:
     chunk: RetrievedChunk
@@ -80,6 +87,7 @@ class RetrievalDiagnostics:
     """Eval-only view of each stage of the unchanged retrieval pipeline."""
 
     vector_candidates: tuple[RetrievedChunk, ...]
+    heading_candidates: tuple[RetrievedChunk, ...]
     text_candidates: tuple[RetrievedChunk, ...]
     ordered_candidates: tuple[RetrievedChunk, ...]
     post_filter_candidates: tuple[RetrievedChunk, ...]
@@ -159,6 +167,7 @@ class PostgresHybridRetriever:
         experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
         query_variants: tuple[str, ...] | None = None,
         adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
+        candidate_expansion: CandidateExpansionStrategy = CandidateExpansionStrategy.NONE,
     ) -> RetrievalDiagnostics:
         """Return stage diagnostics; query variants are restricted to eval callers."""
         return await self._retrieve_result(
@@ -166,6 +175,7 @@ class PostgresHybridRetriever:
             experiment_mode=experiment_mode,
             query_variants=query_variants,
             adjacent_filter_strategy=adjacent_filter_strategy,
+            candidate_expansion=candidate_expansion,
         )
 
     async def _retrieve_result(
@@ -175,14 +185,16 @@ class PostgresHybridRetriever:
         experiment_mode: RetrievalExperimentMode,
         query_variants: tuple[str, ...] | None = None,
         adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
+        candidate_expansion: CandidateExpansionStrategy = CandidateExpansionStrategy.NONE,
     ) -> RetrievalDiagnostics:
         normalized = normalize_query(query.query)
         if not normalized:
-            return RetrievalDiagnostics((), (), (), (), (), ())
+            return RetrievalDiagnostics((), (), (), (), (), (), ())
 
         # 并行执行向量和全文检索（注意：这里实际上是串行的，优化空间）
         async with self._sessions() as session:
             vector_candidates: list[_Candidate] = []
+            heading_candidates: list[_Candidate] = []
             if experiment_mode is not RetrievalExperimentMode.TEXT_ONLY:
                 variants = tuple(
                     dict.fromkeys(
@@ -199,6 +211,14 @@ class PostgresHybridRetriever:
                     ranked_variants,
                     candidate_k=query.candidate_k,
                 )
+                if candidate_expansion is CandidateExpansionStrategy.HEADING_LEXICAL:
+                    heading_candidates = await self._heading_candidates(
+                        session, query, normalized
+                    )
+                    vector_candidates = _merge_query_variant_candidates(
+                        [vector_candidates, heading_candidates],
+                        candidate_k=query.candidate_k,
+                    )
             text_candidates: list[_Candidate] = []
             if (
                 experiment_mode is not RetrievalExperimentMode.VECTOR_ONLY
@@ -308,6 +328,11 @@ class PostgresHybridRetriever:
         )
         return RetrievalDiagnostics(
             vector_candidates=tuple(converted[item.chunk.id] for item in vector_candidates),
+            heading_candidates=tuple(
+                converted[item.chunk.id]
+                for item in heading_candidates
+                if item.chunk.id in converted
+            ),
             text_candidates=tuple(converted[item.chunk.id] for item in text_candidates),
             ordered_candidates=tuple(converted[chunk_id] for chunk_id in ordered_ids),
             post_filter_candidates=tuple(post_filter),
@@ -389,6 +414,40 @@ class PostgresHybridRetriever:
                     ).op("@@")(ts_query)  # @@ 是 PostgreSQL 全文匹配操作符
                 )
                 .order_by(rank_expr.desc())
+                .limit(query.candidate_k)
+            )
+        ).all()
+        return [
+            _Candidate(chunk=chunk, document=document, rank=rank, score=float(score))
+            for rank, (chunk, document, score) in enumerate(rows, start=1)
+        ]
+
+    async def _heading_candidates(
+        self, session: AsyncSession, query: RetrievalQuery, normalized: str
+    ) -> list[_Candidate]:
+        """Eval-only lexical recall over heading_path and document title."""
+        terms = _lexical_terms(normalized)
+        if not terms:
+            return []
+        heading_text = cast(KnowledgeChunkModel.heading_path, String)
+        conditions = [
+            or_(
+                heading_text.ilike(f"%{term}%"),
+                SourceDocumentModel.title.ilike(f"%{term}%"),
+            )
+            for term in terms
+        ]
+        rank_expr = literal(0.0)
+        for term, condition in zip(terms, conditions, strict=True):
+            weight = 2.0 if _contains_cjk(term) else 1.0
+            rank_expr = rank_expr + case((condition, weight), else_=0.0)
+        rank_expr = rank_expr.label("heading_rank")
+        rows = (
+            await session.execute(
+                self._base_query(query)
+                .add_columns(rank_expr)
+                .where(or_(*conditions))
+                .order_by(rank_expr.desc(), KnowledgeChunkModel.chunk_index)
                 .limit(query.candidate_k)
             )
         ).all()

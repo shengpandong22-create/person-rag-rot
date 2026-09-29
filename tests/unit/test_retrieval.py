@@ -13,6 +13,7 @@ from agent_mentor.application.answer_service import AnswerService, ensure_citati
 from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.retriever import (
     AdjacentFilterStrategy,
+    CandidateExpansionStrategy,
     PostgresHybridRetriever,
     RetrievalExperimentMode,
     RetrievalFilterReason,
@@ -319,6 +320,54 @@ async def test_eval_same_heading_filter_keeps_adjacent_cross_heading_evidence(
 
     assert [item.chunk_index for item in current.final_results] == [0]
     assert [item.chunk_index for item in heading_aware.final_results] == [0, 1]
+
+
+@pytest.mark.asyncio
+async def test_eval_heading_expansion_merges_into_fixed_candidate_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(), title="Guide", logical_name="guide", source_url=None, trust_level="curated"
+    )
+
+    def candidate(index: int, content: str) -> _Candidate:
+        model = SimpleNamespace(
+            id=uuid4(),
+            content=content,
+            heading_path=[content],
+            page_number=None,
+            chunk_index=index * 2,
+        )
+        return _Candidate(cast(Any, model), cast(Any, document), index + 1, 0.9 - index / 10)
+
+    vector = [candidate(0, "vector"), candidate(1, "shared")]
+    heading = [vector[1], candidate(2, "heading")]
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=3
+    )
+    monkeypatch.setattr(retriever, "_vector_candidates", AsyncMock(return_value=vector))
+    monkeypatch.setattr(retriever, "_heading_candidates", AsyncMock(return_value=heading))
+    query = RetrievalQuery(uuid4(), "evidence", top_k=2, candidate_k=2)
+
+    diagnostics = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+        candidate_expansion=CandidateExpansionStrategy.HEADING_LEXICAL,
+    )
+
+    assert len(diagnostics.ordered_candidates) == 2
+    assert diagnostics.ordered_candidates[0].content == "shared"
+    assert [item.content for item in diagnostics.heading_candidates] == ["shared"]
 
 
 def test_retrieval_explanation_contains_rank_signals() -> None:

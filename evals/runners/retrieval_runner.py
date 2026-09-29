@@ -28,6 +28,7 @@ from agent_mentor.infrastructure.database.session import (
 )
 from agent_mentor.infrastructure.retriever import (
     AdjacentFilterStrategy,
+    CandidateExpansionStrategy,
     PostgresHybridRetriever,
     RetrievalExperimentMode,
     RetrievalFilterReason,
@@ -71,6 +72,7 @@ async def run_retrieval_eval(
     max_chunks_per_document: int | None = None,
     query_strategy: QueryVariantStrategy = QueryVariantStrategy.ORIGINAL,
     adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
+    candidate_expansion: CandidateExpansionStrategy = CandidateExpansionStrategy.NONE,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -126,6 +128,7 @@ async def run_retrieval_eval(
                 experiment_mode=experiment_mode,
                 query_variants=query_variants,
                 adjacent_filter_strategy=adjacent_filter_strategy,
+                candidate_expansion=candidate_expansion,
             )
             chunks = list(diagnostics.final_results)
             latency_ms = (perf_counter() - started) * 1000
@@ -233,6 +236,7 @@ async def run_retrieval_eval(
                     "experiment_mode": experiment_mode.value,
                     "query_strategy": query_strategy.value,
                     "query_variants": list(query_variants),
+                    "candidate_expansion": candidate_expansion.value,
                     "latency_ms": round(latency_ms, 4),
                     "retrieved_candidate_count": len(chunks),
                     "raw_candidate_count": len(diagnostics.ordered_candidates),
@@ -244,6 +248,9 @@ async def run_retrieval_eval(
                     "retrieval_stages": {
                         "vector_candidate_ids": [
                             str(chunk.chunk_id) for chunk in diagnostics.vector_candidates
+                        ],
+                        "heading_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.heading_candidates
                         ],
                         "text_candidate_ids": [
                             str(chunk.chunk_id) for chunk in diagnostics.text_candidates
@@ -321,6 +328,7 @@ async def run_retrieval_eval(
             "retrieval_max_chunks_per_document": effective_document_limit,
             "query_strategy": query_strategy.value,
             "adjacent_filter_strategy": adjacent_filter_strategy.value,
+            "candidate_expansion": candidate_expansion.value,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
             "ground_truth_counts": ground_truth_counts,
@@ -662,6 +670,7 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- experiment_mode: {metadata['experiment_mode']}",
         f"- query_strategy: {metadata['query_strategy']}",
         f"- adjacent_filter_strategy: {metadata['adjacent_filter_strategy']}",
+        f"- candidate_expansion: {metadata['candidate_expansion']}",
         "- retrieval: "
         f"top_k={metadata['retrieval_top_k']}, "
         f"candidate_k={metadata['retrieval_candidate_k']}, "

@@ -9,6 +9,7 @@ from uuid import UUID
 from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.retriever import (
     AdjacentFilterStrategy,
+    CandidateExpansionStrategy,
     RetrievalExperimentMode,
 )
 from evals.query_variants import QueryVariantStrategy
@@ -70,6 +71,13 @@ def main() -> None:
         default=AdjacentFilterStrategy.CURRENT,
         help="Eval-only adjacent chunk filter; production always uses current.",
     )
+    parser.add_argument(
+        "--candidate-expansion",
+        type=CandidateExpansionStrategy,
+        choices=tuple(CandidateExpansionStrategy),
+        default=CandidateExpansionStrategy.NONE,
+        help="Eval-only extra candidate source; production default is none.",
+    )
     args = parser.parse_args()
 
     if args.suite in {"retrieval", "retrieval-ablation", "all"}:
@@ -92,6 +100,7 @@ def main() -> None:
                         max_chunks_per_document=args.max_chunks_per_document,
                         query_strategy=args.query_strategy,
                         adjacent_filter_strategy=args.adjacent_filter_strategy,
+                        candidate_expansion=args.candidate_expansion,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -138,6 +147,7 @@ def main() -> None:
                     max_chunks_per_document=args.max_chunks_per_document,
                     query_strategy=args.query_strategy,
                     adjacent_filter_strategy=args.adjacent_filter_strategy,
+                    candidate_expansion=args.candidate_expansion,
                 )
             )
             print({"retrieval": report.metrics})
