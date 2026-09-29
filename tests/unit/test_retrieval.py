@@ -19,6 +19,7 @@ from agent_mentor.infrastructure.retriever import (
     _infer_retrieved_block_type,
     _lexical_overlap,
     _lexical_terms,
+    _merge_query_variant_candidates,
     _rerank_score,
     _retrieval_explanation,
 )
@@ -57,6 +58,27 @@ def test_rrf_is_deterministic_for_fixed_rankings() -> None:
 
     assert scores[second] > scores[first] > scores[third]
     assert scores == reciprocal_rank_fusion([[first, second], [second, third]])
+
+
+def test_eval_multi_query_merge_keeps_fixed_candidate_budget() -> None:
+    document = SimpleNamespace(id=uuid4())
+    shared = SimpleNamespace(id=uuid4())
+    first_only = SimpleNamespace(id=uuid4())
+    second_only = SimpleNamespace(id=uuid4())
+    first = [
+        _Candidate(cast(Any, shared), cast(Any, document), 1, 0.9),
+        _Candidate(cast(Any, first_only), cast(Any, document), 2, 0.8),
+    ]
+    second = [
+        _Candidate(cast(Any, shared), cast(Any, document), 1, 0.7),
+        _Candidate(cast(Any, second_only), cast(Any, document), 2, 0.6),
+    ]
+
+    merged = _merge_query_variant_candidates([first, second], candidate_k=2)
+
+    assert len(merged) == 2
+    assert merged[0].chunk.id == shared.id
+    assert [item.rank for item in merged] == [1, 2]
 
 
 def test_eval_experiment_default_is_current_heuristic_rerank() -> None:

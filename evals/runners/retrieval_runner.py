@@ -34,6 +34,7 @@ from agent_mentor.infrastructure.retriever import (
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
 from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
 from evals.provenance import build_provenance
+from evals.query_variants import QueryVariantStrategy, build_query_variants
 from evals.runners.runtime import create_embedding_gateway
 from evals.schema import (
     Answerability,
@@ -67,6 +68,7 @@ async def run_retrieval_eval(
     experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
     evidence_gate_policy: EvidenceGatePolicy | None = None,
     max_chunks_per_document: int | None = None,
+    query_strategy: QueryVariantStrategy = QueryVariantStrategy.ORIGINAL,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -110,6 +112,7 @@ async def run_retrieval_eval(
             sessions, knowledge_base_id, all_keywords
         )
         for case in cases:
+            query_variants = build_query_variants(case.question, query_strategy)
             started = perf_counter()
             diagnostics = await retriever.retrieve_with_diagnostics(
                 RetrievalQuery(
@@ -119,6 +122,7 @@ async def run_retrieval_eval(
                     candidate_k=candidate_k,
                 ),
                 experiment_mode=experiment_mode,
+                query_variants=query_variants,
             )
             chunks = list(diagnostics.final_results)
             latency_ms = (perf_counter() - started) * 1000
@@ -224,6 +228,8 @@ async def run_retrieval_eval(
                     "first_raw_candidate_rank": first_raw_candidate_rank,
                     "first_post_filter_rank": first_post_filter_rank,
                     "experiment_mode": experiment_mode.value,
+                    "query_strategy": query_strategy.value,
+                    "query_variants": list(query_variants),
                     "latency_ms": round(latency_ms, 4),
                     "retrieved_candidate_count": len(chunks),
                     "raw_candidate_count": len(diagnostics.ordered_candidates),
@@ -310,6 +316,7 @@ async def run_retrieval_eval(
             "freeze_manifest_sha256": _freeze_manifest_sha256(dataset_path),
             "run_duration_ms": round(total_retrieval_ms, 4),
             "retrieval_max_chunks_per_document": effective_document_limit,
+            "query_strategy": query_strategy.value,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
             "ground_truth_counts": ground_truth_counts,
@@ -647,6 +654,7 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- embedding: {metadata['embedding_provider']} / {metadata['embedding_model']}",
         f"- embedding_dimension: {metadata['embedding_dimension']}",
         f"- experiment_mode: {metadata['experiment_mode']}",
+        f"- query_strategy: {metadata['query_strategy']}",
         "- retrieval: "
         f"top_k={metadata['retrieval_top_k']}, "
         f"candidate_k={metadata['retrieval_candidate_k']}, "

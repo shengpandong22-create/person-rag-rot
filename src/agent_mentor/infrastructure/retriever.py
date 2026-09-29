@@ -80,6 +80,32 @@ class RetrievalDiagnostics:
     final_results: tuple[RetrievedChunk, ...]
 
 
+def _merge_query_variant_candidates(
+    ranked_variants: list[list[_Candidate]], *, candidate_k: int
+) -> list[_Candidate]:
+    """RRF-merge eval-only query views into one fixed-size vector candidate list."""
+    if len(ranked_variants) <= 1:
+        return ranked_variants[0] if ranked_variants else []
+    by_id = {
+        candidate.chunk.id: candidate
+        for ranked in ranked_variants
+        for candidate in ranked
+    }
+    fused = reciprocal_rank_fusion(
+        [[candidate.chunk.id for candidate in ranked] for ranked in ranked_variants]
+    )
+    ordered_ids = sorted(fused, key=fused.__getitem__, reverse=True)[:candidate_k]
+    return [
+        _Candidate(
+            chunk=by_id[chunk_id].chunk,
+            document=by_id[chunk_id].document,
+            rank=rank,
+            score=fused[chunk_id],
+        )
+        for rank, chunk_id in enumerate(ordered_ids, start=1)
+    ]
+
+
 class PostgresHybridRetriever:
     """PostgreSQL 混合检索器 — 生产环境的核心检索实现。
 
@@ -124,15 +150,21 @@ class PostgresHybridRetriever:
         query: RetrievalQuery,
         *,
         experiment_mode: RetrievalExperimentMode = RetrievalExperimentMode.RRF_HEURISTIC,
+        query_variants: tuple[str, ...] | None = None,
     ) -> RetrievalDiagnostics:
-        """Return stage diagnostics without changing production retrieval semantics."""
-        return await self._retrieve_result(query, experiment_mode=experiment_mode)
+        """Return stage diagnostics; query variants are restricted to eval callers."""
+        return await self._retrieve_result(
+            query,
+            experiment_mode=experiment_mode,
+            query_variants=query_variants,
+        )
 
     async def _retrieve_result(
         self,
         query: RetrievalQuery,
         *,
         experiment_mode: RetrievalExperimentMode,
+        query_variants: tuple[str, ...] | None = None,
     ) -> RetrievalDiagnostics:
         normalized = normalize_query(query.query)
         if not normalized:
@@ -142,7 +174,21 @@ class PostgresHybridRetriever:
         async with self._sessions() as session:
             vector_candidates: list[_Candidate] = []
             if experiment_mode is not RetrievalExperimentMode.TEXT_ONLY:
-                vector_candidates = await self._vector_candidates(session, query, normalized)
+                variants = tuple(
+                    dict.fromkeys(
+                        value
+                        for item in (query_variants or (normalized,))
+                        if (value := normalize_query(item))
+                    )
+                )
+                ranked_variants = [
+                    await self._vector_candidates(session, query, variant)
+                    for variant in variants
+                ]
+                vector_candidates = _merge_query_variant_candidates(
+                    ranked_variants,
+                    candidate_k=query.candidate_k,
+                )
             text_candidates: list[_Candidate] = []
             if (
                 experiment_mode is not RetrievalExperimentMode.VECTOR_ONLY

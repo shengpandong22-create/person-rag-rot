@@ -8,6 +8,7 @@ from uuid import UUID
 
 from agent_mentor.domain.evidence import EvidenceGatePolicy
 from agent_mentor.infrastructure.retriever import RetrievalExperimentMode
+from evals.query_variants import QueryVariantStrategy
 from evals.runners.retrieval_runner import run_retrieval_eval
 from evals.runners.scoring_runner import run_scoring_eval
 
@@ -52,6 +53,13 @@ def main() -> None:
         choices=tuple(EvidenceGatePolicy),
         default=None,
     )
+    parser.add_argument(
+        "--query-strategy",
+        type=QueryVariantStrategy,
+        choices=tuple(QueryVariantStrategy),
+        default=QueryVariantStrategy.ORIGINAL,
+        help="Eval-only deterministic query view; production always uses original.",
+    )
     args = parser.parse_args()
 
     if args.suite in {"retrieval", "retrieval-ablation", "all"}:
@@ -72,6 +80,7 @@ def main() -> None:
                         experiment_mode=mode,
                         evidence_gate_policy=args.evidence_gate_policy,
                         max_chunks_per_document=args.max_chunks_per_document,
+                        query_strategy=args.query_strategy,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -116,6 +125,7 @@ def main() -> None:
                     experiment_mode=args.experiment_mode,
                     evidence_gate_policy=args.evidence_gate_policy,
                     max_chunks_per_document=args.max_chunks_per_document,
+                    query_strategy=args.query_strategy,
                 )
             )
             print({"retrieval": report.metrics})
