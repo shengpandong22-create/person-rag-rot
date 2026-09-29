@@ -79,6 +79,9 @@ npm.cmd run build
 ## 文档入口
 
 - [产品与架构设计](docs/design/产品与架构设计.md)
+- [Evidence Gate 与 Claim Evaluation 技术设计](docs/design/Evidence-Gate与Claim-Evaluation技术设计.md)
+- [Evidence Gate / Claim Evaluation 实验结论](docs/evaluations/evidence-gate-claim-evaluation-20260929.md)
+- [核心 RAG 下一阶段：每文档配额消融](docs/planning/核心RAG下一阶段-每文档配额消融.md)
 - [V1 实现规格说明](docs/design/V1实现规格说明.md)
 - [V1 分阶段开发计划与验收标准](docs/planning/V1分阶段开发计划与验收标准.md)
 - [Phase 6 验收报告](docs/acceptance/phase-6.md)

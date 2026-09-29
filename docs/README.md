@@ -5,10 +5,11 @@
 首次了解项目时按以下顺序阅读：
 
 1. [产品与架构设计](design/产品与架构设计.md)：理解项目为什么做、业务闭环和总体技术取舍。
-2. [V1 实现规格说明](design/V1实现规格说明.md)：了解数据模型、API、RAG、LangGraph、测试和资源规格。
-3. [V1 分阶段开发计划与验收标准](planning/V1分阶段开发计划与验收标准.md)：查看当前开发阶段、任务边界和阶段门禁。
-4. `acceptance/phase-N.md`：查看已经完成阶段的真实验收证据。
-5. `evaluations/` 与 `benchmarks/`：查看模型效果和工程性能的实测结果。
+2. [Evidence Gate 与 Claim Evaluation 技术设计](design/Evidence-Gate与Claim-Evaluation技术设计.md)：理解可信回答边界、离线语义评测和生产隔离。
+3. [V1 实现规格说明](design/V1实现规格说明.md)：了解数据模型、API、RAG、LangGraph、测试和资源规格。
+4. [V1 分阶段开发计划与验收标准](planning/V1分阶段开发计划与验收标准.md)：查看当前开发阶段、任务边界和阶段门禁。
+5. `acceptance/phase-N.md`：查看已经完成阶段的真实验收证据。
+6. `evaluations/` 与 `benchmarks/`：查看模型效果和工程性能的实测结果。
 
 ## 2. 目录结构
 
@@ -77,6 +78,9 @@ docs/
 | 文档 | 状态 | 作用 |
 |---|---|---|
 | [产品与架构设计](design/产品与架构设计.md) | 已确认 | 产品和总体架构基线 |
+| [Evidence Gate 与 Claim Evaluation 技术设计](design/Evidence-Gate与Claim-Evaluation技术设计.md) | 已确认 | 可信 RAG 与 Claim 评测边界 |
+| [Evidence Gate / Claim Evaluation 实验结论](evaluations/evidence-gate-claim-evaluation-20260929.md) | 已完成 | 消融、holdout 与拒绝上线证据 |
+| [核心 RAG 下一阶段：每文档配额消融](planning/核心RAG下一阶段-每文档配额消融.md) | 待执行 | 下一轮核心链路优化计划 |
 | [V1 实现规格说明](design/V1实现规格说明.md) | 已确认 | V1 技术规格基线 |
 | [V1 分阶段开发计划与验收标准](planning/V1分阶段开发计划与验收标准.md) | 已确认 | 唯一阶段执行基线 |
 

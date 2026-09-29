@@ -7,3 +7,4 @@
 已完成报告：
 
 - [Evaluation baseline v1](evaluation-baseline-v1.md)
+- [Evidence Gate / Claim Evaluation 实验结论](evidence-gate-claim-evaluation-20260929.md)
