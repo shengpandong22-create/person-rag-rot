@@ -39,3 +39,12 @@ negative rejection。旧 retrieval holdout 不再复跑；若确定新候选，�
 - 不读取旧 holdout 逐题调参；
 - 不把 relevant source 标签用于线上过滤决策；
 - 不在 Validation 结果出来前切换生产默认。
+
+## 实验结果（2026-09-29）
+
+已完成配额3、配额4和无限额对比。配额4在 Regression 与 Validation 均无安全指标退化；
+Validation Recall@6 从70.59%提升到82.35%，与无限额相同，同时保留更多来源多样性。
+
+因此固定配额4为下一候选，不再实现 score-aware 组。生产默认仍为3，等待新验收集。
+
+完整结果见 [`evals/reports/document_quota_ablation.md`](../../evals/reports/document_quota_ablation.md)。
