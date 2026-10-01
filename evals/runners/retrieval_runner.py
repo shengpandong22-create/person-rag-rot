@@ -143,6 +143,7 @@ async def run_retrieval_eval(
     labeled_positive_count = 0
     labeled_evidence_accept_count = 0
     labeled_binding_success_count = 0
+    positive_with_consumed_hit_count = 0
     total_retrieval_ms = 0.0
     try:
         knowledge_base_fingerprint = await _knowledge_base_fingerprint(sessions, knowledge_base_id)
@@ -247,6 +248,10 @@ async def run_retrieval_eval(
                 labeled_positive_count += 1
                 if first_rank is not None and evidence_sufficient:
                     labeled_evidence_accept_count += 1
+                if first_rank is not None or any(
+                    chunk.chunk_id in ground_truth_ids for chunk in consumed_supplemental
+                ):
+                    positive_with_consumed_hit_count += 1
                 if bound_ground_truth_ids and evidence_sufficient:
                     labeled_binding_success_count += 1
             relevant_filter_reasons = [
@@ -444,6 +449,11 @@ async def run_retrieval_eval(
             else 0.0,
             "labeled_evidence_binding_success_rate": round(
                 labeled_binding_success_count / labeled_positive_count, 4
+            )
+            if labeled_positive_count
+            else 0.0,
+            "primary_plus_consumed_recall": round(
+                positive_with_consumed_hit_count / labeled_positive_count, 4
             )
             if labeled_positive_count
             else 0.0,
