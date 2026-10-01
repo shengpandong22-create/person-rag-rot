@@ -5,12 +5,14 @@ from uuid import uuid4
 
 from agent_mentor.ports.knowledge_retriever import RetrievedChunk
 from evals.runners.retrieval_runner import (
+    SupplementalConsumptionStrategy,
     _failure_category,
     _first_relevant_rank,
     _first_relevant_rank_by_id,
     _freeze_manifest_sha256,
     _heading_matches,
     _is_graded,
+    _select_supplemental_candidates,
     _source_heading_matches,
     _supplemental_recall_metrics,
 )
@@ -49,6 +51,33 @@ def test_supplemental_recall_preserves_primary_and_measures_incremental_gain() -
     assert metrics["primary_at_6_plus_supplemental_at_6"] == 0.5
     assert metrics["primary_at_6_plus_supplemental_at_20"] == 0.75
     assert metrics["average_supplemental_candidate_count"] == 4.75
+
+
+def test_supplemental_consumption_is_fixed_or_evidence_gated() -> None:
+    candidates = [_chunk(), _chunk()]
+
+    fixed = _select_supplemental_candidates(
+        candidates,
+        strategy=SupplementalConsumptionStrategy.FIXED,
+        supplemental_k=1,
+        primary_evidence_sufficient=True,
+    )
+    skipped = _select_supplemental_candidates(
+        candidates,
+        strategy=SupplementalConsumptionStrategy.EVIDENCE_GATED,
+        supplemental_k=1,
+        primary_evidence_sufficient=True,
+    )
+    triggered = _select_supplemental_candidates(
+        candidates,
+        strategy=SupplementalConsumptionStrategy.EVIDENCE_GATED,
+        supplemental_k=1,
+        primary_evidence_sufficient=False,
+    )
+
+    assert fixed == candidates[:1]
+    assert skipped == []
+    assert triggered == candidates[:1]
 
 
 def test_quota4_acceptance_report_records_its_own_freeze_manifest() -> None:

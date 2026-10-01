@@ -13,7 +13,10 @@ from agent_mentor.infrastructure.retriever import (
     RetrievalExperimentMode,
 )
 from evals.query_variants import QueryVariantStrategy
-from evals.runners.retrieval_runner import run_retrieval_eval
+from evals.runners.retrieval_runner import (
+    SupplementalConsumptionStrategy,
+    run_retrieval_eval,
+)
 from evals.runners.scoring_runner import run_scoring_eval
 
 
@@ -78,6 +81,19 @@ def main() -> None:
         default=CandidateExpansionStrategy.NONE,
         help="Eval-only extra candidate source; production default is none.",
     )
+    parser.add_argument(
+        "--supplemental-consumption",
+        type=SupplementalConsumptionStrategy,
+        choices=tuple(SupplementalConsumptionStrategy),
+        default=SupplementalConsumptionStrategy.NONE,
+        help="Eval-only consumer for heading-shadow candidates.",
+    )
+    parser.add_argument(
+        "--supplemental-k",
+        type=int,
+        default=1,
+        help="Maximum supplemental candidates consumed per query.",
+    )
     args = parser.parse_args()
 
     if args.suite in {"retrieval", "retrieval-ablation", "all"}:
@@ -101,6 +117,8 @@ def main() -> None:
                         query_strategy=args.query_strategy,
                         adjacent_filter_strategy=args.adjacent_filter_strategy,
                         candidate_expansion=args.candidate_expansion,
+                        supplemental_consumption=args.supplemental_consumption,
+                        supplemental_k=args.supplemental_k,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -148,6 +166,8 @@ def main() -> None:
                     query_strategy=args.query_strategy,
                     adjacent_filter_strategy=args.adjacent_filter_strategy,
                     candidate_expansion=args.candidate_expansion,
+                    supplemental_consumption=args.supplemental_consumption,
+                    supplemental_k=args.supplemental_k,
                 )
             )
             print({"retrieval": report.metrics})

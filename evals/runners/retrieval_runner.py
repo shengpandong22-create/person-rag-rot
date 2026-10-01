@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
+from enum import StrEnum
 from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
@@ -50,6 +51,14 @@ GROUND_TRUTH_KEYWORD_FALLBACK = "keyword_fallback"
 GROUND_TRUTH_ABSENT = "absent"
 
 
+class SupplementalConsumptionStrategy(StrEnum):
+    """Eval-only consumers for the monotonic heading shadow channel."""
+
+    NONE = "none"
+    FIXED = "fixed"
+    EVIDENCE_GATED = "evidence-gated"
+
+
 @dataclass(frozen=True, slots=True)
 class RetrievalEvalReport:
     dataset: str
@@ -73,6 +82,10 @@ async def run_retrieval_eval(
     query_strategy: QueryVariantStrategy = QueryVariantStrategy.ORIGINAL,
     adjacent_filter_strategy: AdjacentFilterStrategy = AdjacentFilterStrategy.CURRENT,
     candidate_expansion: CandidateExpansionStrategy = CandidateExpansionStrategy.NONE,
+    supplemental_consumption: SupplementalConsumptionStrategy = (
+        SupplementalConsumptionStrategy.NONE
+    ),
+    supplemental_k: int = 1,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -82,6 +95,13 @@ async def run_retrieval_eval(
     gate_policy = evidence_gate_policy or settings.evidence_gate_policy
     if max_chunks_per_document is not None and max_chunks_per_document < 0:
         raise ValueError("max_chunks_per_document must be >= 0")
+    if supplemental_k < 0:
+        raise ValueError("supplemental_k must be >= 0")
+    if (
+        supplemental_consumption is not SupplementalConsumptionStrategy.NONE
+        and candidate_expansion is not CandidateExpansionStrategy.HEADING_SHADOW
+    ):
+        raise ValueError("supplemental consumption requires candidate_expansion=heading-shadow")
     effective_document_limit = (
         settings.retrieval_max_chunks_per_document
         if max_chunks_per_document is None
@@ -109,6 +129,11 @@ async def run_retrieval_eval(
     grading_counts = {"graded": 0, "ungraded": 0}
     ground_truth_counts: dict[str, int] = {}
     supplemental_metric_rows: list[tuple[int | None, int | None, int]] = []
+    consumed_supplemental_total = 0
+    supplemental_trigger_count = 0
+    gate_promotion_count = 0
+    gate_demotion_count = 0
+    consumed_relevant_count = 0
     total_retrieval_ms = 0.0
     try:
         knowledge_base_fingerprint = await _knowledge_base_fingerprint(sessions, knowledge_base_id)
@@ -163,7 +188,33 @@ async def run_retrieval_eval(
                 first_supplemental_rank = None
                 first_raw_candidate_rank = None
                 first_post_filter_rank = None
-            evidence_assessment = answer_service.assess_evidence_diagnostics(case.question, chunks)
+            primary_assessment = answer_service.assess_evidence_diagnostics(case.question, chunks)
+            consumed_supplemental = _select_supplemental_candidates(
+                list(diagnostics.supplemental_candidates),
+                strategy=supplemental_consumption,
+                supplemental_k=supplemental_k,
+                primary_evidence_sufficient=primary_assessment.production_sufficient,
+            )
+            if consumed_supplemental:
+                supplemental_trigger_count += 1
+                consumed_supplemental_total += len(consumed_supplemental)
+                evidence_assessment = answer_service.assess_evidence_diagnostics(
+                    case.question, [*chunks, *consumed_supplemental]
+                )
+                if any(chunk.chunk_id in set(ground_truth) for chunk in consumed_supplemental):
+                    consumed_relevant_count += 1
+            else:
+                evidence_assessment = primary_assessment
+            if (
+                not primary_assessment.production_sufficient
+                and evidence_assessment.production_sufficient
+            ):
+                gate_promotion_count += 1
+            if (
+                primary_assessment.production_sufficient
+                and not evidence_assessment.production_sufficient
+            ):
+                gate_demotion_count += 1
             supported_ids = set(evidence_assessment.supported_chunk_ids)
             supported_chunks = [chunk for chunk in chunks if str(chunk.chunk_id) in supported_ids]
             evidence_sufficient = evidence_assessment.production_sufficient
@@ -200,7 +251,7 @@ async def run_retrieval_eval(
                             case.negative_reason.value if case.negative_reason else None
                         ),
                         latency_ms=latency_ms,
-                        candidate_count=len(chunks),
+                        candidate_count=len(chunks) + len(consumed_supplemental),
                         first_raw_candidate_rank=first_raw_candidate_rank,
                         first_post_filter_rank=first_post_filter_rank,
                         raw_candidate_count=len(diagnostics.ordered_candidates),
@@ -247,6 +298,13 @@ async def run_retrieval_eval(
                     "query_strategy": query_strategy.value,
                     "query_variants": list(query_variants),
                     "candidate_expansion": candidate_expansion.value,
+                    "supplemental_consumption": supplemental_consumption.value,
+                    "supplemental_k": supplemental_k,
+                    "supplemental_triggered": bool(consumed_supplemental),
+                    "consumed_supplemental_candidate_ids": [
+                        str(chunk.chunk_id) for chunk in consumed_supplemental
+                    ],
+                    "primary_evidence_decision": primary_assessment.decision.value,
                     "latency_ms": round(latency_ms, 4),
                     "retrieved_candidate_count": len(chunks),
                     "raw_candidate_count": len(diagnostics.ordered_candidates),
@@ -328,6 +386,23 @@ async def run_retrieval_eval(
         )
     metric_values = asdict(compute_retrieval_metrics(metric_inputs))
     metric_values.update(_supplemental_recall_metrics(supplemental_metric_rows))
+    metric_values.update(
+        {
+            "supplemental_trigger_count": supplemental_trigger_count,
+            "supplemental_trigger_rate": round(supplemental_trigger_count / len(cases), 4),
+            "average_consumed_supplemental_count": round(
+                consumed_supplemental_total / len(cases), 4
+            ),
+            "gate_promotion_count": gate_promotion_count,
+            "gate_demotion_count": gate_demotion_count,
+            "consumed_relevant_count": consumed_relevant_count,
+            "consumed_relevant_per_trigger": round(
+                consumed_relevant_count / supplemental_trigger_count, 4
+            )
+            if supplemental_trigger_count
+            else 0.0,
+        }
+    )
     provenance = build_provenance(dataset_path=dataset_path)
     report = RetrievalEvalReport(
         dataset=str(dataset_path),
@@ -356,6 +431,8 @@ async def run_retrieval_eval(
             "query_strategy": query_strategy.value,
             "adjacent_filter_strategy": adjacent_filter_strategy.value,
             "candidate_expansion": candidate_expansion.value,
+            "supplemental_consumption": supplemental_consumption.value,
+            "supplemental_k": supplemental_k,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
             "ground_truth_counts": ground_truth_counts,
@@ -366,6 +443,20 @@ async def run_retrieval_eval(
     )
     _write_report(report, output_dir)
     return report
+
+
+def _select_supplemental_candidates(
+    candidates: list[RetrievedChunk],
+    *,
+    strategy: SupplementalConsumptionStrategy,
+    supplemental_k: int,
+    primary_evidence_sufficient: bool,
+) -> list[RetrievedChunk]:
+    if supplemental_k <= 0 or strategy is SupplementalConsumptionStrategy.NONE:
+        return []
+    if strategy is SupplementalConsumptionStrategy.EVIDENCE_GATED and primary_evidence_sufficient:
+        return []
+    return candidates[:supplemental_k]
 
 
 def _supplemental_recall_metrics(
@@ -725,6 +816,8 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- query_strategy: {metadata['query_strategy']}",
         f"- adjacent_filter_strategy: {metadata['adjacent_filter_strategy']}",
         f"- candidate_expansion: {metadata['candidate_expansion']}",
+        f"- supplemental_consumption: {metadata['supplemental_consumption']}",
+        f"- supplemental_k: {metadata['supplemental_k']}",
         "- retrieval: "
         f"top_k={metadata['retrieval_top_k']}, "
         f"candidate_k={metadata['retrieval_candidate_k']}, "
@@ -763,6 +856,13 @@ def _write_report(report: RetrievalEvalReport, output_dir: Path) -> None:
         f"- Primary@6 + supplemental@20: {metrics['primary_at_6_plus_supplemental_at_20']}",
         "- Average supplemental candidate count: "
         f"{metrics['average_supplemental_candidate_count']}",
+        f"- Supplemental trigger count/rate: {metrics['supplemental_trigger_count']} / "
+        f"{metrics['supplemental_trigger_rate']}",
+        f"- Average consumed supplemental count: {metrics['average_consumed_supplemental_count']}",
+        f"- Gate promotions/demotions: {metrics['gate_promotion_count']} / "
+        f"{metrics['gate_demotion_count']}",
+        f"- Consumed relevant count/per trigger: {metrics['consumed_relevant_count']} / "
+        f"{metrics['consumed_relevant_per_trigger']}",
         f"- Diversity filter drop rate: {metrics['diversity_filter_drop_rate']}",
         f"- Failure category counts: {metrics['failure_category_counts']}",
         "",
