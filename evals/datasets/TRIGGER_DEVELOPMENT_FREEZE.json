@@ -1,0 +1,35 @@
+{
+  "dataset": "evals\\datasets\\retrieval_trigger_development_v1.jsonl",
+  "sha256": "588d1b23c1932df51157f1f786a96c5e70b6cc3769c75be2f463235fe136b0bc",
+  "case_count": 16,
+  "case_ids": [
+    "trg-hn-001",
+    "trg-hn-002",
+    "trg-hn-003",
+    "trg-hn-004",
+    "trg-lp-001",
+    "trg-lp-002",
+    "trg-lp-003",
+    "trg-lp-004",
+    "trg-hc-001",
+    "trg-hc-002",
+    "trg-hc-003",
+    "trg-hc-004",
+    "trg-dn-001",
+    "trg-dn-002",
+    "trg-dn-003",
+    "trg-dn-004"
+  ],
+  "scenario_counts": {
+    "heading_similar_negative": 4,
+    "heading_vector_divergence_no_trigger": 4,
+    "high_confidence_miss_risk": 4,
+    "low_overlap_semantic_positive": 4
+  },
+  "expected_trigger_counts": {
+    "false": 8,
+    "true": 8
+  },
+  "frozen_at": "2026-10-01T02:07:29.001160+00:00",
+  "note": "Frozen independent Development fixture for retrieval-trigger feature design. It may be used for trigger diagnostics but is not a final acceptance set; any content change invalidates prior trigger experiments."
+}
