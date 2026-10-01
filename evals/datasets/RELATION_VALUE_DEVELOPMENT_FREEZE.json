@@ -1,0 +1,31 @@
+{
+  "dataset": "evals\\datasets\\retrieval_relation_value_development_v1.jsonl",
+  "sha256": "9156164ba289b2407b104c85a717d58149e8862ef5e2ffba6d4aedad9b20173f",
+  "case_count": 12,
+  "case_ids": [
+    "rv-s-001",
+    "rv-s-002",
+    "rv-s-003",
+    "rv-t-001",
+    "rv-t-002",
+    "rv-t-003",
+    "rv-c-001",
+    "rv-c-002",
+    "rv-c-003",
+    "rv-b-001",
+    "rv-b-002",
+    "rv-b-003"
+  ],
+  "span_type_counts": {
+    "bounded_multi_span": 3,
+    "code_statement": 3,
+    "sentence_span": 3,
+    "table_row": 3
+  },
+  "polarity_counts": {
+    "negative": 4,
+    "positive": 8
+  },
+  "frozen_at": "2026-10-01T10:50:30.100335+00:00",
+  "note": "Frozen independent Development fixture for relation-value binding design."
+}
