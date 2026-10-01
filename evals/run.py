@@ -12,6 +12,7 @@ from agent_mentor.infrastructure.retriever import (
     CandidateExpansionStrategy,
     RetrievalExperimentMode,
 )
+from evals.demand_binding import DemandBindingPolicy
 from evals.query_variants import QueryVariantStrategy
 from evals.runners.retrieval_runner import (
     SupplementalConsumptionStrategy,
@@ -94,6 +95,13 @@ def main() -> None:
         default=1,
         help="Maximum supplemental candidates consumed per query.",
     )
+    parser.add_argument(
+        "--demand-binding-policy",
+        type=DemandBindingPolicy,
+        choices=tuple(DemandBindingPolicy),
+        default=DemandBindingPolicy.NONE,
+        help="Eval-only deterministic binding layered after the production Evidence Gate.",
+    )
     args = parser.parse_args()
 
     if args.suite in {"retrieval", "retrieval-ablation", "all"}:
@@ -119,6 +127,7 @@ def main() -> None:
                         candidate_expansion=args.candidate_expansion,
                         supplemental_consumption=args.supplemental_consumption,
                         supplemental_k=args.supplemental_k,
+                        demand_binding_policy=args.demand_binding_policy,
                     )
                 )
                 reports[mode.value] = report.metrics
@@ -168,6 +177,7 @@ def main() -> None:
                     candidate_expansion=args.candidate_expansion,
                     supplemental_consumption=args.supplemental_consumption,
                     supplemental_k=args.supplemental_k,
+                    demand_binding_policy=args.demand_binding_policy,
                 )
             )
             print({"retrieval": report.metrics})

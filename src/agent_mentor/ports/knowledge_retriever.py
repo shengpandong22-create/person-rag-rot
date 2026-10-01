@@ -70,6 +70,8 @@ class RetrievedChunk:
     heuristic_rerank_score: float | None = None
     heading_rank: int | None = None
     heading_score: float | None = None
+    semantic_rank: int | None = None
+    semantic_score: float | None = None
 
 
 class KnowledgeRetriever(Protocol):

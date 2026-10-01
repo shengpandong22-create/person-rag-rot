@@ -75,6 +75,7 @@ class CandidateExpansionStrategy(StrEnum):
     NONE = "none"
     HEADING_LEXICAL = "heading-lexical"
     HEADING_SHADOW = "heading-shadow"
+    SEMANTIC_QUERY_SHADOW = "semantic-query-shadow"
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,6 +90,7 @@ class RetrievalDiagnostics:
 
     vector_candidates: tuple[RetrievedChunk, ...]
     heading_candidates: tuple[RetrievedChunk, ...]
+    semantic_candidates: tuple[RetrievedChunk, ...]
     text_candidates: tuple[RetrievedChunk, ...]
     ordered_candidates: tuple[RetrievedChunk, ...]
     post_filter_candidates: tuple[RetrievedChunk, ...]
@@ -187,12 +189,13 @@ class PostgresHybridRetriever:
     ) -> RetrievalDiagnostics:
         normalized = normalize_query(query.query)
         if not normalized:
-            return RetrievalDiagnostics((), (), (), (), (), (), (), ())
+            return RetrievalDiagnostics((), (), (), (), (), (), (), (), ())
 
         # 并行执行向量和全文检索（注意：这里实际上是串行的，优化空间）
         async with self._sessions() as session:
             vector_candidates: list[_Candidate] = []
             heading_candidates: list[_Candidate] = []
+            semantic_candidates: list[_Candidate] = []
             if experiment_mode is not RetrievalExperimentMode.TEXT_ONLY:
                 variants = tuple(
                     dict.fromkeys(
@@ -208,6 +211,12 @@ class PostgresHybridRetriever:
                     ranked_variants,
                     candidate_k=query.candidate_k,
                 )
+                if candidate_expansion is CandidateExpansionStrategy.SEMANTIC_QUERY_SHADOW:
+                    semantic_candidates = await self._vector_candidates(
+                        session,
+                        query,
+                        f"为这个句子生成表示以用于检索相关文章：{normalized}",
+                    )
                 if candidate_expansion in {
                     CandidateExpansionStrategy.HEADING_LEXICAL,
                     CandidateExpansionStrategy.HEADING_SHADOW,
@@ -343,9 +352,31 @@ class PostgresHybridRetriever:
             if candidate_expansion is CandidateExpansionStrategy.HEADING_SHADOW
             else ()
         )
+        shadow_semantic_candidates = (
+            tuple(
+                _to_retrieved_chunk(
+                    candidate=item,
+                    normalized=normalized,
+                    score=item.score,
+                    fused_score=0.0,
+                    heuristic_score=0.0,
+                    vector_rank=None,
+                    text_rank=None,
+                    vector_score=None,
+                    text_score=None,
+                    semantic_rank=item.rank,
+                    semantic_score=item.score,
+                )
+                for item in semantic_candidates
+            )
+            if candidate_expansion is CandidateExpansionStrategy.SEMANTIC_QUERY_SHADOW
+            else ()
+        )
         primary_candidate_ids = {item.chunk.id for item in vector_candidates}
         supplemental_candidates = tuple(
-            item for item in shadow_heading_candidates if item.chunk_id not in primary_candidate_ids
+            item
+            for item in (*shadow_heading_candidates, *shadow_semantic_candidates)
+            if item.chunk_id not in primary_candidate_ids
         )
         return RetrievalDiagnostics(
             vector_candidates=tuple(converted[item.chunk.id] for item in vector_candidates),
@@ -357,6 +388,7 @@ class PostgresHybridRetriever:
                     if item.chunk.id in converted
                 )
             ),
+            semantic_candidates=shadow_semantic_candidates,
             text_candidates=tuple(converted[item.chunk.id] for item in text_candidates),
             ordered_candidates=tuple(converted[chunk_id] for chunk_id in ordered_ids),
             post_filter_candidates=tuple(post_filter),
@@ -528,6 +560,8 @@ def _to_retrieved_chunk(
     text_score: float | None,
     heading_rank: int | None = None,
     heading_score: float | None = None,
+    semantic_rank: int | None = None,
+    semantic_score: float | None = None,
 ) -> RetrievedChunk:
     return RetrievedChunk(
         chunk_id=candidate.chunk.id,
@@ -559,6 +593,8 @@ def _to_retrieved_chunk(
         heuristic_rerank_score=heuristic_score,
         heading_rank=heading_rank,
         heading_score=heading_score,
+        semantic_rank=semantic_rank,
+        semantic_score=semantic_score,
     )
 
 

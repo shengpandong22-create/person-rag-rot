@@ -35,6 +35,7 @@ from agent_mentor.infrastructure.retriever import (
     RetrievalFilterReason,
 )
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery, RetrievedChunk
+from evals.demand_binding import DemandBindingPolicy, assess_demand_binding
 from evals.metrics import RetrievalCaseResult, compute_retrieval_metrics
 from evals.provenance import build_provenance
 from evals.query_variants import QueryVariantStrategy, build_query_variants
@@ -86,6 +87,7 @@ async def run_retrieval_eval(
         SupplementalConsumptionStrategy.NONE
     ),
     supplemental_k: int = 1,
+    demand_binding_policy: DemandBindingPolicy = DemandBindingPolicy.NONE,
 ) -> RetrievalEvalReport:
     cases = _load_cases(dataset_path)
     settings = get_settings()
@@ -99,7 +101,11 @@ async def run_retrieval_eval(
         raise ValueError("supplemental_k must be >= 0")
     if (
         supplemental_consumption is not SupplementalConsumptionStrategy.NONE
-        and candidate_expansion is not CandidateExpansionStrategy.HEADING_SHADOW
+        and candidate_expansion
+        not in {
+            CandidateExpansionStrategy.HEADING_SHADOW,
+            CandidateExpansionStrategy.SEMANTIC_QUERY_SHADOW,
+        }
     ):
         raise ValueError("supplemental consumption requires candidate_expansion=heading-shadow")
     effective_document_limit = (
@@ -217,7 +223,13 @@ async def run_retrieval_eval(
                 gate_demotion_count += 1
             supported_ids = set(evidence_assessment.supported_chunk_ids)
             supported_chunks = [chunk for chunk in chunks if str(chunk.chunk_id) in supported_ids]
-            evidence_sufficient = evidence_assessment.production_sufficient
+            evidence_chunks = [*chunks, *consumed_supplemental]
+            demand_binding = assess_demand_binding(
+                case.question, evidence_chunks, demand_binding_policy
+            )
+            evidence_sufficient = (
+                evidence_assessment.production_sufficient and demand_binding.passed
+            )
             formally_scorable = graded and (
                 case.answerability is Answerability.NONE
                 or ground_truth_mode == GROUND_TRUTH_RESOLVED
@@ -260,7 +272,7 @@ async def run_retrieval_eval(
                             for item in diagnostics.filtered_out
                         ),
                         failure_category=failure_category,
-                        evidence_decision=evidence_assessment.decision.value,
+                        evidence_decision="accept" if evidence_sufficient else "reject",
                     )
                 )
                 if case.answerability is not Answerability.NONE:
@@ -312,6 +324,7 @@ async def run_retrieval_eval(
                     "evidence_sufficient": evidence_sufficient,
                     "evidence_decision": "accept" if evidence_sufficient else "reject",
                     "evidence_assessment": asdict(evidence_assessment),
+                    "demand_binding": asdict(demand_binding),
                     "failure_category": failure_category,
                     "retrieval_stages": {
                         "vector_candidate_ids": [
@@ -319,6 +332,9 @@ async def run_retrieval_eval(
                         ],
                         "heading_candidate_ids": [
                             str(chunk.chunk_id) for chunk in diagnostics.heading_candidates
+                        ],
+                        "semantic_candidate_ids": [
+                            str(chunk.chunk_id) for chunk in diagnostics.semantic_candidates
                         ],
                         "supplemental_candidate_ids": [
                             str(chunk.chunk_id) for chunk in diagnostics.supplemental_candidates
@@ -370,6 +386,8 @@ async def run_retrieval_eval(
                             "heading_path": list(chunk.heading_path),
                             "heading_rank": chunk.heading_rank,
                             "heading_score": chunk.heading_score,
+                            "semantic_rank": chunk.semantic_rank,
+                            "semantic_score": chunk.semantic_score,
                             "matched_ground_truth": chunk.chunk_id in ground_truth_ids,
                         }
                         for index, chunk in enumerate(diagnostics.supplemental_candidates, start=1)
@@ -433,6 +451,7 @@ async def run_retrieval_eval(
             "candidate_expansion": candidate_expansion.value,
             "supplemental_consumption": supplemental_consumption.value,
             "supplemental_k": supplemental_k,
+            "demand_binding_policy": demand_binding_policy.value,
             "knowledge_base": knowledge_base_fingerprint,
             "grading_counts": grading_counts,
             "ground_truth_counts": ground_truth_counts,

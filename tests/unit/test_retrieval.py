@@ -425,6 +425,59 @@ async def test_eval_heading_shadow_never_changes_primary_results(
     assert shadow.supplemental_candidates[0].heading_score == heading_only.score
 
 
+@pytest.mark.asyncio
+async def test_eval_semantic_query_shadow_is_monotonic_and_independent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(), title="Guide", logical_name="guide", source_url=None, trust_level="curated"
+    )
+
+    def candidate(index: int, content: str) -> _Candidate:
+        model = SimpleNamespace(
+            id=uuid4(),
+            content=content,
+            heading_path=[content],
+            page_number=None,
+            chunk_index=index * 2,
+        )
+        return _Candidate(cast(Any, model), cast(Any, document), index + 1, 0.9 - index / 10)
+
+    primary = [candidate(0, "primary-1"), candidate(1, "shared")]
+    semantic_only = candidate(2, "semantic-only")
+    vector_mock = AsyncMock(side_effect=[primary, [primary[1], semantic_only]])
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=3
+    )
+    monkeypatch.setattr(retriever, "_vector_candidates", vector_mock)
+    query = RetrievalQuery(uuid4(), "低词面改写", top_k=2, candidate_k=2)
+
+    shadow = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+        candidate_expansion=CandidateExpansionStrategy.SEMANTIC_QUERY_SHADOW,
+    )
+
+    assert [item.content for item in shadow.final_results] == ["primary-1", "shared"]
+    assert [item.content for item in shadow.ordered_candidates] == ["primary-1", "shared"]
+    assert [item.content for item in shadow.supplemental_candidates] == ["semantic-only"]
+    assert shadow.supplemental_candidates[0].semantic_rank == semantic_only.rank
+    assert vector_mock.await_args_list[0].args[2] == "低词面改写"
+    assert vector_mock.await_args_list[1].args[2] == (
+        "为这个句子生成表示以用于检索相关文章：低词面改写"
+    )
+
+
 def test_retrieval_explanation_contains_rank_signals() -> None:
     explanation = _retrieval_explanation(
         fused_score=0.0325,
