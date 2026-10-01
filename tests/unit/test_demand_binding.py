@@ -129,3 +129,26 @@ def test_typed_v2_uses_only_bounded_windows_within_one_chunk() -> None:
     )
 
     assert not result.passed
+
+
+def test_typed_v2_binds_implicit_value_pair_to_one_chunk() -> None:
+    relevant = _chunk("learning_rate = min(0.35, 0.18 * weight) = 0.18")
+    result = assess_demand_binding(
+        "学习率示例先取哪个上限，再算出哪个实际值？",
+        [relevant],
+        DemandBindingPolicy.TYPED_LOCAL_V2,
+    )
+
+    assert result.passed
+    assert result.matched_chunk_ids == (str(relevant.chunk_id),)
+
+
+def test_typed_v2_does_not_join_implicit_value_pair_across_chunks() -> None:
+    result = assess_demand_binding(
+        "学习率示例先取哪个上限，再算出哪个实际值？",
+        [_chunk("学习率上限为 0.35。"), _chunk("学习率实际值为 0.18。")],
+        DemandBindingPolicy.TYPED_LOCAL_V2,
+    )
+
+    assert not result.passed
+    assert result.reasons == ("implicit_value_pair_unbound",)

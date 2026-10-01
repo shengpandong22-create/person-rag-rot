@@ -32,6 +32,7 @@ _HAS_NUMBER = re.compile(r"(?<![\w.])\d+(?:\.\d+)?%?|[一二两三四五六七�
 _DEMAND = re.compile(r"(?:多少|几)\s*(次|回|成|天|自然日|名|个|轮|毫秒|秒|分钟|小时|人月|条|%)?")
 _SENTENCE = re.compile(r"[^。！？!?；;\n]+")
 _RANGE_DEMAND = re.compile(r"区间|范围|从.+到|上下限")
+_VALUE_QUERY = re.compile(r"哪个(?:上限|实际值|数值)|什么(?:值|数值)")
 _RANGE_VALUE = re.compile(
     r"(?:\[|\()\s*-?\d+(?:\.\d+)?\s*[,，]\s*-?\d+(?:\.\d+)?\s*(?:\]|\))"
     r"|-?\d+(?:\.\d+)?\s*(?:-|～|~|到|至)\s*-?\d+(?:\.\d+)?"
@@ -78,7 +79,7 @@ def assess_demand_binding(
             ("range_value", bool(_RANGE_DEMAND.search(question))),
             ("table_value", "表" in question),
             ("cross_sentence", "先" in question or len(explicit) >= 2),
-            ("implicit_numeric", bool(implicit)),
+            ("implicit_numeric", bool(implicit) or bool(_VALUE_QUERY.search(question))),
         )
         if present
     )
@@ -126,6 +127,17 @@ def assess_demand_binding(
         matched.extend(text for _, text in local)
         matched_ids.extend(chunk_id for chunk_id, _ in local)
 
+    if policy is DemandBindingPolicy.TYPED_LOCAL_V2 and _VALUE_QUERY.search(question):
+        local = [
+            (chunk_id, text)
+            for chunk_id, text in windows
+            if len(_NUMBER.findall(text)) >= 2 and _predicate_matches(text, predicates)
+        ]
+        if not local:
+            reasons.append("implicit_value_pair_unbound")
+        matched.extend(text for _, text in local)
+        matched_ids.extend(chunk_id for chunk_id, _ in local)
+
     if policy is DemandBindingPolicy.TYPED_LOCAL_V2 and _RANGE_DEMAND.search(question):
         local = [
             (chunk_id, text)
@@ -157,7 +169,10 @@ def _core_predicates(
 
 
 def _predicate_matches(sentence: str, predicates: tuple[str, ...]) -> bool:
-    return not predicates or all(predicate in sentence for predicate in predicates)
+    normalized = sentence.replace("learning_rate", "学习率").replace(
+        "confidence_weight", "权重"
+    )
+    return not predicates or all(predicate in normalized for predicate in predicates)
 
 
 def _unit_matches(text: str, unit: str) -> bool:
