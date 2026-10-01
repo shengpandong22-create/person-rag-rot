@@ -1,0 +1,4033 @@
+{
+  "source_report": "evals\\reports\\demand_binding_heading_fixed_7\\retrieval_eval.json",
+  "dataset": "evals\\datasets\\retrieval_demand_binding_development_v1.jsonl",
+  "dataset_sha256": "c0f501397764d9c42d006d7eec6ba6dbcd36248fd01219f1072b2a0e3dcff3df",
+  "case_count": 15,
+  "cases": [
+    {
+      "id": "db-ex-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "structural_features": {
+        "core_terms": [
+          "rrf",
+          "公式",
+          "式里",
+          "里的",
+          "的平",
+          "平滑",
+          "滑常",
+          "常数",
+          "精确",
+          "确是",
+          "是多"
+        ],
+        "primary_covered_terms": [
+          "rrf",
+          "公式"
+        ],
+        "primary_missing_terms": [
+          "式里",
+          "里的",
+          "的平",
+          "平滑",
+          "滑常",
+          "常数",
+          "精确",
+          "确是",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "公式"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1818
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1818,
+        "supplemental_novelty_ratio": 0.0
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ex-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "低置",
+          "置信",
+          "信度",
+          "度触",
+          "触发",
+          "发复",
+          "复核",
+          "的精",
+          "精确",
+          "确阈",
+          "阈值",
+          "值是",
+          "是多"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "低置",
+          "置信",
+          "信度",
+          "度触",
+          "触发",
+          "发复",
+          "复核",
+          "的精",
+          "精确",
+          "确阈",
+          "阈值",
+          "值是",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "复核"
+        ],
+        "supplemental_new_terms": [
+          "复核"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.0769
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.0769
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "1cd77702-71fe-40cf-8827-cfe4f9987589",
+          "matched_ground_truth": true,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "复核",
+              "触发"
+            ],
+            "relations_covered": [
+              "触发"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ex-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "reviewer",
+          "的生",
+          "生产",
+          "产可",
+          "可用",
+          "用性",
+          "sla",
+          "否精",
+          "精确",
+          "确承",
+          "承诺",
+          "诺为"
+        ],
+        "primary_covered_terms": [
+          "reviewer",
+          "可用"
+        ],
+        "primary_missing_terms": [
+          "的生",
+          "生产",
+          "产可",
+          "用性",
+          "sla",
+          "否精",
+          "精确",
+          "确承",
+          "承诺",
+          "诺为"
+        ],
+        "supplemental_covered_terms": [],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1667
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1667,
+        "supplemental_novelty_ratio": 0.0
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "d90b61cd-9bff-4b7d-836d-f095401b29e5",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "99.9%"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "99.9%"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "99.9%"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-un-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "structural_features": {
+        "core_terms": [
+          "复习",
+          "习任",
+          "任务",
+          "务要",
+          "要连",
+          "连续",
+          "续几",
+          "回可",
+          "可信",
+          "信高",
+          "高分",
+          "分才",
+          "才完",
+          "完成"
+        ],
+        "primary_covered_terms": [
+          "复习",
+          "习任",
+          "任务",
+          "可信"
+        ],
+        "primary_missing_terms": [
+          "务要",
+          "要连",
+          "连续",
+          "续几",
+          "回可",
+          "信高",
+          "高分",
+          "分才",
+          "才完",
+          "完成"
+        ],
+        "supplemental_covered_terms": [
+          "复习",
+          "习任",
+          "任务",
+          "可信",
+          "高分"
+        ],
+        "supplemental_new_terms": [
+          "高分"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.2857
+        ],
+        "supplemental_clause_gain": [
+          0.07139999999999996
+        ],
+        "primary_heading_coverage": 0.2857,
+        "supplemental_novelty_ratio": 0.0714
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "a4282558-4dae-4b4a-8c02-371db9390a70",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "6cd6bb43-691f-4451-8a9e-e2c680ca073f",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "d3e3977c-6d1b-4133-9ff7-0e821f844023",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "a96b3fe2-82ea-4708-bd19-efdfb7269e9b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次",
+              "成"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "106c124a-3103-461c-854b-69addeca2864",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "成"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次",
+              "成"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "40456fce-4cb0-4712-aa59-fd668543f456",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "141180c3-1581-420e-aabc-aa107e3a7083",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 14,
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 15,
+          "chunk_id": "0a44b8b5-8e7f-472b-a486-341ab4203306",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 16,
+          "chunk_id": "4df526c6-ab98-4b59-a382-ca0e9f31de4e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "完成"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-un-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "一次",
+          "次低",
+          "低置",
+          "置信",
+          "final",
+          "的画",
+          "画像",
+          "像影",
+          "影响",
+          "响会",
+          "会缩",
+          "缩减",
+          "到几",
+          "几成"
+        ],
+        "primary_covered_terms": [
+          "画像"
+        ],
+        "primary_missing_terms": [
+          "一次",
+          "次低",
+          "低置",
+          "置信",
+          "final",
+          "的画",
+          "像影",
+          "影响",
+          "响会",
+          "会缩",
+          "缩减",
+          "到几",
+          "几成"
+        ],
+        "supplemental_covered_terms": [
+          "一次",
+          "画像"
+        ],
+        "supplemental_new_terms": [
+          "一次"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0714
+        ],
+        "supplemental_clause_gain": [
+          0.0715
+        ],
+        "primary_heading_coverage": 0.0714,
+        "supplemental_novelty_ratio": 0.0714
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "875f34a8-794d-4464-b1e5-3a75dd9084ce",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "6cd6bb43-691f-4451-8a9e-e2c680ca073f",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次",
+              "成"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "4df526c6-ab98-4b59-a382-ca0e9f31de4e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+          "matched_ground_truth": true,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "成"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "0dcad2df-2d23-4ce3-a735-0a3419cfa7ab",
+          "matched_ground_truth": true,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "成"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次",
+              "成"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "f2c986d1-944b-45e8-b769-3e3a77ab130b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [
+              "影响"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 14,
+          "chunk_id": "a4282558-4dae-4b4a-8c02-371db9390a70",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 15,
+          "chunk_id": "e4237f63-134b-4f62-92f1-76c552e82f8c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-un-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "checkpoint",
+          "认会",
+          "会保",
+          "保存",
+          "存几",
+          "几个",
+          "个自",
+          "然日"
+        ],
+        "primary_covered_terms": [
+          "checkpoint"
+        ],
+        "primary_missing_terms": [
+          "认会",
+          "会保",
+          "保存",
+          "存几",
+          "几个",
+          "个自",
+          "然日"
+        ],
+        "supplemental_covered_terms": [
+          "checkpoint"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.125
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.125,
+        "supplemental_novelty_ratio": 0.0
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "da031b6f-c815-4c5e-85b4-7ec046cf50fa",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ra-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "structural_features": {
+        "core_terms": [
+          "余弦",
+          "弦相",
+          "相似",
+          "似度",
+          "度的",
+          "的完",
+          "完整",
+          "取值",
+          "值区",
+          "区间",
+          "间是",
+          "是什"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "余弦",
+          "弦相",
+          "相似",
+          "似度",
+          "度的",
+          "的完",
+          "完整",
+          "取值",
+          "值区",
+          "区间",
+          "间是",
+          "是什"
+        ],
+        "supplemental_covered_terms": [
+          "的完",
+          "完整",
+          "是什"
+        ],
+        "supplemental_new_terms": [
+          "的完",
+          "完整",
+          "是什"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.25
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.25
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "072b9729-4754-4bec-9c51-2bab588ec677",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3b51147a-9da3-42da-8a10-95bee2cd04d6",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "da031b6f-c815-4c5e-85b4-7ec046cf50fa",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "ebf3a3e1-a860-4503-9bf6-ac056a201918",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "5cd2458b-909e-403e-a554-5cb5bbe3f726",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "40456fce-4cb0-4712-aa59-fd668543f456",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 14,
+          "chunk_id": "d829d039-7b13-4077-95b9-18e387c5d67b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 15,
+          "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 16,
+          "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 17,
+          "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ra-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "复核",
+          "核路",
+          "路由",
+          "由中",
+          "中带",
+          "带错",
+          "错误",
+          "断言",
+          "言的",
+          "的边",
+          "边缘",
+          "缘总",
+          "总分",
+          "分区",
+          "间是",
+          "是多"
+        ],
+        "primary_covered_terms": [
+          "总分"
+        ],
+        "primary_missing_terms": [
+          "复核",
+          "核路",
+          "路由",
+          "由中",
+          "中带",
+          "带错",
+          "错误",
+          "断言",
+          "言的",
+          "的边",
+          "边缘",
+          "缘总",
+          "分区",
+          "间是",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "复核",
+          "核路",
+          "路由",
+          "总分"
+        ],
+        "supplemental_new_terms": [
+          "复核",
+          "核路",
+          "路由"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0625
+        ],
+        "supplemental_clause_gain": [
+          0.1875
+        ],
+        "primary_heading_coverage": 0.0625,
+        "supplemental_novelty_ratio": 0.1875
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "1cd77702-71fe-40cf-8827-cfe4f9987589",
+          "matched_ground_truth": true,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "复核"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "141180c3-1581-420e-aabc-aa107e3a7083",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "复核"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ra-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "生产",
+          "rag",
+          "延迟",
+          "迟目",
+          "目标",
+          "标承",
+          "承诺",
+          "诺在",
+          "在哪",
+          "个毫",
+          "毫秒",
+          "秒区",
+          "区间"
+        ],
+        "primary_covered_terms": [
+          "rag"
+        ],
+        "primary_missing_terms": [
+          "生产",
+          "延迟",
+          "迟目",
+          "目标",
+          "标承",
+          "承诺",
+          "诺在",
+          "在哪",
+          "个毫",
+          "毫秒",
+          "秒区",
+          "区间"
+        ],
+        "supplemental_covered_terms": [
+          "rag"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0769
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.0769,
+        "supplemental_novelty_ratio": 0.0
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "a96b3fe2-82ea-4708-bd19-efdfb7269e9b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "40456fce-4cb0-4712-aa59-fd668543f456",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "0a44b8b5-8e7f-472b-a486-341ab4203306",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "d829d039-7b13-4077-95b9-18e387c5d67b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "7eeb094b-2097-432c-8fe1-3fe063c69237",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "5c29cbe0-2e59-494b-808c-6ec825f6c449",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "463ed815-bf9b-49d4-8dfb-702a1a425a72",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "07ee7bef-492a-418f-a9e3-775bd744b4b5",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "5390287f-8767-4000-b19c-7dbca6a7a1b4",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "19622f5c-3f23-4362-a2dc-a16b2dc6e05b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "0241c1d1-5036-4739-a06f-8e7587461a83",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 14,
+          "chunk_id": "fb47e63c-6948-434e-a1bc-f74638c220fd",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 15,
+          "chunk_id": "3323ef24-284f-4557-8f6f-e8552da6f827",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [
+              "毫秒"
+            ],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 16,
+          "chunk_id": "e2177aa7-ded6-4359-87a6-66a57e21d708",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 17,
+          "chunk_id": "c6478dcf-88a8-473a-bd95-e70e01f5eef6",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 18,
+          "chunk_id": "d9ec0fab-b2f3-43ac-8c15-2f2fe7feaf92",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "毫秒"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ta-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "structural_features": {
+        "core_terms": [
+          "低置",
+          "置信",
+          "final",
+          "在画",
+          "画像",
+          "像更",
+          "更新",
+          "新表",
+          "表里",
+          "里的",
+          "confidence_weight",
+          "是多"
+        ],
+        "primary_covered_terms": [
+          "画像",
+          "更新"
+        ],
+        "primary_missing_terms": [
+          "低置",
+          "置信",
+          "final",
+          "在画",
+          "像更",
+          "新表",
+          "表里",
+          "里的",
+          "confidence_weight",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "画像",
+          "更新"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1667
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1667,
+        "supplemental_novelty_ratio": 0.0
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "6cd6bb43-691f-4451-8a9e-e2c680ca073f",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "4df526c6-ab98-4b59-a382-ca0e9f31de4e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "f2c986d1-944b-45e8-b769-3e3a77ab130b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "a4282558-4dae-4b4a-8c02-371db9390a70",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "875f34a8-794d-4464-b1e5-3a75dd9084ce",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "e4237f63-134b-4f62-92f1-76c552e82f8c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ta-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "四维",
+          "维分",
+          "分差",
+          "差达",
+          "达到",
+          "到多",
+          "会进",
+          "进入",
+          "入复",
+          "复核"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "四维",
+          "维分",
+          "分差",
+          "差达",
+          "达到",
+          "到多",
+          "会进",
+          "进入",
+          "入复",
+          "复核"
+        ],
+        "supplemental_covered_terms": [
+          "四维",
+          "进入",
+          "复核"
+        ],
+        "supplemental_new_terms": [
+          "四维",
+          "进入",
+          "复核"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.3
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.3
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "106c124a-3103-461c-854b-69addeca2864",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "复核"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "1cd77702-71fe-40cf-8827-cfe4f9987589",
+          "matched_ground_truth": true,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [
+              "复核"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "4cfb4a20-295e-4409-b055-8322f3ab8ef2",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "复核"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "4141045f-9876-42b8-b1d1-378d7ebc71dd",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "复核"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-ta-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "三种",
+          "种评",
+          "评分",
+          "分状",
+          "状态",
+          "态对",
+          "对画",
+          "像影",
+          "影响",
+          "响表",
+          "表是",
+          "否给",
+          "给出",
+          "天保",
+          "保留",
+          "留期"
+        ],
+        "primary_covered_terms": [
+          "三种",
+          "种评",
+          "评分",
+          "分状",
+          "状态",
+          "态对",
+          "对画",
+          "影响"
+        ],
+        "primary_missing_terms": [
+          "像影",
+          "响表",
+          "表是",
+          "否给",
+          "给出",
+          "天保",
+          "保留",
+          "留期"
+        ],
+        "supplemental_covered_terms": [
+          "三种",
+          "种评",
+          "评分",
+          "分状",
+          "状态"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.5
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.5,
+        "supplemental_novelty_ratio": 0.0
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "18560df2-6c08-4474-9753-16931b293701",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "0dcad2df-2d23-4ce3-a735-0a3419cfa7ab",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "f2c986d1-944b-45e8-b769-3e3a77ab130b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [
+              "影响"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "8c35c35f-600c-414a-817b-f13884f6b3fc",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "d3e3977c-6d1b-4133-9ff7-0e821f844023",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "6cd6bb43-691f-4451-8a9e-e2c680ca073f",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "106c124a-3103-461c-854b-69addeca2864",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "774e1602-ccde-42c6-b8e0-756cb8c5b099",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 14,
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "30"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "天"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "保留",
+              "影响"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-cr-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "structural_features": {
+        "core_terms": [
+          "示例",
+          "例中",
+          "中当",
+          "前掌",
+          "掌握",
+          "握度",
+          "经一",
+          "一次",
+          "得分",
+          "分后",
+          "后变",
+          "变成",
+          "成多"
+        ],
+        "primary_covered_terms": [
+          "分后"
+        ],
+        "primary_missing_terms": [
+          "示例",
+          "例中",
+          "中当",
+          "前掌",
+          "掌握",
+          "握度",
+          "经一",
+          "一次",
+          "得分",
+          "后变",
+          "变成",
+          "成多"
+        ],
+        "supplemental_covered_terms": [
+          "示例",
+          "变成"
+        ],
+        "supplemental_new_terms": [
+          "示例",
+          "变成"
+        ],
+        "same_document_new_heading": false,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0769
+        ],
+        "supplemental_clause_gain": [
+          0.0769
+        ],
+        "primary_heading_coverage": 0.0769,
+        "supplemental_novelty_ratio": 0.1538
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "7eeb094b-2097-432c-8fe1-3fe063c69237",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "a599e2ef-8c03-40e3-b27f-d5c253bbb4ef",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "299ce1b8-bb0e-41af-bf5f-1aab8672a6af",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "027cc00e-77cb-4f2a-b75d-86963b90a448",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "eba3a26f-b2dc-4172-ad08-4b547bf3f34d",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "30b281b6-3e4e-4f02-bcfb-c4e0a9c8a1a0",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "成"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "1a9cc3ab-a83c-4016-ae73-4cd10e314489",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "成"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "a595dfe9-50f9-4474-bc8a-fd2e27b41205",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "0.40",
+              "0.80"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "次",
+              "成"
+            ],
+            "requested_units_covered": [
+              "次"
+            ],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-cr-002",
+      "answerability": "full",
+      "primary_hit": true,
+      "structural_features": {
+        "core_terms": [
+          "可信",
+          "final",
+          "的学",
+          "学习",
+          "习率",
+          "率示",
+          "示例",
+          "例先",
+          "先取",
+          "个上",
+          "上限",
+          "再算",
+          "算出",
+          "出哪",
+          "个实",
+          "实际",
+          "际值"
+        ],
+        "primary_covered_terms": [
+          "可信"
+        ],
+        "primary_missing_terms": [
+          "final",
+          "的学",
+          "学习",
+          "习率",
+          "率示",
+          "示例",
+          "例先",
+          "先取",
+          "个上",
+          "上限",
+          "再算",
+          "算出",
+          "出哪",
+          "个实",
+          "实际",
+          "际值"
+        ],
+        "supplemental_covered_terms": [
+          "可信",
+          "示例"
+        ],
+        "supplemental_new_terms": [
+          "示例"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0909,
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.0909,
+          0.0
+        ],
+        "primary_heading_coverage": 0.0588,
+        "supplemental_novelty_ratio": 0.0588
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "a96b3fe2-82ea-4708-bd19-efdfb7269e9b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "d3e3977c-6d1b-4133-9ff7-0e821f844023",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "106c124a-3103-461c-854b-69addeca2864",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "40456fce-4cb0-4712-aa59-fd668543f456",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "141180c3-1581-420e-aabc-aa107e3a7083",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "0a44b8b5-8e7f-472b-a486-341ab4203306",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "d829d039-7b13-4077-95b9-18e387c5d67b",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 12,
+          "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 13,
+          "chunk_id": "4ba9d8ca-b5a2-40cb-a329-5bbc6545527c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 14,
+          "chunk_id": "67633c00-04ff-40fc-9c84-e0f44b0d6452",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 15,
+          "chunk_id": "5c29cbe0-2e59-494b-808c-6ec825f6c449",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 16,
+          "chunk_id": "1cd77702-71fe-40cf-8827-cfe4f9987589",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": true,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": true
+          }
+        },
+        {
+          "rank": 17,
+          "chunk_id": "07ee7bef-492a-418f-a9e3-775bd744b4b5",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [],
+            "explicit_values_covered": [],
+            "requested_units": [],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-cr-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "structural_features": {
+        "core_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "新示",
+          "示例",
+          "例是",
+          "证明",
+          "明了",
+          "了线",
+          "线上",
+          "上平",
+          "平均",
+          "均提",
+          "个百",
+          "百分",
+          "分点"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "新示",
+          "示例",
+          "例是",
+          "证明",
+          "明了",
+          "了线",
+          "线上",
+          "上平",
+          "平均",
+          "均提",
+          "个百",
+          "百分",
+          "分点"
+        ],
+        "supplemental_covered_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "示例"
+        ],
+        "supplemental_new_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "示例"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.25
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.25
+      },
+      "supplemental_candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 2,
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 3,
+          "chunk_id": "3edfe888-f61e-44d1-a789-31c1b20ec390",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 4,
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 5,
+          "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 6,
+          "chunk_id": "0dcad2df-2d23-4ce3-a735-0a3419cfa7ab",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 7,
+          "chunk_id": "d90b61cd-9bff-4b7d-836d-f095401b29e5",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 8,
+          "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 9,
+          "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": true,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [],
+            "relation_present": false,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 10,
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        },
+        {
+          "rank": 11,
+          "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+          "matched_ground_truth": false,
+          "presence": {
+            "value_required": true,
+            "explicit_values": [
+              "7.2"
+            ],
+            "explicit_values_covered": [],
+            "requested_units": [
+              "%"
+            ],
+            "requested_units_covered": [],
+            "number_present": false,
+            "value_present": false,
+            "relations": [
+              "更新"
+            ],
+            "relations_covered": [
+              "更新"
+            ],
+            "relation_present": true,
+            "value_or_relation_present": false
+          }
+        }
+      ]
+    }
+  ]
+}
