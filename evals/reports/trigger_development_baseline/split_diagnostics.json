@@ -1,0 +1,139 @@
+{
+  "source_report": "evals\\reports\\trigger_development_baseline\\retrieval_eval.json",
+  "low_overlap_recall": {
+    "total": 4,
+    "loss_stage_counts": {
+      "ranking_cutoff": 2,
+      "vector_candidate_miss": 2
+    },
+    "vector_candidate_recall_at_20": 0.5,
+    "primary_recall_at_6": 0.0,
+    "heading_supplemental_recall_at_20": 0.25,
+    "details": [
+      {
+        "case_id": "trg-lp-001",
+        "loss_stage": "vector_candidate_miss",
+        "raw_rank": null,
+        "post_filter_rank": null,
+        "final_rank": null,
+        "supplemental_rank": null,
+        "heading_recovers_at_20": false
+      },
+      {
+        "case_id": "trg-lp-002",
+        "loss_stage": "ranking_cutoff",
+        "raw_rank": 7,
+        "post_filter_rank": 7,
+        "final_rank": null,
+        "supplemental_rank": null,
+        "heading_recovers_at_20": false
+      },
+      {
+        "case_id": "trg-lp-003",
+        "loss_stage": "ranking_cutoff",
+        "raw_rank": 10,
+        "post_filter_rank": 9,
+        "final_rank": null,
+        "supplemental_rank": 18,
+        "heading_recovers_at_20": true
+      },
+      {
+        "case_id": "trg-lp-004",
+        "loss_stage": "vector_candidate_miss",
+        "raw_rank": null,
+        "post_filter_rank": null,
+        "final_rank": null,
+        "supplemental_rank": null,
+        "heading_recovers_at_20": false
+      }
+    ]
+  },
+  "heading_negative_gate": {
+    "total": 4,
+    "false_acceptance_count": 4,
+    "root_cause_counts": {
+      "explicit_number_not_enforced": 1,
+      "unbound_incidental_number": 3
+    },
+    "details": [
+      {
+        "case_id": "trg-hn-001",
+        "decision": "full",
+        "coverage_ratio": 0.28,
+        "numeric_tokens_requested": [],
+        "numeric_tokens_covered": [],
+        "demand_markers": [
+          "多少"
+        ],
+        "exact_value_matched_signals": [
+          "0.0161",
+          "0.0164",
+          "0.0320",
+          "0.0323",
+          "1",
+          "2",
+          "3",
+          "3.3",
+          "60",
+          "61",
+          "62",
+          "63"
+        ],
+        "root_cause": "unbound_incidental_number"
+      },
+      {
+        "case_id": "trg-hn-002",
+        "decision": "full",
+        "coverage_ratio": 0.2857,
+        "numeric_tokens_requested": [],
+        "numeric_tokens_covered": [],
+        "demand_markers": [
+          "多少"
+        ],
+        "exact_value_matched_signals": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "4.4",
+          "4.9",
+          "5",
+          "7",
+          "7.1"
+        ],
+        "root_cause": "unbound_incidental_number"
+      },
+      {
+        "case_id": "trg-hn-003",
+        "decision": "full",
+        "coverage_ratio": 0.3,
+        "numeric_tokens_requested": [],
+        "numeric_tokens_covered": [],
+        "demand_markers": [
+          "多少"
+        ],
+        "exact_value_matched_signals": [
+          "0.40",
+          "0.472",
+          "6",
+          "6.1",
+          "7",
+          "7.6"
+        ],
+        "root_cause": "unbound_incidental_number"
+      },
+      {
+        "case_id": "trg-hn-004",
+        "decision": "full",
+        "coverage_ratio": 0.2632,
+        "numeric_tokens_requested": [
+          "1%"
+        ],
+        "numeric_tokens_covered": [],
+        "demand_markers": [],
+        "exact_value_matched_signals": [],
+        "root_cause": "explicit_number_not_enforced"
+      }
+    ]
+  }
+}
