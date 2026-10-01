@@ -1,0 +1,338 @@
+{
+  "case_count": 16,
+  "expected_trigger_count": 8,
+  "actual_recoverable_count": 2,
+  "expected_vs_actual": {
+    "both_true": 1,
+    "expected_only": 7,
+    "actual_only": 1,
+    "both_false": 7
+  },
+  "scenario_summary": {
+    "heading_similar_negative": {
+      "count": 4,
+      "primary_top6_hits": 0,
+      "supplemental_at_1_hits": 0,
+      "supplemental_at_20_hits": 0,
+      "gate_rejections": 0
+    },
+    "heading_vector_divergence_no_trigger": {
+      "count": 4,
+      "primary_top6_hits": 2,
+      "supplemental_at_1_hits": 1,
+      "supplemental_at_20_hits": 1,
+      "gate_rejections": 1
+    },
+    "high_confidence_miss_risk": {
+      "count": 4,
+      "primary_top6_hits": 0,
+      "supplemental_at_1_hits": 1,
+      "supplemental_at_20_hits": 1,
+      "gate_rejections": 1
+    },
+    "low_overlap_semantic_positive": {
+      "count": 4,
+      "primary_top6_hits": 0,
+      "supplemental_at_1_hits": 0,
+      "supplemental_at_20_hits": 1,
+      "gate_rejections": 4
+    }
+  },
+  "rule_results": {
+    "overlap_high": {
+      "against_expected_trigger": {
+        "trigger_count": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "against_actual_recoverable": {
+        "trigger_count": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "triggered_case_ids": []
+    },
+    "heading_score_high": {
+      "against_expected_trigger": {
+        "trigger_count": 1,
+        "true_positive": 0,
+        "false_positive": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "against_actual_recoverable": {
+        "trigger_count": 1,
+        "true_positive": 0,
+        "false_positive": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "triggered_case_ids": [
+        "trg-hn-003"
+      ]
+    },
+    "overlap_and_score": {
+      "against_expected_trigger": {
+        "trigger_count": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "against_actual_recoverable": {
+        "trigger_count": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "triggered_case_ids": []
+    },
+    "overlap_or_very_high_score": {
+      "against_expected_trigger": {
+        "trigger_count": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "against_actual_recoverable": {
+        "trigger_count": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "triggered_case_ids": []
+    }
+  },
+  "failure_categories": {
+    "None": 2,
+    "candidate_recall_miss": 5,
+    "false_acceptance": 4,
+    "per_document_filter_miss": 1,
+    "ranking_cutoff_miss": 4
+  },
+  "rows": [
+    {
+      "case_id": "trg-hn-001",
+      "scenario": "heading_similar_negative",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.621666,
+      "demand_heading_overlap": 0.090909,
+      "supplemental_heading_score": 3.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-hn-002",
+      "scenario": "heading_similar_negative",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.672956,
+      "demand_heading_overlap": 0.214286,
+      "supplemental_heading_score": 6.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-hn-003",
+      "scenario": "heading_similar_negative",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.658572,
+      "demand_heading_overlap": 0.238095,
+      "supplemental_heading_score": 10.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-hn-004",
+      "scenario": "heading_similar_negative",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.569368,
+      "demand_heading_overlap": 0.2,
+      "supplemental_heading_score": 8.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-lp-001",
+      "scenario": "low_overlap_semantic_positive",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.553033,
+      "demand_heading_overlap": 0.0,
+      "supplemental_heading_score": 0.0,
+      "primary_gate_reject": true
+    },
+    {
+      "case_id": "trg-lp-002",
+      "scenario": "low_overlap_semantic_positive",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": 7,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.594369,
+      "demand_heading_overlap": 0.043478,
+      "supplemental_heading_score": 2.0,
+      "primary_gate_reject": true
+    },
+    {
+      "case_id": "trg-lp-003",
+      "scenario": "low_overlap_semantic_positive",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": 10,
+      "supplemental_relevant_rank": 18,
+      "vector_top1_score": 0.583664,
+      "demand_heading_overlap": 0.166667,
+      "supplemental_heading_score": 8.0,
+      "primary_gate_reject": true
+    },
+    {
+      "case_id": "trg-lp-004",
+      "scenario": "low_overlap_semantic_positive",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.616962,
+      "demand_heading_overlap": 0.08,
+      "supplemental_heading_score": 2.0,
+      "primary_gate_reject": true
+    },
+    {
+      "case_id": "trg-hc-001",
+      "scenario": "high_confidence_miss_risk",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.630398,
+      "demand_heading_overlap": 0.086957,
+      "supplemental_heading_score": 4.0,
+      "primary_gate_reject": true
+    },
+    {
+      "case_id": "trg-hc-002",
+      "scenario": "high_confidence_miss_risk",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": 12,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.622858,
+      "demand_heading_overlap": 0.190476,
+      "supplemental_heading_score": 8.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-hc-003",
+      "scenario": "high_confidence_miss_risk",
+      "expected_trigger": true,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": 17,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.588608,
+      "demand_heading_overlap": 0.041667,
+      "supplemental_heading_score": 2.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-hc-004",
+      "scenario": "high_confidence_miss_risk",
+      "expected_trigger": true,
+      "actual_recoverable": true,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": 1,
+      "vector_top1_score": 0.687136,
+      "demand_heading_overlap": 0.153846,
+      "supplemental_heading_score": 8.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-dn-001",
+      "scenario": "heading_vector_divergence_no_trigger",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": 1,
+      "raw_relevant_rank": 1,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.684034,
+      "demand_heading_overlap": 0.166667,
+      "supplemental_heading_score": 8.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-dn-002",
+      "scenario": "heading_vector_divergence_no_trigger",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": 11,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.618908,
+      "demand_heading_overlap": 0.111111,
+      "supplemental_heading_score": 4.0,
+      "primary_gate_reject": true
+    },
+    {
+      "case_id": "trg-dn-003",
+      "scenario": "heading_vector_divergence_no_trigger",
+      "expected_trigger": false,
+      "actual_recoverable": true,
+      "primary_relevant_rank": null,
+      "raw_relevant_rank": null,
+      "supplemental_relevant_rank": 1,
+      "vector_top1_score": 0.687893,
+      "demand_heading_overlap": 0.15,
+      "supplemental_heading_score": 6.0,
+      "primary_gate_reject": false
+    },
+    {
+      "case_id": "trg-dn-004",
+      "scenario": "heading_vector_divergence_no_trigger",
+      "expected_trigger": false,
+      "actual_recoverable": false,
+      "primary_relevant_rank": 4,
+      "raw_relevant_rank": 5,
+      "supplemental_relevant_rank": null,
+      "vector_top1_score": 0.570315,
+      "demand_heading_overlap": 0.136364,
+      "supplemental_heading_score": 6.0,
+      "primary_gate_reject": false
+    }
+  ]
+}

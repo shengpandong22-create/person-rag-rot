@@ -488,7 +488,9 @@ def _supplemental_recall_metrics(
 
 def _freeze_manifest_sha256(dataset_path: Path) -> str | None:
     name = dataset_path.name.lower()
-    if name == "retrieval_quota4_acceptance_v1.jsonl":
+    if name == "retrieval_trigger_development_v1.jsonl":
+        manifest = dataset_path.with_name("TRIGGER_DEVELOPMENT_FREEZE.json")
+    elif name == "retrieval_quota4_acceptance_v1.jsonl":
         manifest = dataset_path.with_name("QUOTA4_ACCEPTANCE_FREEZE.json")
     elif name == "retrieval_same_heading_acceptance_v1.jsonl":
         manifest = dataset_path.with_name("SAME_HEADING_ACCEPTANCE_FREEZE.json")

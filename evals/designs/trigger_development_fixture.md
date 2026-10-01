@@ -55,6 +55,6 @@
   evals\datasets\retrieval_trigger_development_v1.jsonl
 ```
 
-首次 baseline characterization 已尝试，但当时本地 PostgreSQL 拒绝连接，未生成报告。
-数据库恢复后应先运行固定的 `vector-only + heading-shadow + consumption=none`，再开始
-任何触发规则实验。
+固定的 `vector-only + heading-shadow + consumption=none` baseline 已完成。结果与
+预先声明简单规则的外部检验见 `evals/reports/trigger_development_baseline.md`；冻结数据
+未因行为与设计意图不一致而修改。

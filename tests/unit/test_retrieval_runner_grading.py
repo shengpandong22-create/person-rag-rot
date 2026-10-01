@@ -92,6 +92,12 @@ def test_same_heading_acceptance_report_records_its_own_freeze_manifest() -> Non
     assert _freeze_manifest_sha256(dataset) is not None
 
 
+def test_trigger_development_report_records_its_own_freeze_manifest() -> None:
+    dataset = Path("evals/datasets/retrieval_trigger_development_v1.jsonl")
+
+    assert _freeze_manifest_sha256(dataset) is not None
+
+
 def test_heading_matches_is_a_contiguous_subsequence() -> None:
     actual = ("第 3 课", "检索", "证据门禁", "实现")
 
