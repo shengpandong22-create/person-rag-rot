@@ -58,6 +58,7 @@ class SupplementalConsumptionStrategy(StrEnum):
     NONE = "none"
     FIXED = "fixed"
     EVIDENCE_GATED = "evidence-gated"
+    RETRIEVAL_DISAGREEMENT = "retrieval-disagreement"
 
 
 @dataclass(frozen=True, slots=True)
@@ -204,6 +205,7 @@ async def run_retrieval_eval(
                 strategy=supplemental_consumption,
                 supplemental_k=supplemental_k,
                 primary_evidence_sufficient=primary_assessment.production_sufficient,
+                vector_candidates=list(diagnostics.vector_candidates),
             )
             if consumed_supplemental:
                 supplemental_trigger_count += 1
@@ -508,11 +510,22 @@ def _select_supplemental_candidates(
     strategy: SupplementalConsumptionStrategy,
     supplemental_k: int,
     primary_evidence_sufficient: bool,
+    vector_candidates: list[RetrievedChunk] | None = None,
 ) -> list[RetrievedChunk]:
     if supplemental_k <= 0 or strategy is SupplementalConsumptionStrategy.NONE:
         return []
     if strategy is SupplementalConsumptionStrategy.EVIDENCE_GATED and primary_evidence_sufficient:
         return []
+    if strategy is SupplementalConsumptionStrategy.RETRIEVAL_DISAGREEMENT:
+        if not candidates or (candidates[0].heading_score or 0.0) < 2.0:
+            return []
+        ranked = vector_candidates or []
+        if len(ranked) < 2:
+            return []
+        first_score = ranked[0].vector_score or 0.0
+        second_score = ranked[1].vector_score or 0.0
+        if first_score - second_score > 0.04:
+            return []
     return candidates[:supplemental_k]
 
 

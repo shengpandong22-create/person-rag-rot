@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 from uuid import uuid4
 
@@ -78,6 +79,36 @@ def test_supplemental_consumption_is_fixed_or_evidence_gated() -> None:
     assert fixed == candidates[:1]
     assert skipped == []
     assert triggered == candidates[:1]
+
+
+def test_retrieval_disagreement_consumes_only_strong_heading_with_small_vector_gap() -> None:
+    candidates = [replace(_chunk(), heading_score=2.0)]
+    uncertain_vector = [
+        replace(_chunk(), vector_score=0.60),
+        replace(_chunk(), vector_score=0.57),
+    ]
+    confident_vector = [
+        replace(_chunk(), vector_score=0.70),
+        replace(_chunk(), vector_score=0.60),
+    ]
+
+    triggered = _select_supplemental_candidates(
+        candidates,
+        strategy=SupplementalConsumptionStrategy.RETRIEVAL_DISAGREEMENT,
+        supplemental_k=7,
+        primary_evidence_sufficient=True,
+        vector_candidates=uncertain_vector,
+    )
+    skipped = _select_supplemental_candidates(
+        candidates,
+        strategy=SupplementalConsumptionStrategy.RETRIEVAL_DISAGREEMENT,
+        supplemental_k=7,
+        primary_evidence_sufficient=False,
+        vector_candidates=confident_vector,
+    )
+
+    assert triggered == candidates
+    assert skipped == []
 
 
 def test_quota4_acceptance_report_records_its_own_freeze_manifest() -> None:

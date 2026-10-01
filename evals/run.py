@@ -87,7 +87,7 @@ def main() -> None:
         type=SupplementalConsumptionStrategy,
         choices=tuple(SupplementalConsumptionStrategy),
         default=SupplementalConsumptionStrategy.NONE,
-        help="Eval-only consumer for heading-shadow candidates.",
+        help="Eval-only consumer for monotonic supplemental candidates.",
     )
     parser.add_argument(
         "--supplemental-k",
