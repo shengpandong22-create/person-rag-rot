@@ -35,3 +35,7 @@ text has no overlap with the other `retrieval_*.jsonl` datasets.
 3. Report per-feature positive retention and negative rejection separately.
 4. Do not change production defaults or run regression unless this fixture shows a useful, explained
    improvement without unacceptable positive rejection.
+
+The formal qualification metric is `labeled_evidence_binding_success_rate`: an accepted positive
+counts only when the deterministic binding reports a chunk id resolved from its human
+`relevant_sources`. Answerability accuracy remains diagnostic and cannot qualify a candidate alone.

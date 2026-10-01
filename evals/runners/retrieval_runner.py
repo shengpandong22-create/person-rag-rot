@@ -140,6 +140,9 @@ async def run_retrieval_eval(
     gate_promotion_count = 0
     gate_demotion_count = 0
     consumed_relevant_count = 0
+    labeled_positive_count = 0
+    labeled_evidence_accept_count = 0
+    labeled_binding_success_count = 0
     total_retrieval_ms = 0.0
     try:
         knowledge_base_fingerprint = await _knowledge_base_fingerprint(sessions, knowledge_base_id)
@@ -235,6 +238,17 @@ async def run_retrieval_eval(
                 or ground_truth_mode == GROUND_TRUTH_RESOLVED
             )
             ground_truth_ids = set(ground_truth)
+            bound_ground_truth_ids = {
+                chunk_id
+                for chunk_id in demand_binding.matched_chunk_ids
+                if UUID(chunk_id) in ground_truth_ids
+            }
+            if formally_scorable and case.answerability is not Answerability.NONE:
+                labeled_positive_count += 1
+                if first_rank is not None and evidence_sufficient:
+                    labeled_evidence_accept_count += 1
+                if bound_ground_truth_ids and evidence_sufficient:
+                    labeled_binding_success_count += 1
             relevant_filter_reasons = [
                 item.reason.value
                 for item in diagnostics.filtered_out
@@ -325,6 +339,10 @@ async def run_retrieval_eval(
                     "evidence_decision": "accept" if evidence_sufficient else "reject",
                     "evidence_assessment": asdict(evidence_assessment),
                     "demand_binding": asdict(demand_binding),
+                    "bound_ground_truth_chunk_ids": sorted(bound_ground_truth_ids),
+                    "labeled_evidence_binding_success": bool(
+                        bound_ground_truth_ids and evidence_sufficient
+                    ),
                     "failure_category": failure_category,
                     "retrieval_stages": {
                         "vector_candidate_ids": [
@@ -418,6 +436,16 @@ async def run_retrieval_eval(
                 consumed_relevant_count / supplemental_trigger_count, 4
             )
             if supplemental_trigger_count
+            else 0.0,
+            "labeled_evidence_acceptance_rate": round(
+                labeled_evidence_accept_count / labeled_positive_count, 4
+            )
+            if labeled_positive_count
+            else 0.0,
+            "labeled_evidence_binding_success_rate": round(
+                labeled_binding_success_count / labeled_positive_count, 4
+            )
+            if labeled_positive_count
             else 0.0,
         }
     )
