@@ -1,0 +1,35 @@
+{
+  "dataset": "evals\\datasets\\retrieval_demand_binding_development_v1.jsonl",
+  "sha256": "c0f501397764d9c42d006d7eec6ba6dbcd36248fd01219f1072b2a0e3dcff3df",
+  "case_count": 15,
+  "case_ids": [
+    "db-ex-001",
+    "db-ex-002",
+    "db-ex-003",
+    "db-un-001",
+    "db-un-002",
+    "db-un-003",
+    "db-ra-001",
+    "db-ra-002",
+    "db-ra-003",
+    "db-ta-001",
+    "db-ta-002",
+    "db-ta-003",
+    "db-cr-001",
+    "db-cr-002",
+    "db-cr-003"
+  ],
+  "feature_counts": {
+    "cross_sentence": 3,
+    "exact_value": 3,
+    "range_value": 3,
+    "table_value": 3,
+    "unit_alias": 3
+  },
+  "polarity_counts": {
+    "negative": 5,
+    "positive": 10
+  },
+  "frozen_at": "2026-10-01T06:11:33.472085+00:00",
+  "note": "Frozen independent Development fixture for eval-only demand-binding design."
+}
