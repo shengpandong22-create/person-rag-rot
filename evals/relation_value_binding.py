@@ -50,7 +50,10 @@ def bind_relation_value(
         values = tuple(dict.fromkeys(_NUMBER.findall(span)))
         if not values or not _unit_matches(span, demand.canonical_unit):
             continue
-        covered = tuple(term for term in relation_terms if term.casefold() in span.casefold())
+        if not _relation_shape_matches(span, demand.relation, values):
+            continue
+        searchable_span = _normalized_search_text(span)
+        covered = tuple(term for term in relation_terms if term.casefold() in searchable_span)
         minimum = 1 if len(relation_terms) <= 2 else 2
         if len(covered) < minimum:
             continue
@@ -61,7 +64,14 @@ def bind_relation_value(
 def _spans(content: str, span_type: str) -> tuple[str, ...]:
     lines = tuple(line.strip() for line in content.splitlines() if line.strip())
     if span_type == "table_row":
-        return tuple(line for line in lines if line.startswith("|") and line.endswith("|"))
+        table_rows = tuple(line for line in lines if line.startswith("|") and line.endswith("|"))
+        if table_rows:
+            return table_rows
+        return tuple(
+            " ".join(lines[index : index + 6])
+            for index in range(len(lines))
+            if any("=" in line for line in lines[index : index + 6])
+        )
     if span_type == "code_statement":
         return tuple(line for line in lines if "=" in line or "return " in line)
     if span_type == "sentence_span":
@@ -71,6 +81,41 @@ def _spans(content: str, span_type: str) -> tuple[str, ...]:
             if item.strip()
         )
     return tuple(" ".join(lines[index : index + 3]) for index in range(len(lines)))
+
+
+def _normalized_search_text(span: str) -> str:
+    original = span.casefold()
+    normalized = f"{original} {original.replace('_', ' ')}"
+    aliases = {
+        "low confidence": " 低置信 ",
+        "confidence weight": " 画像更新权重 ",
+    }
+    for source, target in aliases.items():
+        if source in normalized:
+            normalized += target
+    if re.search(r"\bmin\s*\(", normalized):
+        normalized += " 上限 "
+    if re.search(r"\bmax\s*\(", normalized):
+        normalized += " 下限 "
+    return normalized
+
+
+def _relation_shape_matches(span: str, relation: str, values: tuple[str, ...]) -> bool:
+    if any(marker in relation for marker in ("上限", "上界")):
+        return bool(re.search(r"(?:\bmin\s*\(|<=|至多|不超过|上限)", span, re.IGNORECASE))
+    if any(marker in relation for marker in ("下限", "下界")):
+        return bool(re.search(r"(?:\bmax\s*\(|>=|至少|不低于|下限)", span, re.IGNORECASE))
+    if not any(marker in relation for marker in ("边界", "范围")):
+        return True
+    if len(values) < 2:
+        return False
+    return bool(
+        re.search(r"(?:到|至|~|～|—|<=|>=)", span)
+        or re.search(
+            r"[\[(（]\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*[\])）]",
+            span,
+        )
+    )
 
 
 def _terms(text: str) -> tuple[str, ...]:
@@ -168,9 +213,17 @@ async def evaluate(dataset: Path, retrieval_report: Path) -> dict[str, Any]:
         "retrieval_report": str(retrieval_report),
         "metrics": {
             "binding_accuracy": round(
-                sum(item["predicted_binding"] == item["expected_binding"] for item in results)
+                sum(
+                    item["correct_labeled_binding"]
+                    if item["expected_binding"]
+                    else not item["predicted_binding"]
+                    for item in results
+                )
                 / len(results),
                 4,
+            ),
+            "positive_binding_detection": round(
+                sum(item["predicted_binding"] for item in positives) / len(positives), 4
             ),
             "labeled_binding_recall": round(
                 sum(item["correct_labeled_binding"] for item in positives) / len(positives), 4
