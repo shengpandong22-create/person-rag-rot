@@ -1,0 +1,409 @@
+{
+  "dataset": "evals\\datasets\\retrieval_relation_value_development_v1.jsonl",
+  "retrieval_report": "evals\\reports\\relation_value_blind_baseline\\retrieval_eval.json",
+  "metrics": {
+    "binding_accuracy": 0.75,
+    "labeled_binding_recall": 0.625,
+    "negative_rejection": 1.0
+  },
+  "cases": [
+    {
+      "id": "rv-s-001",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "0a44b8b5-8e7f-472b-a486-341ab4203306",
+          "values": [
+            "-1",
+            "1"
+          ],
+          "span": "余弦相似度范围 [-1, 1]，全文 `ts_rank_cd` 没有固定上限——一个是归一化的几何距离，一个是自由增长的匹配得分",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "余弦",
+            "弦相",
+            "相似",
+            "似度"
+          ]
+        },
+        {
+          "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+          "values": [
+            "-1",
+            "1"
+          ],
+          "span": "**回答：** 核心问题是余弦相似度 [-1, 1] 和 ts_rank 无上限属于不同量纲，直接相加等于默认\"1 单位向量分 = 1 单位全文分\"但这个等式不成立",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "余弦",
+            "弦相",
+            "相似",
+            "似度"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-s-002",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "d829d039-7b13-4077-95b9-18e387c5d67b",
+          "values": [
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "span": "| 价值 | 为什么 | | -------------- | ------------------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，RRF 只看排名 | | **双路有加成** | 两路都召回 → 两个排名都参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献，不会被粗暴截断 |",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "排名",
+            "rrf",
+            "贡献"
+          ]
+        },
+        {
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "values": [
+            "1",
+            "60",
+            "3",
+            "1/61",
+            "1/63",
+            "0.0323",
+            "2",
+            "1/62",
+            "0.0320",
+            "0.0164",
+            "0.0161"
+          ],
+          "span": "假设搜\"RRF 融合\"，两路返回： ``` 向量召回排名 全文召回排名 A（RRF段落） 第1名 第3名 B（pgvector） 第2名 未召回（∞） C（全文检索） 未召回（∞） 第1名 D（混合检索） 第3名 第2名 ``` 计算： ``` A: 1/(60+1) + 1/(60+3) = 1/61 + 1/63 = 0.0323 ← 两路都有排名，最高 D: 1/(60+3) + 1/(60+2) = 1/63 + 1/62 = 0.0320 C: 1/(60+1) = 1/61 = 0.0164 ← 只有全文路 B: 1/(60+2) = 1/62 = 0.0161 ← 只有向量路 ``` 最终排序：**A > D > C > B** A 排第一因为两路都召回了——这正是 RRF 的核心价值",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "排名",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+          "values": [
+            "1",
+            "60"
+          ],
+          "span": "RRF 不看分数只看排名，公式 `score = Σ 1/(k + rank)`（k=60）",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "排名",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+          "values": [
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "span": "三条核心价值： | 价值 | 为什么 | | -------------- | ---------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，只看排名 | | **双路有加成** | 两路都召回 → 两个排名参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献 | ---",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "排名",
+            "贡献"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-s-003",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rv-t-001",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rv-t-002",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rv-t-003",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rv-c-001",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "60"
+          ],
+          "span": "def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60):",
+          "span_type": "code_statement",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "0.0",
+            "1.0"
+          ],
+          "span": "scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank)",
+          "span_type": "code_statement",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-c-002",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rv-c-003",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rv-b-001",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "values": [
+            "0.40",
+            "16/20",
+            "0.80"
+          ],
+          "span": "``` 当前 RAG 掌握度 = 0.40 本次得分 = 16/20 = 0.80",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "得分",
+            "掌握"
+          ]
+        },
+        {
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "values": [
+            "0.40",
+            "16/20",
+            "0.80",
+            "1.0"
+          ],
+          "span": "当前 RAG 掌握度 = 0.40 本次得分 = 16/20 = 0.80 confidence_weight = 1.0（可信 final）",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "得分",
+            "掌握"
+          ]
+        },
+        {
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18",
+            "0.40",
+            "0.80"
+          ],
+          "span": "difficulty = \"medium\" → factor = 1.0 learning_rate = min(0.35, 0.18 × 1.0 × 1.0) = 0.18 新掌握度 = 0.40 + (0.80 - 0.40) × 0.18",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "values": [
+            "0.35",
+            "0.18",
+            "1.0",
+            "0.40",
+            "0.80",
+            "0.072"
+          ],
+          "span": "learning_rate = min(0.35, 0.18 × 1.0 × 1.0) = 0.18 新掌握度 = 0.40 + (0.80 - 0.40) × 0.18 = 0.40 + 0.072",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "values": [
+            "0.40",
+            "0.80",
+            "0.18",
+            "0.072",
+            "0.472"
+          ],
+          "span": "新掌握度 = 0.40 + (0.80 - 0.40) × 0.18 = 0.40 + 0.072 = 0.472",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "span": "``` 新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor)",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "得分",
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "span": "新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor) ```",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "得分",
+            "新掌",
+            "掌握"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-b-002",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+          "values": [
+            "1",
+            "2"
+          ],
+          "span": "``` 第 1 次可信高分 → verification_streak = 1 → 任务保留，优先级降低 第 2 次连续可信高分 → verification_streak = 2 → 任务完成 ✅",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "次可",
+            "可信",
+            "信高",
+            "高分",
+            "verification_streak"
+          ]
+        },
+        {
+          "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+          "values": [
+            "1",
+            "2"
+          ],
+          "span": "第 1 次可信高分 → verification_streak = 1 → 任务保留，优先级降低 第 2 次连续可信高分 → verification_streak = 2 → 任务完成 ✅ 中间低分或不可信结果 → 连续计数重置 → 回到起点",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "次可",
+            "可信",
+            "信高",
+            "高分",
+            "verification_streak"
+          ]
+        },
+        {
+          "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+          "values": [
+            "2"
+          ],
+          "span": "第 2 次连续可信高分 → verification_streak = 2 → 任务完成 ✅ 中间低分或不可信结果 → 连续计数重置 → 回到起点 ```",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "可信",
+            "信高",
+            "高分",
+            "verification_streak"
+          ]
+        },
+        {
+          "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+          "values": [
+            "2"
+          ],
+          "span": "insufficient_evidence → 只有一次可信验证，证据不足 verified            → 多次可信证据，表现中等 mastered            → ≥2 次可信验证，平均分达到阈值",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "次可",
+            "可信"
+          ]
+        },
+        {
+          "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+          "values": [
+            "2"
+          ],
+          "span": "verified            → 多次可信证据，表现中等 mastered            → ≥2 次可信验证，平均分达到阈值 weak                → 多次可信验证，但平均表现弱",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "次可",
+            "可信"
+          ]
+        },
+        {
+          "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+          "values": [
+            "2"
+          ],
+          "span": "mastered            → ≥2 次可信验证，平均分达到阈值 weak                → 多次可信验证，但平均表现弱 ```",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "次可",
+            "可信"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-b-003",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    }
+  ]
+}
