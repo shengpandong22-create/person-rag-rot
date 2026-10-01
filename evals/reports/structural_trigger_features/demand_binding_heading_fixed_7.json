@@ -1,0 +1,883 @@
+{
+  "source_report": "evals\\reports\\demand_binding_heading_fixed_7\\retrieval_eval.json",
+  "dataset": "evals\\datasets\\retrieval_demand_binding_development_v1.jsonl",
+  "dataset_sha256": "c0f501397764d9c42d006d7eec6ba6dbcd36248fd01219f1072b2a0e3dcff3df",
+  "case_count": 15,
+  "cases": [
+    {
+      "id": "db-ex-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "rrf",
+          "公式",
+          "式里",
+          "里的",
+          "的平",
+          "平滑",
+          "滑常",
+          "常数",
+          "精确",
+          "确是",
+          "是多"
+        ],
+        "primary_covered_terms": [
+          "rrf",
+          "公式"
+        ],
+        "primary_missing_terms": [
+          "式里",
+          "里的",
+          "的平",
+          "平滑",
+          "滑常",
+          "常数",
+          "精确",
+          "确是",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "公式"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1818
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1818,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "db-ex-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 1,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "低置",
+          "置信",
+          "信度",
+          "度触",
+          "触发",
+          "发复",
+          "复核",
+          "的精",
+          "精确",
+          "确阈",
+          "阈值",
+          "值是",
+          "是多"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "低置",
+          "置信",
+          "信度",
+          "度触",
+          "触发",
+          "发复",
+          "复核",
+          "的精",
+          "精确",
+          "确阈",
+          "阈值",
+          "值是",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "复核"
+        ],
+        "supplemental_new_terms": [
+          "复核"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.0769
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.0769
+      }
+    },
+    {
+      "id": "db-ex-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "reviewer",
+          "的生",
+          "生产",
+          "产可",
+          "可用",
+          "用性",
+          "sla",
+          "否精",
+          "精确",
+          "确承",
+          "承诺",
+          "诺为"
+        ],
+        "primary_covered_terms": [
+          "reviewer",
+          "可用"
+        ],
+        "primary_missing_terms": [
+          "的生",
+          "生产",
+          "产可",
+          "用性",
+          "sla",
+          "否精",
+          "精确",
+          "确承",
+          "承诺",
+          "诺为"
+        ],
+        "supplemental_covered_terms": [],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1667
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1667,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "db-un-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "复习",
+          "习任",
+          "任务",
+          "务要",
+          "要连",
+          "连续",
+          "续几",
+          "回可",
+          "可信",
+          "信高",
+          "高分",
+          "分才",
+          "才完",
+          "完成"
+        ],
+        "primary_covered_terms": [
+          "复习",
+          "习任",
+          "任务",
+          "可信"
+        ],
+        "primary_missing_terms": [
+          "务要",
+          "要连",
+          "连续",
+          "续几",
+          "回可",
+          "信高",
+          "高分",
+          "分才",
+          "才完",
+          "完成"
+        ],
+        "supplemental_covered_terms": [
+          "复习",
+          "习任",
+          "任务",
+          "可信",
+          "高分"
+        ],
+        "supplemental_new_terms": [
+          "高分"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.2857
+        ],
+        "supplemental_clause_gain": [
+          0.07139999999999996
+        ],
+        "primary_heading_coverage": 0.2857,
+        "supplemental_novelty_ratio": 0.0714
+      }
+    },
+    {
+      "id": "db-un-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 7,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "一次",
+          "次低",
+          "低置",
+          "置信",
+          "final",
+          "的画",
+          "画像",
+          "像影",
+          "影响",
+          "响会",
+          "会缩",
+          "缩减",
+          "到几",
+          "几成"
+        ],
+        "primary_covered_terms": [
+          "画像"
+        ],
+        "primary_missing_terms": [
+          "一次",
+          "次低",
+          "低置",
+          "置信",
+          "final",
+          "的画",
+          "像影",
+          "影响",
+          "响会",
+          "会缩",
+          "缩减",
+          "到几",
+          "几成"
+        ],
+        "supplemental_covered_terms": [
+          "一次",
+          "画像"
+        ],
+        "supplemental_new_terms": [
+          "一次"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0714
+        ],
+        "supplemental_clause_gain": [
+          0.0715
+        ],
+        "primary_heading_coverage": 0.0714,
+        "supplemental_novelty_ratio": 0.0714
+      }
+    },
+    {
+      "id": "db-un-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "checkpoint",
+          "认会",
+          "会保",
+          "保存",
+          "存几",
+          "几个",
+          "个自",
+          "然日"
+        ],
+        "primary_covered_terms": [
+          "checkpoint"
+        ],
+        "primary_missing_terms": [
+          "认会",
+          "会保",
+          "保存",
+          "存几",
+          "几个",
+          "个自",
+          "然日"
+        ],
+        "supplemental_covered_terms": [
+          "checkpoint"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.125
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.125,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "db-ra-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "余弦",
+          "弦相",
+          "相似",
+          "似度",
+          "度的",
+          "的完",
+          "完整",
+          "取值",
+          "值区",
+          "区间",
+          "间是",
+          "是什"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "余弦",
+          "弦相",
+          "相似",
+          "似度",
+          "度的",
+          "的完",
+          "完整",
+          "取值",
+          "值区",
+          "区间",
+          "间是",
+          "是什"
+        ],
+        "supplemental_covered_terms": [
+          "的完",
+          "完整",
+          "是什"
+        ],
+        "supplemental_new_terms": [
+          "的完",
+          "完整",
+          "是什"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.25
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.25
+      }
+    },
+    {
+      "id": "db-ra-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 1,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "复核",
+          "核路",
+          "路由",
+          "由中",
+          "中带",
+          "带错",
+          "错误",
+          "断言",
+          "言的",
+          "的边",
+          "边缘",
+          "缘总",
+          "总分",
+          "分区",
+          "间是",
+          "是多"
+        ],
+        "primary_covered_terms": [
+          "总分"
+        ],
+        "primary_missing_terms": [
+          "复核",
+          "核路",
+          "路由",
+          "由中",
+          "中带",
+          "带错",
+          "错误",
+          "断言",
+          "言的",
+          "的边",
+          "边缘",
+          "缘总",
+          "分区",
+          "间是",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "复核",
+          "核路",
+          "路由",
+          "总分"
+        ],
+        "supplemental_new_terms": [
+          "复核",
+          "核路",
+          "路由"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0625
+        ],
+        "supplemental_clause_gain": [
+          0.1875
+        ],
+        "primary_heading_coverage": 0.0625,
+        "supplemental_novelty_ratio": 0.1875
+      }
+    },
+    {
+      "id": "db-ra-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "生产",
+          "rag",
+          "延迟",
+          "迟目",
+          "目标",
+          "标承",
+          "承诺",
+          "诺在",
+          "在哪",
+          "个毫",
+          "毫秒",
+          "秒区",
+          "区间"
+        ],
+        "primary_covered_terms": [
+          "rag"
+        ],
+        "primary_missing_terms": [
+          "生产",
+          "延迟",
+          "迟目",
+          "目标",
+          "标承",
+          "承诺",
+          "诺在",
+          "在哪",
+          "个毫",
+          "毫秒",
+          "秒区",
+          "区间"
+        ],
+        "supplemental_covered_terms": [
+          "rag"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0769
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.0769,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "db-ta-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "低置",
+          "置信",
+          "final",
+          "在画",
+          "画像",
+          "像更",
+          "更新",
+          "新表",
+          "表里",
+          "里的",
+          "confidence_weight",
+          "是多"
+        ],
+        "primary_covered_terms": [
+          "画像",
+          "更新"
+        ],
+        "primary_missing_terms": [
+          "低置",
+          "置信",
+          "final",
+          "在画",
+          "像更",
+          "新表",
+          "表里",
+          "里的",
+          "confidence_weight",
+          "是多"
+        ],
+        "supplemental_covered_terms": [
+          "画像",
+          "更新"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1667
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1667,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "db-ta-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 2,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "四维",
+          "维分",
+          "分差",
+          "差达",
+          "达到",
+          "到多",
+          "会进",
+          "进入",
+          "入复",
+          "复核"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "四维",
+          "维分",
+          "分差",
+          "差达",
+          "达到",
+          "到多",
+          "会进",
+          "进入",
+          "入复",
+          "复核"
+        ],
+        "supplemental_covered_terms": [
+          "四维",
+          "进入",
+          "复核"
+        ],
+        "supplemental_new_terms": [
+          "四维",
+          "进入",
+          "复核"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.3
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.3
+      }
+    },
+    {
+      "id": "db-ta-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "三种",
+          "种评",
+          "评分",
+          "分状",
+          "状态",
+          "态对",
+          "对画",
+          "像影",
+          "影响",
+          "响表",
+          "表是",
+          "否给",
+          "给出",
+          "天保",
+          "保留",
+          "留期"
+        ],
+        "primary_covered_terms": [
+          "三种",
+          "种评",
+          "评分",
+          "分状",
+          "状态",
+          "态对",
+          "对画",
+          "影响"
+        ],
+        "primary_missing_terms": [
+          "像影",
+          "响表",
+          "表是",
+          "否给",
+          "给出",
+          "天保",
+          "保留",
+          "留期"
+        ],
+        "supplemental_covered_terms": [
+          "三种",
+          "种评",
+          "评分",
+          "分状",
+          "状态"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.5
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.5,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "db-cr-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "示例",
+          "例中",
+          "中当",
+          "前掌",
+          "掌握",
+          "握度",
+          "经一",
+          "一次",
+          "得分",
+          "分后",
+          "后变",
+          "变成",
+          "成多"
+        ],
+        "primary_covered_terms": [
+          "分后"
+        ],
+        "primary_missing_terms": [
+          "示例",
+          "例中",
+          "中当",
+          "前掌",
+          "掌握",
+          "握度",
+          "经一",
+          "一次",
+          "得分",
+          "后变",
+          "变成",
+          "成多"
+        ],
+        "supplemental_covered_terms": [
+          "示例",
+          "变成"
+        ],
+        "supplemental_new_terms": [
+          "示例",
+          "变成"
+        ],
+        "same_document_new_heading": false,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0769
+        ],
+        "supplemental_clause_gain": [
+          0.0769
+        ],
+        "primary_heading_coverage": 0.0769,
+        "supplemental_novelty_ratio": 0.1538
+      }
+    },
+    {
+      "id": "db-cr-002",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "可信",
+          "final",
+          "的学",
+          "学习",
+          "习率",
+          "率示",
+          "示例",
+          "例先",
+          "先取",
+          "个上",
+          "上限",
+          "再算",
+          "算出",
+          "出哪",
+          "个实",
+          "实际",
+          "际值"
+        ],
+        "primary_covered_terms": [
+          "可信"
+        ],
+        "primary_missing_terms": [
+          "final",
+          "的学",
+          "学习",
+          "习率",
+          "率示",
+          "示例",
+          "例先",
+          "先取",
+          "个上",
+          "上限",
+          "再算",
+          "算出",
+          "出哪",
+          "个实",
+          "实际",
+          "际值"
+        ],
+        "supplemental_covered_terms": [
+          "可信",
+          "示例"
+        ],
+        "supplemental_new_terms": [
+          "示例"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0909,
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.0909,
+          0.0
+        ],
+        "primary_heading_coverage": 0.0588,
+        "supplemental_novelty_ratio": 0.0588
+      }
+    },
+    {
+      "id": "db-cr-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "新示",
+          "示例",
+          "例是",
+          "证明",
+          "明了",
+          "了线",
+          "线上",
+          "上平",
+          "平均",
+          "均提",
+          "个百",
+          "百分",
+          "分点"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "新示",
+          "示例",
+          "例是",
+          "证明",
+          "明了",
+          "了线",
+          "线上",
+          "上平",
+          "平均",
+          "均提",
+          "个百",
+          "百分",
+          "分点"
+        ],
+        "supplemental_covered_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "示例"
+        ],
+        "supplemental_new_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "示例"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.25
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.25
+      }
+    }
+  ]
+}

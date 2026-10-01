@@ -1,0 +1,1188 @@
+{
+  "source_report": "evals\\reports\\trigger_development_baseline\\retrieval_eval.json",
+  "dataset": "evals\\datasets\\retrieval_trigger_development_v1.jsonl",
+  "dataset_sha256": "588d1b23c1932df51157f1f786a96c5e70b6cc3769c75be2f463235fe136b0bc",
+  "case_count": 16,
+  "cases": [
+    {
+      "id": "trg-hn-001",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "rrf",
+          "排名",
+          "名融",
+          "融合",
+          "合在",
+          "在生",
+          "生产",
+          "产环",
+          "境每",
+          "每秒",
+          "秒最",
+          "最多",
+          "多可",
+          "以处",
+          "理多",
+          "少次",
+          "次查",
+          "查询"
+        ],
+        "primary_covered_terms": [
+          "rrf",
+          "融合"
+        ],
+        "primary_missing_terms": [
+          "排名",
+          "名融",
+          "合在",
+          "在生",
+          "生产",
+          "产环",
+          "境每",
+          "每秒",
+          "秒最",
+          "最多",
+          "多可",
+          "以处",
+          "理多",
+          "少次",
+          "次查",
+          "查询"
+        ],
+        "supplemental_covered_terms": [
+          "rrf",
+          "融合"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1111
+        ],
+        "supplemental_clause_gain": [
+          0.0
+        ],
+        "primary_heading_coverage": 0.1111,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "trg-hn-002",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "面试",
+          "checkpoint",
+          "认会",
+          "会在",
+          "在数",
+          "数据",
+          "据库",
+          "库中",
+          "保留",
+          "留多",
+          "少天"
+        ],
+        "primary_covered_terms": [
+          "面试",
+          "checkpoint"
+        ],
+        "primary_missing_terms": [
+          "认会",
+          "会在",
+          "在数",
+          "数据",
+          "据库",
+          "库中",
+          "保留",
+          "留多",
+          "少天"
+        ],
+        "supplemental_covered_terms": [
+          "面试",
+          "checkpoint",
+          "数据",
+          "据库"
+        ],
+        "supplemental_new_terms": [
+          "数据",
+          "据库"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.1818
+        ],
+        "supplemental_clause_gain": [
+          0.1818
+        ],
+        "primary_heading_coverage": 0.1818,
+        "supplemental_novelty_ratio": 0.1818
+      }
+    },
+    {
+      "id": "trg-hn-003",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "画像",
+          "像渐",
+          "渐进",
+          "进更",
+          "更新",
+          "新公",
+          "公式",
+          "中的",
+          "的系",
+          "系数",
+          "数经",
+          "经过",
+          "过了",
+          "了多",
+          "少名",
+          "名用",
+          "用户",
+          "户的",
+          "a",
+          "b",
+          "实验"
+        ],
+        "primary_covered_terms": [
+          "画像",
+          "a"
+        ],
+        "primary_missing_terms": [
+          "像渐",
+          "渐进",
+          "进更",
+          "更新",
+          "新公",
+          "公式",
+          "中的",
+          "的系",
+          "系数",
+          "数经",
+          "经过",
+          "过了",
+          "了多",
+          "少名",
+          "名用",
+          "用户",
+          "户的",
+          "b",
+          "实验"
+        ],
+        "supplemental_covered_terms": [
+          "画像",
+          "渐进",
+          "进更",
+          "更新",
+          "公式",
+          "中的",
+          "a"
+        ],
+        "supplemental_new_terms": [
+          "渐进",
+          "进更",
+          "更新",
+          "公式",
+          "中的"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0952
+        ],
+        "supplemental_clause_gain": [
+          0.23809999999999998
+        ],
+        "primary_heading_coverage": 0.0952,
+        "supplemental_novelty_ratio": 0.2381
+      }
+    },
+    {
+      "id": "trg-hn-004",
+      "answerability": "none",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "引用",
+          "用白",
+          "白名",
+          "名单",
+          "单是",
+          "否已",
+          "经把",
+          "把事",
+          "事实",
+          "实错",
+          "错误",
+          "误率",
+          "率稳",
+          "定降",
+          "降低",
+          "低到",
+          "以下"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "引用",
+          "用白",
+          "白名",
+          "名单",
+          "单是",
+          "否已",
+          "经把",
+          "把事",
+          "事实",
+          "实错",
+          "错误",
+          "误率",
+          "率稳",
+          "定降",
+          "降低",
+          "低到",
+          "以下"
+        ],
+        "supplemental_covered_terms": [
+          "引用",
+          "用白",
+          "白名",
+          "名单"
+        ],
+        "supplemental_new_terms": [
+          "引用",
+          "用白",
+          "白名",
+          "名单"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.2353
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.2353
+      }
+    },
+    {
+      "id": "trg-lp-001",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "两套",
+          "套搜",
+          "搜索",
+          "索机",
+          "机制",
+          "制给",
+          "给出",
+          "的数",
+          "数值",
+          "值单",
+          "单位",
+          "位无",
+          "无法",
+          "法互",
+          "换时",
+          "统怎",
+          "怎样",
+          "样把",
+          "把它",
+          "它们",
+          "们汇",
+          "成一",
+          "一个",
+          "个次",
+          "次序"
+        ],
+        "primary_covered_terms": [],
+        "primary_missing_terms": [
+          "两套",
+          "套搜",
+          "搜索",
+          "索机",
+          "机制",
+          "制给",
+          "给出",
+          "的数",
+          "数值",
+          "值单",
+          "单位",
+          "位无",
+          "无法",
+          "法互",
+          "换时",
+          "统怎",
+          "怎样",
+          "样把",
+          "把它",
+          "它们",
+          "们汇",
+          "成一",
+          "一个",
+          "个次",
+          "次序"
+        ],
+        "supplemental_covered_terms": [],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": false,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0,
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0
+        ],
+        "primary_heading_coverage": 0.0,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "trg-lp-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "浏览",
+          "览器",
+          "器意",
+          "意外",
+          "外关",
+          "关掉",
+          "掉后",
+          "怎样",
+          "样接",
+          "接着",
+          "着完",
+          "完成",
+          "成上",
+          "上次",
+          "还没",
+          "没结",
+          "结束",
+          "束的",
+          "的模",
+          "模拟",
+          "拟面"
+        ],
+        "primary_covered_terms": [
+          "模拟",
+          "拟面"
+        ],
+        "primary_missing_terms": [
+          "浏览",
+          "览器",
+          "器意",
+          "意外",
+          "外关",
+          "关掉",
+          "掉后",
+          "怎样",
+          "样接",
+          "接着",
+          "着完",
+          "完成",
+          "成上",
+          "上次",
+          "还没",
+          "没结",
+          "结束",
+          "束的",
+          "的模"
+        ],
+        "supplemental_covered_terms": [
+          "完成"
+        ],
+        "supplemental_new_terms": [
+          "完成"
+        ],
+        "same_document_new_heading": false,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0,
+          0.1429
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0
+        ],
+        "primary_heading_coverage": 0.0952,
+        "supplemental_novelty_ratio": 0.0476
+      }
+    },
+    {
+      "id": "trg-lp-003",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 18,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "一次",
+          "次表",
+          "表现",
+          "现很",
+          "很好",
+          "为什",
+          "么不",
+          "不能",
+          "能马",
+          "马上",
+          "上抹",
+          "掉此",
+          "此前",
+          "前反",
+          "反复",
+          "复暴",
+          "暴露",
+          "露的",
+          "薄弱",
+          "弱记",
+          "记录"
+        ],
+        "primary_covered_terms": [
+          "一次",
+          "为什",
+          "么不",
+          "记录"
+        ],
+        "primary_missing_terms": [
+          "次表",
+          "表现",
+          "现很",
+          "很好",
+          "不能",
+          "能马",
+          "马上",
+          "上抹",
+          "掉此",
+          "此前",
+          "前反",
+          "反复",
+          "复暴",
+          "暴露",
+          "露的",
+          "薄弱",
+          "弱记"
+        ],
+        "supplemental_covered_terms": [
+          "为什",
+          "么不",
+          "不能",
+          "记录"
+        ],
+        "supplemental_new_terms": [
+          "不能"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.2,
+          0.1875
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0625
+        ],
+        "primary_heading_coverage": 0.1905,
+        "supplemental_novelty_ratio": 0.0476
+      }
+    },
+    {
+      "id": "trg-lp-004",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "负责",
+          "责二",
+          "二次",
+          "次核",
+          "核验",
+          "验的",
+          "的模",
+          "型暂",
+          "暂时",
+          "时失",
+          "失联",
+          "联时",
+          "为什",
+          "么不",
+          "不能",
+          "能把",
+          "把初",
+          "初评",
+          "分直",
+          "直接",
+          "接盖",
+          "盖章"
+        ],
+        "primary_covered_terms": [
+          "不能",
+          "直接"
+        ],
+        "primary_missing_terms": [
+          "负责",
+          "责二",
+          "二次",
+          "次核",
+          "核验",
+          "验的",
+          "的模",
+          "型暂",
+          "暂时",
+          "时失",
+          "失联",
+          "联时",
+          "为什",
+          "么不",
+          "能把",
+          "把初",
+          "初评",
+          "分直",
+          "接盖",
+          "盖章"
+        ],
+        "supplemental_covered_terms": [
+          "为什",
+          "么不",
+          "不能",
+          "直接"
+        ],
+        "supplemental_new_terms": [
+          "为什",
+          "么不"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0,
+          0.2
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.2
+        ],
+        "primary_heading_coverage": 0.0909,
+        "supplemental_novelty_ratio": 0.0909
+      }
+    },
+    {
+      "id": "trg-hc-001",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "料目",
+          "目录",
+          "录整",
+          "整体",
+          "体换",
+          "换了",
+          "顺序",
+          "序以",
+          "以后",
+          "旧证",
+          "证据",
+          "据位",
+          "位置",
+          "置怎",
+          "怎样",
+          "样避",
+          "免全",
+          "全部",
+          "部失",
+          "失效"
+        ],
+        "primary_covered_terms": [
+          "目录",
+          "证据"
+        ],
+        "primary_missing_terms": [
+          "料目",
+          "录整",
+          "整体",
+          "体换",
+          "换了",
+          "顺序",
+          "序以",
+          "以后",
+          "旧证",
+          "据位",
+          "位置",
+          "置怎",
+          "怎样",
+          "样避",
+          "免全",
+          "全部",
+          "部失",
+          "失效"
+        ],
+        "supplemental_covered_terms": [
+          "目录",
+          "证据"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.1111,
+          0.0909
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0
+        ],
+        "primary_heading_coverage": 0.1,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "trg-hc-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "新资",
+          "料上",
+          "上传",
+          "传成",
+          "成功",
+          "功后",
+          "为什",
+          "么不",
+          "不能",
+          "能顺",
+          "顺手",
+          "手提",
+          "高用",
+          "用户",
+          "户的",
+          "的能",
+          "能力",
+          "力分"
+        ],
+        "primary_covered_terms": [
+          "为什",
+          "么不"
+        ],
+        "primary_missing_terms": [
+          "新资",
+          "料上",
+          "上传",
+          "传成",
+          "成功",
+          "功后",
+          "不能",
+          "能顺",
+          "顺手",
+          "手提",
+          "高用",
+          "用户",
+          "户的",
+          "的能",
+          "能力",
+          "力分"
+        ],
+        "supplemental_covered_terms": [
+          "为什",
+          "么不",
+          "不能"
+        ],
+        "supplemental_new_terms": [
+          "不能"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0,
+          0.1667
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.08330000000000001
+        ],
+        "primary_heading_coverage": 0.1111,
+        "supplemental_novelty_ratio": 0.0556
+      }
+    },
+    {
+      "id": "trg-hc-003",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "两种",
+          "种检",
+          "检索",
+          "索器",
+          "器的",
+          "的原",
+          "原始",
+          "分值",
+          "值看",
+          "看起",
+          "起来",
+          "来都",
+          "都很",
+          "很高",
+          "为什",
+          "么仍",
+          "仍不",
+          "不能",
+          "能直",
+          "直接",
+          "相加"
+        ],
+        "primary_covered_terms": [
+          "检索",
+          "为什",
+          "不能",
+          "能直",
+          "直接"
+        ],
+        "primary_missing_terms": [
+          "两种",
+          "种检",
+          "索器",
+          "器的",
+          "的原",
+          "原始",
+          "分值",
+          "值看",
+          "看起",
+          "起来",
+          "来都",
+          "都很",
+          "很高",
+          "么仍",
+          "仍不",
+          "相加"
+        ],
+        "supplemental_covered_terms": [
+          "检索",
+          "为什",
+          "不能",
+          "能直",
+          "直接"
+        ],
+        "supplemental_new_terms": [],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.0714,
+          0.5714
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0
+        ],
+        "primary_heading_coverage": 0.2381,
+        "supplemental_novelty_ratio": 0.0
+      }
+    },
+    {
+      "id": "trg-hc-004",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 1,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "些非",
+          "非最",
+          "最终",
+          "终评",
+          "评分",
+          "分必",
+          "须挡",
+          "挡在",
+          "在画",
+          "画像",
+          "像更",
+          "更新",
+          "新之",
+          "低置",
+          "置信",
+          "信最",
+          "终分",
+          "分又",
+          "又该",
+          "怎样",
+          "样处",
+          "处理"
+        ],
+        "primary_covered_terms": [
+          "评分",
+          "画像"
+        ],
+        "primary_missing_terms": [
+          "些非",
+          "非最",
+          "最终",
+          "终评",
+          "分必",
+          "须挡",
+          "挡在",
+          "在画",
+          "像更",
+          "更新",
+          "新之",
+          "低置",
+          "置信",
+          "信最",
+          "终分",
+          "分又",
+          "又该",
+          "怎样",
+          "样处",
+          "处理"
+        ],
+        "supplemental_covered_terms": [
+          "最终",
+          "评分",
+          "画像",
+          "更新"
+        ],
+        "supplemental_new_terms": [
+          "最终",
+          "更新"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.1538,
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.15389999999999998,
+          0.1
+        ],
+        "primary_heading_coverage": 0.0909,
+        "supplemental_novelty_ratio": 0.0909
+      }
+    },
+    {
+      "id": "trg-dn-001",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "应用",
+          "用层",
+          "层与",
+          "与领",
+          "领域",
+          "域层",
+          "层各",
+          "自负",
+          "负责",
+          "责什",
+          "为什",
+          "么业",
+          "业务",
+          "务规",
+          "规则",
+          "则不",
+          "应放",
+          "放进",
+          "进接",
+          "接口",
+          "口层"
+        ],
+        "primary_covered_terms": [
+          "应用",
+          "用层",
+          "领域",
+          "域层"
+        ],
+        "primary_missing_terms": [
+          "层与",
+          "与领",
+          "层各",
+          "自负",
+          "负责",
+          "责什",
+          "为什",
+          "么业",
+          "业务",
+          "务规",
+          "规则",
+          "则不",
+          "应放",
+          "放进",
+          "进接",
+          "接口",
+          "口层"
+        ],
+        "supplemental_covered_terms": [
+          "应用",
+          "用层",
+          "领域",
+          "域层",
+          "为什"
+        ],
+        "supplemental_new_terms": [
+          "为什"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.4,
+          0.0
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0909
+        ],
+        "primary_heading_coverage": 0.1905,
+        "supplemental_novelty_ratio": 0.0476
+      }
+    },
+    {
+      "id": "trg-dn-002",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": null,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "防止",
+          "止同",
+          "同一",
+          "一份",
+          "份回",
+          "回答",
+          "答被",
+          "重复",
+          "复处",
+          "处理",
+          "理依",
+          "依赖",
+          "赖哪",
+          "哪三",
+          "层保",
+          "保护"
+        ],
+        "primary_covered_terms": [
+          "回答"
+        ],
+        "primary_missing_terms": [
+          "防止",
+          "止同",
+          "同一",
+          "一份",
+          "份回",
+          "答被",
+          "重复",
+          "复处",
+          "处理",
+          "理依",
+          "依赖",
+          "赖哪",
+          "哪三",
+          "层保",
+          "保护"
+        ],
+        "supplemental_covered_terms": [
+          "同一",
+          "回答",
+          "处理"
+        ],
+        "supplemental_new_terms": [
+          "同一",
+          "处理"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 1,
+        "primary_clause_coverage": [
+          0.0625
+        ],
+        "supplemental_clause_gain": [
+          0.125
+        ],
+        "primary_heading_coverage": 0.0625,
+        "supplemental_novelty_ratio": 0.125
+      }
+    },
+    {
+      "id": "trg-dn-003",
+      "answerability": "full",
+      "primary_hit": false,
+      "supplemental_hit_rank": 1,
+      "structural_trigger": true,
+      "features": {
+        "core_terms": [
+          "四维",
+          "维评",
+          "评分",
+          "分包",
+          "包含",
+          "含哪",
+          "维度",
+          "最终",
+          "终总",
+          "总分",
+          "分由",
+          "由哪",
+          "哪一",
+          "一层",
+          "重新",
+          "新计",
+          "计算"
+        ],
+        "primary_covered_terms": [
+          "评分",
+          "最终",
+          "总分"
+        ],
+        "primary_missing_terms": [
+          "四维",
+          "维评",
+          "分包",
+          "包含",
+          "含哪",
+          "维度",
+          "终总",
+          "分由",
+          "由哪",
+          "哪一",
+          "一层",
+          "重新",
+          "新计",
+          "计算"
+        ],
+        "supplemental_covered_terms": [
+          "四维",
+          "维评",
+          "评分",
+          "包含",
+          "总分"
+        ],
+        "supplemental_new_terms": [
+          "四维",
+          "维评",
+          "包含"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.1429,
+          0.2
+        ],
+        "supplemental_clause_gain": [
+          0.4285,
+          0.0
+        ],
+        "primary_heading_coverage": 0.1765,
+        "supplemental_novelty_ratio": 0.1765
+      }
+    },
+    {
+      "id": "trg-dn-004",
+      "answerability": "full",
+      "primary_hit": true,
+      "supplemental_hit_rank": null,
+      "structural_trigger": false,
+      "features": {
+        "core_terms": [
+          "训练",
+          "练焦",
+          "焦点",
+          "点的",
+          "的排",
+          "排序",
+          "序为",
+          "么先",
+          "先看",
+          "看开",
+          "开放",
+          "放复",
+          "复习",
+          "任务",
+          "再看",
+          "看覆",
+          "覆盖",
+          "盖缺",
+          "缺口"
+        ],
+        "primary_covered_terms": [
+          "训练",
+          "练焦",
+          "焦点",
+          "排序",
+          "复习",
+          "覆盖",
+          "盖缺",
+          "缺口"
+        ],
+        "primary_missing_terms": [
+          "点的",
+          "的排",
+          "序为",
+          "么先",
+          "先看",
+          "看开",
+          "开放",
+          "放复",
+          "任务",
+          "再看",
+          "看覆"
+        ],
+        "supplemental_covered_terms": [
+          "复习",
+          "任务",
+          "覆盖"
+        ],
+        "supplemental_new_terms": [
+          "任务"
+        ],
+        "same_document_new_heading": true,
+        "clause_count": 2,
+        "primary_clause_coverage": [
+          0.3571,
+          0.75
+        ],
+        "supplemental_clause_gain": [
+          0.0,
+          0.0
+        ],
+        "primary_heading_coverage": 0.4211,
+        "supplemental_novelty_ratio": 0.0526
+      }
+    }
+  ]
+}
