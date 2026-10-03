@@ -1,0 +1,41 @@
+{
+  "qualified": false,
+  "metrics": {
+    "provenance_aware_binding_accuracy": 0.625,
+    "labeled_binding_recall": 0.5,
+    "conditional_labeled_binding_recall": 0.5556,
+    "negative_rejection": 0.8333,
+    "wrong_provenance_only_acceptance_count": 0,
+    "available_positive_count": 9,
+    "positive_count": 10,
+    "span_success_counts": {
+      "bounded_multi_span": 2,
+      "code_statement": 2,
+      "sentence_span": 1,
+      "table_row": 0
+    }
+  },
+  "checks": {
+    "provenance_aware_accuracy_gte_0_85": false,
+    "labeled_binding_recall_gte_0_80": false,
+    "conditional_binding_recall_gte_0_90": false,
+    "negative_rejection_eq_1": false,
+    "wrong_provenance_only_acceptance_eq_0": true,
+    "each_span_type_has_success": false
+  },
+  "failures": {
+    "candidate_recall_miss": [
+      "rvb-t-001"
+    ],
+    "available_but_unbound": [
+      "rvb-c-002",
+      "rvb-s-001",
+      "rvb-s-003",
+      "rvb-t-002"
+    ],
+    "wrong_provenance_only_acceptance": [],
+    "false_acceptance": [
+      "rvb-b-004"
+    ]
+  }
+}

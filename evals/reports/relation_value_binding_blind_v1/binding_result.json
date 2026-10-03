@@ -1,0 +1,356 @@
+{
+  "dataset": "evals\\datasets\\retrieval_relation_value_blind_v1.jsonl",
+  "retrieval_report": "evals\\reports\\relation_value_binding_blind_v1\\retrieval\\retrieval_eval.json",
+  "metrics": {
+    "binding_accuracy": 0.625,
+    "positive_binding_detection": 0.5,
+    "labeled_binding_recall": 0.5,
+    "negative_rejection": 0.8333
+  },
+  "cases": [
+    {
+      "id": "rvb-s-001",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-s-002",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "e4237f63-134b-4f62-92f1-76c552e82f8c",
+          "values": [
+            "5"
+          ],
+          "span": "最终取前 5 条返回",
+          "span_type": "sentence_span",
+          "relation_terms": [
+            "最终",
+            "返回"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rvb-s-003",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-s-004",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-t-001",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-t-002",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-t-003",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-t-004",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-c-001",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "a599e2ef-8c03-40e3-b27f-d5c253bbb4ef",
+          "values": [
+            "2",
+            "3"
+          ],
+          "span": "chinese_ngrams = [                                             # 中文 2-gram/3-gram",
+          "span_type": "code_statement",
+          "relation_terms": [
+            "chinese_ngrams"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rvb-c-002",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-c-003",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+          "values": [
+            "3",
+            "2",
+            "1",
+            "5",
+            "10"
+          ],
+          "span": "**分析路径：** 代码中 uncovered 以 priority=3 进入推荐列表（在覆盖缺口中最高，高于 attempted 的 priority=2）。但存在两个问题： 1. **被复习任务挤掉**：复习任务无上限追加，limit=5 时如果复习任务 ≥5 条，uncovered 全部被挤出 2. **依赖用户主动选择**：系统推荐但用户不选 → never attempted **最小修改方案——预留查漏位：** 在 `recommend_interview_plan` 末尾加 ~10 行后处理逻辑：如果前 limit 条中没有 source_type=\"coverage_gap\" 的项，把最后一条替换为优先级最高的覆盖缺口。 ```python # 新增逻辑（约 10 行） top = recommendations[:limit] has_coverage_gap = any(item.source_type == \"coverage_gap\" for item in top) if not has_coverage_gap: coverage_candidates = [ item for item in recommendations if item.source_type == \"coverage_gap\" ] if coverage_candidates: t",
+          "span_type": "code_statement",
+          "relation_terms": [
+            "uncovered",
+            "覆盖",
+            "priority"
+          ]
+        },
+        {
+          "chunk_id": "2f31a1e3-d97d-492f-9a6b-d3a38162ff5d",
+          "values": [
+            "3",
+            "2"
+          ],
+          "span": "priority=3 if point.status == \"uncovered\" else 2",
+          "span_type": "code_statement",
+          "relation_terms": [
+            "uncovered",
+            "priority"
+          ]
+        },
+        {
+          "chunk_id": "962cc6cd-7b45-4473-b6fa-680cc04224f1",
+          "values": [
+            "0.47"
+          ],
+          "span": "| 概念 | 回答什么问题 | 示例 | | ---------------------- | ------------------------------ | ----------------------------- | | **掌握度**（画像） | \"用户回答过的题，表现怎么样？\" | RAG 掌握度 0.47 | | **覆盖度**（知识目录） | \"知识库里的内容，被考到过吗？\" | \"多模态 RAG\" 状态 = uncovered |",
+          "span_type": "code_statement",
+          "relation_terms": [
+            "uncovered",
+            "覆盖"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rvb-c-004",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-b-001",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "values": [
+            "1",
+            "60",
+            "3",
+            "1/61",
+            "1/63",
+            "0.0323",
+            "2",
+            "1/62",
+            "0.0320",
+            "0.0164",
+            "0.0161"
+          ],
+          "span": "假设搜\"RRF 融合\"，两路返回： ``` 向量召回排名 全文召回排名 A（RRF段落） 第1名 第3名 B（pgvector） 第2名 未召回（∞） C（全文检索） 未召回（∞） 第1名 D（混合检索） 第3名 第2名 ``` 计算： ``` A: 1/(60+1) + 1/(60+3) = 1/61 + 1/63 = 0.0323 ← 两路都有排名，最高 D: 1/(60+3) + 1/(60+2) = 1/63 + 1/62 = 0.0320 C: 1/(60+1) = 1/61 = 0.0164 ← 只有全文路 B: 1/(60+2) = 1/62 = 0.0161 ← 只有向量路 ``` 最终排序：**A > D > C > B** A 排第一因为两路都召回了——这正是 RRF 的核心价值。",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+          "values": [
+            "-1",
+            "1",
+            "60",
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "span": "**回答：** 核心问题是余弦相似度 [-1, 1] 和 ts_rank 无上限属于不同量纲，直接相加等于默认\"1 单位向量分 = 1 单位全文分\"但这个等式不成立。 RRF 不看分数只看排名，公式 `score = Σ 1/(k + rank)`（k=60）。三条核心价值： | 价值 | 为什么 | | -------------- | ---------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，只看排名 | | **双路有加成** | 两路都召回 → 两个排名参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献 | ---",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf",
+            "分数"
+          ]
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "60"
+          ],
+          "span": "```python def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60): scores = {}",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "60"
+          ],
+          "span": "def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60): scores = {} for ranked in ranked_lists:",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "1",
+            "0.0",
+            "1.0"
+          ],
+          "span": "for ranked in ranked_lists: for rank, chunk_id in enumerate(ranked, start=1): scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank)",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "1",
+            "0.0",
+            "1.0"
+          ],
+          "span": "for rank, chunk_id in enumerate(ranked, start=1): scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank) return scores",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf"
+          ]
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "values": [
+            "0.0",
+            "1.0"
+          ],
+          "span": "scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank) return scores ```",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "a",
+            "rrf"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rvb-b-002",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "bindings": [
+        {
+          "chunk_id": "3323ef24-284f-4557-8f6f-e8552da6f827",
+          "values": [
+            "2",
+            "18%"
+          ],
+          "span": "overlap = query_terms & context_terms # 英文：只要有一词重叠就算通过 # 中文：至少 2 个 bigram 重叠，且占比 ≥ 18%",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "中文",
+            "bigram"
+          ]
+        },
+        {
+          "chunk_id": "3323ef24-284f-4557-8f6f-e8552da6f827",
+          "values": [
+            "2",
+            "18%"
+          ],
+          "span": "# 英文：只要有一词重叠就算通过 # 中文：至少 2 个 bigram 重叠，且占比 ≥ 18% ```",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "中文",
+            "bigram"
+          ]
+        },
+        {
+          "chunk_id": "3323ef24-284f-4557-8f6f-e8552da6f827",
+          "values": [
+            "2",
+            "18%"
+          ],
+          "span": "# 中文：至少 2 个 bigram 重叠，且占比 ≥ 18% ``` 向量检索可能返回\"余弦距离很近但内容不相关\"的结果——比如都是\"技术文档风格\"但讨论完全不同的话题。词汇化判断作为粗筛，确保至少字面上有关联。",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "中文",
+            "词汇",
+            "bigram"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rvb-b-003",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "bindings": []
+    },
+    {
+      "id": "rvb-b-004",
+      "expected_binding": false,
+      "predicted_binding": true,
+      "correct_labeled_binding": false,
+      "bindings": [
+        {
+          "chunk_id": "3323ef24-284f-4557-8f6f-e8552da6f827",
+          "values": [
+            "2",
+            "18%"
+          ],
+          "span": "# 中文：至少 2 个 bigram 重叠，且占比 ≥ 18% ``` 向量检索可能返回\"余弦距离很近但内容不相关\"的结果——比如都是\"技术文档风格\"但讨论完全不同的话题。词汇化判断作为粗筛，确保至少字面上有关联。",
+          "span_type": "bounded_multi_span",
+          "relation_terms": [
+            "中文",
+            "词汇"
+          ]
+        }
+      ]
+    }
+  ]
+}
