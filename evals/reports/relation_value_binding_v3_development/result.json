@@ -1,0 +1,2298 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "dataset": "evals\\datasets\\retrieval_relation_value_development_v1.jsonl",
+  "retrieval_report": "evals\\reports\\relation_value_blind_baseline\\retrieval_eval.json",
+  "metrics": {
+    "provenance_aware_binding_accuracy": 0.9167,
+    "labeled_binding_recall": 0.875,
+    "negative_rejection": 1.0,
+    "span_success_counts": {
+      "bounded_multi_span": 2,
+      "code_statement": 2,
+      "sentence_span": 2,
+      "table_row": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "rv-s-001",
+      "span_type": "sentence_span",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "余弦相似度取值范围",
+        "role": "range",
+        "value_semantic": "generic",
+        "canonical_unit": null,
+        "preferred_span_type": "sentence_span",
+        "modality": "fact",
+        "relation_terms": [
+          "余弦",
+          "弦相",
+          "相似",
+          "似度",
+          "度取",
+          "取值"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "0a44b8b5-8e7f-472b-a486-341ab4203306",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "核心问题：两种分数不在同一尺度上"
+            ]
+          },
+          "values": [
+            "-1",
+            "1"
+          ],
+          "canonical_unit": null,
+          "role": "range",
+          "value_semantic": "generic",
+          "span_type": "sentence_span",
+          "span": "余弦相似度范围 [-1, 1]，全文 `ts_rank_cd` 没有固定上限——一个是归一化的几何距离，一个是自由增长的匹配得分",
+          "relation_terms": [
+            "余弦",
+            "弦相",
+            "相似",
+            "似度"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "二、学员疑问与讨论记录",
+              "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？"
+            ]
+          },
+          "values": [
+            "-1",
+            "1",
+            "60",
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "canonical_unit": null,
+          "role": "range",
+          "value_semantic": "generic",
+          "span_type": "table_row",
+          "span": "**回答：** 核心问题是余弦相似度 [-1, 1] 和 ts_rank 无上限属于不同量纲，直接相加等于默认\"1 单位向量分 = 1 单位全文分\"但这个等式不成立。 RRF 不看分数只看排名，公式 `score = Σ 1/(k + rank)`（k=60）。三条核心价值： | 价值 | 为什么 | | -------------- | ---------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，只看排名 | | **双路有加成** | 两路都召回 → 两个排名参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献 | ---",
+          "relation_terms": [
+            "余弦",
+            "弦相",
+            "相似",
+            "似度"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "二、学员疑问与讨论记录",
+              "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？"
+            ]
+          },
+          "values": [
+            "-1",
+            "1"
+          ],
+          "canonical_unit": null,
+          "role": "range",
+          "value_semantic": "generic",
+          "span_type": "sentence_span",
+          "span": "**回答：** 核心问题是余弦相似度 [-1, 1] 和 ts_rank 无上限属于不同量纲，直接相加等于默认\"1 单位向量分 = 1 单位全文分\"但这个等式不成立",
+          "relation_terms": [
+            "余弦",
+            "弦相",
+            "相似",
+            "似度"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-s-002",
+      "span_type": "sentence_span",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "排名100的RRF贡献",
+        "role": "exact",
+        "value_semantic": "generic",
+        "canonical_unit": null,
+        "preferred_span_type": "sentence_span",
+        "modality": "fact",
+        "relation_terms": [
+          "排名",
+          "rrf",
+          "贡献"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "d829d039-7b13-4077-95b9-18e387c5d67b",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 的三条核心价值"
+            ]
+          },
+          "values": [
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "table_row",
+          "span": "| 价值 | 为什么 | | -------------- | ------------------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，RRF 只看排名 | | **双路有加成** | 两路都召回 → 两个排名都参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献，不会被粗暴截断 |",
+          "relation_terms": [
+            "排名",
+            "rrf",
+            "贡献"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "具体计算示例"
+            ]
+          },
+          "values": [
+            "1",
+            "60",
+            "3",
+            "1/61",
+            "1/63",
+            "0.0323",
+            "2",
+            "1/62",
+            "0.0320",
+            "0.0164",
+            "0.0161"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "span": "假设搜\"RRF 融合\"，两路返回： ``` 向量召回排名 全文召回排名 A（RRF段落） 第1名 第3名 B（pgvector） 第2名 未召回（∞） C（全文检索） 未召回（∞） 第1名 D（混合检索） 第3名 第2名 ``` 计算： ``` A: 1/(60+1) + 1/(60+3) = 1/61 + 1/63 = 0.0323 ← 两路都有排名，最高 D: 1/(60+3) + 1/(60+2) = 1/63 + 1/62 = 0.0320 C: 1/(60+1) = 1/61 = 0.0164 ← 只有全文路 B: 1/(60+2) = 1/62 = 0.0161 ← 只有向量路 ``` 最终排序：**A > D > C > B** A 排第一因为两路都召回了——这正是 RRF 的核心价值。",
+          "relation_terms": [
+            "排名",
+            "rrf"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "具体计算示例"
+            ]
+          },
+          "values": [
+            "1",
+            "60",
+            "3",
+            "1/61",
+            "1/63",
+            "0.0323",
+            "2",
+            "1/62",
+            "0.0320",
+            "0.0164",
+            "0.0161"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "sentence_span",
+          "span": "假设搜\"RRF 融合\"，两路返回： ``` 向量召回排名 全文召回排名 A（RRF段落） 第1名 第3名 B（pgvector） 第2名 未召回（∞） C（全文检索） 未召回（∞） 第1名 D（混合检索） 第3名 第2名 ``` 计算： ``` A: 1/(60+1) + 1/(60+3) = 1/61 + 1/63 = 0.0323 ← 两路都有排名，最高 D: 1/(60+3) + 1/(60+2) = 1/63 + 1/62 = 0.0320 C: 1/(60+1) = 1/61 = 0.0164 ← 只有全文路 B: 1/(60+2) = 1/62 = 0.0161 ← 只有向量路 ``` 最终排序：**A > D > C > B** A 排第一因为两路都召回了——这正是 RRF 的核心价值",
+          "relation_terms": [
+            "排名",
+            "rrf"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "二、学员疑问与讨论记录",
+              "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？"
+            ]
+          },
+          "values": [
+            "-1",
+            "1",
+            "60",
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "table_row",
+          "span": "**回答：** 核心问题是余弦相似度 [-1, 1] 和 ts_rank 无上限属于不同量纲，直接相加等于默认\"1 单位向量分 = 1 单位全文分\"但这个等式不成立。 RRF 不看分数只看排名，公式 `score = Σ 1/(k + rank)`（k=60）。三条核心价值： | 价值 | 为什么 | | -------------- | ---------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，只看排名 | | **双路有加成** | 两路都召回 → 两个排名参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献 | ---",
+          "relation_terms": [
+            "排名",
+            "rrf",
+            "贡献"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "二、学员疑问与讨论记录",
+              "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？"
+            ]
+          },
+          "values": [
+            "1",
+            "60"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "sentence_span",
+          "span": "RRF 不看分数只看排名，公式 `score = Σ 1/(k + rank)`（k=60）",
+          "relation_terms": [
+            "排名",
+            "rrf"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "二、学员疑问与讨论记录",
+              "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？"
+            ]
+          },
+          "values": [
+            "0.72",
+            "9500",
+            "100",
+            "1/160",
+            "0.0063"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "sentence_span",
+          "span": "三条核心价值： | 价值 | 为什么 | | -------------- | ---------------------------------------- | | **量纲无关** | 不管原始分是 0.72 还是 9500，只看排名 | | **双路有加成** | 两路都召回 → 两个排名参与计算 → 天然加分 | | **长尾不丢弃** | 排名 100 仍有 1/160≈0.0063 的贡献 | ---",
+          "relation_terms": [
+            "排名",
+            "贡献"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-s-003",
+      "span_type": "sentence_span",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "demand": {
+        "relation": "RRF生产吞吐QPS",
+        "role": "exact",
+        "value_semantic": "rate",
+        "canonical_unit": "QPS",
+        "preferred_span_type": "sentence_span",
+        "modality": "fact",
+        "relation_terms": [
+          "rrf",
+          "生产",
+          "产吞",
+          "吞吐",
+          "qps"
+        ]
+      },
+      "bindings": []
+    },
+    {
+      "id": "rv-t-001",
+      "span_type": "table_row",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "低置信final的画像更新权重",
+        "role": "exact",
+        "value_semantic": "weight",
+        "canonical_unit": "比例",
+        "preferred_span_type": "table_row",
+        "modality": "fact",
+        "relation_terms": [
+          "低置",
+          "置信",
+          "final",
+          "的画",
+          "画像",
+          "像更",
+          "更新",
+          "新权",
+          "权重"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+            "document_logical_name": "第 5 课：可信评分与报告",
+            "heading_path": [
+              "第 5 课：可信评分与报告",
+              "一、教案正文",
+              "5.1 先说结论"
+            ]
+          },
+          "values": [
+            "100"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "sentence_span",
+          "span": "LLM 只提供结构化评分建议，**应用层是评分的最终裁判：** ``` 用户提交回答 ↓ LLM 返回四维评分 + 置信度 + 引用 ↓ 应用层做五件事： ① 校验 Rubric（权重必须和为 100） ② 校验引用白名单（chunk_id 必须属于本轮检索上下文） ③ 应用层重算总分（不直接读取 LLM 返回的 total） ④ 判断评分状态（final / review_pending / disputed） ⑤ 控制画像更新权限（只有 FINAL 评分能进入画像",
+          "relation_terms": [
+            "置信",
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "08814292-825f-4552-82ab-59c15d55a6d1",
+            "document_logical_name": "第 5 课：可信评分与报告",
+            "heading_path": [
+              "第 5 课：可信评分与报告",
+              "三、自测结果"
+            ]
+          },
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "0.70",
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "table_row",
+          "span": "通过 ✅ | 题号 | 回答 | 点评 | | ---- | ---------------------------------- | ------------------ | | 1 | LLM 可能算错总分，Python 代码规避 | ✅ | | 2 | 待复核状态被门禁拦截，避免画像污染 | ✅ \"被污染\"用词精准 | | 3 | 总分=成绩单，逐题解析=课外辅导老师 | ✅ 类比好记 | | 4 | 完整复述能/不能的对照表格 | ✅ | | 5 | 方向对，confidence 流转逻辑需微调 | 见修正 | 第 5 题修正：低置信 final 是 LLM 初评 confidence<0.70 但 Reviewer 复核后确认可靠→升为 FINAL。此时根据最终置信度决定权重（≥0.70 完整权重，<0.70 降权 0.5）。 ---",
+          "relation_terms": [
+            "低置",
+            "置信",
+            "final",
+            "画像",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "08814292-825f-4552-82ab-59c15d55a6d1",
+            "document_logical_name": "第 5 课：可信评分与报告",
+            "heading_path": [
+              "第 5 课：可信评分与报告",
+              "三、自测结果"
+            ]
+          },
+          "values": [
+            "0.70",
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "sentence_span",
+          "span": "此时根据最终置信度决定权重（≥0.70 完整权重，<0.70 降权 0.5）",
+          "relation_terms": [
+            "置信",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "code_statement",
+          "span": "confidence_weight=0,",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "code_statement",
+          "span": "confidence_weight=0.5,",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "reason=f\"skip_{status}\", confidence_weight=0,",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "confidence_weight=0, )",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "reason=\"low_confidence_final\", confidence_weight=0.5,",
+          "relation_terms": [
+            "低置",
+            "置信",
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "confidence_weight=0.5, )",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "should_update=False, reason=f\"skip_{status}\", confidence_weight=0,",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "reason=f\"skip_{status}\", confidence_weight=0, )",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0",
+            "0.70"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "confidence_weight=0, ) if confidence < 0.70:",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "should_update=True, reason=\"low_confidence_final\", confidence_weight=0.5,",
+          "relation_terms": [
+            "低置",
+            "置信",
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "reason=\"low_confidence_final\", confidence_weight=0.5, )",
+          "relation_terms": [
+            "低置",
+            "置信",
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.4 哪些评分允许更新画像"
+            ]
+          },
+          "values": [
+            "0.5"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "confidence_weight=0.5, ) return ProfileUpdateDecision(",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "code_statement",
+          "span": "learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor)",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "}.get(difficulty, 1.0) learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor)",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor) return round(",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.85"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "def updated_mastery(current_mastery, score, *, confidence_weight, difficulty): difficulty_factor = { \"easy\": 0.85,",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "1.15",
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "\"hard\": 1.15, }.get(difficulty, 1.0) learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor)",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "}.get(difficulty, 1.0) learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor) return round(",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor) return round( current_mastery + (score - current_mastery) * learning_rate,",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "code_statement",
+          "span": "学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor)",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor)",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor) ```",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "``` 新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor)",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor) ```",
+          "relation_terms": [
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "1.0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "code_statement",
+          "span": "confidence_weight = 1.0（可信 final）",
+          "relation_terms": [
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "16/20",
+            "0.80",
+            "1.0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "本次得分 = 16/20 = 0.80 confidence_weight = 1.0（可信 final）",
+          "relation_terms": [
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "1.0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "confidence_weight = 1.0（可信 final） difficulty = \"medium\" → factor = 1.0",
+          "relation_terms": [
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "16/20",
+            "0.80",
+            "1.0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "当前 RAG 掌握度 = 0.40 本次得分 = 16/20 = 0.80 confidence_weight = 1.0（可信 final）",
+          "relation_terms": [
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "16/20",
+            "0.80",
+            "1.0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "本次得分 = 16/20 = 0.80 confidence_weight = 1.0（可信 final） difficulty = \"medium\" → factor = 1.0",
+          "relation_terms": [
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "weight",
+          "span_type": "bounded_record",
+          "span": "confidence_weight = 1.0（可信 final） difficulty = \"medium\" → factor = 1.0 learning_rate = min(0.35, 0.18 × 1.0 × 1.0) = 0.18",
+          "relation_terms": [
+            "final",
+            "画像",
+            "像更",
+            "更新",
+            "新权",
+            "权重"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-t-002",
+      "span_type": "table_row",
+      "expected_binding": true,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "demand": {
+        "relation": "错误断言复核总分边界",
+        "role": "range",
+        "value_semantic": "score",
+        "canonical_unit": "分",
+        "preferred_span_type": "table_row",
+        "modality": "fact",
+        "relation_terms": [
+          "错误",
+          "误断",
+          "断言",
+          "言复",
+          "复核"
+        ]
+      },
+      "bindings": []
+    },
+    {
+      "id": "rv-t-003",
+      "span_type": "table_row",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "demand": {
+        "relation": "REVIEW_PENDING最长保留期限",
+        "role": "exact",
+        "value_semantic": "duration",
+        "canonical_unit": "天",
+        "preferred_span_type": "table_row",
+        "modality": "fact",
+        "relation_terms": [
+          "review_pending",
+          "最长",
+          "长保",
+          "保留",
+          "留期",
+          "期限"
+        ]
+      },
+      "bindings": []
+    },
+    {
+      "id": "rv-c-001",
+      "span_type": "code_statement",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "rrf_k默认值",
+        "role": "exact",
+        "value_semantic": "generic",
+        "canonical_unit": null,
+        "preferred_span_type": "code_statement",
+        "modality": "fact",
+        "relation_terms": [
+          "rrf_k"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "60"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "span": "def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60):",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "0.0",
+            "1.0"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "span": "scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank)",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "60"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "```python def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60):",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "60"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60): scores = {}",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "1",
+            "0.0",
+            "1.0"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "for rank, chunk_id in enumerate(ranked, start=1): scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank)",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "0.0",
+            "1.0"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank) return scores",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "60"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "```python def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60): scores = {}",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "60"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "def reciprocal_rank_fusion(ranked_lists, *, rrf_k=60): scores = {} for ranked in ranked_lists:",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "1",
+            "0.0",
+            "1.0"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "for ranked in ranked_lists: for rank, chunk_id in enumerate(ranked, start=1): scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank)",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "1",
+            "0.0",
+            "1.0"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "for rank, chunk_id in enumerate(ranked, start=1): scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank) return scores",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+            "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+            "heading_path": [
+              "第 3 课：混合检索与可信 RAG 回答",
+              "一、教案正文",
+              "3.3 RRF 融合：为什么不能直接加分数",
+              "RRF 公式"
+            ]
+          },
+          "values": [
+            "0.0",
+            "1.0"
+          ],
+          "canonical_unit": null,
+          "role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_record",
+          "span": "scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (rrf_k + rank) return scores ```",
+          "relation_terms": [
+            "rrf_k"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-c-002",
+      "span_type": "code_statement",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "learning_rate硬上限",
+        "role": "upper_bound",
+        "value_semantic": "ratio",
+        "canonical_unit": "比例",
+        "preferred_span_type": "code_statement",
+        "modality": "fact",
+        "relation_terms": [
+          "learning_rate"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "upper_bound",
+          "value_semantic": "ratio",
+          "span_type": "code_statement",
+          "span": "learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor)",
+          "relation_terms": [
+            "learning_rate"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "upper_bound",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "}.get(difficulty, 1.0) learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor)",
+          "relation_terms": [
+            "learning_rate"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "upper_bound",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor) return round(",
+          "relation_terms": [
+            "learning_rate"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "1.15",
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "upper_bound",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "\"hard\": 1.15, }.get(difficulty, 1.0) learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor)",
+          "relation_terms": [
+            "learning_rate"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "upper_bound",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "}.get(difficulty, 1.0) learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor) return round(",
+          "relation_terms": [
+            "learning_rate"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "upper_bound",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "learning_rate = min(0.35, 0.18 * confidence_weight * difficulty_factor) return round( current_mastery + (score - current_mastery) * learning_rate,",
+          "relation_terms": [
+            "learning_rate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-c-003",
+      "span_type": "code_statement",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "demand": {
+        "relation": "幂等提交每秒请求上限",
+        "role": "upper_bound",
+        "value_semantic": "rate",
+        "canonical_unit": "次/秒",
+        "preferred_span_type": "code_statement",
+        "modality": "fact",
+        "relation_terms": [
+          "幂等",
+          "等提",
+          "提交",
+          "交每",
+          "每秒",
+          "秒请",
+          "请求"
+        ]
+      },
+      "bindings": []
+    },
+    {
+      "id": "rv-b-001",
+      "span_type": "bounded_multi_span",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "0.40起点与0.80得分对应的新掌握度",
+        "role": "exact",
+        "value_semantic": "ratio",
+        "canonical_unit": "比例",
+        "preferred_span_type": "bounded_multi_span",
+        "modality": "fact",
+        "relation_terms": [
+          "起点",
+          "点与",
+          "得分",
+          "分对",
+          "对应",
+          "应的",
+          "的新",
+          "新掌",
+          "掌握"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "0.80",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "code_statement",
+          "span": "新掌握度 = 0.40 + (0.80 - 0.40) × 0.18",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "16/20",
+            "0.80"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "当前 RAG 掌握度 = 0.40 本次得分 = 16/20 = 0.80",
+          "relation_terms": [
+            "得分",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18",
+            "1.0",
+            "0.40",
+            "0.80"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "learning_rate = min(0.35, 0.18 × 1.0 × 1.0) = 0.18 新掌握度 = 0.40 + (0.80 - 0.40) × 0.18",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "0.80",
+            "0.18",
+            "0.072"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "新掌握度 = 0.40 + (0.80 - 0.40) × 0.18 = 0.40 + 0.072",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "16/20",
+            "0.80"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "``` 当前 RAG 掌握度 = 0.40 本次得分 = 16/20 = 0.80",
+          "relation_terms": [
+            "得分",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "16/20",
+            "0.80",
+            "1.0"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "当前 RAG 掌握度 = 0.40 本次得分 = 16/20 = 0.80 confidence_weight = 1.0（可信 final）",
+          "relation_terms": [
+            "得分",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "1.0",
+            "0.35",
+            "0.18",
+            "0.40",
+            "0.80"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "difficulty = \"medium\" → factor = 1.0 learning_rate = min(0.35, 0.18 × 1.0 × 1.0) = 0.18 新掌握度 = 0.40 + (0.80 - 0.40) × 0.18",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18",
+            "1.0",
+            "0.40",
+            "0.80",
+            "0.072"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "learning_rate = min(0.35, 0.18 × 1.0 × 1.0) = 0.18 新掌握度 = 0.40 + (0.80 - 0.40) × 0.18 = 0.40 + 0.072",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "一个具体例子"
+            ]
+          },
+          "values": [
+            "0.40",
+            "0.80",
+            "0.18",
+            "0.072",
+            "0.472"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "新掌握度 = 0.40 + (0.80 - 0.40) × 0.18 = 0.40 + 0.072 = 0.472",
+          "relation_terms": [
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor)",
+          "relation_terms": [
+            "得分",
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "``` 新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor)",
+          "relation_terms": [
+            "得分",
+            "新掌",
+            "掌握"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.5 为什么高分后画像不会立刻满分——渐进更新",
+              "公式解读"
+            ]
+          },
+          "values": [
+            "0.35",
+            "0.18"
+          ],
+          "canonical_unit": "比例",
+          "role": "exact",
+          "value_semantic": "ratio",
+          "span_type": "bounded_record",
+          "span": "新掌握度 = 旧掌握度 + (本次得分 - 旧掌握度) × 学习率 学习率 = min(0.35, 0.18 × confidence_weight × difficulty_factor) ```",
+          "relation_terms": [
+            "得分",
+            "新掌",
+            "掌握"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-b-002",
+      "span_type": "bounded_multi_span",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "correct_labeled_binding": true,
+      "demand": {
+        "relation": "两次可信高分对应的verification_streak变化",
+        "role": "sequence",
+        "value_semantic": "count",
+        "canonical_unit": "次",
+        "preferred_span_type": "bounded_multi_span",
+        "modality": "fact",
+        "relation_terms": [
+          "两次",
+          "次可",
+          "可信",
+          "信高",
+          "高分",
+          "分对",
+          "对应",
+          "verification_streak"
+        ]
+      },
+      "bindings": [
+        {
+          "provenance": {
+            "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.7 复习任务：为什么需要两次验证",
+              "流程"
+            ]
+          },
+          "values": [
+            "1",
+            "2"
+          ],
+          "canonical_unit": "次",
+          "role": "sequence",
+          "value_semantic": "count",
+          "span_type": "bounded_record",
+          "span": "第 1 次可信高分 → verification_streak = 1 → 任务保留，优先级降低 第 2 次连续可信高分 → verification_streak = 2 → 任务完成 ✅",
+          "relation_terms": [
+            "次可",
+            "可信",
+            "信高",
+            "高分",
+            "verification_streak"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.7 复习任务：为什么需要两次验证",
+              "流程"
+            ]
+          },
+          "values": [
+            "1",
+            "2"
+          ],
+          "canonical_unit": "次",
+          "role": "sequence",
+          "value_semantic": "count",
+          "span_type": "bounded_record",
+          "span": "``` 第 1 次可信高分 → verification_streak = 1 → 任务保留，优先级降低 第 2 次连续可信高分 → verification_streak = 2 → 任务完成 ✅",
+          "relation_terms": [
+            "次可",
+            "可信",
+            "信高",
+            "高分",
+            "verification_streak"
+          ]
+        },
+        {
+          "provenance": {
+            "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+            "document_logical_name": "第 6 课：两层画像与复习闭环",
+            "heading_path": [
+              "第 6 课：两层画像与复习闭环",
+              "一、教案正文",
+              "6.7 复习任务：为什么需要两次验证",
+              "流程"
+            ]
+          },
+          "values": [
+            "1",
+            "2"
+          ],
+          "canonical_unit": "次",
+          "role": "sequence",
+          "value_semantic": "count",
+          "span_type": "bounded_record",
+          "span": "第 1 次可信高分 → verification_streak = 1 → 任务保留，优先级降低 第 2 次连续可信高分 → verification_streak = 2 → 任务完成 ✅ 中间低分或不可信结果 → 连续计数重置 → 回到起点",
+          "relation_terms": [
+            "次可",
+            "可信",
+            "信高",
+            "高分",
+            "verification_streak"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rv-b-003",
+      "span_type": "bounded_multi_span",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "correct_labeled_binding": false,
+      "demand": {
+        "relation": "线上用户平均掌握度提升",
+        "role": "exact",
+        "value_semantic": "ratio",
+        "canonical_unit": "百分点",
+        "preferred_span_type": "bounded_multi_span",
+        "modality": "fact",
+        "relation_terms": [
+          "线上",
+          "上用",
+          "用户",
+          "户平",
+          "平均",
+          "均掌",
+          "掌握",
+          "度提",
+          "提升"
+        ]
+      },
+      "bindings": []
+    }
+  ]
+}
