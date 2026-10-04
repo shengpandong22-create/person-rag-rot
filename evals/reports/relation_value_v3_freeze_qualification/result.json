@@ -1,0 +1,59 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "candidate_commit": "d55d2c7",
+  "qualified_for_freeze": true,
+  "checks": {
+    "original_accuracy": true,
+    "original_labeled_recall": true,
+    "original_negative_rejection": true,
+    "original_each_span_type": true,
+    "original_average_binding_count": true,
+    "original_max_binding_count": true,
+    "original_max_bindings_per_chunk": true,
+    "role_accuracy": true,
+    "role_positive_value_recall": true,
+    "role_negative_rejection": true,
+    "role_pair_integrity": true,
+    "role_average_binding_count": true,
+    "role_max_binding_count": true
+  },
+  "observed": {
+    "original_development": {
+      "provenance_aware_binding_accuracy": 0.9167,
+      "labeled_binding_recall": 0.875,
+      "negative_rejection": 1.0,
+      "average_binding_count": 2.6667,
+      "max_binding_count": 13,
+      "max_bindings_per_chunk": 3,
+      "span_success_counts": {
+        "bounded_multi_span": 2,
+        "code_statement": 2,
+        "sentence_span": 2,
+        "table_row": 1
+      }
+    },
+    "semantic_role_development": {
+      "accuracy": 1.0,
+      "positive_value_recall": 1.0,
+      "negative_rejection": 1.0,
+      "average_binding_count": 1.0,
+      "max_binding_count": 3
+    },
+    "semantic_role_pair_count": 6
+  },
+  "evaluated_git_commit": "4674598533ee64166a146b4bc7d4f7d6707c5660",
+  "artifacts": {
+    "thresholds": {
+      "path": "evals\\datasets\\RELATION_VALUE_V3_FREEZE_THRESHOLDS.json",
+      "sha256": "5297d8108abb9596417765d43302a7ec1fd5435830bde47c78c35dcbd6f3dcab"
+    },
+    "original_report": {
+      "path": "evals\\reports\\relation_value_binding_v3_development\\result.json",
+      "sha256": "5ea556b68d58a023e69dc89edbb3284765e91dd118018bcef21a55ad8e063892"
+    },
+    "role_report": {
+      "path": "evals\\reports\\relation_value_role_development_v1\\result.json",
+      "sha256": "277af007e704d7668707cbeef3fe7e96e655703e607a8bc270c877c233017f51"
+    }
+  }
+}
