@@ -1,0 +1,22 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "candidate_commit": "d55d2c7",
+  "original_development": {
+    "provenance_aware_binding_accuracy_min": 0.9,
+    "labeled_binding_recall_min": 0.875,
+    "negative_rejection_required": 1.0,
+    "each_span_type_success_min": 1,
+    "average_binding_count_max": 3.0,
+    "max_binding_count_max": 15,
+    "max_bindings_per_chunk_max": 3
+  },
+  "semantic_role_development": {
+    "accuracy_required": 1.0,
+    "positive_value_recall_required": 1.0,
+    "negative_rejection_required": 1.0,
+    "pair_count_required": 6,
+    "average_binding_count_max": 1.5,
+    "max_binding_count_max": 3
+  },
+  "scope": "eval-only freeze qualification; no formal split or blind rerun"
+}
