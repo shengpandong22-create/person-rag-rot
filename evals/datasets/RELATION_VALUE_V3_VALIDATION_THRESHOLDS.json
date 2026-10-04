@@ -1,0 +1,43 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "purpose": "cross-split validation safety; no formal V3 binding score",
+  "dataset": "evals/datasets/retrieval_validation_v1.jsonl",
+  "dataset_sha256": "4ab6e481a792a60f612e6b1f29efaa7397371561662991eb682d3b72b617d441",
+  "validation_freeze_manifest": "evals/datasets/VALIDATION_FREEZE.json",
+  "validation_freeze_manifest_sha256": "e04fd574249bc4cc72a7e7c8a5eb9e79cc3341d9e66bad5c78e0b4fbe82abd32",
+  "candidate_freeze_manifest": "evals/datasets/RELATION_VALUE_V3_CANDIDATE_FREEZE.json",
+  "reference_report": "evals/reports/validation_heading_candidate_ablation/vector_only/retrieval_eval.json",
+  "reference_report_sha256": "87452f123fc0a78182cde56bf6432648c777f83a34d3051e32c2ef40e1a31fcf",
+  "configuration": {
+    "experiment_mode": "vector-only",
+    "top_k": 6,
+    "candidate_k": 20,
+    "max_chunks_per_document": 3,
+    "query_strategy": "original",
+    "candidate_expansion": "none",
+    "supplemental_consumption": "none",
+    "demand_binding_policy": "none",
+    "evidence_gate_policy": "current_binary_v1"
+  },
+  "gates": {
+    "recall_at_1_min": 0.3529,
+    "recall_at_3_min": 0.5294,
+    "recall_at_6_min": 0.7059,
+    "mrr_min": 0.4853,
+    "full_answerability_accuracy_required": 1.0,
+    "partial_answerability_accuracy_required": 1.0,
+    "negative_rejection_accuracy_required": 1.0,
+    "candidate_recall_at_20_min": 0.8824,
+    "average_candidate_count_required": 6.0,
+    "latency_p95_ms_max": 1000.0,
+    "graded_rows_required": 22,
+    "resolved_labels_required": 17
+  },
+  "execution": {
+    "completed_reports_allowed": 1,
+    "retry_only_before_report_creation": true,
+    "validation_driven_candidate_tuning_allowed": false,
+    "production_integration_authorized": false,
+    "acceptance_or_holdout_authorized": false
+  }
+}
