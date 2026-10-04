@@ -1,0 +1,88 @@
+{
+  "schema_version": "relation-value-v3-acceptance-protocol-v1",
+  "candidate": "relation-value-binding-v3",
+  "candidate_commit": "d55d2c7",
+  "candidate_freeze_manifest": "evals/datasets/RELATION_VALUE_V3_CANDIDATE_FREEZE.json",
+  "candidate_freeze_manifest_sha256": "4c274e604bdd369e01d276398b15cd625fa18ac35d1265054d1fd99665a75e81",
+  "acceptance_dataset": "evals/datasets/relation_value_v3_acceptance_v1.jsonl",
+  "acceptance_dataset_sha256": "21f8bc5d87d30dea8941172b184a7a9cff6c6124709611419e661f4212297601",
+  "acceptance_source_commit": "acf89f3",
+  "acceptance_freeze_manifest": "evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_FREEZE.json",
+  "acceptance_freeze_manifest_sha256": "38a7def2ddd2716286262168b1b9d4d037646519b55b0bd7c6e91170844f52b3",
+  "evaluation_contract": {
+    "input_mode": "labeled_evidence_spans_only",
+    "retrieval_allowed": false,
+    "database_lookup_allowed": false,
+    "model_inference_allowed": false,
+    "positive_match": "one binding must exactly match an accepted ordered value set for sequence roles or an accepted unordered value set otherwise, plus the labeled role, semantic, normalized unit, provenance, and span type",
+    "negative_match": "the demand must produce zero bindings",
+    "extra_binding_policy": "every non-matching emitted binding is spurious",
+    "row_policy": "a positive row passes only when every demand passes; a negative row passes only when every demand is rejected"
+  },
+  "expected_counts": {
+    "rows": 36,
+    "positive_rows": 24,
+    "negative_rows": 12,
+    "demands": 43,
+    "positive_demands": 31,
+    "negative_demands": 12,
+    "multi_demand_rows": 6,
+    "paired_groups": 11
+  },
+  "hard_gates": {
+    "demand_accuracy_min": 0.9,
+    "positive_demand_recall_min": 0.871,
+    "positive_row_all_demands_accuracy_min": 0.8333,
+    "negative_demand_rejection_required": 1.0,
+    "negative_row_rejection_required": 1.0,
+    "binding_precision_min": 0.9,
+    "average_bindings_per_demand_max": 1.5,
+    "max_bindings_per_demand_max": 3,
+    "paired_discrimination_min": 0.9091,
+    "span_success_count_min": {
+      "sentence_span": 2,
+      "table_row": 6,
+      "code_statement": 9,
+      "bounded_multi_span": 2
+    },
+    "role_success_count_min": {
+      "exact": 14,
+      "derived_value": 3,
+      "range": 2,
+      "upper_bound": 3,
+      "lower_bound": 3,
+      "sequence": 1
+    },
+    "semantic_success_count_min": {
+      "count": 9,
+      "generic": 8,
+      "ratio": 1,
+      "score": 7,
+      "weight": 2
+    },
+    "negative_category_rejection_required": {
+      "relation_role": 1.0,
+      "value_semantic": 1.0,
+      "subject_predicate": 1.0,
+      "unit_binding": 1.0,
+      "provenance_structure": 1.0,
+      "missing_value_false_premise": 1.0
+    },
+    "evaluated_rows_required": 36,
+    "evaluated_demands_required": 43,
+    "unresolved_labels_required": 0,
+    "case_errors_required": 0,
+    "candidate_p95_ms_max": 50.0,
+    "candidate_freeze_intact_before_and_after_required": true,
+    "acceptance_freeze_intact_before_and_after_required": true,
+    "production_imports_candidate_required": false
+  },
+  "execution": {
+    "completed_runs_allowed": 1,
+    "attempt_ledger_required": true,
+    "retry_only_when_no_case_output_was_persisted_or_observed": true,
+    "acceptance_driven_candidate_tuning_allowed": false,
+    "threshold_or_dataset_changes_after_start_allowed": false,
+    "production_integration_authorized": false
+  }
+}
