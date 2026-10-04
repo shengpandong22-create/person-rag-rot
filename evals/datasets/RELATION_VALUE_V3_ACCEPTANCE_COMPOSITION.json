@@ -10,18 +10,18 @@
   "single_demand_rows": 30,
   "multi_demand_rows": 6,
   "positive_span_distribution": {
-    "sentence_span": 6,
-    "table_row": 6,
-    "code_statement": 6,
-    "bounded_multi_span": 6
+    "sentence_span": 3,
+    "table_row": 7,
+    "code_statement": 11,
+    "bounded_multi_span": 3
   },
   "positive_role_distribution": {
-    "exact": 6,
+    "exact": 10,
     "derived_value": 4,
-    "range": 4,
+    "range": 2,
     "upper_bound": 3,
-    "lower_bound": 3,
-    "sequence": 4
+    "lower_bound": 4,
+    "sequence": 1
   },
   "hard_negative_distribution": {
     "relation_role": 2,
@@ -36,7 +36,7 @@
     "explicit_unit_positives": 8,
     "unitless_positives": 4,
     "unit_alias_or_conversion_positives": 4,
-    "multi_value_positives": 6,
+    "multi_value_positives": 3,
     "numeric_distractor_negatives": 10,
     "paired_hard_negatives": 8
   },

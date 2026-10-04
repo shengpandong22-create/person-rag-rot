@@ -48,34 +48,40 @@ def demand(
 POSITIVES: list[dict[str, Any]] = [
     {
         "id": "rva3-001",
-        "q": "项目总结明确支持在多大内存的普通开发机上运行？",
+        "q": "项目总结是在多大的本地内存约束下完成技术选型的？",
         "doc": "第 7 课：工程化专题 + 面试实战",
         "lines": [193, 193],
         "needle": "16GB 本地约束",
         "span": "sentence_span",
-        "d": [demand("普通开发机运行内存", "exact", "generic", "GB", ["16"], ["内存", "运行"])],
+        "d": [
+            demand(
+                "项目本地选型内存约束", "exact", "generic", "GB", ["16"], ["本地", "内存", "选型"]
+            )
+        ],
     },
     {
         "id": "rva3-002",
-        "q": "文档中间插入内容后，示例旧块的索引怎样变化？新索引又是多少？",
+        "q": "文档插入内容前旧块索引是多少，插入后该旧块的新索引是多少？",
         "doc": "第 2 课：知识入库链路——文档如何变成可检索证据",
         "lines": [317, 318],
         "needle": "旧的第3块变成了第4块",
-        "span": "sentence_span",
+        "span": "bounded_multi_span",
         "d": [
             demand(
-                "插入内容前后旧块索引变化", "sequence", "count", None, ["3", "4"], ["旧块", "索引"]
+                "插入内容前的旧块索引", "exact", "count", None, ["3"], ["插入前", "旧块", "索引"]
             ),
-            demand("插入内容后的旧块索引", "exact", "count", None, ["4"], ["插入", "索引"]),
+            demand(
+                "插入内容后的旧块索引", "exact", "count", None, ["4"], ["插入后", "旧块", "索引"]
+            ),
         ],
     },
     {
         "id": "rva3-003",
-        "q": "示例四个维度 4、3、2、4 相加后，应用层应得到多少总分？",
+        "q": "四维示例由应用层相加应得多少分，LLM 当时错误写成多少分？",
         "doc": "第 5 课：可信评分与报告",
-        "lines": [59, 59],
+        "lines": [43, 59],
         "needle": "4+3+2+4=13",
-        "span": "sentence_span",
+        "span": "bounded_multi_span",
         "d": [
             demand(
                 "四维示例的应用层计算结果",
@@ -84,7 +90,10 @@ POSITIVES: list[dict[str, Any]] = [
                 "分",
                 ["13"],
                 ["四维", "应用层"],
-            )
+            ),
+            demand(
+                "四维示例中LLM写出的错误总分", "exact", "score", "分", ["15"], ["LLM", "错误总分"]
+            ),
         ],
     },
     {
@@ -125,11 +134,11 @@ POSITIVES: list[dict[str, Any]] = [
     },
     {
         "id": "rva3-006",
-        "q": "画像展示示例中，RAG 掌握度从多少变化到多少？最终展示值是多少？",
+        "q": "画像展示示例中，RAG 掌握度从多少变化到多少？",
         "doc": "第 6 课：两层画像与复习闭环",
         "lines": [75, 75],
         "needle": "RAG 掌握度从 0.40",
-        "span": "sentence_span",
+        "span": "table_row",
         "tags": ["unit_alias_or_conversion"],
         "d": [
             demand(
@@ -139,22 +148,12 @@ POSITIVES: list[dict[str, Any]] = [
                 "比例",
                 ["0.40", "0.47"],
                 ["RAG", "掌握度"],
-                alternatives=[["40%", "47%"]],
-            ),
-            demand(
-                "画像展示中的RAG最终掌握度",
-                "exact",
-                "ratio",
-                "比例",
-                ["0.47"],
-                ["RAG", "最终掌握度"],
-                alternatives=[["47%"]],
-            ),
+            )
         ],
     },
     {
         "id": "rva3-007",
-        "q": "completeness 维度的最低分和最高分各是多少？它的最高分是多少？",
+        "q": "completeness 维度的最低分和最高分分别是多少？",
         "doc": "第 5 课：可信评分与报告",
         "lines": [34, 34],
         "needle": "completeness",
@@ -162,12 +161,12 @@ POSITIVES: list[dict[str, Any]] = [
         "tags": ["unit_alias_or_conversion"],
         "d": [
             demand(
-                "completeness单项分数范围",
-                "range",
+                "completeness单项最低分",
+                "lower_bound",
                 "score",
                 "分",
-                ["0", "5"],
-                ["completeness", "分数"],
+                ["0"],
+                ["completeness", "最低分"],
             ),
             demand(
                 "completeness单项最高分",
@@ -250,21 +249,14 @@ POSITIVES: list[dict[str, Any]] = [
     },
     {
         "id": "rva3-012",
-        "q": "RRF 示例里 A 在向量路和全文路分别排第几？向量路名次是多少？",
+        "q": "RRF 示例里 A 在向量召回和全文召回中分别排第几？",
         "doc": "第 3 课：混合检索与可信 RAG 回答",
-        "lines": [68, 68],
+        "lines": [67, 68],
         "needle": "A（RRF段落）",
         "span": "table_row",
         "d": [
-            demand(
-                "A在向量与全文两路的排名",
-                "sequence",
-                "count",
-                "名",
-                ["1", "3"],
-                ["A", "向量", "全文"],
-            ),
             demand("A在向量召回中的排名", "exact", "count", "名", ["1"], ["A", "向量排名"]),
+            demand("A在全文召回中的排名", "exact", "count", "名", ["3"], ["A", "全文排名"]),
         ],
     },
     {
@@ -347,25 +339,30 @@ POSITIVES: list[dict[str, Any]] = [
     },
     {
         "id": "rva3-018",
-        "q": "示例中引用版本从 v3 演进到 v4 的先后序列是什么？最终版本是多少？",
+        "q": "示例中的历史引用版本是多少，文档重排后的新内容版本是多少？",
         "doc": "第 2 课：知识入库链路——文档如何变成可检索证据",
         "lines": [341, 345],
         "needle": "version=v3",
-        "span": "code_statement",
+        "span": "bounded_multi_span",
         "d": [
+            demand("示例历史引用绑定的版本", "exact", "generic", None, ["3"], ["历史引用", "版本"]),
             demand(
-                "示例引用版本的演进序列", "sequence", "count", None, ["3", "4"], ["引用", "版本"]
+                "文档重排后新内容的版本",
+                "exact",
+                "generic",
+                None,
+                ["4"],
+                ["重排", "新内容", "版本"],
             ),
-            demand("示例演进后的新版本", "exact", "count", None, ["4"], ["演进", "新版本"]),
         ],
     },
     {
         "id": "rva3-019",
         "q": "RRF 示例中 D 的两个倒数排名贡献相加后结果是多少？",
         "doc": "第 3 课：混合检索与可信 RAG 回答",
-        "lines": [78, 78],
+        "lines": [77, 77],
         "needle": "D: 1/(60+3)",
-        "span": "bounded_multi_span",
+        "span": "code_statement",
         "d": [
             demand(
                 "D的RRF两路贡献之和",
@@ -381,9 +378,9 @@ POSITIVES: list[dict[str, Any]] = [
         "id": "rva3-020",
         "q": "只有全文路召回的 C，其 RRF 计算结果是多少？",
         "doc": "第 3 课：混合检索与可信 RAG 回答",
-        "lines": [79, 79],
+        "lines": [78, 78],
         "needle": "C: 1/(60+1)",
-        "span": "bounded_multi_span",
+        "span": "code_statement",
         "d": [
             demand(
                 "仅全文召回C的RRF计算结果",
@@ -399,9 +396,9 @@ POSITIVES: list[dict[str, Any]] = [
         "id": "rva3-021",
         "q": "只有向量路召回的 B，其 RRF 计算结果是多少？",
         "doc": "第 3 课：混合检索与可信 RAG 回答",
-        "lines": [80, 80],
+        "lines": [79, 79],
         "needle": "B: 1/(60+2)",
-        "span": "bounded_multi_span",
+        "span": "code_statement",
         "d": [
             demand(
                 "仅向量召回B的RRF计算结果",
@@ -415,23 +412,15 @@ POSITIVES: list[dict[str, Any]] = [
     },
     {
         "id": "rva3-022",
-        "q": "难度因子从 easy 到 hard 的取值范围是什么？三个档位依次是多少？",
+        "q": "easy、medium、hard 三个难度因子分别是多少？",
         "doc": "第 6 课：两层画像与复习闭环",
         "lines": [121, 125],
         "needle": '"easy": 0.85',
-        "span": "bounded_multi_span",
+        "span": "code_statement",
         "d": [
-            demand(
-                "难度因子的取值范围", "range", "generic", None, ["0.85", "1.15"], ["难度", "因子"]
-            ),
-            demand(
-                "easy到hard的难度因子序列",
-                "sequence",
-                "generic",
-                None,
-                ["0.85", "1.0", "1.15"],
-                ["easy", "medium", "hard"],
-            ),
+            demand("easy难度因子", "exact", "generic", None, ["0.85"], ["easy", "难度因子"]),
+            demand("medium难度因子", "exact", "generic", None, ["1.0"], ["medium", "难度因子"]),
+            demand("hard难度因子", "exact", "generic", None, ["1.15"], ["hard", "难度因子"]),
         ],
     },
     {
@@ -440,7 +429,7 @@ POSITIVES: list[dict[str, Any]] = [
         "doc": "第 6 课：两层画像与复习闭环",
         "lines": [199, 200],
         "needle": "next_streak = min(2",
-        "span": "bounded_multi_span",
+        "span": "code_statement",
         "d": [
             demand(
                 "verification streak累加上限",
@@ -458,7 +447,7 @@ POSITIVES: list[dict[str, Any]] = [
         "doc": "第 2 课：知识入库链路——文档如何变成可检索证据",
         "lines": [144, 146],
         "needle": "[a-z0-9_]{2,}",
-        "span": "bounded_multi_span",
+        "span": "code_statement",
         "d": [
             demand(
                 "英文特征单词长度下限",
@@ -480,7 +469,7 @@ NEGATIVES: list[dict[str, Any]] = [
         "relation": "Reviewer评分绝对正确保证",
         "role": "exact",
         "semantic": "accuracy",
-        "unit": "比例",
+        "unit": None,
         "type": "relation_role",
     },
     {
@@ -556,21 +545,21 @@ NEGATIVES: list[dict[str, Any]] = [
     {
         "id": "rva3-033",
         "base": "rva3-013",
-        "q": "sequence=1 能否证明一场面试最多只有一道题？",
-        "relation": "单场面试题目数量上限",
-        "role": "upper_bound",
+        "q": "首题 sequence=1 能否证明恢复后的第二题 sequence 仍然是 1？",
+        "relation": "恢复后第二题的sequence值",
+        "role": "exact",
         "semantic": "count",
-        "unit": "道",
+        "unit": None,
         "type": "provenance_structure",
     },
     {
         "id": "rva3-034",
         "base": "rva3-018",
-        "q": "version=v4 能否证明知识库只允许四个文档？",
-        "relation": "知识库文档数量上限",
-        "role": "upper_bound",
-        "semantic": "count",
-        "unit": "个",
+        "q": "示例中 interview 引用的 v4 能否证明另一份 SourceDocument 的版本也是 4？",
+        "relation": "另一份SourceDocument的版本",
+        "role": "exact",
+        "semantic": "generic",
+        "unit": None,
         "type": "provenance_structure",
     },
     {
@@ -594,6 +583,34 @@ NEGATIVES: list[dict[str, Any]] = [
         "type": "missing_value_false_premise",
     },
 ]
+
+PAIR_BY_POSITIVE = {
+    "rva3-001": "pair-memory-semantic",
+    "rva3-003": "pair-score-latency",
+    "rva3-004": "pair-review-guarantee",
+    "rva3-007": "pair-completeness-subject",
+    "rva3-008": "pair-reasoning-unit",
+    "rva3-010": "pair-weight-subject",
+    "rva3-013": "pair-sequence-provenance",
+    "rva3-017": "pair-candidate-latency",
+    "rva3-018": "pair-version-provenance",
+    "rva3-022": "pair-factor-qps",
+    "rva3-023": "pair-streak-role",
+}
+
+PAIR_BY_NEGATIVE = {
+    "rva3-025": "pair-review-guarantee",
+    "rva3-026": "pair-streak-role",
+    "rva3-027": "pair-memory-semantic",
+    "rva3-028": "pair-score-latency",
+    "rva3-029": "pair-completeness-subject",
+    "rva3-030": "pair-weight-subject",
+    "rva3-031": "pair-reasoning-unit",
+    "rva3-033": "pair-sequence-provenance",
+    "rva3-034": "pair-version-provenance",
+    "rva3-035": "pair-candidate-latency",
+    "rva3-036": "pair-factor-qps",
+}
 
 
 def _span(document: str, start: int, end: int) -> tuple[str, str]:
@@ -638,11 +655,7 @@ async def build(knowledge_base_id: UUID) -> list[dict[str, Any]]:
                     "rationale": "首轮人工标注：值、单位和关系均由所引证据直接支持。",
                 }
             )
-        pair_id = (
-            f"pair-{int(spec['id'].split('-')[-1]):02d}"
-            if int(spec["id"].split("-")[-1]) <= 12
-            else None
-        )
+        pair_id = PAIR_BY_POSITIVE.get(spec["id"])
         row = {
             "id": spec["id"],
             "split": "acceptance",
@@ -691,7 +704,7 @@ async def build(knowledge_base_id: UUID) -> list[dict[str, Any]]:
         }
         rows.append(row)
     by_id = {row["id"]: row for row in rows}
-    for offset, spec in enumerate(NEGATIVES, start=1):
+    for spec in NEGATIVES:
         base = by_id[spec["base"]]
         evidence = json.loads(json.dumps(base["evidence"], ensure_ascii=False))
         evidence[0]["supports_demand_ids"] = []
@@ -705,7 +718,7 @@ async def build(knowledge_base_id: UUID) -> list[dict[str, Any]]:
                 "confusion_type": spec["type"],
                 "primary_relation_role": spec["role"],
                 "primary_span_type": evidence[0]["span_type"],
-                "pair_id": f"pair-{offset:02d}" if offset <= 8 else None,
+                "pair_id": PAIR_BY_NEGATIVE.get(spec["id"]),
                 "demands": [
                     {
                         "demand_id": "d1",
@@ -717,7 +730,11 @@ async def build(knowledge_base_id: UUID) -> list[dict[str, Any]]:
                         "accepted_value_sets": [],
                         "evidence_ids": [],
                         "required_relation_terms": spec["relation"].split(),
-                        "modality": "guarantee" if "保证" in spec["q"] else "fact",
+                        "modality": (
+                            "guarantee"
+                            if any(marker in spec["q"] for marker in ("保证", "必须"))
+                            else "fact"
+                        ),
                         "rationale": (
                             "首轮人工标注：证据中的数字属于不同关系、语义、单位或结构边界，"
                             "不能支持请求。"

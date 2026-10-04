@@ -1,5 +1,9 @@
 # Relation-Value V3 Acceptance First-Pass Annotation
 
+> Historical note: this first-pass report has been superseded by the independently reviewed and
+> adjudicated result in `evals/reports/relation_value_v3_acceptance_reviewed.md`. Its original draft
+> hash is retained here only as audit history and must not be treated as the current dataset hash.
+
 ## Status
 
 The first-pass human annotation draft contains 36 rows and passes the static draft audit. It is not

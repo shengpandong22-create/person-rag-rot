@@ -108,7 +108,7 @@ def audit(
     conversion_count = 0
     multi_value_count = 0
     numeric_distractor_count = 0
-    pair_members: Counter[str] = Counter()
+    pair_records: dict[str, list[tuple[str, str, str]]] = {}
 
     for index, row in enumerate(rows, start=1):
         prefix = f"row {index}"
@@ -170,8 +170,6 @@ def audit(
             errors.append(f"{prefix}: answerability must be full or none")
 
         pair_id = row.get("pair_id")
-        if pair_id is not None:
-            pair_members[str(pair_id)] += 1
         tags = set(row.get("tags", []))
         if "unit_alias_or_conversion" in tags:
             conversion_count += 1
@@ -235,6 +233,15 @@ def audit(
             normalized_span = span_text.replace("\r\n", "\n").replace("\r", "\n")
             if normalized_span not in normalized_source:
                 errors.append(f"{prefix}: evidence span not found in source")
+        if pair_id is not None:
+            first_evidence = evidence[0]
+            pair_records.setdefault(str(pair_id), []).append(
+                (
+                    str(row.get("answerability")),
+                    str(first_evidence.get("chunk_id")),
+                    str(first_evidence.get("span_sha256")),
+                )
+            )
         annotation = row.get("annotation", {})
         if require_review:
             if annotation.get("review_state") != plan["required_review_state"]:
@@ -265,7 +272,12 @@ def audit(
         "multi_value_positives": multi_value_count >= plan["minimums"]["multi_value_positives"],
         "numeric_distractor_negatives": numeric_distractor_count
         >= plan["minimums"]["numeric_distractor_negatives"],
-        "paired_hard_negatives": sum(count >= 2 for count in pair_members.values())
+        "paired_hard_negatives": sum(
+            len(records) == 2
+            and {record[0] for record in records} == {"full", "none"}
+            and len({(record[1], record[2]) for record in records}) == 1
+            for records in pair_records.values()
+        )
         >= plan["minimums"]["paired_hard_negatives"],
         "row_validation": not errors,
     }

@@ -25,9 +25,9 @@
     "hard_negative": 12,
     "multi_demand": 6,
     "positive_spans": {
-      "sentence_span": 4,
+      "sentence_span": 3,
       "bounded_multi_span": 3,
-      "table_row": 6,
+      "table_row": 7,
       "code_statement": 11
     },
     "positive_roles": {
@@ -58,5 +58,5 @@
   },
   "errors": [],
   "candidate_executed": false,
-  "review_required": false
+  "review_required": true
 }

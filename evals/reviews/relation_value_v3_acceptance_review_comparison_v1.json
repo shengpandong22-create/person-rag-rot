@@ -1,0 +1,257 @@
+{
+  "rows_compared": 36,
+  "agreement_rows": 19,
+  "disagreement_rows": 17,
+  "missing_author_rows": [],
+  "missing_reviewer_rows": [],
+  "differences": {
+    "rva3-001": [
+      {
+        "field": "demands[1].value_semantic",
+        "author": "generic",
+        "reviewer": "count"
+      }
+    ],
+    "rva3-002": [
+      {
+        "field": "primary_span_type",
+        "author": "bounded_multi_span",
+        "reviewer": "sentence_span"
+      }
+    ],
+    "rva3-006": [
+      {
+        "field": "primary_span_type",
+        "author": "sentence_span",
+        "reviewer": "table_row"
+      },
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "比例",
+        "reviewer": null
+      },
+      {
+        "field": "demands[1].accepted_value_sets",
+        "author": [
+          [
+            "0.40",
+            "0.47"
+          ],
+          [
+            "40%",
+            "47%"
+          ]
+        ],
+        "reviewer": [
+          [
+            "0.40",
+            "0.47"
+          ]
+        ]
+      }
+    ],
+    "rva3-007": [
+      {
+        "field": "primary_relation_role",
+        "author": "lower_bound",
+        "reviewer": "range"
+      },
+      {
+        "field": "demand_count",
+        "author": 2,
+        "reviewer": 1
+      },
+      {
+        "field": "demands[1].relation_role",
+        "author": "lower_bound",
+        "reviewer": "range"
+      },
+      {
+        "field": "demands[1].accepted_value_sets",
+        "author": [
+          [
+            "0"
+          ]
+        ],
+        "reviewer": [
+          [
+            "0",
+            "5"
+          ]
+        ]
+      }
+    ],
+    "rva3-010": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "比例",
+        "reviewer": null
+      }
+    ],
+    "rva3-011": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "比例",
+        "reviewer": null
+      },
+      {
+        "field": "demands[1].accepted_value_sets",
+        "author": [
+          [
+            "1.0"
+          ]
+        ],
+        "reviewer": [
+          [
+            "1"
+          ],
+          [
+            "['1.0']"
+          ]
+        ]
+      }
+    ],
+    "rva3-012": [
+      {
+        "field": "primary_span_type",
+        "author": "table_row",
+        "reviewer": "bounded_multi_span"
+      }
+    ],
+    "rva3-015": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "个",
+        "reviewer": "个路由"
+      }
+    ],
+    "rva3-017": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "个",
+        "reviewer": "个候选"
+      }
+    ],
+    "rva3-018": [
+      {
+        "field": "demands[1].accepted_value_sets",
+        "author": [
+          [
+            "3"
+          ]
+        ],
+        "reviewer": [
+          [
+            "3"
+          ],
+          [
+            "['v3']"
+          ]
+        ]
+      },
+      {
+        "field": "demands[2].accepted_value_sets",
+        "author": [
+          [
+            "4"
+          ]
+        ],
+        "reviewer": [
+          [
+            "4"
+          ],
+          [
+            "['v4']"
+          ]
+        ]
+      }
+    ],
+    "rva3-019": [
+      {
+        "field": "demands[1].accepted_value_sets",
+        "author": [
+          [
+            "0.0320"
+          ]
+        ],
+        "reviewer": [
+          [
+            "0.032"
+          ],
+          [
+            "['0.0320']"
+          ]
+        ]
+      }
+    ],
+    "rva3-022": [
+      {
+        "field": "demands[1].value_semantic",
+        "author": "generic",
+        "reviewer": "weight"
+      },
+      {
+        "field": "demands[2].value_semantic",
+        "author": "generic",
+        "reviewer": "weight"
+      },
+      {
+        "field": "demands[2].accepted_value_sets",
+        "author": [
+          [
+            "1.0"
+          ]
+        ],
+        "reviewer": [
+          [
+            "1"
+          ],
+          [
+            "['1.0']"
+          ]
+        ]
+      },
+      {
+        "field": "demands[3].value_semantic",
+        "author": "generic",
+        "reviewer": "weight"
+      }
+    ],
+    "rva3-023": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "次",
+        "reviewer": null
+      }
+    ],
+    "rva3-025": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "比例",
+        "reviewer": null
+      }
+    ],
+    "rva3-026": [
+      {
+        "field": "demands[1].modality",
+        "author": "fact",
+        "reviewer": "guarantee"
+      }
+    ],
+    "rva3-027": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "位",
+        "reviewer": "个用户"
+      }
+    ],
+    "rva3-030": [
+      {
+        "field": "demands[1].canonical_unit",
+        "author": "比例",
+        "reviewer": null
+      }
+    ]
+  },
+  "candidate_executed": false
+}

@@ -128,14 +128,16 @@ single-demand rows and 6 multi-demand rows. No row is copied or paraphrased from
 
 | Dimension | Required distribution |
 | --- | --- |
-| Structural span | 6 sentence, 6 table, 6 code, 6 bounded multi-span |
-| Relation role | 6 exact, 4 derived, 4 range, 3 upper bound, 3 lower bound, 4 sequence |
+| Structural span | 3 sentence, 7 table, 11 code, 3 genuine bounded multi-span |
+| Relation role | 10 exact, 4 derived, 2 range, 3 upper bound, 4 lower bound, 1 sequence |
 | Unit behavior | at least 8 explicit units, 4 unitless values, 4 accepted unit-alias/conversion cases |
-| Binding complexity | at least 6 multi-value and all 6 planned multi-demand rows |
+| Binding complexity | at least 3 multi-value and all 6 planned multi-demand rows |
 | Provenance | at least 6 documents; no document contributes more than 6 positive rows |
 
 Each positive row contributes to exactly one primary structural-span bucket and one primary
-relation-role bucket. Secondary tags may describe additional properties but do not alter counts.
+relation-role bucket. The distribution follows the actual source structures rather than forcing
+equal buckets: a contiguous code block remains `code_statement`; `bounded_multi_span` is reserved
+for evidence that crosses records or explanatory boundaries. Secondary tags do not alter counts.
 
 ### Hard-negative coverage: 12 rows
 

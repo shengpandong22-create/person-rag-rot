@@ -1,0 +1,41 @@
+{
+  "dataset": "evals/datasets/relation_value_v3_acceptance_v1.jsonl",
+  "reviewer_response": "evals/reviews/relation_value_v3_acceptance_blind_response_v1.jsonl",
+  "comparison": "evals/reviews/relation_value_v3_acceptance_review_comparison_v1.json",
+  "reviewer": "blind-review-pass-2",
+  "candidate_output_seen": false,
+  "decisions": {
+    "rva3-001": "author: memory capacity is a generic measured quantity, not an entity count",
+    "rva3-002": "author: the two-line before/after record crosses a bounded explanatory boundary",
+    "rva3-006": "reviewer: source is a table row; remove percentage aliases not explicitly normalized by source",
+    "rva3-007": "author: the question explicitly requests independent lower and upper bound clauses",
+    "rva3-010": "author: profile update weight is normalized as a ratio",
+    "rva3-011": "author: profile update weight is a ratio and source-exact rendering is 1.0",
+    "rva3-012": "author: a table row plus its semantic header remains table_row under the contract",
+    "rva3-015": "author: canonical count unit is 个; relation terms carry 路由",
+    "rva3-017": "author: canonical count unit is 个; relation terms carry 候选",
+    "rva3-018": "author: numeric binder target is source-extracted 3/4; v-prefix remains in relation and span",
+    "rva3-019": "author: source-exact rendering 0.0320 is retained",
+    "rva3-022": "author: difficulty factor is a generic multiplier, not a profile/scoring weight",
+    "rva3-023": "author: streak is a counted number of verification occurrences with unit 次",
+    "rva3-025": "reviewer: unsupported correctness guarantee has no canonical numeric unit",
+    "rva3-026": "reviewer: 必须 expresses a guarantee modality",
+    "rva3-027": "author: canonical Chinese people-count unit is 位",
+    "rva3-030": "author: profile update weight is normalized as a ratio"
+  },
+  "field_updates": {
+    "rva3-006": {
+      "primary_span_type": "table_row",
+      "evidence_span_type": "table_row",
+      "demand_1_accepted_value_sets": [["0.40", "0.47"]]
+    },
+    "rva3-025": {
+      "demand_1_canonical_unit": null
+    },
+    "rva3-026": {
+      "demand_1_modality": "guarantee"
+    }
+  },
+  "all_disagreements_adjudicated": true,
+  "candidate_executed": false
+}
