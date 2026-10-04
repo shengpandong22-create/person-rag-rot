@@ -1,0 +1,68 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "safe_for_next_protocol": true,
+  "checks": {
+    "dataset_hash": true,
+    "configuration": true,
+    "recall_at_1": true,
+    "recall_at_3": true,
+    "recall_at_6": true,
+    "mrr": true,
+    "full_answerability_accuracy": true,
+    "negative_rejection_accuracy": true,
+    "candidate_recall_at_20": true,
+    "average_candidate_count": true,
+    "latency_p95_ms": true,
+    "graded_rows": true,
+    "resolved_labels": true,
+    "freeze_intact": true,
+    "production_isolation": true
+  },
+  "configuration_checks": {
+    "experiment_mode": true,
+    "top_k": true,
+    "candidate_k": true,
+    "max_chunks_per_document": true,
+    "candidate_expansion": true,
+    "supplemental_consumption": true,
+    "demand_binding_policy": true,
+    "evidence_gate_policy": true
+  },
+  "observed_metrics": {
+    "recall_at_1": 0.2,
+    "recall_at_3": 0.4,
+    "recall_at_6": 0.45,
+    "mrr": 0.3017,
+    "full_answerability_accuracy": 0.8824,
+    "negative_rejection_accuracy": 0.5,
+    "candidate_recall_at_20": 0.8,
+    "average_candidate_count": 6.0,
+    "latency_p50_ms": 26.1107,
+    "latency_p95_ms": 35.7446
+  },
+  "evaluated_git_commit": "9e04a54cfece6b6d7fe4ec82c1394debd21fa547",
+  "artifacts": {
+    "thresholds": {
+      "path": "evals\\datasets\\RELATION_VALUE_V3_REGRESSION_THRESHOLDS.json",
+      "sha256": "ae35cf6faeb6e9368c2e448582f580928e3182213988dca4de01ee865e75e130"
+    },
+    "report": {
+      "path": "evals\\reports\\relation_value_v3_regression_safety\\retrieval_eval.json",
+      "sha256": "1349d2fab04e49f05c0ae6a135818870791bf1e944d8f91fdf2da4cbc0ec453b"
+    },
+    "freeze": {
+      "intact": true,
+      "complete": true,
+      "candidate": "relation-value-binding-v3",
+      "candidate_commit": "d55d2c7",
+      "artifact_checks": {
+        "implementation": true,
+        "original_development_dataset": true,
+        "semantic_role_development_dataset": true,
+        "original_development_report": true,
+        "semantic_role_development_report": true,
+        "qualification_thresholds": true
+      }
+    }
+  }
+}
