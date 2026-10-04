@@ -1,0 +1,76 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "safe_for_next_protocol": true,
+  "checks": {
+    "dataset_hash": true,
+    "validation_freeze_hash": true,
+    "configuration": true,
+    "recall_at_1": true,
+    "recall_at_3": true,
+    "recall_at_6": true,
+    "mrr": true,
+    "full_answerability_accuracy": true,
+    "partial_answerability_accuracy": true,
+    "negative_rejection_accuracy": true,
+    "candidate_recall_at_20": true,
+    "average_candidate_count": true,
+    "latency_p95_ms": true,
+    "graded_rows": true,
+    "resolved_labels": true,
+    "candidate_freeze_intact": true,
+    "production_isolation": true
+  },
+  "configuration_checks": {
+    "experiment_mode": true,
+    "top_k": true,
+    "candidate_k": true,
+    "max_chunks_per_document": true,
+    "query_strategy": true,
+    "candidate_expansion": true,
+    "supplemental_consumption": true,
+    "demand_binding_policy": true,
+    "evidence_gate_policy": true
+  },
+  "observed_metrics": {
+    "recall_at_1": 0.3529,
+    "recall_at_3": 0.5294,
+    "recall_at_6": 0.7059,
+    "mrr": 0.4853,
+    "full_answerability_accuracy": 1.0,
+    "partial_answerability_accuracy": 1.0,
+    "negative_rejection_accuracy": 1.0,
+    "candidate_recall_at_20": 0.8824,
+    "average_candidate_count": 6.0,
+    "latency_p50_ms": 24.5834,
+    "latency_p95_ms": 32.6679
+  },
+  "evaluated_git_commit": "65a72825161cc6812e7cf552b1f227ad32092e28",
+  "artifacts": {
+    "thresholds": {
+      "path": "evals\\datasets\\RELATION_VALUE_V3_VALIDATION_THRESHOLDS.json",
+      "sha256": "c13773955fcb58fca9a84e8ed0ba7dc377e8734e84e65c635a1e833c560feb75"
+    },
+    "report": {
+      "path": "evals\\reports\\relation_value_v3_validation_safety\\retrieval_eval.json",
+      "sha256": "a6adf69976844bdd2d2d2f5c43840db5ccf282b1d2ca5aee606af2b26bb35da8"
+    },
+    "validation_freeze": {
+      "path": "evals\\datasets\\VALIDATION_FREEZE.json",
+      "sha256": "e04fd574249bc4cc72a7e7c8a5eb9e79cc3341d9e66bad5c78e0b4fbe82abd32"
+    },
+    "candidate_freeze": {
+      "intact": true,
+      "complete": true,
+      "candidate": "relation-value-binding-v3",
+      "candidate_commit": "d55d2c7",
+      "artifact_checks": {
+        "implementation": true,
+        "original_development_dataset": true,
+        "semantic_role_development_dataset": true,
+        "original_development_report": true,
+        "semantic_role_development_report": true,
+        "qualification_thresholds": true
+      }
+    }
+  }
+}
