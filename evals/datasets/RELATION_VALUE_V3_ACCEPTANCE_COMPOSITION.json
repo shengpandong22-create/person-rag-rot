@@ -1,0 +1,51 @@
+{
+  "schema_version": "relation-value-acceptance-v1",
+  "status": "design_only",
+  "candidate": "relation-value-binding-v3",
+  "planned_dataset": "evals/datasets/relation_value_v3_acceptance_v1.jsonl",
+  "execution_authorized": false,
+  "total_rows": 36,
+  "positive_rows": 24,
+  "hard_negative_rows": 12,
+  "single_demand_rows": 30,
+  "multi_demand_rows": 6,
+  "positive_span_distribution": {
+    "sentence_span": 6,
+    "table_row": 6,
+    "code_statement": 6,
+    "bounded_multi_span": 6
+  },
+  "positive_role_distribution": {
+    "exact": 6,
+    "derived_value": 4,
+    "range": 4,
+    "upper_bound": 3,
+    "lower_bound": 3,
+    "sequence": 4
+  },
+  "hard_negative_distribution": {
+    "relation_role": 2,
+    "value_semantic": 2,
+    "subject_predicate": 2,
+    "unit_binding": 2,
+    "provenance_structure": 2,
+    "missing_value_false_premise": 2
+  },
+  "minimums": {
+    "documents_represented": 6,
+    "explicit_unit_positives": 8,
+    "unitless_positives": 4,
+    "unit_alias_or_conversion_positives": 4,
+    "multi_value_positives": 6,
+    "numeric_distractor_negatives": 10,
+    "paired_hard_negatives": 8
+  },
+  "maximums": {
+    "positive_rows_per_document": 6
+  },
+  "required_review_state": "agreed",
+  "candidate_must_not_run_before_freeze": true,
+  "thresholds_must_precede_acceptance_run": true,
+  "single_completed_acceptance_run": true,
+  "production_integration_authorized": false
+}
