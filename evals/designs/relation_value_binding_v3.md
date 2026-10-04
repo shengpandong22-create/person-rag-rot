@@ -10,7 +10,7 @@ fixture and its existing frozen retrieval report.
 
 V3 separates five concerns that V2 mixed into lexical matching:
 
-1. `RelationRole`: exact value, range, upper bound, lower bound, or sequence;
+1. `RelationRole`: exact value, derived value, range, upper bound, lower bound, or sequence;
 2. `ValueSemantic`: ratio, score, count, duration, rate, accuracy, coverage, weight, or generic;
 3. canonical unit and unit aliases;
 4. `EvidenceProvenance`: chunk id, document logical name, and heading path;
@@ -18,6 +18,11 @@ V3 separates five concerns that V2 mixed into lexical matching:
 
 A binding is emitted only when role shape, value semantic, unit, relation terms, and a local span
 agree. Values from separate chunks are never joined.
+
+`DERIVED_VALUE` distinguishes formula inputs and intermediate values from the requested aggregate or
+output. Equivalent overlapping spans are collapsed by provenance, role, semantic type, and value
+tuple. Different value tuples are preserved, and each chunk contributes at most three diagnostic
+bindings.
 
 ## Safety boundary
 

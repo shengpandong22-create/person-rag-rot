@@ -7,6 +7,8 @@
 | Provenance-aware binding accuracy | 0.9167 | 0.9167 |
 | Human-labeled binding recall | 0.8750 | 0.8750 |
 | Negative rejection | 1.0000 | 1.0000 |
+| Average diagnostic bindings/case | 4.1667 | 2.6667 |
+| Maximum diagnostic bindings/case | 28 | 13 |
 
 Correct positive bindings by declared span type:
 
@@ -29,6 +31,10 @@ testable. It fixes two important representation errors:
 
 Every result now retains the typed demand, local structural span, values/unit, and complete chunk
 provenance.
+
+The semantic-role Development extension additionally reaches 1.0000 accuracy, 1.0000 positive
+value recall, and 1.0000 negative rejection across six paired confusion scenarios. Per-chunk
+diagnostic bindings are capped at three after equivalent-binding deduplication.
 
 ## Decision
 

@@ -24,6 +24,7 @@ from agent_mentor.infrastructure.database.session import (
 
 class RelationRole(StrEnum):
     EXACT = "exact"
+    DERIVED_VALUE = "derived_value"
     RANGE = "range"
     UPPER_BOUND = "upper_bound"
     LOWER_BOUND = "lower_bound"
@@ -125,6 +126,7 @@ def bind_typed_relation_value(
             continue
         if not _role_matches(demand.role, span, values):
             continue
+        values = _select_role_values(demand.role, values)
         if not _semantic_matches(demand, span):
             continue
         searchable = _normalized_search_text(span)
@@ -148,7 +150,55 @@ def bind_typed_relation_value(
                 relation_terms=covered,
             )
         )
-    return tuple(matches)
+    return _deduplicate_bindings(matches, demand.preferred_span_type)
+
+
+def _deduplicate_bindings(
+    bindings: list[TypedBoundValue], preferred_span_type: str
+) -> tuple[TypedBoundValue, ...]:
+    grouped: dict[tuple[str, tuple[str, ...], RelationRole, ValueSemantic], TypedBoundValue] = {}
+    for binding in bindings:
+        key = (
+            binding.provenance.chunk_id,
+            binding.values,
+            binding.role,
+            binding.value_semantic,
+        )
+        current = grouped.get(key)
+        if current is None or _binding_priority(binding, preferred_span_type) < _binding_priority(
+            current, preferred_span_type
+        ):
+            grouped[key] = binding
+    candidates = list(grouped.values())
+    ordered = sorted(
+        candidates, key=lambda item: _binding_priority(item, preferred_span_type)
+    )
+    return tuple(ordered[:3])
+
+
+def _binding_priority(
+    binding: TypedBoundValue, preferred_span_type: str
+) -> tuple[int, int, int, int, int]:
+    exact_structure = binding.span_type == preferred_span_type
+    derivation_depth = binding.span.count("=") if binding.role is RelationRole.DERIVED_VALUE else 0
+    if binding.role is RelationRole.DERIVED_VALUE:
+        has_output_marker = any(
+            marker in binding.span for marker in ("新掌握度", "汇总", "最终", "得到")
+        )
+        return (
+            0 if has_output_marker else 1,
+            -derivation_depth,
+            -len(binding.relation_terms),
+            0 if exact_structure else 1,
+            len(binding.span),
+        )
+    return (
+        0,
+        -len(binding.relation_terms),
+        0,
+        0 if exact_structure else 1,
+        len(binding.span),
+    )
 
 
 def _relation_role(relation: str) -> RelationRole:
@@ -160,6 +210,8 @@ def _relation_role(relation: str) -> RelationRole:
         return RelationRole.RANGE
     if any(marker in relation for marker in ("两次", "先后", "变化")):
         return RelationRole.SEQUENCE
+    if any(marker in relation for marker in ("得到", "最终", "汇总", "新掌握度")):
+        return RelationRole.DERIVED_VALUE
     return RelationRole.EXACT
 
 
@@ -207,8 +259,9 @@ def _typed_spans(content: str, preferred: str) -> tuple[tuple[str, str], ...]:
     )
     if preferred == "bounded_multi_span":
         spans.extend(
-            ("bounded_multi_span", " ".join(lines[index : index + 3]))
-            for index in range(max(0, len(lines) - 2))
+            ("bounded_multi_span", " ".join(lines[index : index + width]))
+            for width in (3, 4)
+            for index in range(max(0, len(lines) - width + 1))
         )
     return tuple(spans)
 
@@ -224,7 +277,17 @@ def _role_matches(role: RelationRole, span: str, values: tuple[str, ...]) -> boo
         )
     if role is RelationRole.SEQUENCE:
         return len(values) >= 2
+    if role is RelationRole.DERIVED_VALUE:
+        return "=" in span or any(marker in span for marker in ("得到", "结果", "最终"))
     return True
+
+
+def _select_role_values(
+    role: RelationRole, values: tuple[str, ...]
+) -> tuple[str, ...]:
+    if role is RelationRole.DERIVED_VALUE:
+        return values[-1:]
+    return values
 
 
 def _semantic_matches(demand: TypedRelationDemand, span: str) -> bool:
@@ -392,6 +455,23 @@ async def evaluate_v3(dataset: Path, retrieval_report: Path) -> dict[str, Any]:
             ),
             "negative_rejection": round(
                 sum(not item["predicted_binding"] for item in negatives) / len(negatives), 4
+            ),
+            "average_binding_count": round(
+                sum(len(item["bindings"]) for item in results) / len(results), 4
+            ),
+            "max_binding_count": max(len(item["bindings"]) for item in results),
+            "max_bindings_per_chunk": max(
+                (
+                    sum(
+                        binding["provenance"]["chunk_id"] == chunk_id
+                        for binding in item["bindings"]
+                    )
+                    for item in results
+                    for chunk_id in {
+                        binding["provenance"]["chunk_id"] for binding in item["bindings"]
+                    }
+                ),
+                default=0,
             ),
             "span_success_counts": {
                 span_type: sum(

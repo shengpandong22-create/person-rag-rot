@@ -21,6 +21,7 @@ def test_output_entity_controls_semantic_when_inputs_include_score() -> None:
     )
 
     assert demand.value_semantic is ValueSemantic.RATIO
+    assert demand.role is RelationRole.DERIVED_VALUE
 
 
 def test_table_range_keeps_positive_values_and_provenance() -> None:
@@ -60,6 +61,22 @@ def test_code_record_binds_alias_relation_with_local_value() -> None:
     )
 
     assert any(binding.values == ("0.5",) for binding in bindings)
+    assert len(bindings) <= 3
+
+
+def test_overlapping_spans_with_same_values_are_deduplicated() -> None:
+    bindings = bind_typed_relation_value(
+        normalize_demand("learning_rate硬上限", "比例", "code_statement"),
+        provenance=EvidenceProvenance("chunk-1", "画像文档", ("渐进更新",)),
+        content=(
+            "def update():\n"
+            "    learning_rate = min(0.35, base_rate)\n"
+            "    return learning_rate"
+        ),
+    )
+
+    assert len(bindings) == 1
+    assert bindings[0].values == ("0.35",)
 
 
 def test_bounded_span_does_not_join_distant_relation_and_value() -> None:

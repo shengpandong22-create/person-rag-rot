@@ -1,0 +1,131 @@
+{
+  "metrics": {
+    "accuracy": 1.0,
+    "positive_value_recall": 1.0,
+    "negative_rejection": 1.0,
+    "average_binding_count": 1.0,
+    "max_binding_count": 3
+  },
+  "cases": [
+    {
+      "id": "rvr-001p",
+      "pair_id": "coverage-vs-accuracy",
+      "confusion_type": "metric_role",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 1
+    },
+    {
+      "id": "rvr-001n",
+      "pair_id": "coverage-vs-accuracy",
+      "confusion_type": "metric_role",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "value_match": false,
+      "correct": true,
+      "binding_count": 0
+    },
+    {
+      "id": "rvr-002p",
+      "pair_id": "rrf-score-vs-latency",
+      "confusion_type": "value_semantic",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 1
+    },
+    {
+      "id": "rvr-002n",
+      "pair_id": "rrf-score-vs-latency",
+      "confusion_type": "value_semantic",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "value_match": false,
+      "correct": true,
+      "binding_count": 0
+    },
+    {
+      "id": "rvr-003p",
+      "pair_id": "weight-vs-threshold",
+      "confusion_type": "relation_role",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 2
+    },
+    {
+      "id": "rvr-003n",
+      "pair_id": "weight-vs-threshold",
+      "confusion_type": "relation_role",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 3
+    },
+    {
+      "id": "rvr-004p",
+      "pair_id": "output-vs-intermediate",
+      "confusion_type": "output_entity",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 3
+    },
+    {
+      "id": "rvr-004n",
+      "pair_id": "output-vs-intermediate",
+      "confusion_type": "output_entity",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "value_match": false,
+      "correct": true,
+      "binding_count": 0
+    },
+    {
+      "id": "rvr-005p",
+      "pair_id": "dimension-vs-total",
+      "confusion_type": "subject_role",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 1
+    },
+    {
+      "id": "rvr-005n",
+      "pair_id": "dimension-vs-total",
+      "confusion_type": "subject_role",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "value_match": false,
+      "correct": true,
+      "binding_count": 0
+    },
+    {
+      "id": "rvr-006p",
+      "pair_id": "priority-vs-retry",
+      "confusion_type": "predicate_role",
+      "expected_binding": true,
+      "predicted_binding": true,
+      "value_match": true,
+      "correct": true,
+      "binding_count": 1
+    },
+    {
+      "id": "rvr-006n",
+      "pair_id": "priority-vs-retry",
+      "confusion_type": "predicate_role",
+      "expected_binding": false,
+      "predicted_binding": false,
+      "value_match": false,
+      "correct": true,
+      "binding_count": 0
+    }
+  ]
+}
