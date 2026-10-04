@@ -31,6 +31,9 @@ from evals.relation_value_binding_v3 import (
     normalize_demand,
 )
 from evals.relation_value_v3_acceptance_audit import load_jsonl
+from evals.relation_value_v3_acceptance_execution_freeze import (
+    verify_manifest as verify_execution_freeze,
+)
 from evals.relation_value_v3_acceptance_freeze import (
     verify_manifest as verify_acceptance_freeze,
 )
@@ -42,6 +45,9 @@ CONFIRMATION = "RUN-FROZEN-V3-ACCEPTANCE-ONCE"
 THRESHOLDS = Path("evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_THRESHOLDS.json")
 THRESHOLDS_SHA256 = "3ab4309c12c631e0dd1030b81b2a01e6d4a27dbda5039253a82bec366213a67c"
 FINAL_OUTPUT_DIR = Path("evals/reports/relation_value_v3_acceptance_final")
+EXECUTION_FREEZE = Path(
+    "evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_EXECUTION_FREEZE.json"
+)
 Binder = Callable[..., tuple[TypedBoundValue, ...]]
 Normalizer = Callable[[str, str | None, str], TypedRelationDemand]
 
@@ -386,6 +392,7 @@ def main() -> None:
     acceptance_manifest = Path(thresholds["acceptance_freeze_manifest"])
     candidate_before, _ = verify_candidate_freeze(candidate_manifest)
     acceptance_before, _ = verify_acceptance_freeze(acceptance_manifest)
+    execution_before, _ = verify_execution_freeze(EXECUTION_FREEZE)
     hashes_match = (
         _sha256(candidate_manifest) == thresholds["candidate_freeze_manifest_sha256"]
         and _sha256(acceptance_manifest)
@@ -393,7 +400,12 @@ def main() -> None:
         and _sha256(Path(thresholds["acceptance_dataset"]))
         == thresholds["acceptance_dataset_sha256"]
     )
-    if not candidate_before or not acceptance_before or not hashes_match:
+    if (
+        not candidate_before
+        or not acceptance_before
+        or not execution_before
+        or not hashes_match
+    ):
         raise SystemExit("frozen input verification failed; acceptance was not executed")
 
     FINAL_OUTPUT_DIR.mkdir(parents=True)
@@ -433,6 +445,7 @@ def main() -> None:
         ledger["case_output_persisted"] = True
         candidate_after, _ = verify_candidate_freeze(candidate_manifest)
         acceptance_after, _ = verify_acceptance_freeze(acceptance_manifest)
+        execution_after, _ = verify_execution_freeze(EXECUTION_FREEZE)
         candidate_after = candidate_after and (
             _sha256(candidate_manifest)
             == thresholds["candidate_freeze_manifest_sha256"]
@@ -463,6 +476,8 @@ def main() -> None:
             acceptance_freeze_after=acceptance_after,
             production_imports_candidate=production_imports_candidate(),
             report_integrity=report_integrity,
+            execution_freeze_before=execution_before,
+            execution_freeze_after=execution_after,
         )
         _atomic_json(FINAL_OUTPUT_DIR / "qualification.json", result)
         _atomic_text(

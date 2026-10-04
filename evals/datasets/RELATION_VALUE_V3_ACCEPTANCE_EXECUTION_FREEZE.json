@@ -1,0 +1,48 @@
+{
+  "schema_version": "relation-value-v3-acceptance-execution-freeze-v1",
+  "candidate": "relation-value-binding-v3",
+  "reviewed_base_commit": "ac7949b",
+  "freeze_scope": "acceptance runner, machine judge, protocol, thresholds, and upstream freeze identities; no acceptance-run or production authorization",
+  "artifacts": {
+    "runner": {
+      "path": "evals/relation_value_v3_acceptance_runner.py",
+      "sha256": "fab1f8d50114c7fcca20bcfaa08a7cba61e92ca1ff592aa164f0401dc078f393"
+    },
+    "machine_judge": {
+      "path": "evals/relation_value_v3_acceptance_qualification.py",
+      "sha256": "21d3388dc1643cbc62ccbe78ce3cb045e8c12fd609f0427861e23db59f7bc7b3"
+    },
+    "execution_freeze_verifier": {
+      "path": "evals/relation_value_v3_acceptance_execution_freeze.py",
+      "sha256": "62133ca1a94f1e7a5d17a51e90c4631e1745cc8623615ae7e3bd0d8dd88e9db1"
+    },
+    "runner_tests": {
+      "path": "tests/unit/test_relation_value_v3_acceptance_runner.py",
+      "sha256": "d6c3788df5bdc3f2aafabb06f791b4f051773f319f74a6cce30eac77a59e73f9"
+    },
+    "protocol_tests": {
+      "path": "tests/unit/test_relation_value_v3_acceptance_protocol.py",
+      "sha256": "bb936f1db80fff808855f6bb2f13ff7c82f7298a780c9dabf213cec9f41406b2"
+    },
+    "protocol": {
+      "path": "evals/designs/relation_value_v3_acceptance_protocol.md",
+      "sha256": "3bb5b306dcf7dcbba2493ad03917e45a50e1964debf166b0acbd9411fad199a5"
+    },
+    "thresholds": {
+      "path": "evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_THRESHOLDS.json",
+      "sha256": "3ab4309c12c631e0dd1030b81b2a01e6d4a27dbda5039253a82bec366213a67c"
+    },
+    "candidate_freeze": {
+      "path": "evals/datasets/RELATION_VALUE_V3_CANDIDATE_FREEZE.json",
+      "sha256": "4c274e604bdd369e01d276398b15cd625fa18ac35d1265054d1fd99665a75e81"
+    },
+    "acceptance_freeze": {
+      "path": "evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_FREEZE.json",
+      "sha256": "38a7def2ddd2716286262168b1b9d4d037646519b55b0bd7c6e91170844f52b3"
+    }
+  },
+  "frozen_at": "2026-10-04T13:19:13.730019+00:00",
+  "formal_run_started_at_freeze": false,
+  "candidate_executed": false,
+  "execution_requires_explicit_user_authorization": true
+}

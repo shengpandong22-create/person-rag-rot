@@ -15,6 +15,8 @@ def qualify(
     acceptance_freeze_after: bool,
     production_imports_candidate: bool,
     report_integrity: bool,
+    execution_freeze_before: bool,
+    execution_freeze_after: bool,
 ) -> dict[str, Any]:
     gates = thresholds["hard_gates"]
     metrics = report["metrics"]
@@ -67,6 +69,8 @@ def qualify(
         "production_isolation": production_imports_candidate
         == gates["production_imports_candidate_required"],
         "report_integrity": report_integrity,
+        "execution_freeze_before_and_after": execution_freeze_before
+        and execution_freeze_after,
     }
     return {
         "candidate": thresholds["candidate"],
