@@ -1,0 +1,44 @@
+{
+  "review_type": "candidate-blind source review",
+  "reviewer": "independent-review-pass-1",
+  "candidate_output_seen": false,
+  "author_labels_seen": true,
+  "strict_blind_reannotation": false,
+  "review_passed": false,
+  "freeze_stage_authorized": false,
+  "agreed_rows_authorized": false,
+  "summary": {
+    "agree": 7,
+    "disagree": 29,
+    "fatal_evidence_mismatch": 3
+  },
+  "agree_ids": [
+    "rva3-013",
+    "rva3-014",
+    "rva3-015",
+    "rva3-016",
+    "rva3-017",
+    "rva3-031",
+    "rva3-035"
+  ],
+  "fatal_ids": [
+    "rva3-019",
+    "rva3-020",
+    "rva3-021"
+  ],
+  "systemic_findings": [
+    "The six multi-demand positives repeat a sequence or range endpoint instead of testing independent clauses.",
+    "The bounded_multi_span bucket is populated by single formula lines or contiguous code blocks rather than genuine bounded cross-structure evidence.",
+    "Most pair_id assignments do not connect a positive and hard negative using the same evidence and a meaningful relation contrast.",
+    "Three RRF rows cite evidence belonging to the following row, leaving one row with only a code fence."
+  ],
+  "required_next_actions": [
+    "Repair rva3-019 through rva3-021 evidence spans and provenance.",
+    "Replace redundant multi-demand labels with genuinely independent requested clauses.",
+    "Rebuild structural-span quotas using true table, code, sentence, and bounded multi-span examples.",
+    "Reassign pair_id values only for auditable same-evidence contrasts.",
+    "Correct version value semantics and negative confusion categories identified in the review.",
+    "Generate a reviewer worksheet that hides author labels and conduct a new strict blind reannotation."
+  ],
+  "candidate_executed": false
+}
