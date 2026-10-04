@@ -134,6 +134,7 @@ def test_machine_qualification_requires_every_check() -> None:
         acceptance_freeze_before=True,
         acceptance_freeze_after=True,
         production_imports_candidate=False,
+        report_integrity=True,
     )
 
     assert result["accepted_for_production_integration_design"] is True
@@ -145,7 +146,21 @@ def test_machine_qualification_requires_every_check() -> None:
         acceptance_freeze_before=True,
         acceptance_freeze_after=True,
         production_imports_candidate=False,
+        report_integrity=True,
     )
+    assert result["accepted_for_production_integration_design"] is False
+
+    result = qualify(
+        thresholds,
+        report,
+        candidate_freeze_before=True,
+        candidate_freeze_after=True,
+        acceptance_freeze_before=True,
+        acceptance_freeze_after=True,
+        production_imports_candidate=False,
+        report_integrity=False,
+    )
+    assert result["checks"]["report_integrity"] is False
     assert result["accepted_for_production_integration_design"] is False
 
 

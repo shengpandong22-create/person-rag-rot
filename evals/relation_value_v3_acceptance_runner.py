@@ -347,9 +347,17 @@ def _human_summary(result: dict[str, Any], report: dict[str, Any]) -> str:
     accepted = result["accepted_for_production_integration_design"]
     failed = [name for name, passed in result["checks"].items() if not passed]
     failed_cases = [case["id"] for case in report["cases"] if not case["passed"]]
+    metrics = report["metrics"]
     return (
         "# Relation-Value V3 Acceptance Result\n\n"
         f"- Accepted for production integration design: `{str(accepted).lower()}`\n"
+        f"- Demand accuracy: `{metrics['demand_accuracy']:.4f}`\n"
+        f"- Positive demand recall: `{metrics['positive_demand_recall']:.4f}`\n"
+        f"- Positive all-demands row accuracy: "
+        f"`{metrics['positive_row_all_demands_accuracy']:.4f}`\n"
+        f"- Negative demand rejection: `{metrics['negative_demand_rejection']:.4f}`\n"
+        f"- Binding precision: `{metrics['binding_precision']:.4f}`\n"
+        f"- Candidate P95: `{metrics['candidate_p95_ms']:.6f} ms`\n"
         f"- Failed gates: {', '.join(failed) if failed else 'none'}\n"
         f"- Failed cases: {', '.join(failed_cases) if failed_cases else 'none'}\n"
         "- Scope: eval-only; this result does not change the production default.\n"
@@ -425,6 +433,27 @@ def main() -> None:
         ledger["case_output_persisted"] = True
         candidate_after, _ = verify_candidate_freeze(candidate_manifest)
         acceptance_after, _ = verify_acceptance_freeze(acceptance_manifest)
+        candidate_after = candidate_after and (
+            _sha256(candidate_manifest)
+            == thresholds["candidate_freeze_manifest_sha256"]
+        )
+        acceptance_after = acceptance_after and (
+            _sha256(acceptance_manifest)
+            == thresholds["acceptance_freeze_manifest_sha256"]
+        )
+        report_integrity = (
+            report["candidate"] == thresholds["candidate"]
+            and report["metadata"]["candidate_freeze_sha256"]
+            == thresholds["candidate_freeze_manifest_sha256"]
+            and report["metadata"]["acceptance_freeze_sha256"]
+            == thresholds["acceptance_freeze_manifest_sha256"]
+            and report["metadata"]["dataset_sha256"]
+            == thresholds["acceptance_dataset_sha256"]
+            and report["metadata"]["thresholds_sha256"] == THRESHOLDS_SHA256
+            and report["metadata"]["retrieval_enabled"] is False
+            and report["metadata"]["database_lookup_enabled"] is False
+            and report["metadata"]["model_inference_enabled"] is False
+        )
         result = qualify(
             thresholds,
             report,
@@ -433,6 +462,7 @@ def main() -> None:
             acceptance_freeze_before=acceptance_before,
             acceptance_freeze_after=acceptance_after,
             production_imports_candidate=production_imports_candidate(),
+            report_integrity=report_integrity,
         )
         _atomic_json(FINAL_OUTPUT_DIR / "qualification.json", result)
         _atomic_text(
