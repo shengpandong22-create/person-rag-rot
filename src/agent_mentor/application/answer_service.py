@@ -243,6 +243,7 @@ class AnswerService:
                 generation_mode="evidence_guard",
                 model_name=None,
                 fallback_reason="insufficient_evidence",
+                allow_model_knowledge=allow_model_knowledge,
             )
 
         # Citations must be both retrieved and lexically related to the question.
@@ -271,6 +272,7 @@ class AnswerService:
             generation_mode=generation_mode,
             model_name=self._default_model if generation_mode == "llm" else None,
             fallback_reason=fallback_reason,
+            allow_model_knowledge=allow_model_knowledge,
         )
 
     async def answer_events(self, **kwargs: object) -> AsyncIterator[dict[str, object]]:
@@ -725,6 +727,7 @@ class AnswerService:
         generation_mode: str,
         model_name: str | None,
         fallback_reason: str | None,
+        allow_model_knowledge: bool,
     ) -> AnswerResult:
         now = datetime.now(UTC)
         session_id = uuid4()
@@ -736,6 +739,7 @@ class AnswerService:
             "generation_mode": generation_mode,
             "model_name": model_name,
             "fallback_reason": fallback_reason,
+            "allow_model_knowledge": allow_model_knowledge,
             "candidates": [
                 {
                     "chunk_id": str(chunk.chunk_id),

@@ -57,6 +57,7 @@ class Settings(BaseSettings):
     retrieval_min_score: float = 0.013
     retrieval_max_chunks_per_document: int = 3
     evidence_gate_policy: EvidenceGatePolicy = EvidenceGatePolicy.CURRENT_BINARY_V1
+    retrieval_expansion_enabled: bool = False
 
     @model_validator(mode="after")
     def clear_model_credentials_in_test(self) -> Settings:
