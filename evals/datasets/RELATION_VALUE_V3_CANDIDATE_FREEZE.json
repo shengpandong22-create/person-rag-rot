@@ -1,0 +1,34 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "candidate_commit": "d55d2c7",
+  "freeze_scope": "eval-only candidate; no production or formal split authorization",
+  "artifacts": {
+    "implementation": {
+      "path": "evals/relation_value_binding_v3.py",
+      "sha256": "44d35c94cd34e377184cafc3a9336b683f7315b421e67a4a42b806b5f2124569"
+    },
+    "original_development_dataset": {
+      "path": "evals/datasets/retrieval_relation_value_development_v1.jsonl",
+      "sha256": "9156164ba289b2407b104c85a717d58149e8862ef5e2ffba6d4aedad9b20173f"
+    },
+    "semantic_role_development_dataset": {
+      "path": "evals/datasets/relation_value_role_development_v1.jsonl",
+      "sha256": "0f9a1d2a0e4d9c674a07ebdb804cccda8114d0b30832f7fae246f4efdd077332"
+    },
+    "original_development_report": {
+      "path": "evals/reports/relation_value_binding_v3_development/result.json",
+      "sha256": "5ea556b68d58a023e69dc89edbb3284765e91dd118018bcef21a55ad8e063892"
+    },
+    "semantic_role_development_report": {
+      "path": "evals/reports/relation_value_role_development_v1/result.json",
+      "sha256": "277af007e704d7668707cbeef3fe7e96e655703e607a8bc270c877c233017f51"
+    },
+    "qualification_thresholds": {
+      "path": "evals/datasets/RELATION_VALUE_V3_FREEZE_THRESHOLDS.json",
+      "sha256": "5297d8108abb9596417765d43302a7ec1fd5435830bde47c78c35dcbd6f3dcab"
+    }
+  },
+  "frozen_at": "2026-10-04T07:18:39.723846+00:00",
+  "qualification_result": "qualified_for_freeze",
+  "next_step_requires_separate_authorization": true
+}
