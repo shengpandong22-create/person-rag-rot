@@ -1,0 +1,53 @@
+{
+  "schema_version": "relation-value-v3-acceptance-freeze-v1",
+  "dataset": "relation-value-v3-acceptance-v1",
+  "source_commit": "acf89f3",
+  "freeze_scope": "reviewed acceptance dataset and label-review chain only; no candidate, retrieval, model, production, or acceptance-run authorization",
+  "artifacts": {
+    "dataset": {
+      "path": "evals/datasets/relation_value_v3_acceptance_v1.jsonl",
+      "sha256": "21f8bc5d87d30dea8941172b184a7a9cff6c6124709611419e661f4212297601"
+    },
+    "composition_contract": {
+      "path": "evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_COMPOSITION.json",
+      "sha256": "d2cc19c9886553a56aee0d6417bb3b289054cd16cdecc3c1d2fab0284d82394f"
+    },
+    "annotation_contract": {
+      "path": "evals/designs/relation_value_v3_acceptance_dataset_design.md",
+      "sha256": "905ca04106b0d4f34ebb7fa2634493d54f0ba8979ab8a30068bc4c6d7b36122c"
+    },
+    "blind_worksheet": {
+      "path": "evals/reviews/relation_value_v3_acceptance_blind_worksheet_v1.jsonl",
+      "sha256": "1806d459bac6d527a0d976eabe53f76000656d2693823b136b7724ca28c33676"
+    },
+    "blind_response": {
+      "path": "evals/reviews/relation_value_v3_acceptance_blind_response_v1.jsonl",
+      "sha256": "031f97f6bd1130ad18928038f7467375a4be9609c7ed9906c7a9c9f969c46463"
+    },
+    "blind_review_summary": {
+      "path": "evals/reviews/relation_value_v3_acceptance_blind_response_v1_summary.md",
+      "sha256": "1d5a23e97c17e6dcb8c54e8185d59615f652fb59c36a1107ecab1d9c4604865a"
+    },
+    "review_comparison": {
+      "path": "evals/reviews/relation_value_v3_acceptance_review_comparison_v1.json",
+      "sha256": "e58deae7a8a85a1e5d58686bc386f9ebbc9e7691046b5dadb7d1e64c3b6258b3"
+    },
+    "adjudication": {
+      "path": "evals/datasets/RELATION_VALUE_V3_ACCEPTANCE_ADJUDICATION.json",
+      "sha256": "dbb4292f07b8f221d330e00985ea9b09a5f10a08a83b09b716852a91b008fa29"
+    },
+    "freeze_stage_audit": {
+      "path": "evals/reports/relation_value_v3_acceptance_reviewed/audit.json",
+      "sha256": "ac6738aa5511ac86f61eae0dcc228e4e8e2a1eb051080bad317dcecdfbb9dabb"
+    },
+    "review_report": {
+      "path": "evals/reports/relation_value_v3_acceptance_reviewed.md",
+      "sha256": "cc55e29e1a60e4d8abe5d7edc8df45be84c745b53214d4539ff891db19dcc446"
+    }
+  },
+  "frozen_at": "2026-10-04T12:44:10.494313+00:00",
+  "review_state": "agreed",
+  "freeze_stage_audit_passed": true,
+  "candidate_executed": false,
+  "next_step_requires_separate_protocol_and_authorization": true
+}
