@@ -80,7 +80,9 @@ docs/
 | [产品与架构设计](design/产品与架构设计.md) | 已确认 | 产品和总体架构基线 |
 | [Evidence Gate 与 Claim Evaluation 技术设计](design/Evidence-Gate与Claim-Evaluation技术设计.md) | 已确认 | 可信 RAG 与 Claim 评测边界 |
 | [Evidence Gate / Claim Evaluation 实验结论](evaluations/evidence-gate-claim-evaluation-20260929.md) | 已完成 | 消融、holdout 与拒绝上线证据 |
-| [核心 RAG 下一阶段：每文档配额消融](planning/核心RAG下一阶段-每文档配额消融.md) | 待执行 | 下一轮核心链路优化计划 |
+| [Relation-Value V3 独立验收结论](evaluations/relation-value-v3-acceptance-20261004.md) | 已关闭 | V3 未通过、拒绝生产接入与实验止损 |
+| [ADR-002：关闭 Relation-Value V3 实验线](decisions/ADR-002-关闭RelationValueV3实验线.md) | 已接受 | 不创建 V4，资源返回核心 RAG |
+| [核心 RAG：用户触发二阶段检索](planning/核心RAG下一阶段-用户触发二阶段检索.md) | 待设计 | 用户可见的扩展召回与新增引用体验 |
 | [V1 实现规格说明](design/V1实现规格说明.md) | 已确认 | V1 技术规格基线 |
 | [V1 分阶段开发计划与验收标准](planning/V1分阶段开发计划与验收标准.md) | 已确认 | 唯一阶段执行基线 |
 

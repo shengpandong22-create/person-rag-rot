@@ -9,3 +9,4 @@
 当前决策：
 
 - [ADR-001：Claim 语义去重保持 Eval-Only](ADR-001-Claim语义去重保持Eval-Only.md)
+- [ADR-002：关闭 Relation-Value V3 实验线](ADR-002-关闭RelationValueV3实验线.md)
