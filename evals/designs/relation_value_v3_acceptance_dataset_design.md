@@ -40,6 +40,9 @@ with `//`; every other line must be one JSON object with these fields:
 | `question` | string | Natural user request; must not disclose expected values artificially. |
 | `answerability` | string | `full` when every required demand is supported; otherwise `none`. |
 | `confusion_type` | string or null | Required for hard negatives; null for ordinary positives. |
+| `primary_relation_role` | string | Positive composition bucket; must equal the first demand role. |
+| `primary_span_type` | string | Positive composition bucket; must equal the first evidence span type. |
+| `pair_id` | string or null | Optional audit-only positive/negative pair identifier. |
 | `demands` | array | One or more typed demand annotations defined below. |
 | `evidence` | array | One or more immutable human-cited evidence records defined below. |
 | `relevant_sources` | array | Stable logical document and heading labels for overlap/audit checks. |
