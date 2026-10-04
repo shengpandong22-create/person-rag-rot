@@ -1,0 +1,141 @@
+{
+  "schema_version": "two-stage-retrieval-contract-v1",
+  "status": "design-only",
+  "production_authorized": false,
+  "endpoint": {
+    "method": "POST",
+    "path": "/api/v1/knowledge-bases/{knowledge_base_id}/answers/{message_id}/expand-retrieval",
+    "streaming_supported": false
+  },
+  "request": {
+    "fields": {
+      "idempotency_key": {
+        "type": "uuid",
+        "required": true
+      },
+      "trigger": {
+        "type": "enum",
+        "required": true,
+        "allowed": [
+          "user_requested_more_evidence"
+        ]
+      }
+    },
+    "client_must_not_supply": [
+      "question",
+      "top_k",
+      "candidate_k",
+      "allow_model_knowledge",
+      "retrieval_strategy"
+    ]
+  },
+  "response": {
+    "fields": [
+      "expansion_id",
+      "session_id",
+      "parent_message_id",
+      "message_id",
+      "answer",
+      "evidence_sufficient",
+      "generation_mode",
+      "model_name",
+      "fallback_reason",
+      "citations",
+      "primary_candidates",
+      "supplemental_candidates",
+      "retrieval_trace"
+    ],
+    "citation_stage_values": [
+      "primary",
+      "supplemental"
+    ],
+    "retrieval_stage": "expanded"
+  },
+  "identity_and_idempotency": {
+    "parent_must_be_assistant_message": true,
+    "parent_knowledge_base_must_match_path": true,
+    "original_question_loaded_server_side": true,
+    "original_allow_model_knowledge_inherited": true,
+    "completed_expansions_per_parent_max": 1,
+    "same_key_replays_stored_response": true,
+    "different_key_after_completion_status": 409,
+    "concurrent_claim_requires_database_unique_constraint": true
+  },
+  "retrieval_invariants": {
+    "primary_top_k": 6,
+    "primary_order_preserved": true,
+    "primary_chunks_may_be_removed": false,
+    "supplemental_strategy": "heading_supplemental_v1",
+    "rrf_weight_change_allowed": false,
+    "embedding_change_allowed": false,
+    "evidence_gate_change_allowed": false,
+    "production_threshold_change_allowed": false,
+    "citation_whitelist_is_combined_context": true
+  },
+  "context_budget": {
+    "supplemental_chunks_max": 7,
+    "combined_chunks_max": 13,
+    "supplemental_content_chars_max": 7000,
+    "combined_content_chars_max": 18000,
+    "supplemental_estimated_tokens_max": 4000,
+    "combined_estimated_tokens_max": 10000,
+    "citations_max": 5,
+    "supplemental_citations_max": 3,
+    "duplicate_chunk_ids_allowed": false,
+    "truncate_chunk_content": false,
+    "budget_overflow_policy": "stop_before_next_whole_chunk"
+  },
+  "trace": {
+    "required_fields": [
+      "trace_id",
+      "expansion_id",
+      "session_id",
+      "parent_message_id",
+      "message_id",
+      "trigger",
+      "strategy",
+      "question_sha256",
+      "primary_chunk_ids",
+      "supplemental_candidate_chunk_ids",
+      "consumed_supplemental_chunk_ids",
+      "deduplicated_chunk_ids",
+      "budget_rejected_chunk_ids",
+      "combined_context_chunk_ids",
+      "citation_chunk_ids",
+      "primary_candidate_count",
+      "supplemental_candidate_count",
+      "consumed_supplemental_count",
+      "combined_context_count",
+      "primary_content_chars",
+      "supplemental_content_chars",
+      "combined_content_chars",
+      "estimated_context_tokens",
+      "evidence_decision_before",
+      "evidence_decision_after",
+      "retrieval_latency_ms",
+      "generation_latency_ms",
+      "total_latency_ms",
+      "status",
+      "failure_code"
+    ],
+    "status_values": [
+      "completed",
+      "no_new_evidence",
+      "failed"
+    ],
+    "raw_question_persisted_in_trace": false
+  },
+  "error_codes": {
+    "404": [
+      "PARENT_ANSWER_NOT_FOUND"
+    ],
+    "409": [
+      "EXPANSION_ALREADY_EXISTS",
+      "EXPANSION_IN_PROGRESS"
+    ],
+    "422": [
+      "PARENT_MESSAGE_NOT_ASSISTANT",
+      "PARENT_CONTEXT_UNAVAILABLE"
+    ]
+  }
+}
