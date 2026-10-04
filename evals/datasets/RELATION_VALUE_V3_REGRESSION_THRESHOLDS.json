@@ -1,0 +1,31 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "purpose": "production-path regression safety; no formal V3 binding score",
+  "dataset": "evals/datasets/retrieval_regression_v1.jsonl",
+  "dataset_sha256": "dc980d953d62bf939c6b5c64e366897c1e78957df0f928e6381aeaeece592df2",
+  "reference_report": "evals/reports/regression_heading_candidate_ablation/vector_only/retrieval_eval.json",
+  "reference_report_sha256": "883a8abe23c654ed8121bb776c717b7df7f8be84b8863a36f6dc22d54e9da8d9",
+  "configuration": {
+    "experiment_mode": "vector-only",
+    "top_k": 6,
+    "candidate_k": 20,
+    "max_chunks_per_document": 3,
+    "candidate_expansion": "none",
+    "supplemental_consumption": "none",
+    "demand_binding_policy": "none",
+    "evidence_gate_policy": "current_binary_v1"
+  },
+  "gates": {
+    "recall_at_1_min": 0.2,
+    "recall_at_3_min": 0.4,
+    "recall_at_6_min": 0.45,
+    "mrr_min": 0.3017,
+    "full_answerability_accuracy_min": 0.8824,
+    "negative_rejection_accuracy_min": 0.5,
+    "candidate_recall_at_20_min": 0.6,
+    "average_candidate_count_required": 6.0,
+    "latency_p95_ms_max": 1000.0,
+    "graded_rows_required": 30,
+    "resolved_labels_required": 20
+  }
+}
