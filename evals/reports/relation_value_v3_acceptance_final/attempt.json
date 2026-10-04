@@ -1,0 +1,10 @@
+{
+  "status": "completed",
+  "started_at": "2026-10-04T13:26:14.042097+00:00",
+  "git_commit": "c3c3c197941e96a3443e2a82ed7926356c6ce461",
+  "candidate_freeze_sha256": "4c274e604bdd369e01d276398b15cd625fa18ac35d1265054d1fd99665a75e81",
+  "acceptance_freeze_sha256": "38a7def2ddd2716286262168b1b9d4d037646519b55b0bd7c6e91170844f52b3",
+  "dataset_sha256": "21f8bc5d87d30dea8941172b184a7a9cff6c6124709611419e661f4212297601",
+  "case_output_persisted": true,
+  "finished_at": "2026-10-04T13:26:14.242678+00:00"
+}

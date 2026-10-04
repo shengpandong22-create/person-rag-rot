@@ -1,0 +1,2023 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "counts": {
+    "evaluated_rows": 36,
+    "evaluated_demands": 43,
+    "unresolved_labels": 0,
+    "case_errors": 0
+  },
+  "metrics": {
+    "demand_accuracy": 0.3256,
+    "positive_demand_recall": 0.0645,
+    "positive_row_all_demands_accuracy": 0.0833,
+    "negative_demand_rejection": 1.0,
+    "negative_row_rejection": 1.0,
+    "binding_precision": 0.2222,
+    "average_bindings_per_demand": 0.2093,
+    "max_bindings_per_demand": 1,
+    "paired_discrimination": 0.0909,
+    "span_success_counts": {
+      "sentence_span": 1,
+      "table_row": 1
+    },
+    "role_success_counts": {
+      "exact": 1,
+      "sequence": 1
+    },
+    "semantic_success_counts": {
+      "generic": 1,
+      "ratio": 1
+    },
+    "negative_category_rejection": {
+      "missing_value_false_premise": 1.0,
+      "provenance_structure": 1.0,
+      "relation_role": 1.0,
+      "subject_predicate": 1.0,
+      "unit_binding": 1.0,
+      "value_semantic": 1.0
+    },
+    "candidate_p50_ms": 0.0395,
+    "candidate_p95_ms": 0.2291
+  },
+  "pair_results": {
+    "pair-candidate-latency": false,
+    "pair-completeness-subject": false,
+    "pair-factor-qps": false,
+    "pair-memory-semantic": true,
+    "pair-reasoning-unit": false,
+    "pair-review-guarantee": false,
+    "pair-score-latency": false,
+    "pair-sequence-provenance": false,
+    "pair-streak-role": false,
+    "pair-version-provenance": false,
+    "pair-weight-subject": false
+  },
+  "cases": [
+    {
+      "id": "rva3-001",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-memory-semantic",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "sentence_span",
+          "passed": true,
+          "correct_binding": true,
+          "binding_count": 1,
+          "correct_binding_count": 1,
+          "spurious_binding_count": 0,
+          "latency_ms": 1.0859,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "项目本地选型内存约束",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": "GB",
+            "preferred_span_type": "sentence_span",
+            "modality": "fact",
+            "relation_terms": [
+              "项目",
+              "目本",
+              "本地",
+              "地选",
+              "选型",
+              "型内",
+              "内存",
+              "约束"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+                "document_logical_name": "第 7 课：工程化专题 + 面试实战",
+                "heading_path": [
+                  "第 7 课：工程化专题 + 面试实战",
+                  "一、教案正文",
+                  "7.7 学完整个项目后应该形成的认知"
+                ]
+              },
+              "values": [
+                "16"
+              ],
+              "canonical_unit": "GB",
+              "role": "exact",
+              "value_semantic": "generic",
+              "span_type": "sentence_span",
+              "span": "并在 16GB 本地约束下选择 PostgreSQL、本地 BGE-small-zh 和模块化单体",
+              "relation_terms": [
+                "本地",
+                "约束"
+              ],
+              "fully_correct": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-002",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "bounded_multi_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.1,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "插入内容前的旧块索引",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "插入",
+              "入内",
+              "内容",
+              "容前",
+              "前的",
+              "的旧",
+              "旧块",
+              "索引"
+            ]
+          },
+          "bindings": []
+        },
+        {
+          "demand_id": "d2",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "bounded_multi_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.069,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "插入内容后的旧块索引",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "插入",
+              "入内",
+              "内容",
+              "容后",
+              "后的",
+              "的旧",
+              "旧块",
+              "索引"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-003",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-score-latency",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "derived_value",
+          "value_semantic": "score",
+          "span_type": "bounded_multi_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.3015,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "四维示例的应用层计算结果",
+            "role": "exact",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "四维",
+              "维示",
+              "示例",
+              "例的",
+              "的应",
+              "应用",
+              "用层",
+              "计算",
+              "算结",
+              "结果"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "141180c3-1581-420e-aabc-aa107e3a7083",
+                "document_logical_name": "第 5 课：可信评分与报告",
+                "heading_path": [
+                  "第 5 课：可信评分与报告",
+                  "一、教案正文",
+                  "5.3 应用层重算总分"
+                ]
+              },
+              "values": [
+                "4",
+                "3",
+                "2",
+                "13",
+                "15"
+              ],
+              "canonical_unit": "分",
+              "role": "exact",
+              "value_semantic": "score",
+              "span_type": "bounded_multi_span",
+              "span": "total=total_score(output),       # ← 应用层重算，不读 LLM 返回的 total ) ``` 原因：LLM 可能算错加法——`4+3+2+4=13` 但 LLM 写了 `15`。Python 的 `+` 不会错。",
+              "relation_terms": [
+                "应用",
+                "用层"
+              ],
+              "fully_correct": false
+            }
+          ]
+        },
+        {
+          "demand_id": "d2",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "score",
+          "span_type": "bounded_multi_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.2132,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "四维示例中LLM写出的错误总分",
+            "role": "exact",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "四维",
+              "维示",
+              "示例",
+              "例中",
+              "llm",
+              "写出",
+              "出的",
+              "的错",
+              "错误"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-004",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-review-guarantee",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "upper_bound",
+          "value_semantic": "score",
+          "span_type": "sentence_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0936,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "Reviewer确认FINAL的分差上界",
+            "role": "upper_bound",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "sentence_span",
+            "modality": "fact",
+            "relation_terms": [
+              "reviewer",
+              "确认",
+              "final",
+              "的分",
+              "分差",
+              "差上",
+              "上界"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-005",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "lower_bound",
+          "value_semantic": "score",
+          "span_type": "sentence_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.069,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "维度冲突触发复核的分差下界",
+            "role": "lower_bound",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "sentence_span",
+            "modality": "fact",
+            "relation_terms": [
+              "维度",
+              "度冲",
+              "冲突",
+              "突触",
+              "触发",
+              "发复",
+              "复核",
+              "的分",
+              "分差",
+              "差下",
+              "下界"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-006",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "sequence",
+          "value_semantic": "ratio",
+          "span_type": "table_row",
+          "passed": true,
+          "correct_binding": true,
+          "binding_count": 1,
+          "correct_binding_count": 1,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.043,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "画像展示中的RAG掌握度变化",
+            "role": "sequence",
+            "value_semantic": "ratio",
+            "canonical_unit": "比例",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "画像",
+              "像展",
+              "展示",
+              "示中",
+              "中的",
+              "rag",
+              "掌握",
+              "握度",
+              "度变",
+              "变化"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+                "document_logical_name": "第 6 课：两层画像与复习闭环",
+                "heading_path": [
+                  "第 6 课：两层画像与复习闭环",
+                  "一、教案正文",
+                  "6.3 两层模型",
+                  "分别解决什么问题"
+                ]
+              },
+              "values": [
+                "0.40",
+                "0.47"
+              ],
+              "canonical_unit": "比例",
+              "role": "sequence",
+              "value_semantic": "ratio",
+              "span_type": "table_row",
+              "span": "| **面试官看到**   | \"RAG 掌握度从 0.40 → 0.47，在进步\" | \"薄弱点在 RRF 融合和检索策略，建议加强\"       |",
+              "relation_terms": [
+                "rag",
+                "掌握",
+                "握度"
+              ],
+              "fully_correct": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-007",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-completeness-subject",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "lower_bound",
+          "value_semantic": "score",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.015,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "completeness单项最低分",
+            "role": "lower_bound",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "completeness",
+              "最低",
+              "低分"
+            ]
+          },
+          "bindings": []
+        },
+        {
+          "demand_id": "d2",
+          "expected_binding": true,
+          "relation_role": "upper_bound",
+          "value_semantic": "score",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0118,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "completeness单项最高分",
+            "role": "exact",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "completeness",
+              "最高",
+              "高分"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-008",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-reasoning-unit",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "range",
+          "value_semantic": "score",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0119,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "reasoning单项分数范围",
+            "role": "range",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "reasoning"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-009",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "range",
+          "value_semantic": "score",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0122,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "communication单项分数范围",
+            "role": "range",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "communication"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-010",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-weight-subject",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "weight",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0142,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "争议或待复核评分的画像更新权重",
+            "role": "exact",
+            "value_semantic": "weight",
+            "canonical_unit": "比例",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "争议",
+              "议或",
+              "或待",
+              "待复",
+              "复核",
+              "核评",
+              "评分",
+              "的画",
+              "画像",
+              "像更",
+              "更新",
+              "新权",
+              "权重"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-011",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "weight",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.0374,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "高置信FINAL的完整更新权重",
+            "role": "exact",
+            "value_semantic": "weight",
+            "canonical_unit": "比例",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "高置",
+              "置信",
+              "final",
+              "的完",
+              "完整",
+              "整更",
+              "更新",
+              "新权",
+              "权重"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "0dcad2df-2d23-4ce3-a735-0a3419cfa7ab",
+                "document_logical_name": "第 6 课：两层画像与复习闭环",
+                "heading_path": [
+                  "第 6 课：两层画像与复习闭环",
+                  "一、教案正文",
+                  "6.4 哪些评分允许更新画像"
+                ]
+              },
+              "values": [
+                "0.70",
+                "1.0"
+              ],
+              "canonical_unit": "比例",
+              "role": "exact",
+              "value_semantic": "weight",
+              "span_type": "table_row",
+              "span": "| final 且 confidence ≥ 0.70 | ✅ True        | 1.0               | 完整权重           |",
+              "relation_terms": [
+                "final",
+                "完整",
+                "权重"
+              ],
+              "fully_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-012",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0102,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "A在向量召回中的排名",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": "名",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "a",
+              "在向",
+              "向量",
+              "量召",
+              "召回",
+              "回中",
+              "中的",
+              "的排"
+            ]
+          },
+          "bindings": []
+        },
+        {
+          "demand_id": "d2",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "table_row",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0082,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "A在全文召回中的排名",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": "名",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "a",
+              "在全",
+              "全文",
+              "文召",
+              "召回",
+              "回中",
+              "中的",
+              "的排"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-013",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-sequence-provenance",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0238,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "启动面试创建首题的sequence",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "启动",
+              "动面",
+              "面试",
+              "试创",
+              "创建",
+              "建首",
+              "首题",
+              "sequence"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-014",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0244,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "掌握度更新的舍入小数位数",
+            "role": "exact",
+            "value_semantic": "ratio",
+            "canonical_unit": "位",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "掌握",
+              "握度",
+              "度更",
+              "更新",
+              "新的",
+              "的舍",
+              "舍入",
+              "小数",
+              "数位",
+              "位数"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-015",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.1536,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "FastAPI Router路由数量",
+            "role": "exact",
+            "value_semantic": "count",
+            "canonical_unit": "个",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "fastapi",
+              "router",
+              "路由",
+              "由数",
+              "数量"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "7ad182f5-310e-47f4-a755-652af547497e",
+                "document_logical_name": "第 1 课：项目全景与架构地图",
+                "heading_path": [
+                  "第 1 课：项目全景与架构地图",
+                  "一、教案正文",
+                  "1.2 六层架构（先建立系统地图）"
+                ]
+              },
+              "values": [
+                "7"
+              ],
+              "canonical_unit": "个",
+              "role": "exact",
+              "value_semantic": "count",
+              "span_type": "sentence_span",
+              "span": "│  接口层    FastAPI Router (7个路由)              │",
+              "relation_terms": [
+                "fastapi",
+                "router",
+                "路由"
+              ],
+              "fully_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-016",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "lower_bound",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0697,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "RRF遍历rank的起始下界",
+            "role": "lower_bound",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "rrf",
+              "遍历",
+              "rank",
+              "的起",
+              "起始",
+              "始下",
+              "下界"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-017",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-candidate-latency",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "upper_bound",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0619,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "词汇证据上下文使用的候选数上限",
+            "role": "upper_bound",
+            "value_semantic": "count",
+            "canonical_unit": "个",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "词汇",
+              "汇证",
+              "证据",
+              "据上",
+              "上下",
+              "下文",
+              "文使",
+              "用的",
+              "的候",
+              "候选",
+              "选数"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-018",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-version-provenance",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_multi_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.2291,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "示例历史引用绑定的版本",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "示例",
+              "例历",
+              "历史",
+              "史引",
+              "引用",
+              "用绑",
+              "绑定",
+              "的版",
+              "版本"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "4e4f757d-00ec-44b8-af49-149c9bede454",
+                "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+                "heading_path": [
+                  "第 2 课：知识入库链路——文档如何变成可检索证据",
+                  "二、学员疑问与讨论记录",
+                  "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+                  "方案 3：版本化引用（企业级方案，说你理解思路即可）"
+                ]
+              },
+              "values": [
+                "42"
+              ],
+              "canonical_unit": null,
+              "role": "exact",
+              "value_semantic": "generic",
+              "span_type": "bounded_multi_span",
+              "span": "旧逻辑：interview.question.reference_chunk_id → chunk(id=42) 新逻辑：interview.question.reference_chunk_id → chunk(id=42, version=v3) 文档重排后：chunk(id=42, version=v4) 是一块新内容 但历史引用仍然指向 chunk(id=42, version=v3) → 保留在历史快照中",
+              "relation_terms": [
+                "历史",
+                "史引",
+                "引用"
+              ],
+              "fully_correct": false
+            }
+          ]
+        },
+        {
+          "demand_id": "d2",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_multi_span",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.2273,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "文档重排后新内容的版本",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "文档",
+              "档重",
+              "重排",
+              "排后",
+              "后新",
+              "新内",
+              "内容",
+              "的版",
+              "版本"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "4e4f757d-00ec-44b8-af49-149c9bede454",
+                "document_logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+                "heading_path": [
+                  "第 2 课：知识入库链路——文档如何变成可检索证据",
+                  "二、学员疑问与讨论记录",
+                  "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+                  "方案 3：版本化引用（企业级方案，说你理解思路即可）"
+                ]
+              },
+              "values": [
+                "42"
+              ],
+              "canonical_unit": null,
+              "role": "exact",
+              "value_semantic": "generic",
+              "span_type": "bounded_multi_span",
+              "span": "旧逻辑：interview.question.reference_chunk_id → chunk(id=42) 新逻辑：interview.question.reference_chunk_id → chunk(id=42, version=v3) 文档重排后：chunk(id=42, version=v4) 是一块新内容 但历史引用仍然指向 chunk(id=42, version=v3) → 保留在历史快照中",
+              "relation_terms": [
+                "文档",
+                "档重",
+                "重排",
+                "排后",
+                "新内",
+                "内容"
+              ],
+              "fully_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-019",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "derived_value",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0265,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "D的RRF两路贡献之和",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "d",
+              "rrf",
+              "两路",
+              "路贡",
+              "贡献",
+              "献之",
+              "之和"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-020",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "derived_value",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.0321,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "仅全文召回C的RRF计算结果",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "仅全",
+              "全文",
+              "文召",
+              "召回",
+              "c",
+              "rrf",
+              "计算",
+              "算结",
+              "结果"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+                "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+                "heading_path": [
+                  "第 3 课：混合检索与可信 RAG 回答",
+                  "一、教案正文",
+                  "3.3 RRF 融合：为什么不能直接加分数",
+                  "具体计算示例"
+                ]
+              },
+              "values": [
+                "1",
+                "60",
+                "1/61",
+                "0.0164"
+              ],
+              "canonical_unit": null,
+              "role": "exact",
+              "value_semantic": "generic",
+              "span_type": "code_statement",
+              "span": "C: 1/(60+1)          = 1/61      = 0.0164   ← 只有全文路",
+              "relation_terms": [
+                "全文",
+                "c"
+              ],
+              "fully_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-021",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "derived_value",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 1,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 1,
+          "latency_ms": 0.0287,
+          "failure_category": "binding_mismatch",
+          "normalized_demand": {
+            "relation": "仅向量召回B的RRF计算结果",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "仅向",
+              "向量",
+              "量召",
+              "召回",
+              "b",
+              "rrf",
+              "计算",
+              "算结",
+              "结果"
+            ]
+          },
+          "bindings": [
+            {
+              "provenance": {
+                "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+                "document_logical_name": "第 3 课：混合检索与可信 RAG 回答",
+                "heading_path": [
+                  "第 3 课：混合检索与可信 RAG 回答",
+                  "一、教案正文",
+                  "3.3 RRF 融合：为什么不能直接加分数",
+                  "具体计算示例"
+                ]
+              },
+              "values": [
+                "1",
+                "60",
+                "2",
+                "1/62",
+                "0.0161"
+              ],
+              "canonical_unit": null,
+              "role": "exact",
+              "value_semantic": "generic",
+              "span_type": "code_statement",
+              "span": "B: 1/(60+2)          = 1/62      = 0.0161   ← 只有向量路",
+              "relation_terms": [
+                "向量",
+                "b"
+              ],
+              "fully_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rva3-022",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-factor-qps",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0803,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "easy难度因子",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "easy",
+              "难度",
+              "度因",
+              "因子"
+            ]
+          },
+          "bindings": []
+        },
+        {
+          "demand_id": "d2",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.07,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "medium难度因子",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "medium",
+              "难度",
+              "度因",
+              "因子"
+            ]
+          },
+          "bindings": []
+        },
+        {
+          "demand_id": "d3",
+          "expected_binding": true,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0696,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "hard难度因子",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "hard",
+              "难度",
+              "度因",
+              "因子"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-023",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": "pair-streak-role",
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "upper_bound",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0473,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "verification streak累加上限",
+            "role": "upper_bound",
+            "value_semantic": "count",
+            "canonical_unit": "次",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "verification",
+              "streak",
+              "累加"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-024",
+      "answerability": "full",
+      "confusion_type": null,
+      "pair_id": null,
+      "passed": false,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": true,
+          "relation_role": "lower_bound",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": false,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0395,
+          "failure_category": "binding_miss",
+          "normalized_demand": {
+            "relation": "英文特征单词长度下限",
+            "role": "lower_bound",
+            "value_semantic": "generic",
+            "canonical_unit": "个字符",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "英文",
+              "文特",
+              "特征",
+              "征单",
+              "单词",
+              "词长",
+              "长度"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-025",
+      "answerability": "none",
+      "confusion_type": "relation_role",
+      "pair_id": "pair-review-guarantee",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "accuracy",
+          "span_type": "sentence_span",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0114,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "Reviewer评分绝对正确保证",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "sentence_span",
+            "modality": "guarantee",
+            "relation_terms": [
+              "reviewer",
+              "评分",
+              "分绝",
+              "绝对",
+              "对正",
+              "正确"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-026",
+      "answerability": "none",
+      "confusion_type": "relation_role",
+      "pair_id": "pair-streak-role",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0493,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "任何进度写入所需精确次数",
+            "role": "exact",
+            "value_semantic": "count",
+            "canonical_unit": "次",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "任何",
+              "何进",
+              "进度",
+              "度写",
+              "写入",
+              "入所",
+              "所需",
+              "精确",
+              "确次",
+              "次数"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-027",
+      "answerability": "none",
+      "confusion_type": "value_semantic",
+      "pair_id": "pair-memory-semantic",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "sentence_span",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.019,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "系统并发用户数量",
+            "role": "exact",
+            "value_semantic": "count",
+            "canonical_unit": "位",
+            "preferred_span_type": "sentence_span",
+            "modality": "fact",
+            "relation_terms": [
+              "系统",
+              "统并",
+              "并发",
+              "发用",
+              "用户",
+              "户数",
+              "数量"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-028",
+      "answerability": "none",
+      "confusion_type": "value_semantic",
+      "pair_id": "pair-score-latency",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "duration",
+          "span_type": "bounded_multi_span",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.1414,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "评分接口P95延迟",
+            "role": "exact",
+            "value_semantic": "duration",
+            "canonical_unit": "毫秒",
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "评分",
+              "分接",
+              "接口",
+              "p95",
+              "延迟"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-029",
+      "answerability": "none",
+      "confusion_type": "subject_predicate",
+      "pair_id": "pair-completeness-subject",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "upper_bound",
+          "value_semantic": "score",
+          "span_type": "table_row",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0153,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "correctness单项最高分",
+            "role": "exact",
+            "value_semantic": "score",
+            "canonical_unit": "分",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "correctness",
+              "最高",
+              "高分"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-030",
+      "answerability": "none",
+      "confusion_type": "subject_predicate",
+      "pair_id": "pair-weight-subject",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "weight",
+          "span_type": "table_row",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0187,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "高置信FINAL更新权重",
+            "role": "exact",
+            "value_semantic": "weight",
+            "canonical_unit": "比例",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "高置",
+              "置信",
+              "final",
+              "更新",
+              "新权",
+              "权重"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-031",
+      "answerability": "none",
+      "confusion_type": "unit_binding",
+      "pair_id": "pair-reasoning-unit",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "range",
+          "value_semantic": "duration",
+          "span_type": "table_row",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0361,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "reasoning记录保留期限",
+            "role": "exact",
+            "value_semantic": "duration",
+            "canonical_unit": "天",
+            "preferred_span_type": "table_row",
+            "modality": "fact",
+            "relation_terms": [
+              "reasoning",
+              "记录",
+              "录保",
+              "保留",
+              "留期",
+              "期限"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-032",
+      "answerability": "none",
+      "confusion_type": "unit_binding",
+      "pair_id": null,
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "upper_bound",
+          "value_semantic": "duration",
+          "span_type": "sentence_span",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0184,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "单次请求时长上限",
+            "role": "upper_bound",
+            "value_semantic": "duration",
+            "canonical_unit": "毫秒",
+            "preferred_span_type": "sentence_span",
+            "modality": "fact",
+            "relation_terms": [
+              "单次",
+              "次请",
+              "请求",
+              "求时",
+              "时长"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-033",
+      "answerability": "none",
+      "confusion_type": "provenance_structure",
+      "pair_id": "pair-sequence-provenance",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "count",
+          "span_type": "code_statement",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.024,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "恢复后第二题的sequence值",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "恢复",
+              "复后",
+              "后第",
+              "第二",
+              "二题",
+              "题的",
+              "sequence"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-034",
+      "answerability": "none",
+      "confusion_type": "provenance_structure",
+      "pair_id": "pair-version-provenance",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "generic",
+          "span_type": "bounded_multi_span",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.2109,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "另一份SourceDocument的版本",
+            "role": "exact",
+            "value_semantic": "generic",
+            "canonical_unit": null,
+            "preferred_span_type": "bounded_multi_span",
+            "modality": "fact",
+            "relation_terms": [
+              "另一",
+              "一份",
+              "sourcedocument",
+              "的版",
+              "版本"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-035",
+      "answerability": "none",
+      "confusion_type": "missing_value_false_premise",
+      "pair_id": "pair-candidate-latency",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "duration",
+          "span_type": "code_statement",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0565,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "线上词汇证据P95延迟",
+            "role": "exact",
+            "value_semantic": "duration",
+            "canonical_unit": "毫秒",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "线上",
+              "上词",
+              "词汇",
+              "汇证",
+              "证据",
+              "p95",
+              "延迟"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "rva3-036",
+      "answerability": "none",
+      "confusion_type": "missing_value_false_premise",
+      "pair_id": "pair-factor-qps",
+      "passed": true,
+      "demands": [
+        {
+          "demand_id": "d1",
+          "expected_binding": false,
+          "relation_role": "exact",
+          "value_semantic": "rate",
+          "span_type": "code_statement",
+          "passed": true,
+          "correct_binding": false,
+          "binding_count": 0,
+          "correct_binding_count": 0,
+          "spurious_binding_count": 0,
+          "latency_ms": 0.0351,
+          "failure_category": null,
+          "normalized_demand": {
+            "relation": "生产服务实测QPS",
+            "role": "exact",
+            "value_semantic": "rate",
+            "canonical_unit": "QPS",
+            "preferred_span_type": "code_statement",
+            "modality": "fact",
+            "relation_terms": [
+              "生产",
+              "产服",
+              "服务",
+              "务实",
+              "实测",
+              "qps"
+            ]
+          },
+          "bindings": []
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "git_commit": "c3c3c197941e96a3443e2a82ed7926356c6ce461",
+    "started_at": "2026-10-04T13:26:14.042097+00:00",
+    "finished_at": "2026-10-04T13:26:14.137601+00:00",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "dependency_versions": {
+      "sqlalchemy": "2.0.51",
+      "pydantic": "2.13.4",
+      "pydantic-settings": "2.14.2"
+    },
+    "thresholds_sha256": "3ab4309c12c631e0dd1030b81b2a01e6d4a27dbda5039253a82bec366213a67c",
+    "candidate_freeze_sha256": "4c274e604bdd369e01d276398b15cd625fa18ac35d1265054d1fd99665a75e81",
+    "acceptance_freeze_sha256": "38a7def2ddd2716286262168b1b9d4d037646519b55b0bd7c6e91170844f52b3",
+    "dataset_sha256": "21f8bc5d87d30dea8941172b184a7a9cff6c6124709611419e661f4212297601",
+    "retrieval_enabled": false,
+    "database_lookup_enabled": false,
+    "model_inference_enabled": false,
+    "command": "D:\\AgentStudy\\personal-rag-bot\\evals\\relation_value_v3_acceptance_runner.py --confirm RUN-FROZEN-V3-ACCEPTANCE-ONCE"
+  }
+}

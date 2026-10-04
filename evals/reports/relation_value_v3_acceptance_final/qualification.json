@@ -1,0 +1,68 @@
+{
+  "candidate": "relation-value-binding-v3",
+  "accepted_for_production_integration_design": false,
+  "checks": {
+    "demand_accuracy": false,
+    "positive_demand_recall": false,
+    "positive_row_all_demands_accuracy": false,
+    "negative_demand_rejection": true,
+    "negative_row_rejection": true,
+    "binding_precision": false,
+    "average_bindings_per_demand": true,
+    "max_bindings_per_demand": true,
+    "paired_discrimination": false,
+    "span_success_counts": false,
+    "role_success_counts": false,
+    "semantic_success_counts": false,
+    "negative_category_rejection": true,
+    "evaluated_rows": true,
+    "evaluated_demands": true,
+    "unresolved_labels": true,
+    "case_errors": true,
+    "candidate_p95_ms": true,
+    "candidate_freeze_before_and_after": true,
+    "acceptance_freeze_before_and_after": true,
+    "production_isolation": true,
+    "report_integrity": true,
+    "execution_freeze_before_and_after": true
+  },
+  "observed_metrics": {
+    "demand_accuracy": 0.3256,
+    "positive_demand_recall": 0.0645,
+    "positive_row_all_demands_accuracy": 0.0833,
+    "negative_demand_rejection": 1.0,
+    "negative_row_rejection": 1.0,
+    "binding_precision": 0.2222,
+    "average_bindings_per_demand": 0.2093,
+    "max_bindings_per_demand": 1,
+    "paired_discrimination": 0.0909,
+    "span_success_counts": {
+      "sentence_span": 1,
+      "table_row": 1
+    },
+    "role_success_counts": {
+      "exact": 1,
+      "sequence": 1
+    },
+    "semantic_success_counts": {
+      "generic": 1,
+      "ratio": 1
+    },
+    "negative_category_rejection": {
+      "missing_value_false_premise": 1.0,
+      "provenance_structure": 1.0,
+      "relation_role": 1.0,
+      "subject_predicate": 1.0,
+      "unit_binding": 1.0,
+      "value_semantic": 1.0
+    },
+    "candidate_p50_ms": 0.0395,
+    "candidate_p95_ms": 0.2291
+  },
+  "observed_counts": {
+    "evaluated_rows": 36,
+    "evaluated_demands": 43,
+    "unresolved_labels": 0,
+    "case_errors": 0
+  }
+}
