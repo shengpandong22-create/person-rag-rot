@@ -87,7 +87,8 @@ Each `evidence` item must contain:
 - `span_text`: the minimal sufficient verbatim evidence, including required headers or neighboring
   clauses when necessary for meaning;
 - `span_sha256`: SHA-256 of UTF-8 `span_text` after line endings are normalized to LF;
-- `source_content_hash`: frozen document content hash;
+- `source_content_hash`: knowledge-base document content hash captured from the database;
+- `source_file_sha256`: SHA-256 of the reviewed repository source file;
 - `supports_demand_ids`: demand IDs actually supported by this evidence.
 
 The span must be bounded structurally, not merely shortened. A table row includes the header when

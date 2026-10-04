@@ -56,6 +56,7 @@ def test_audit_rejects_overlap_bad_hash_and_same_reviewer(tmp_path: Path) -> Non
                 "span_text": "值为 5 条。",
                 "span_sha256": "bad",
                 "source_content_hash": hashlib.sha256(source.read_bytes()).hexdigest(),
+                "source_file_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
                 "supports_demand_ids": ["d1"],
             }
         ],

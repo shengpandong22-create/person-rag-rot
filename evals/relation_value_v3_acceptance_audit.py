@@ -89,6 +89,7 @@ def audit(
     *,
     existing_paths: Iterable[Path] = (),
     source_root: Path = Path("docs/learning"),
+    require_review: bool = True,
 ) -> dict[str, Any]:
     errors: list[str] = []
     ids: set[str] = set()
@@ -226,31 +227,33 @@ def audit(
             if not source.is_file():
                 errors.append(f"{prefix}: source document missing")
                 continue
-            if file_sha256(source) != item.get("source_content_hash"):
-                errors.append(f"{prefix}: source content hash mismatch")
+            if not item.get("source_content_hash"):
+                errors.append(f"{prefix}: knowledge-base content hash missing")
+            if file_sha256(source) != item.get("source_file_sha256"):
+                errors.append(f"{prefix}: source file hash mismatch")
             normalized_source = source.read_text(encoding="utf-8").replace("\r\n", "\n")
             normalized_span = span_text.replace("\r\n", "\n").replace("\r", "\n")
             if normalized_span not in normalized_source:
                 errors.append(f"{prefix}: evidence span not found in source")
         annotation = row.get("annotation", {})
-        if annotation.get("review_state") != plan["required_review_state"]:
-            errors.append(f"{prefix}: review is not agreed")
-        if not annotation.get("author") or not annotation.get("reviewer"):
-            errors.append(f"{prefix}: author and reviewer required")
-        if annotation.get("author") == annotation.get("reviewer"):
-            errors.append(f"{prefix}: author and reviewer must differ")
+        if require_review:
+            if annotation.get("review_state") != plan["required_review_state"]:
+                errors.append(f"{prefix}: review is not agreed")
+            if not annotation.get("author") or not annotation.get("reviewer"):
+                errors.append(f"{prefix}: author and reviewer required")
+            if annotation.get("author") == annotation.get("reviewer"):
+                errors.append(f"{prefix}: author and reviewer must differ")
+        elif annotation.get("review_state") != "draft" or not annotation.get("author"):
+            errors.append(f"{prefix}: first-pass row must be an authored draft")
 
     checks = {
         "total_rows": len(rows) == plan["total_rows"],
         "positive_rows": positive_count == plan["positive_rows"],
         "hard_negative_rows": negative_count == plan["hard_negative_rows"],
         "multi_demand_rows": multi_demand_count == plan["multi_demand_rows"],
-        "positive_span_distribution": dict(positive_spans)
-        == plan["positive_span_distribution"],
-        "positive_role_distribution": dict(positive_roles)
-        == plan["positive_role_distribution"],
-        "hard_negative_distribution": dict(negative_types)
-        == plan["hard_negative_distribution"],
+        "positive_span_distribution": dict(positive_spans) == plan["positive_span_distribution"],
+        "positive_role_distribution": dict(positive_roles) == plan["positive_role_distribution"],
+        "hard_negative_distribution": dict(negative_types) == plan["hard_negative_distribution"],
         "documents_represented": len(documents) >= plan["minimums"]["documents_represented"],
         "positive_rows_per_document": max(documents.values(), default=0)
         <= plan["maximums"]["positive_rows_per_document"],
@@ -259,8 +262,7 @@ def audit(
         "unitless_positives": unitless_count >= plan["minimums"]["unitless_positives"],
         "unit_alias_or_conversion_positives": conversion_count
         >= plan["minimums"]["unit_alias_or_conversion_positives"],
-        "multi_value_positives": multi_value_count
-        >= plan["minimums"]["multi_value_positives"],
+        "multi_value_positives": multi_value_count >= plan["minimums"]["multi_value_positives"],
         "numeric_distractor_negatives": numeric_distractor_count
         >= plan["minimums"]["numeric_distractor_negatives"],
         "paired_hard_negatives": sum(count >= 2 for count in pair_members.values())
@@ -283,6 +285,7 @@ def audit(
         },
         "errors": errors,
         "candidate_executed": False,
+        "review_required": require_review,
     }
 
 
@@ -292,6 +295,7 @@ def main() -> None:
     parser.add_argument("--plan", required=True, type=Path)
     parser.add_argument("--compare", action="append", type=Path, default=[])
     parser.add_argument("--source-root", type=Path, default=Path("docs/learning"))
+    parser.add_argument("--stage", choices=("draft", "freeze"), default="freeze")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     result = audit(
@@ -299,6 +303,7 @@ def main() -> None:
         json.loads(args.plan.read_text(encoding="utf-8")),
         existing_paths=args.compare,
         source_root=args.source_root,
+        require_review=args.stage == "freeze",
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
