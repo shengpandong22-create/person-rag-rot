@@ -90,7 +90,7 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 | ✅ 已关闭 | ~~**Embedding 维度硬编码不匹配风险**~~ **已关闭：512 维 + 启动校验**。`KnowledgeChunkModel.embedding` 现为 `Vector(512)`，`Settings.embedding_dimension` 默认 512 且被限制只能取 512，应用启动期强制校验二者一致，不符即报错。 | `infrastructure/database/models.py` vs `config.py` |
 | 🟢 低   | **search_text 更新使用原始 SQL**：`knowledge_service.py:230-238` 通过 `text("UPDATE ... SET search_text = to_tsvector(...)")` 直接执行 SQL，绕过 ORM。虽然功能正确，但不够 idiom。 | `application/knowledge_service.py:230-238`                |
 | 🟢 低   | **_has_lexical_support 的硬编码特例**：为 "rrf"、"全文检索"、"向量检索" 等特定查询添加了手动 term 扩展，这些特例维护成本高。 | `application/answer_service.py:364-370`                   |
-| 🟢 低   | **评测数据集存在但无自动化 runner**：`evals/datasets/` 下有数据，但未发现对应的评估脚本来自动运行和计算 Recall@K / MRR。 | `evals/`                                                  |
+| ✅ 已关闭 | ~~**评测数据集存在但无自动化 runner**~~ **已关闭：评测链路已自动化**。检索与评分评测已具备自动化 runner、冻结数据集和机器可读报告；当前限制不再是“没有 runner”，而是样本规模、运行环境与独立验收覆盖仍需持续扩展。 | `evals/`                                                  |
 
 #### 改进建议
 
