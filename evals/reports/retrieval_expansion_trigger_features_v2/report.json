@@ -1,0 +1,362 @@
+{
+  "schema_version": "retrieval-expansion-trigger-features-v2",
+  "git": {
+    "git_commit": "9621de7e2681341b46ebff550a6952ee92212cd6",
+    "git_short_commit": "9621de7e2681",
+    "git_dirty": false,
+    "git_branch": "codex/eval-foundation-rebuild"
+  },
+  "scope": "read-only-feature-diagnostics-no-trigger-decision",
+  "case_count": 18,
+  "group_counts": {
+    "hard_negative": 6,
+    "other_positive": 6,
+    "recoverable_positive": 6
+  },
+  "group_feature_averages": {
+    "hard_negative": {
+      "new_heading_path_ratio": 1.0,
+      "same_document_new_heading_ratio": 0.8889,
+      "new_document_ratio": 0.1111,
+      "heading_concept_redundancy": 0.463,
+      "heading_concept_novelty": 0.537,
+      "question_heading_novelty": 0.18,
+      "primary_heading_coverage": 0.1439,
+      "same_document_new_heading": 1.0,
+      "primary_document_count": 3.5,
+      "supplemental_document_count": 1.5
+    },
+    "other_positive": {
+      "new_heading_path_ratio": 0.7778,
+      "same_document_new_heading_ratio": 0.4445,
+      "new_document_ratio": 0.3333,
+      "heading_concept_redundancy": 0.3067,
+      "heading_concept_novelty": 0.5266,
+      "question_heading_novelty": 0.0306,
+      "primary_heading_coverage": 0.2528,
+      "same_document_new_heading": 0.6667,
+      "primary_document_count": 3.8333,
+      "supplemental_document_count": 1.1667
+    },
+    "recoverable_positive": {
+      "new_heading_path_ratio": 1.0,
+      "same_document_new_heading_ratio": 0.8889,
+      "new_document_ratio": 0.1111,
+      "heading_concept_redundancy": 0.443,
+      "heading_concept_novelty": 0.5569,
+      "question_heading_novelty": 0.2217,
+      "primary_heading_coverage": 0.1139,
+      "same_document_new_heading": 1.0,
+      "primary_document_count": 3.5,
+      "supplemental_document_count": 1.5
+    }
+  },
+  "cases": [
+    {
+      "case_id": "exp-dev-deep-001",
+      "group": "recoverable_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.6,
+        "heading_concept_novelty": 0.4,
+        "question_heading_novelty": 0.0476,
+        "primary_heading_coverage": 0.1429,
+        "same_document_new_heading": true,
+        "primary_document_count": 2,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-dev-deep-002",
+      "group": "recoverable_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.3333,
+        "heading_concept_novelty": 0.6667,
+        "question_heading_novelty": 0.08,
+        "primary_heading_coverage": 0.16,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-dev-deep-003",
+      "group": "other_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 0.0,
+        "new_document_ratio": 1.0,
+        "heading_concept_redundancy": 0.0833,
+        "heading_concept_novelty": 0.9167,
+        "question_heading_novelty": 0.0833,
+        "primary_heading_coverage": 0.0417,
+        "same_document_new_heading": false,
+        "primary_document_count": 5,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-dev-deep-004",
+      "group": "other_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 0.6667,
+        "new_document_ratio": 0.3333,
+        "heading_concept_redundancy": 0.2667,
+        "heading_concept_novelty": 0.7333,
+        "question_heading_novelty": 0.05,
+        "primary_heading_coverage": 0.15,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 2
+      }
+    },
+    {
+      "case_id": "exp-dev-para-001",
+      "group": "recoverable_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.3846,
+        "heading_concept_novelty": 0.6154,
+        "question_heading_novelty": 0.0526,
+        "primary_heading_coverage": 0.0526,
+        "same_document_new_heading": true,
+        "primary_document_count": 5,
+        "supplemental_document_count": 2
+      }
+    },
+    {
+      "case_id": "exp-dev-para-002",
+      "group": "other_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 0.0,
+        "same_document_new_heading_ratio": 0.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.0,
+        "heading_concept_novelty": 0.0,
+        "question_heading_novelty": 0.0,
+        "primary_heading_coverage": 0.1071,
+        "same_document_new_heading": false,
+        "primary_document_count": 4,
+        "supplemental_document_count": 0
+      }
+    },
+    {
+      "case_id": "exp-dev-para-003",
+      "group": "recoverable_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 0.3333,
+        "new_document_ratio": 0.6667,
+        "heading_concept_redundancy": 0.4118,
+        "heading_concept_novelty": 0.5882,
+        "question_heading_novelty": 0.0,
+        "primary_heading_coverage": 0.0526,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 2
+      }
+    },
+    {
+      "case_id": "exp-dev-para-004",
+      "group": "other_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 0.3333,
+        "new_document_ratio": 0.6667,
+        "heading_concept_redundancy": 0.1333,
+        "heading_concept_novelty": 0.8667,
+        "question_heading_novelty": 0.05,
+        "primary_heading_coverage": 0.25,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 2
+      }
+    },
+    {
+      "case_id": "exp-dev-control-001",
+      "group": "recoverable_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.2857,
+        "heading_concept_novelty": 0.7143,
+        "question_heading_novelty": 0.4,
+        "primary_heading_coverage": 0.15,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-dev-control-002",
+      "group": "other_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 0.6667,
+        "same_document_new_heading_ratio": 0.6667,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.8571,
+        "heading_concept_novelty": 0.1429,
+        "question_heading_novelty": 0.0,
+        "primary_heading_coverage": 0.3571,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-dev-control-003",
+      "group": "recoverable_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.6429,
+        "heading_concept_novelty": 0.3571,
+        "question_heading_novelty": 0.75,
+        "primary_heading_coverage": 0.125,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 2
+      }
+    },
+    {
+      "case_id": "exp-dev-control-004",
+      "group": "other_positive",
+      "ground_truth_resolution": "resolved",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.5,
+        "heading_concept_novelty": 0.5,
+        "question_heading_novelty": 0.0,
+        "primary_heading_coverage": 0.6111,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-sel-neg-001",
+      "group": "hard_negative",
+      "ground_truth_resolution": "absent",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.6,
+        "heading_concept_novelty": 0.4,
+        "question_heading_novelty": 0.0833,
+        "primary_heading_coverage": 0.1667,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-sel-neg-002",
+      "group": "hard_negative",
+      "ground_truth_resolution": "absent",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.3333,
+        "heading_concept_novelty": 0.6667,
+        "question_heading_novelty": 0.5,
+        "primary_heading_coverage": 0.0,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-sel-neg-003",
+      "group": "hard_negative",
+      "ground_truth_resolution": "absent",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.5385,
+        "heading_concept_novelty": 0.4615,
+        "question_heading_novelty": 0.0,
+        "primary_heading_coverage": 0.3077,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-sel-neg-004",
+      "group": "hard_negative",
+      "ground_truth_resolution": "absent",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 0.3333,
+        "new_document_ratio": 0.6667,
+        "heading_concept_redundancy": 0.3333,
+        "heading_concept_novelty": 0.6667,
+        "question_heading_novelty": 0.0667,
+        "primary_heading_coverage": 0.3333,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 2
+      }
+    },
+    {
+      "case_id": "exp-sel-neg-005",
+      "group": "hard_negative",
+      "ground_truth_resolution": "absent",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.2857,
+        "heading_concept_novelty": 0.7143,
+        "question_heading_novelty": 0.1667,
+        "primary_heading_coverage": 0.0556,
+        "same_document_new_heading": true,
+        "primary_document_count": 4,
+        "supplemental_document_count": 1
+      }
+    },
+    {
+      "case_id": "exp-sel-neg-006",
+      "group": "hard_negative",
+      "ground_truth_resolution": "absent",
+      "features": {
+        "new_heading_path_ratio": 1.0,
+        "same_document_new_heading_ratio": 1.0,
+        "new_document_ratio": 0.0,
+        "heading_concept_redundancy": 0.6875,
+        "heading_concept_novelty": 0.3125,
+        "question_heading_novelty": 0.2632,
+        "primary_heading_coverage": 0.0,
+        "same_document_new_heading": true,
+        "primary_document_count": 3,
+        "supplemental_document_count": 3
+      }
+    }
+  ]
+}
