@@ -82,6 +82,7 @@ npm.cmd run build
 - [Evidence Gate 与 Claim Evaluation 技术设计](docs/design/Evidence-Gate与Claim-Evaluation技术设计.md)
 - [Evidence Gate / Claim Evaluation 实验结论](docs/evaluations/evidence-gate-claim-evaluation-20260929.md)
 - [RAG 调优方法论与实战复盘](docs/interview/AgentMentor-RAG调优方法论与实战复盘.md)
+- [终局面试展示包](docs/interview/AgentMentor-终局面试展示包.md)
 - [只读 Shadow Agent 设计](docs/design/只读Shadow-Agent设计.md)
 - [Shadow Agent Contract Development 结果](docs/evaluations/shadow-agent-contract-development-20261005.md)
 - [Shadow Agent 真实模型 Development 结果](docs/evaluations/shadow-agent-semantic-development-20261005.md)
