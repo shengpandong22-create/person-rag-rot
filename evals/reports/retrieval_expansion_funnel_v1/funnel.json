@@ -1,0 +1,123 @@
+{
+  "schema_version": "retrieval-expansion-funnel-v1",
+  "generated_at": "2026-10-05T03:19:24.528857+00:00",
+  "git": {
+    "git_commit": "86cfd2e20d57a35e371bda91b87b081d09d1eade",
+    "git_short_commit": "86cfd2e20d57",
+    "git_dirty": false,
+    "git_branch": "codex/eval-foundation-rebuild"
+  },
+  "scope": "read-only-unrecovered-development-cases",
+  "source_report": "evals\\reports\\retrieval_expansion_development_v1\\report.json",
+  "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "case_count": 4,
+  "terminal_loss_counts": {
+    "heading_candidate_suppressed_by_vector_membership": 4
+  },
+  "cases": [
+    {
+      "case_id": "exp-dev-deep-001",
+      "question": "项目声称支持断点恢复时，哪些内容其实不在 checkpoint 的职责范围内？",
+      "ground_truth_resolution": "resolved",
+      "ground_truth_chunk_ids": [
+        "4880f36b-c43c-47bc-981d-10992e825ccd"
+      ],
+      "ranks": {
+        "vector_rank": 12,
+        "text_rank": null,
+        "ordered_rank": 20,
+        "post_filter_rank": null,
+        "primary_rank": null,
+        "heading_rank": 3,
+        "semantic_rank": 14,
+        "supplemental_rank": null,
+        "consumed_rank": null
+      },
+      "terminal_loss": "heading_candidate_suppressed_by_vector_membership",
+      "heading_candidate_count": 20,
+      "semantic_candidate_count": 20,
+      "supplemental_candidate_count": 14,
+      "consumed_supplemental_count": 7,
+      "budget_rejected_count": 7,
+      "deduplicated_count": 0
+    },
+    {
+      "case_id": "exp-dev-deep-002",
+      "question": "为什么文档重新入库时只能尽量复用旧块标识，而不能承诺永远保持不变？",
+      "ground_truth_resolution": "resolved",
+      "ground_truth_chunk_ids": [
+        "20fde7d8-b88f-4382-97b6-731c8f41ff6c"
+      ],
+      "ranks": {
+        "vector_rank": 15,
+        "text_rank": null,
+        "ordered_rank": 25,
+        "post_filter_rank": null,
+        "primary_rank": null,
+        "heading_rank": 3,
+        "semantic_rank": 13,
+        "supplemental_rank": null,
+        "consumed_rank": null
+      },
+      "terminal_loss": "heading_candidate_suppressed_by_vector_membership",
+      "heading_candidate_count": 20,
+      "semantic_candidate_count": 20,
+      "supplemental_candidate_count": 13,
+      "consumed_supplemental_count": 7,
+      "budget_rejected_count": 6,
+      "deduplicated_count": 0
+    },
+    {
+      "case_id": "exp-dev-para-001",
+      "question": "为什么一次漂亮的作答不足以让待复习事项立即结案？",
+      "ground_truth_resolution": "resolved",
+      "ground_truth_chunk_ids": [
+        "875f34a8-794d-4464-b1e5-3a75dd9084ce"
+      ],
+      "ranks": {
+        "vector_rank": 5,
+        "text_rank": null,
+        "ordered_rank": 15,
+        "post_filter_rank": null,
+        "primary_rank": null,
+        "heading_rank": 1,
+        "semantic_rank": 3,
+        "supplemental_rank": null,
+        "consumed_rank": null
+      },
+      "terminal_loss": "heading_candidate_suppressed_by_vector_membership",
+      "heading_candidate_count": 20,
+      "semantic_candidate_count": 20,
+      "supplemental_candidate_count": 16,
+      "consumed_supplemental_count": 7,
+      "budget_rejected_count": 9,
+      "deduplicated_count": 0
+    },
+    {
+      "case_id": "exp-dev-control-003",
+      "question": "RRF 的三条核心价值是什么？",
+      "ground_truth_resolution": "resolved",
+      "ground_truth_chunk_ids": [
+        "d829d039-7b13-4077-95b9-18e387c5d67b"
+      ],
+      "ranks": {
+        "vector_rank": 2,
+        "text_rank": 7,
+        "ordered_rank": 4,
+        "post_filter_rank": null,
+        "primary_rank": null,
+        "heading_rank": 1,
+        "semantic_rank": 2,
+        "supplemental_rank": null,
+        "consumed_rank": null
+      },
+      "terminal_loss": "heading_candidate_suppressed_by_vector_membership",
+      "heading_candidate_count": 20,
+      "semantic_candidate_count": 20,
+      "supplemental_candidate_count": 15,
+      "consumed_supplemental_count": 7,
+      "budget_rejected_count": 8,
+      "deduplicated_count": 0
+    }
+  ]
+}
