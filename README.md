@@ -87,6 +87,7 @@ npm.cmd run build
 - [Shadow Agent 真实模型 Development 结果](docs/evaluations/shadow-agent-semantic-development-20261005.md)
 - [Shadow Agent 画像零污染审计结果](docs/evaluations/shadow-agent-zero-write-audit-20261005.md)
 - [ADR-004：关闭 Shadow Agent V1 并进入 V2](docs/decisions/ADR-004-关闭ShadowAgentV1并进入V2.md)
+- [Shadow Agent V2 真实模型 Development 结果](docs/evaluations/shadow-agent-v2-development-20261005.md)
 - [Relation-Value V3 独立验收结论](docs/evaluations/relation-value-v3-acceptance-20261004.md)
 - [ADR-002：关闭 Relation-Value V3 实验线](docs/decisions/ADR-002-关闭RelationValueV3实验线.md)
 - [核心 RAG：用户触发二阶段检索](docs/planning/核心RAG下一阶段-用户触发二阶段检索.md)

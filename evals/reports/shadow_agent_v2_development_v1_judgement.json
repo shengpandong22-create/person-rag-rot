@@ -1,0 +1,17 @@
+{
+  "eligible": false,
+  "checks": {
+    "schema_valid_rate": false,
+    "primary_route_accuracy": true,
+    "supplementary_tool_accuracy": true,
+    "recommendation_action_accuracy": true,
+    "max_step_adherence": true,
+    "confirmation_guard_rate": true,
+    "business_zero_write_rate": true,
+    "decision_stability": true,
+    "latency_p95_ms": true
+  },
+  "failed_checks": [
+    "schema_valid_rate"
+  ]
+}
