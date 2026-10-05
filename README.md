@@ -81,6 +81,7 @@ npm.cmd run build
 - [产品与架构设计](docs/design/产品与架构设计.md)
 - [Evidence Gate 与 Claim Evaluation 技术设计](docs/design/Evidence-Gate与Claim-Evaluation技术设计.md)
 - [Evidence Gate / Claim Evaluation 实验结论](docs/evaluations/evidence-gate-claim-evaluation-20260929.md)
+- [RAG 调优方法论与实战复盘](docs/interview/AgentMentor-RAG调优方法论与实战复盘.md)
 - [Relation-Value V3 独立验收结论](docs/evaluations/relation-value-v3-acceptance-20261004.md)
 - [ADR-002：关闭 Relation-Value V3 实验线](docs/decisions/ADR-002-关闭RelationValueV3实验线.md)
 - [核心 RAG：用户触发二阶段检索](docs/planning/核心RAG下一阶段-用户触发二阶段检索.md)
