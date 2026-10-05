@@ -425,7 +425,7 @@ api/interviews.py
 
 不要把 `load_profile()` 理解为画像 Repository 调用。它当前只返回一个切换到
 `load_profile` 节点的新状态并写入 checkpoint；真正的训练焦点来自前端调用
-`/profiles/me/training-focuses` 后填入面试主题。
+`GET /api/v1/knowledge-bases/{knowledge_base_id}/training-focuses` 后填入面试主题。
 
 ## 8. 两层能力画像与复习任务
 
@@ -546,12 +546,12 @@ DocumentParser
 当前 `DevelopmentEmbeddingGateway` 是本地确定性 feature hashing 基线：
 
 - 支持字符 n-gram 和英文词特征。
-- 输出配置维度，默认 1536。
+- 输出配置维度，当前固定 512（应用启动时强制校验与 pgvector schema 一致；1536 是 BGE 重建式改造前的历史配置）。
 - 进行 L2 归一化。
 - 相关文本通常比无关文本具有更高相似度。
 - 适合离线测试、低资源演示和可复现回归。
 
-当前默认使用本地 BGE-small-zh，并保留 development 特征哈希 fallback。它已经不是早期纯字面特征哈希方案，但也不能等同于企业级向量服务；正式部署仍需要向量版本治理、重建任务、reranker、权限过滤和更大规模评测。
+Embedding 的口径要分两层：代码默认 provider 是 development（即上面的确定性 feature hash 基线），标准部署通过 `.env` 显式设为 `bge`，走本地 BGE-small-zh。它已经不是早期纯字面特征哈希方案，但也不能等同于企业级向量服务；正式部署仍需要向量版本治理、重建任务、reranker、权限过滤和更大规模评测。实际生效的 provider 以 `/health/runtime` 为准。
 
 ## 10. 报告历史、趋势和画像消费
 

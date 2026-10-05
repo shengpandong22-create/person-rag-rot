@@ -541,7 +541,7 @@ statement = (
 
 ### 6.5 当前 Embedding 的准确口径
 
-当前默认链路已经切到本地 `BgeEmbeddingGateway`，模型为 `BAAI/bge-small-zh-v1.5`，输出 512 维向量并写入 pgvector。它解决的是早期特征哈希只能捕获字面相似的问题，让中文学习资料的语义召回更接近真实使用场景。
+`EmbeddingProvider` 的代码默认值是 `development`；标准部署在 `.env` 中显式设为 `bge`，此时走本地 `BgeEmbeddingGateway`，模型为 `BAAI/bge-small-zh-v1.5`，输出 512 维向量并写入 pgvector。它解决的是早期特征哈希只能捕获字面相似的问题，让中文学习资料的语义召回更接近真实使用场景。实际生效的 provider 与模型以 `/health/runtime` 为准。
 
 ```python
 if settings.embedding_provider is EmbeddingProvider.BGE:
@@ -589,7 +589,7 @@ Development fallback 的价值：
 - 没有做多模型版本共存和在线向量迁移，历史向量采用重建式方案处理；
 - 还没有接入 reranker、权限过滤、多租户索引隔离等企业化能力。
 
-面试中应该说：“当前默认使用 BGE-small-zh + pgvector，采用重建式切换并保留 development fallback；它已经比早期开发基线更接近真实语义检索，但不能夸大成企业级向量检索平台。”
+面试中应该说：“标准部署使用 BGE-small-zh + pgvector，采用重建式切换并保留 development fallback；代码默认 provider 仍是 development，实际运行态以 `/health/runtime` 为准。它已经比早期开发基线更接近真实语义检索，但不能夸大成企业级向量检索平台。”
 
 ### 6.6 RAG 如何执行证据门禁
 
@@ -1229,7 +1229,7 @@ flowchart LR
 | Agent 工作流 | 显式节点、checkpoint、人机中断；当前由 Service 编排 |
 | 画像驱动出题 | 画像推荐训练焦点，用户选择后注入主题 |
 | 查漏驱动出题 | 目录缺口进入推荐计划，仍由用户选择后启动面试 |
-| Embedding | 默认 BGE-small-zh，保留 development 特征哈希 fallback；非企业级向量服务 |
+| Embedding | 部署默认 BGE-small-zh（`.env` 显式启用），代码默认 development 特征哈希；非企业级向量服务 |
 | 复杂文档 | 基础文本解析，不包含 OCR 与复杂版面 |
 | 去重 | 文档内容去重 + 本轮题目规避，非全历史语义去重 |
 | 故障恢复 | 关键业务幂等和状态恢复，非分布式任务引擎 |
@@ -1535,7 +1535,7 @@ Invoke-RestMethod http://localhost:8000/health/runtime
 
 #### 第 10 分钟：主动说明边界
 
-> 当前版本面向本机个人用户，Embedding 默认使用本地 BGE-small-zh，并保留 development fallback；复杂文档不包含 OCR，工作流由 Service 显式编排而不是 LangGraph Runtime。下一步企业化会优先补权限、数据治理、评测和可靠任务，而不是先拆微服务。
+> 当前版本面向本机个人用户，Embedding 在标准部署下使用本地 BGE-small-zh 并保留 development fallback（代码默认 provider 为 development）；复杂文档不包含 OCR，工作流由 Service 显式编排而不是 LangGraph Runtime。下一步企业化会优先补权限、数据治理、评测和可靠任务，而不是先拆微服务。
 
 主动说明边界往往比等面试官指出更可信。
 
@@ -1615,7 +1615,7 @@ Windows 应用控制可能阻止 Ruff 或 Pyright 可执行文件。遇到这种
 | 前端构建 | React 依赖、组件导入和生产 Bundle |
 | Docker 验收 | 三容器、迁移、代理和真实运行环境 |
 
-本文完成增量查漏改造后的最近一次回归结果为：Ruff 全项目通过、Pytest `56 passed / 1 skipped`、React 生产构建通过、Docker Compose 迁移和启动通过。跳过项是未配置隔离 PostgreSQL 测试库的集成测试，不应描述为已经执行通过。
+增量查漏改造当时那次回归的结果为：Ruff 全项目通过、Pytest `56 passed / 1 skipped`、React 生产构建通过、Docker Compose 迁移和启动通过。该数值只对应当次提交，不代表当前分支：当前仓库 `pytest --collect-only` 已收集到 425 项，面试前必须重新运行并以当次输出为准。跳过项是未配置隔离 PostgreSQL 测试库的集成测试，不应描述为已经执行通过。
 
 测试数量不是质量结论；重点是关键风险是否被覆盖。正式面试前仍应重新运行测试，并使用当次结果回答。
 
@@ -1771,7 +1771,7 @@ application/demo_readiness_service.py
 
 回答结构：
 
-> 当前项目主要证明工程闭环、状态可靠性和本地资源可运行，尚未建立足够规模的人工标注评测集，因此我不会给出虚假的准确率。已有测试覆盖 RRF 确定性、引用限制、评分门禁和完整学习闭环。若产品化，我会建立可回答/不可回答、正确证据和人工评分样本，分别测 Recall@K、MRR/NDCG、引用正确率、groundedness、拒答率、评分相关性、P95 和单次成本。
+> 项目已经建有冻结的人工标注检索评测集和可复现 runner，能输出 Recall@1/3/6、MRR、证据充分率、不可回答拒答准确率以及 P50/P95；正式指标用人工解析的 relevant sources 计算，数据集、门槛和 split 都带 hash 冻结。短板是规模：样本量只到几十到几百条，不足以声称统计泛化，也没有线上 A/B，所以我不会给出一个泛化的准确率。评分侧同样有 MAE、相关性、复核命中率这类区分度评测，但样本量小，需要扩大人工标注集才能做正式校准。
 
 这比编造一个准确率更专业。
 

@@ -240,7 +240,7 @@ tests/unit/test_interview_service.py
 
 ```text
 frontend/src/components/EvaluationPanel.jsx
-frontend/src/components/ReportsPanel.jsx
+frontend/src/components/ReportHistoryPanel.jsx
 src/agent_mentor/api/evaluations.py
 src/agent_mentor/application/evaluation_service.py
 src/agent_mentor/domain/evaluation.py
@@ -276,8 +276,8 @@ src/agent_mentor/domain/evaluation.py
 
 ```text
 frontend/src/components/ProfilePanel.jsx
-frontend/src/components/PlanPanel.jsx
-frontend/src/components/TrendPanel.jsx
+frontend/src/components/TrainingFocusPanel.jsx
+frontend/src/components/ReportHistoryPanel.jsx
 src/agent_mentor/api/profiles.py
 src/agent_mentor/application/profile_service.py
 src/agent_mentor/domain/profile.py
@@ -311,8 +311,7 @@ src/agent_mentor/domain/profile_taxonomy.py
 ### 9.3 代码指路
 
 ```text
-frontend/src/components/ReportsPanel.jsx
-frontend/src/components/TrendPanel.jsx
+frontend/src/components/ReportHistoryPanel.jsx
 src/agent_mentor/api/evaluations.py
 src/agent_mentor/application/evaluation_service.py
 ```
@@ -381,7 +380,7 @@ Agent Memory
 
 话术：
 
-> 早期版本用 development feature hash 是为了先跑通闭环，但它不是真正语义 embedding。当前版本已经采用重建式方案切到 BGE-small-zh：把 pgvector 维度调整为 512，清空旧历史向量，重新导入资料生成 embedding。这样比在线迁移简单，也符合个人学习项目“历史数据可重建”的约束。为了演示稳定性，代码里仍保留 development provider 作为无模型环境 fallback。
+> 早期版本用 development feature hash 是为了先跑通闭环，但它不是真正语义 embedding。后来的版本采用重建式方案切到 BGE-small-zh：把 pgvector 维度调整为 512，清空旧历史向量，重新导入资料生成 embedding。这样比在线迁移简单，也符合个人学习项目“历史数据可重建”的约束。代码层默认 provider 仍是 development，标准部署在 `.env` 里显式设为 `bge`；实际生效的 provider 和模型以 `/health/runtime` 为准，演示环境加载不了模型时也能切回 development fallback。
 
 ## 12. 10 分钟完整演示脚本
 

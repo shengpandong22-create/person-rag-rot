@@ -87,7 +87,7 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 | ------ | ------------------------------------------------------------ | --------------------------------------------------------- |
 | 🟡 中   | **分块策略仍偏基础**：解析层已经保留 Markdown/DOCX 标题路径，`KnowledgeChunk.heading_path` 能进入目录和引用链路；但在每个 section 内部仍使用字符长度滑动窗口（`text[start:start+size]`），不感知句子、token、表格或代码块边界。 | `rag/documents.py`, `rag/chunking.py:26-41` |
 | 🟡 中   | **向量检索与全文检索串行执行**：代码注释中已承认（"注意：这里实际上是串行的，优化空间"），两路检索可以用 `asyncio.gather()` 并行化。 | `infrastructure/retriever.py:82-87`                       |
-| 🟡 中   | **Embedding 维度硬编码不匹配风险**：`KnowledgeChunkModel.embedding` 硬编码为 `Vector(1536)`，但 `Settings.embedding_dimension` 可配置为其他值。如果配置了非 1536 的维度，入库时会报错。 | `infrastructure/database/models.py:115` vs `config.py:36` |
+| ✅ 已关闭 | ~~**Embedding 维度硬编码不匹配风险**~~ **已关闭：512 维 + 启动校验**。`KnowledgeChunkModel.embedding` 现为 `Vector(512)`，`Settings.embedding_dimension` 默认 512 且被限制只能取 512，应用启动期强制校验二者一致，不符即报错。 | `infrastructure/database/models.py` vs `config.py` |
 | 🟢 低   | **search_text 更新使用原始 SQL**：`knowledge_service.py:230-238` 通过 `text("UPDATE ... SET search_text = to_tsvector(...)")` 直接执行 SQL，绕过 ORM。虽然功能正确，但不够 idiom。 | `application/knowledge_service.py:230-238`                |
 | 🟢 低   | **_has_lexical_support 的硬编码特例**：为 "rrf"、"全文检索"、"向量检索" 等特定查询添加了手动 term 扩展，这些特例维护成本高。 | `application/answer_service.py:364-370`                   |
 | 🟢 低   | **评测数据集存在但无自动化 runner**：`evals/datasets/` 下有数据，但未发现对应的评估脚本来自动运行和计算 Recall@K / MRR。 | `evals/`                                                  |
@@ -207,14 +207,14 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 | 严重度 | 问题                                                         | 位置                                              |
 | ------ | ------------------------------------------------------------ | ------------------------------------------------- |
 | 🟡 中   | **_evaluation_items() 有 N+1 查询模式**：先查所有 evaluations，然后 for 循环中逐个 `db.get(InterviewQuestionModel, ...)` 和 `db.get(UserAnswerModel, ...)`，再逐个查 references。N 道题 = 1 + 3N 次查询。 | `application/evaluation_service.py:481-515`       |
-| 🟡 中   | **Embedding 维度硬编码**：`Vector(1536)` 写死在 model 中，与可配置的 `settings.embedding_dimension` 脱节。 | `infrastructure/database/models.py:115`           |
+| ✅ 已关闭 | ~~**Embedding 维度硬编码**~~ **已关闭：512 维 + 启动校验**。model 与配置统一为 512，`settings.embedding_dimension` 只接受 512，启动期强制校验一致。 | `infrastructure/database/models.py`           |
 | 🟢 低   | **部分 FK 缺少 ondelete 策略**：`ChatCitationModel.chunk_id`、`QuestionReferenceModel.chunk_id`、`EvaluationReferenceModel.chunk_id` 等外键没有 `ondelete` 策略。如果 chunk 被删除，这些引用会变成悬挂外键。 | `infrastructure/database/models.py:226, 315, 433` |
 | 🟢 低   | **search_text 列更新绕过 ORM**：通过 raw SQL `UPDATE ... SET search_text = to_tsvector(...)` 更新，如果 chunk content 变更但忘记更新 search_text，全文检索会用到过期数据。 | `application/knowledge_service.py:230-238`        |
 
 #### 改进建议
 
 1. **_evaluation_items() 改为 JOIN 查询**：一次 JOIN 查出 evaluation + question + answer + references，消除 N+1。
-2. **Embedding 维度参数化**：在 migration 中使用 `Vector(dim)` 变量，或在应用启动时 assert `settings.embedding_dimension == 1536`。
+2. **Embedding 维度参数化**：已落地为 512 维常量 + 启动期一致性校验（`Vector(512)` 与 `settings.embedding_dimension` 必须相等）；仍未做 migration 级 `Vector(dim)` 变量化，切换维度需配套迁移与重建。
 3. **为 FK 添加 ondelete 策略**：引用类表加 `ondelete="CASCADE"` 或 `ondelete="SET NULL"`。
 
 ---
@@ -329,10 +329,10 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 - **收益**：🟡 中高。检索延迟可降低 30-50%（两路从串行变并行），对用户体验有直接改善。
 - **具体行动**：`asyncio.gather(self._vector_candidates(...), self._text_candidates(...))`，注意确认同一 session 上的并发安全性（可能需要两个独立 session）。
 
-### 3. 🟡 修复 Embedding 维度硬编码
+### 3. ✅ 已关闭：修复 Embedding 维度硬编码（512 维 + 启动校验）
 - **投入**：0.5 天
 - **收益**：🟡 中高。消除配置与代码不一致的隐患，避免切换 Embedding 模型时的运行时错误。
-- **具体行动**：在应用启动时 `assert settings.embedding_dimension == 1536` 或将 model 改为动态接受维度参数。
+- **具体行动**：已落地为 512 维 + 启动校验——`Vector(512)` 与 `settings.embedding_dimension`（只接受 512）在应用启动时强制校验一致，不符即报错；model 的动态维度参数化留待后续。
 
 ### 4. 🟡 Dockerfile 多阶段构建 + docker-compose 健康检查 + restart 策略
 - **投入**：0.5 天
@@ -353,7 +353,7 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 以下 5 个工程亮点最值得在面试/简历中展示：
 
 ### 1. 可降级的完整 RAG 闭环
-整个系统从知识上传到面试评分到画像更新，每一步都有确定性降级方案。当前默认使用本地 BGE-small-zh 做 Embedding；无模型或测试环境可切回 development fallback。无 LLM Key 时用启发式规则做出题和评分、用模板拼接做回答；配置 Key 后切换到真实 LLM。这种"先保证可运行，再提升智能"的工程思路在实际 AI 项目中非常有价值。
+整个系统从知识上传到面试评分到画像更新，每一步都有确定性降级方案。Embedding 代码默认 provider 为 development，标准部署在 `.env` 中设为 `bge`（本地 BGE-small-zh，512 维）；无模型或测试环境可切回 development fallback，实际生效的 provider 以 `/health/runtime` 为准。无 LLM Key 时用启发式规则做出题和评分、用模板拼接做回答；配置 Key 后切换到真实 LLM。这种"先保证可运行，再提升智能"的工程思路在实际 AI 项目中非常有价值。
 
 ### 2. 三重引用安全设计
 `validate_citations()`（白名单校验）+ `_has_lexical_support()`（词法关联校验）+ `_assert_allowed_references()`（评分时二次校验）。三层防线确保 LLM 无法编造引用，这在 RAG 系统中是容易被忽略但极其重要的安全特性。

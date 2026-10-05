@@ -197,7 +197,7 @@ tests/unit/test_llm_fallback_observability.py
 .\.venv\Scripts\pytest.exe tests/api/test_contracts.py tests/unit/test_data_consistency_constraints.py tests/unit/test_retrieval.py tests/unit/test_llm_fallback_observability.py -q
 ```
 
-结果：
+结果（仅覆盖上面列出的 4 个测试文件，不是全量用例数）：
 
 ```text
 ruff:   All checks passed
@@ -207,6 +207,7 @@ pytest: 25 passed, 1 warning
 
 说明：
 
+- 该数值只对应本次提交、本次指定的 4 个文件；当前仓库全量 `pytest --collect-only` 收集到 425 项，全量结果应以当次运行为准；
 - 1 个 warning 来自 FastAPI/TestClient 依赖链的 `httpx` 兼容提示，不是项目业务逻辑问题；
 - 本轮没有修改业务架构，只补强了测试证据和审计文档；
 - 新增测试覆盖 API 契约、数据一致性、RAG 可信边界三类高价值追问点。

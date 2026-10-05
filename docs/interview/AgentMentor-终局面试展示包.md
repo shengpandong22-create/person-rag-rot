@@ -82,6 +82,8 @@ flowchart LR
 | Shadow Agent V1 | JSON与安全护栏可用 | 动作准确率69.44% | 关闭 |
 | Shadow Agent V2 | 首路由/动作均100% | 正常完成率41.67% | 关闭 |
 
+上表每个数字都来自 `docs/evaluations/` 下的独立验收报告：Relation-Value V3 见 `relation-value-v3-acceptance-20261004.md`，heading supplemental 的补回率与消费精度见 `AgentMentor-RAG调优方法论与实战复盘.md` 及二阶段检索验收协议，Shadow Agent V1/V2 见 `shadow-agent-contract-development-20261005.md`、`shadow-agent-semantic-development-20261005.md` 与 `shadow-agent-v2-development-20261005.md`。被追问时按报告回放，不要口头复述近似值。
+
 你的讲法：
 
 > 我把“候选没上线”当作成功的工程决策，而不是失败。每个候选都先冻结数据、实现和门槛；如果独立验证不通过，我保留结论并停止，而不是用测试集反复调参数。这保证了默认用户链路不会被局部最优污染。

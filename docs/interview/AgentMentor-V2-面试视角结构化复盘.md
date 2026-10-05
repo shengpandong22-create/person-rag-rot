@@ -51,7 +51,8 @@ AgentMentor 将个人学习资料作为前置知识边界，让资料同时服�
                             │ HTTP / JSON
 ┌───────────────────────────▼──────────────────────────────────┐
 │ FastAPI 接口层                                                │
-│ knowledge｜chat｜interviews｜evaluations｜profiles｜health    │
+│ knowledge｜chat｜interviews｜evaluations｜profiles｜         │
+│ shadow_agent｜demo｜health                                   │
 └───────────────────────────┬──────────────────────────────────┘
                             │
 ┌───────────────────────────▼──────────────────────────────────┐

@@ -166,7 +166,7 @@ UniqueConstraint("question_id", "idempotency_key", name="uq_answer_idempotency")
 #### 设计约束
 
 - 默认仍使用 `DevelopmentEmbeddingGateway`。
-- 不把 pgvector 维度从 1536 改为 512。
+- 不把 pgvector 维度从 1536 改为 512。（该约束已被后续 BGE 重建式改造解除：当前 pgvector 固定 512 维并启动校验，1536 是历史配置。）
 - 不新增 `sentence-transformers` 依赖。
 - 增加启动期维度一致性校验或显式说明。
 - BGE 作为后续可选 Provider，不影响当前 Docker 演示。

@@ -61,7 +61,7 @@
 
 ### 4.1 已完成
 
-- 保持 `DevelopmentEmbeddingGateway` 接口和 1536 维不变。
+- 保持 `DevelopmentEmbeddingGateway` 接口和 1536 维不变。（本条是当轮的范围约束，已被后续 BGE 重建式改造取代：当前 pgvector 固定 512 维并启动校验，1536 为历史配置。）
 - 将“整段 SHA256 随机向量”替换为字符 n-gram 与英文词的 feature hashing 向量。
 - 向量进行 L2 归一化，仍支持离线、确定性和低资源运行。
 - 面试检索词按概念、场景、设计、排障题型加入不同检索提示。

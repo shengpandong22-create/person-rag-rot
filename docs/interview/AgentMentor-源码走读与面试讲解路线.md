@@ -74,7 +74,7 @@ src/agent_mentor/infrastructure/database/models.py
 
 - 文档解析不是企业级复杂文档治理，目前支持常见学习资料格式。
 - 分块保留 heading path，有助于回答时展示来源上下文。
-- 当前 embedding 默认采用 BGE-small-zh，本地中文语义召回质量比 development feature hash 更可靠；同时保留 development gateway 作为无模型环境 fallback。
+- embedding 代码层默认 provider 是 `development`（512 维确定性 feature hash），标准部署通过 `.env` 显式启用 BGE-small-zh，本地中文语义召回质量比 feature hash 更可靠；development gateway 作为无模型环境 fallback 保留。实际生效的 provider 以 `/health/runtime` 为准。
 - 向量库用 PostgreSQL + pgvector，是为了控制本地 16GB 开发机部署成本。
 
 ### 3.4 面试官可能追问
@@ -193,7 +193,7 @@ src/agent_mentor/infrastructure/database/models.py
 
 ```text
 frontend/src/components/EvaluationPanel.jsx
-frontend/src/components/ReportsPanel.jsx
+frontend/src/components/ReportHistoryPanel.jsx
   ↓
 src/agent_mentor/api/evaluations.py
   ↓
@@ -227,8 +227,8 @@ src/agent_mentor/infrastructure/llm.py
 
 ```text
 frontend/src/components/ProfilePanel.jsx
-frontend/src/components/PlanPanel.jsx
-frontend/src/components/TrendPanel.jsx
+frontend/src/components/TrainingFocusPanel.jsx
+frontend/src/components/ReportHistoryPanel.jsx
   ↓
 src/agent_mentor/api/profiles.py
   ↓
@@ -290,9 +290,9 @@ RagPanel.jsx
 InterviewPanel.jsx
 EvaluationPanel.jsx
 ProfilePanel.jsx
-PlanPanel.jsx
-ReportsPanel.jsx
-TrendPanel.jsx
+TrainingFocusPanel.jsx
+ReportHistoryPanel.jsx
+RuntimeInsights.jsx
 ```
 
 ### 8.3 你要掌握的点
@@ -411,7 +411,7 @@ evals/runners/retrieval_runner.py
 - “这是一个面向个人学习训练场景的 Agentic RAG 项目。”
 - “当前重点是闭环设计、可信评分和画像驱动训练。”
 - “企业级 RAG 的权限、复杂文档治理、多租户、评测平台是后续演进方向。”
-- “BGE 已通过重建式方案落地，当前默认使用 BGE-small-zh；如果演示环境无法加载模型，可以切回 development provider 作为 fallback。”
+- “BGE 已通过重建式方案落地：标准部署在 `.env` 中启用 BGE-small-zh，代码默认仍是 development；如果演示环境无法加载模型，可以切回 development provider 作为 fallback。实际生效的 provider 以 `/health/runtime` 为准。”
 - “画像可以理解为任务型长期记忆的一种简化实现。”
 
 ## 12. 面试前 90 分钟学习路线

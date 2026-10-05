@@ -461,7 +461,7 @@ similar_to_recent_knowledge_base_question
 
 统一口径：
 
-- 当前默认 BGE-small-zh，保留 development fallback；
+- 代码默认 provider 是 development，标准部署在 `.env` 中启用 BGE-small-zh 并保留 development fallback，运行态以 `/health/runtime` 为准；
 - BGE 已落地，但不是企业级向量服务；
 - checkpoint 支持刷新恢复和流程追踪，但不是通用工作流引擎；
 - 评分 Eval Runner 已落地，但样本规模仍需扩大；
@@ -520,7 +520,7 @@ pyright
 pytest -q
 ```
 
-当前最近结果：
+该次提交的结果（不代表当前分支）：
 
 ```text
 99 passed, 1 skipped
@@ -624,7 +624,7 @@ python scripts/run_knowledge_base_interview_audit.py agent \
 
 ### Q6：你怎么保证优化没有破坏旧功能？
 
-每次改动后跑 ruff、pyright、pytest、前端 build；涉及运行态的改动会重建 Docker，并用真实 API 跑面试审计。最近一次结果是 99 passed、1 skipped，前端构建通过，Docker 页面返回 200。
+每次改动后跑 ruff、pyright、pytest、前端 build；涉及运行态的改动会重建 Docker，并用真实 API 跑面试审计。该次提交的结果是 99 passed、1 skipped，前端构建通过，Docker 页面返回 200；历史数字不代表当前分支，面试前应重新运行并以当次输出回答。
 
 ### Q7：为什么要做文档口径审计？
 

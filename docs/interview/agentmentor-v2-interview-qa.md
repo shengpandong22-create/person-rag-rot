@@ -74,7 +74,7 @@
 
 - `EvaluationService` 产生的评分结果是画像更新的输入；
 - `ProfileService` 只消费符合规则的 Evaluation，并更新主题、子知识点和复习任务；
-- `/profiles/me/training-focuses` 将待加强主题返回给前端；
+- `/knowledge-bases/{knowledge_base_id}/training-focuses` 将待加强主题返回给前端；
 - 前端把用户选中的训练焦点作为下一场面试的主题提交给 `InterviewService`；
 - 新一轮结果继续进入评分和画像更新。
 
@@ -84,7 +84,7 @@
 
 最容易被质疑的有三点：
 
-- Embedding 当前默认使用本地 BGE-small-zh，并保留 development 特征哈希 fallback；它比早期开发基线更接近真实语义检索，但还不是企业级向量服务；
+- Embedding 代码层默认 provider 是 development（512 维确定性 feature hash），标准部署通过 `.env` 显式启用 BGE-small-zh（`.env.example` 已设为 `bge`），运行态以 `/health/runtime` 为准；BGE 比早期开发基线更接近真实语义检索，但还不是企业级向量服务；
 - 工作流虽然有显式节点和 checkpoint，但不是直接由 LangGraph 运行时调度；
 - PDF/DOCX 已支持基础解析，但没有 OCR、版面理解和复杂表格重建。
 
@@ -290,9 +290,9 @@ checkpoint 当前能做到：
 
 当前 `load_profile` 节点主要表达工作流语义和写入 checkpoint，并不会在 `InterviewService` 中直接查询完整画像后自主规划。
 
-真实的数据路径是：前端调用 `/profiles/me/training-focuses` 获取画像推荐，用户选择训练焦点，前端再把主题传入创建面试请求。也就是说，当前实现是“画像辅助、用户确认、主题驱动”，不是后端全自动画像规划。
+真实的数据路径是：前端调用 `GET /api/v1/knowledge-bases/{knowledge_base_id}/training-focuses` 获取画像推荐，用户选择训练焦点，前端再把主题传入创建面试请求。也就是说，当前实现是“画像辅助、用户确认、主题驱动”，不是后端全自动画像规划。
 
-这个回答很重要，因为它区分了流程图的概念语义与当前代码的执行事实。若后续增强，可以让 `load_profile` 真正加载摘要，并把选题原因以结构化字段持久化，但当前不能把它当作已实现能力。
+这个回答很重要，因为它区分了流程图的概念语义与当前代码的执行事实。选题原因现在已经以结构化字段持久化在题目 `rubric` 里（`interview_policy`、`question_angle`、`generation`）；还没做的是让 `load_profile` 真正加载画像摘要并据此自主规划，不能把后者当作已实现能力。
 
 ### 代码走读路线
 
@@ -458,9 +458,9 @@ LLM 返回维度分、理由、缺失点和置信度后，应用层重新计算�
 
 #### 对追问 1 的回答
 
-目前训练焦点的推荐原因会在前端展示，但 `why_this_question` 还没有作为每道题的独立结构化字段持久化。
+训练焦点的推荐原因会在前端展示；单题层面，题目生成时已把选题依据结构化写进 `rubric`：`question_angle`（考察角度）、`generation`（生成模式、回退原因、prompt 版本、历史题冷却数量）和 `interview_policy`（策略动作、原因、目标主题、难度、确定性门限）。
 
-因此现在可以解释“为什么选择这个训练主题”，但对单题级别的完整因果审计还不够。若面试官追问，我会把它列为明确改进点：保存 `focus_id`、画像快照版本、命中的错误模式、检索证据和选题策略版本，使每道题都能回放生成依据。
+因此现在既能解释“为什么选择这个训练主题”，也能说明“为什么出这道题”。不足的是还缺少 `focus_id` 与画像快照版本这类跨表关联，无法把单题的完整因果链一次性回放。若面试官追问，我会把它列为明确改进点：补齐这些外键与快照字段。
 
 #### 对追问 2 的回答
 
@@ -577,7 +577,7 @@ LLM 返回维度分、理由、缺失点和置信度后，应用层重新计算�
 
 #### 对追问 1 的回答
 
-当前默认 `BgeEmbeddingGateway` 使用 `BAAI/bge-small-zh-v1.5`，输出 512 维向量并写入 pgvector。系统仍保留 `DevelopmentEmbeddingGateway`：对字符 n-gram 和英文词等特征做哈希映射，再进行 L2 归一化，用于测试或无模型环境 fallback。它无需加载本地神经网络，资源稳定，测试可确定。
+配置为 `bge` 时使用 `BgeEmbeddingGateway`，模型 `BAAI/bge-small-zh-v1.5`，输出 512 维向量并写入 pgvector——这是 `.env.example` 给出的标准部署配置。代码层默认 provider 仍是 `development`，走 `DevelopmentEmbeddingGateway`：对字符 n-gram 和英文词等特征做哈希映射，再进行 L2 归一化，用于测试或无模型环境 fallback，无需加载本地神经网络，资源稳定，测试可确定。实际生效的是哪一个，看 `/health/runtime`。
 
 它能捕获部分字面和局部模式相似性，对技术术语有一定效果，但不能声称具备强中文语义理解。项目通过全文检索和 RRF 对其进行补充。
 
@@ -1153,10 +1153,10 @@ Prompt Injection 不能只靠一句“忽略文档中的指令”解决，关键
 |---|---|
 | Agent 工作流 | 有显式状态节点、checkpoint、人机中断和恢复语义；当前由 Service 编排，不是 LangGraph 运行时 |
 | 画像驱动出题 | 画像生成训练焦点，前端由用户选择并注入面试主题；后端尚未完全自主读取画像规划 |
-| 语义检索 | 已有 BGE-small-zh + pgvector 链路；保留 development fallback，但尚不是企业级向量服务 |
+| 语义检索 | 已有 BGE-small-zh + pgvector 链路（部署经 `.env` 启用，代码默认 development）；尚不是企业级向量服务 |
 | 复杂文档 | 支持四类文档的基础解析；尚无 OCR、版面模型和复杂表格重建 |
 | 题目去重 | 支持本轮已有问题规避和同知识库最近历史题冷却；尚无完整跨轮语义去重索引 |
-| 题目可解释性 | 可解释训练主题来源；单题 `why_this_question` 尚未完整结构化持久化 |
+| 题目可解释性 | rubric 已持久化 `question_angle`、`generation`、`interview_policy`；尚缺 `focus_id` 与画像快照的跨表回放 |
 | 故障恢复 | 关键业务具备幂等/checkpoint；BackgroundTasks 尚不等于可靠消息队列 |
 | 可信评分 | 有 Rubric、白名单和置信路由；不能宣称完全消除 LLM 自评偏差 |
 
@@ -1197,4 +1197,4 @@ Prompt Injection 不能只靠一句“忽略文档中的指令”解决，关键
 
 > AgentMentor 是我为 Java 后端转向 AI Agent 开发设计的个人学习训练系统。它将学习资料解析并写入 PostgreSQL/pgvector，通过全文与向量检索、RRF 融合提供带引用的 RAG 问答；在此基础上生成面试题、参考答案和 Rubric，使用四维评分、引用白名单和置信路由生成报告。可信评分会进入“稳定主题 + 动态子知识点”的两层能力画像，形成复习任务并反哺下一轮训练。  
 > 
-> 工程上我重点处理了 checkpoint、答题幂等、报告一致性、失败降级和历史趋势，并把系统约束在 16GB 普通开发机可通过 Docker Compose 运行。当前版本不是企业级终态：Embedding 已默认切到本地 BGE-small-zh，但还没有企业级向量治理；复杂文档尚无 OCR/版面模型，工作流由 Service 显式编排而不是 LangGraph 运行时。但这些边界都通过 Gateway、Service 和领域规则隔离，后续可以渐进替换，而不需要推翻已经跑通的学习闭环。
+> 工程上我重点处理了 checkpoint、答题幂等、报告一致性、失败降级和历史趋势，并把系统约束在 16GB 普通开发机可通过 Docker Compose 运行。当前版本不是企业级终态：Embedding 在标准部署下已切到本地 BGE-small-zh（代码默认仍保留 development fallback），但还没有企业级向量治理；复杂文档尚无 OCR/版面模型，工作流由 Service 显式编排而不是 LangGraph 运行时。但这些边界都通过 Gateway、Service 和领域规则隔离，后续可以渐进替换，而不需要推翻已经跑通的学习闭环。

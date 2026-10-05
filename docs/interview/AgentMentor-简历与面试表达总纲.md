@@ -161,15 +161,15 @@ flowchart TB
 def assess_evidence(
     self, question: str, candidates: list[RetrievedChunk]
 ) -> tuple[list[RetrievedChunk], bool]:
-    supported_candidates = self._supported_candidates(question, candidates)
-    sufficient = (
-        bool(supported_candidates)
-        and supported_candidates[0].score >= self._min_evidence_score
+    assessment = self.assess_evidence_diagnostics(question, candidates)
+    supported_ids = set(assessment.supported_chunk_ids)
+    return (
+        [candidate for candidate in candidates if str(candidate.chunk_id) in supported_ids],
+        assessment.production_sufficient,
     )
-    return supported_candidates, sufficient
 ```
 
-这段代码体现的是：不是检索分高就一定能回答，还要先判断候选片段是否真的支持问题。
+这段代码体现的是：不是检索分高就一定能回答，还要先判断候选片段是否真的支持问题。真正的判定在 `assess_evidence_diagnostics`：先按词法支持过滤候选，再用**受支持候选中的最高分** `top_supported_score` 与 `min_evidence_score` 比较，最后叠加 clause / claim / demand 级别的判定；返回的 `production_sufficient` 才是生产口径的“证据是否充分”。
 
 ```python
 # src/agent_mentor/application/answer_service.py
@@ -715,7 +715,7 @@ RAG 问答时，系统会先召回候选片段，再判断证据是否足够。�
 
 面试者：
 
-> 我会优先继续做面试官 Agent 化和训练质量评估。当前工程已经补了轻量面试官策略层，题目生成会记录为什么选择覆盖盲区、历史题冷却或计划题；但它仍是受控策略，不是完整自主追问 Agent Loop。V3 可以进一步让面试官根据用户上一题回答决定追问、换题、复盘或结束，同时保留确定性状态机做边界控制。
+> 我会优先继续做面试官 Agent 化和训练质量评估。当前已经落地两层能力：一是轻量面试官策略层，题目生成会记录为什么选择覆盖盲区、历史题冷却或计划题；二是受控追问，回答质量达到门槛时每个主问题最多追加一条 follow-up，追问答案用独立幂等键并以 `FOLLOW_UP` 类型落库。但整体仍是受控策略，不是完整自主 Agent Loop——追问与否由门禁规则决定，模型不能自主换题或结束整场面试。V3 可以进一步让面试官根据用户上一题回答自主决定追问、换题、复盘或结束，同时保留确定性状态机做边界控制。
 
 面试官追问 1：
 

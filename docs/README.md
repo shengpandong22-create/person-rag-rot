@@ -82,11 +82,15 @@ docs/
 | [Evidence Gate / Claim Evaluation 实验结论](evaluations/evidence-gate-claim-evaluation-20260929.md) | 已完成 | 消融、holdout 与拒绝上线证据 |
 | [Relation-Value V3 独立验收结论](evaluations/relation-value-v3-acceptance-20261004.md) | 已关闭 | V3 未通过、拒绝生产接入与实验止损 |
 | [ADR-002：关闭 Relation-Value V3 实验线](decisions/ADR-002-关闭RelationValueV3实验线.md) | 已接受 | 不创建 V4，资源返回核心 RAG |
-| [核心 RAG：用户触发二阶段检索](planning/核心RAG下一阶段-用户触发二阶段检索.md) | 待设计 | 用户可见的扩展召回与新增引用体验 |
-| [二阶段检索 API 与预算设计](design/用户触发二阶段检索API与预算设计.md) | 已设计 | API、幂等、Trace、上下文预算与验收边界 |
+| [ADR-003：阶段性关闭二阶段检索生产接入](decisions/ADR-003-阶段性关闭二阶段检索生产接入.md) | 已接受 | 保留基础设施与 eval-only 候选，不接生产、不开启 feature flag |
+| [ADR-004：关闭 Shadow Agent V1 并进入 V2](decisions/ADR-004-关闭ShadowAgentV1并进入V2.md) | 已接受 | V2 收敛路由与动作语义，保持业务零写入 |
+| [核心 RAG：用户触发二阶段检索](planning/核心RAG下一阶段-用户触发二阶段检索.md) | 已收口（不接生产） | 用户可见的扩展召回与新增引用体验；结论见 ADR-003 |
+| [二阶段检索 API 与预算设计](design/用户触发二阶段检索API与预算设计.md) | 已设计（未接生产） | API、幂等、Trace、上下文预算与验收边界 |
 | [V1 实现规格说明](design/V1实现规格说明.md) | 已确认 | V1 技术规格基线 |
 | [V1 分阶段开发计划与验收标准](planning/V1分阶段开发计划与验收标准.md) | 已确认 | 唯一阶段执行基线 |
 
-当前执行状态：Phase 0 已通过，正在进行 Phase 1（知识库与文档入库）。
+当前执行状态：V1（Phase 0～Phase 6）与 V2（Phase 7～Phase 12）均已通过验收，核心闭环（资料入库 → RAG 问答 → 模拟面试 → 可信评分 → 报告历史 → 能力画像 → 复习任务）已跑通，并可在 16GB 普通开发机上通过 Docker Compose 复现。
 
-下一项工作固定为 Phase 0。Phase 0 完成后，在 `acceptance/phase-0.md` 写入验收结果并更新本索引。
+阶段验收证据见 `acceptance/phase-0.md` 至 `acceptance/phase-12.md`；阶段范围与门禁以 [V1 分阶段开发计划与验收标准](planning/V1分阶段开发计划与验收标准.md) 和 [V2 开发路线与验收标准](planning/V2开发路线与验收标准.md) 为准。
+
+当前处于收口状态：不新增业务模块；实验线按 ADR 关闭或仅保留 eval-only（见 `decisions/`）。下一步工作是既有闭环的口径一致性维护与文档审计，而不是新功能堆叠。
