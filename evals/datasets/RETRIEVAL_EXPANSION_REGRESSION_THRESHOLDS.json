@@ -1,0 +1,39 @@
+{
+  "schema_version": "retrieval-expansion-regression-thresholds-v1",
+  "dataset": "evals/datasets/retrieval_regression_v1.jsonl",
+  "candidate": "primary-context-dedupe-v1",
+  "scope": "candidate-only-regression-safety",
+  "configuration": {
+    "experiment_mode": "rrf-heuristic",
+    "candidate_expansion": "heading-shadow",
+    "primary_top_k": 6,
+    "candidate_k": 20,
+    "supplemental_chunks_max": 7,
+    "combined_chunks_max": 13,
+    "supplemental_content_chars_max": 7000,
+    "combined_content_chars_max": 18000
+  },
+  "hard_gates": {
+    "source_label_resolution_rate_min": 1.0,
+    "primary_top6_identity_rate_min": 1.0,
+    "primary_recall_delta_min": 0.0,
+    "combined_recall_not_below_baseline": true,
+    "negative_decision_mutation_count_max": 0,
+    "gate_invocation_count_max": 0,
+    "generation_invocation_count_max": 0,
+    "duplicate_free_combined_rate_min": 1.0,
+    "budget_compliance_rate_min": 1.0,
+    "average_consumed_supplemental_count_max": 7.0,
+    "max_supplemental_content_chars_max": 7000,
+    "max_combined_content_chars_max": 18000,
+    "supplemental_latency_p95_ms_max": 3000.0
+  },
+  "diagnostic_only": [
+    "combined_recall_gain",
+    "primary_miss_incremental_recovery_rate",
+    "supplemental_consumption_precision",
+    "average_supplemental_content_chars",
+    "negative_supplemental_candidate_count"
+  ],
+  "decision_note": "Pass means regression safety only. It does not authorize validation, holdout, Gate/generation integration, API wiring, or production enablement. Failure freezes this candidate; regression results must not be used for threshold tuning."
+}
