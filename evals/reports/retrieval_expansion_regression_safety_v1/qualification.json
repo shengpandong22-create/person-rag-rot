@@ -1,0 +1,18 @@
+{
+  "qualified": true,
+  "checks": {
+    "source_label_resolution": true,
+    "primary_top6_identity": true,
+    "primary_recall_delta": true,
+    "combined_recall_not_below_baseline": true,
+    "negative_decision_unchanged": true,
+    "gate_not_invoked": true,
+    "generation_not_invoked": true,
+    "duplicate_free_combined": true,
+    "budget_compliance": true,
+    "average_consumed_count": true,
+    "supplemental_character_budget": true,
+    "combined_character_budget": true,
+    "supplemental_latency_p95": true
+  }
+}
