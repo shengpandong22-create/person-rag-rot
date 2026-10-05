@@ -1,0 +1,14 @@
+{
+  "qualified": false,
+  "checks": {
+    "primary_order_preservation": true,
+    "combined_recall": true,
+    "incremental_recovery": true,
+    "consumption_precision": false,
+    "average_consumed": true,
+    "overall_reduction": true,
+    "negative_average_consumed": true,
+    "negative_reduction": true,
+    "budget_compliance": true
+  }
+}
