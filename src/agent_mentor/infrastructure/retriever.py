@@ -372,11 +372,11 @@ class PostgresHybridRetriever:
             if candidate_expansion is CandidateExpansionStrategy.SEMANTIC_QUERY_SHADOW
             else ()
         )
-        primary_candidate_ids = {item.chunk.id for item in vector_candidates}
+        primary_context_ids = {item.chunk_id for item in results}
         supplemental_candidates = tuple(
             item
             for item in (*shadow_heading_candidates, *shadow_semantic_candidates)
-            if item.chunk_id not in primary_candidate_ids
+            if item.chunk_id not in primary_context_ids
         )
         return RetrievalDiagnostics(
             vector_candidates=tuple(converted[item.chunk.id] for item in vector_candidates),

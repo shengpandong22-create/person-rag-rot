@@ -426,6 +426,65 @@ async def test_eval_heading_shadow_never_changes_primary_results(
 
 
 @pytest.mark.asyncio
+async def test_eval_heading_shadow_deduplicates_only_actual_primary_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sessions:
+        def __call__(self):  # type: ignore[no-untyped-def]
+            return self
+
+        async def __aenter__(self):  # type: ignore[no-untyped-def]
+            return object()
+
+        async def __aexit__(self, *args):  # type: ignore[no-untyped-def]
+            return None
+
+    document = SimpleNamespace(
+        id=uuid4(), title="Guide", logical_name="guide", source_url=None, trust_level="curated"
+    )
+
+    def candidate(index: int, content: str) -> _Candidate:
+        model = SimpleNamespace(
+            id=uuid4(),
+            content=content,
+            heading_path=[content],
+            page_number=None,
+            chunk_index=index * 2,
+        )
+        return _Candidate(cast(Any, model), cast(Any, document), index + 1, 0.9 - index / 10)
+
+    primary = candidate(0, "primary")
+    vector_tail = candidate(1, "vector-tail-heading-hit")
+    heading_only = candidate(2, "heading-only")
+    retriever = PostgresHybridRetriever(
+        cast(Any, Sessions()), cast(Any, None), max_chunks_per_document=3
+    )
+    monkeypatch.setattr(
+        retriever,
+        "_vector_candidates",
+        AsyncMock(return_value=[primary, vector_tail]),
+    )
+    monkeypatch.setattr(
+        retriever,
+        "_heading_candidates",
+        AsyncMock(return_value=[primary, vector_tail, heading_only]),
+    )
+    query = RetrievalQuery(uuid4(), "evidence", top_k=1, candidate_k=3)
+
+    diagnostics = await retriever.retrieve_with_diagnostics(
+        query,
+        experiment_mode=RetrievalExperimentMode.VECTOR_ONLY,
+        candidate_expansion=CandidateExpansionStrategy.HEADING_SHADOW,
+    )
+
+    assert [item.content for item in diagnostics.final_results] == ["primary"]
+    assert [item.content for item in diagnostics.supplemental_candidates] == [
+        "vector-tail-heading-hit",
+        "heading-only",
+    ]
+
+
+@pytest.mark.asyncio
 async def test_eval_semantic_query_shadow_is_monotonic_and_independent(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
