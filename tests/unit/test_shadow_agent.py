@@ -13,6 +13,7 @@ from agent_mentor.domain.shadow_agent import (
     ShadowAgentRun,
     ShadowToolArguments,
     ShadowToolName,
+    ShadowTrainingObjective,
 )
 from agent_mentor.infrastructure.fakes import FakeLLMGateway
 from agent_mentor.main import create_app
@@ -187,6 +188,28 @@ async def test_missing_llm_uses_deterministic_read_only_fallback() -> None:
     assert run.termination_reason == "llm_unavailable"
     assert run.recommendation.recommended_action == "maintain_current_plan"
     assert run.recommendation.requires_confirmation
+
+
+@pytest.mark.asyncio
+async def test_fallback_respects_read_only_training_objective() -> None:
+    tools = FakeReadTools(
+        {
+            ShadowToolName.GET_UNCOVERED_TOPICS: {
+                "items": [{"title": "MCP safety", "status": "uncovered"}]
+            }
+        }
+    )
+
+    run = await ShadowAgentService(tools, None).recommend(
+        user_id=uuid4(),
+        knowledge_base_id=uuid4(),
+        objective=ShadowTrainingObjective.CLOSE_COVERAGE_GAPS,
+    )
+
+    assert run.status == "fallback"
+    assert run.recommendation.recommended_action.value == "coverage_study"
+    assert run.recommendation.topic == "MCP safety"
+    assert tools.calls[0][0] == ShadowToolName.GET_UNCOVERED_TOPICS
 
 
 @pytest.mark.asyncio

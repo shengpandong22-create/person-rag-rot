@@ -16,6 +16,7 @@ from agent_mentor.domain.shadow_agent import (
     ShadowRecommendationAction,
     ShadowToolArguments,
     ShadowToolName,
+    ShadowTrainingObjective,
 )
 from agent_mentor.ports.llm_gateway import LLMGateway, Message, ModelPolicy, TraceContext
 
@@ -176,7 +177,11 @@ class ShadowAgentService:
         self._default_model = default_model
 
     async def recommend(
-        self, *, user_id: UUID, knowledge_base_id: UUID
+        self,
+        *,
+        user_id: UUID,
+        knowledge_base_id: UUID,
+        objective: ShadowTrainingObjective = ShadowTrainingObjective.BALANCED,
     ) -> ShadowAgentRun:
         run_id = str(uuid4())
         observations: list[dict[str, object]] = []
@@ -189,6 +194,7 @@ class ShadowAgentService:
                 knowledge_base_id=knowledge_base_id,
                 steps=steps,
                 reason="llm_unavailable",
+                objective=objective,
             )
             await self._repository.save(
                 user_id=user_id, knowledge_base_id=knowledge_base_id, run=run
@@ -198,7 +204,7 @@ class ShadowAgentService:
         try:
             for step_index in range(1, self.MAX_STEPS + 1):
                 started = perf_counter()
-                decision = await self._decide(run_id, step_index, observations)
+                decision = await self._decide(run_id, step_index, observations, objective)
                 latency_ms = round((perf_counter() - started) * 1000, 3)
                 if decision.decision == "finish":
                     recommendation = decision.recommendation
@@ -260,6 +266,7 @@ class ShadowAgentService:
                 knowledge_base_id=knowledge_base_id,
                 steps=steps,
                 reason=reason,
+                objective=objective,
             )
             await self._repository.save(
                 user_id=user_id, knowledge_base_id=knowledge_base_id, run=run
@@ -272,6 +279,7 @@ class ShadowAgentService:
             knowledge_base_id=knowledge_base_id,
             steps=steps,
             reason="max_steps_reached",
+            objective=objective,
         )
         await self._repository.save(
             user_id=user_id, knowledge_base_id=knowledge_base_id, run=run
@@ -279,7 +287,11 @@ class ShadowAgentService:
         return run
 
     async def _decide(
-        self, run_id: str, step_index: int, observations: list[dict[str, object]]
+        self,
+        run_id: str,
+        step_index: int,
+        observations: list[dict[str, object]],
+        objective: ShadowTrainingObjective,
     ) -> ShadowAgentDecision:
         if self._llm is None:
             raise RuntimeError("LLM is unavailable")
@@ -302,6 +314,7 @@ class ShadowAgentService:
                         {
                             "step": step_index,
                             "max_steps": self.MAX_STEPS,
+                            "training_objective": objective.value,
                             "available_tools": available_tools,
                             "observations": observations,
                         },
@@ -325,19 +338,49 @@ class ShadowAgentService:
         knowledge_base_id: UUID,
         steps: list[ShadowAgentStep],
         reason: str,
+        objective: ShadowTrainingObjective,
     ) -> ShadowAgentRun:
+        fallback_tools = {
+            ShadowTrainingObjective.BALANCED: ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS,
+            ShadowTrainingObjective.STRENGTHEN_WEAKNESSES: (
+                ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS
+            ),
+            ShadowTrainingObjective.CLOSE_COVERAGE_GAPS: ShadowToolName.GET_UNCOVERED_TOPICS,
+            ShadowTrainingObjective.CONTINUE_REVIEW: ShadowToolName.GET_RECENT_TRAINING_STATE,
+        }
+        fallback_tool = fallback_tools[objective]
         result = await self._tools.execute(
-            ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS,
+            fallback_tool,
             user_id=user_id,
             knowledge_base_id=knowledge_base_id,
             arguments=ShadowToolArguments(limit=1),
         )
         items = result.get("items", [])
         first = items[0] if isinstance(items, list) and items else None
-        topic = first.get("knowledge_point") if isinstance(first, dict) else None
+        if isinstance(first, dict):
+            topic_value = first.get("knowledge_point") or first.get("title")
+        else:
+            topic_value = None
+        if topic_value is None and fallback_tool == ShadowToolName.GET_RECENT_TRAINING_STATE:
+            tasks = result.get("open_review_tasks", [])
+            first_task = tasks[0] if isinstance(tasks, list) and tasks else None
+            topic_value = (
+                first_task.get("knowledge_point") if isinstance(first_task, dict) else None
+            )
+        topic = str(topic_value) if topic_value else None
+        fallback_actions = {
+            ShadowTrainingObjective.BALANCED: ShadowRecommendationAction.FOCUSED_INTERVIEW,
+            ShadowTrainingObjective.STRENGTHEN_WEAKNESSES: (
+                ShadowRecommendationAction.FOCUSED_INTERVIEW
+            ),
+            ShadowTrainingObjective.CLOSE_COVERAGE_GAPS: (
+                ShadowRecommendationAction.COVERAGE_STUDY
+            ),
+            ShadowTrainingObjective.CONTINUE_REVIEW: ShadowRecommendationAction.REVIEW_PLAN,
+        }
         recommendation = ShadowRecommendation(
             recommended_action=(
-                ShadowRecommendationAction.FOCUSED_INTERVIEW
+                fallback_actions[objective]
                 if topic
                 else ShadowRecommendationAction.MAINTAIN_CURRENT_PLAN
             ),
@@ -347,7 +390,7 @@ class ShadowAgentService:
                 if topic
                 else "当前没有可确认的薄弱主题，继续现有训练计划。"
             ),
-            supporting_observations=[ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS],
+            supporting_observations=[fallback_tool],
             suggested_parameters={"question_count": 3} if topic else {},
             requires_confirmation=True,
         )
@@ -357,7 +400,7 @@ class ShadowAgentService:
                     step_index=len(steps) + 1,
                     decision="fallback",
                     reasoning="Use deterministic read-only profile recommendation.",
-                    tool_name=ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS,
+                    tool_name=fallback_tool,
                     validated_arguments={"limit": 1},
                     tool_result=result,
                     latency_ms=0,

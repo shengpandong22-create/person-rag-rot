@@ -12,6 +12,13 @@ class ShadowToolName(StrEnum):
     GET_RECENT_TRAINING_STATE = "get_recent_training_state"
 
 
+class ShadowTrainingObjective(StrEnum):
+    BALANCED = "balanced"
+    STRENGTHEN_WEAKNESSES = "strengthen_weaknesses"
+    CLOSE_COVERAGE_GAPS = "close_coverage_gaps"
+    CONTINUE_REVIEW = "continue_review"
+
+
 class ShadowRecommendationAction(StrEnum):
     FOCUSED_INTERVIEW = "focused_interview"
     REVIEW_PLAN = "review_plan"
@@ -80,4 +87,3 @@ class ShadowAgentRun(BaseModel):
     termination_reason: str
     used_fallback: bool
     business_writes: Literal[0] = 0
-
