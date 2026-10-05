@@ -96,8 +96,8 @@ AgentMentor 是一个工程素养显著高于典型"跟着教程做"的个人项
 
 1. **分块策略升级**：引入句子级分割（至少在句号/换行处切分），或使用 token-based 分块（如 tiktoken）。对 code block 做整体保留（当前已对 code 做了不合并空格的处理，但仍会截断）。
 2. **并行检索**：`vector_candidates, text_candidates = await asyncio.gather(self._vector_candidates(...), self._text_candidates(...))`。注意两个查询使用同一个 session，需确认 SQLAlchemy async session 是否支持并发执行。
-3. **Embedding 维度从配置注入**：在 migration 中使用 `Vector(settings.embedding_dimension)` 或在应用启动时校验一致性。
-4. **补全评测 runner**：编写 `scripts/run_evals.py` 读取 jsonl 数据集，调用检索 API，计算 Recall@K / MRR / nDCG。
+3. **已关闭：Embedding 维度固定为 512**，并在应用启动时校验与 pgvector schema 一致；变更维度必须迁移并重建索引。
+4. **已关闭：评测入口为 `evals/run.py`**，支持 `retrieval`、`retrieval-ablation`、`scoring`、`all`，输出机器可读报告。后续工作是扩展独立数据与运行环境覆盖，而非补 runner。
 
 ---
 
