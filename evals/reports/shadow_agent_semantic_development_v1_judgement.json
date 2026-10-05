@@ -1,0 +1,28 @@
+{
+  "eligible": false,
+  "checks": {
+    "schema_valid_rate": true,
+    "tool_selection_accuracy": false,
+    "recommendation_action_accuracy": false,
+    "max_step_adherence": true,
+    "confirmation_guard_rate": true,
+    "business_zero_write_rate": true,
+    "decision_stability": false,
+    "latency_p95_ms": true
+  },
+  "metrics": {
+    "schema_valid_rate": 1.0,
+    "tool_selection_accuracy": 0.8611111111111112,
+    "recommendation_action_accuracy": 0.6944444444444444,
+    "max_step_adherence": 1.0,
+    "confirmation_guard_rate": 1.0,
+    "business_zero_write_rate": 1.0,
+    "decision_stability": 0.8333333333333334,
+    "latency_p95_ms": 3843.697
+  },
+  "failed_checks": [
+    "tool_selection_accuracy",
+    "recommendation_action_accuracy",
+    "decision_stability"
+  ]
+}
