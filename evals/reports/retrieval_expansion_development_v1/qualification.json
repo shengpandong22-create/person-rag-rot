@@ -1,0 +1,15 @@
+{
+  "qualified": false,
+  "checks": {
+    "source_label_resolution": true,
+    "primary_order_preservation": true,
+    "duplicate_free_combined": true,
+    "budget_compliance": true,
+    "combined_recall_not_below_primary": true,
+    "incremental_recovery": false,
+    "consumption_precision": false,
+    "combined_recall_gain": true,
+    "average_consumed_count": true,
+    "supplemental_latency_p95": true
+  }
+}
