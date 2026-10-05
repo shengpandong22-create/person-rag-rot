@@ -22,3 +22,5 @@
 原 Top-6 的对象和顺序必须完整保留；combined context 不得出现重复 chunk ID；7/13/7000/18000 预算必须全部满足；combined recall 不得低于 primary recall。
 
 门槛以 `RETRIEVAL_EXPANSION_DEVELOPMENT_THRESHOLDS.json` 为唯一机器判定来源。通过只意味着可以继续离线串联 Evidence Gate 与生成，不意味着方案已经可上线。
+
+运行报告必须记录 Git 状态、数据集与门槛 SHA-256、知识库 fingerprint、Embedding 配置和逐样本 chunk ID，确保失败结论也可复现。

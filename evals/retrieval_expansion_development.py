@@ -23,6 +23,7 @@ from agent_mentor.infrastructure.database.session import (
 from agent_mentor.infrastructure.retriever import PostgresHybridRetriever
 from agent_mentor.ports.knowledge_retriever import RetrievalQuery
 from agent_mentor.ports.supplemental_candidate_provider import SupplementalCandidateRequest
+from evals.provenance import collect_git_state
 from evals.retrieval_expansion_fixture import (
     HeadingShadowSupplementalProvider,
     RetrievalExpansionExecutionFixture,
@@ -94,6 +95,7 @@ async def run_development(
     cases = load_dataset(dataset_path, require_graded=True).cases
     thresholds = json.loads(thresholds_path.read_text(encoding="utf-8"))
     config = thresholds["configuration"]
+    git_state = collect_git_state()
     settings = get_settings()
     engine = create_database_engine(settings.database_url)
     sessions = create_session_factory(engine)
@@ -128,6 +130,7 @@ async def run_development(
     report = {
         "schema_version": "retrieval-expansion-development-report-v1",
         "generated_at": datetime.now(UTC).isoformat(),
+        "git": git_state.to_json(),
         "dataset": str(dataset_path),
         "dataset_sha256": _sha256(dataset_path),
         "thresholds": str(thresholds_path),
