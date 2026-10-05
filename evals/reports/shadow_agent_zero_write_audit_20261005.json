@@ -1,0 +1,25 @@
+{
+  "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "agent_status": "fallback",
+  "business_writes": 0,
+  "protected_table_fingerprints_before": {
+    "ability_profiles": "6620126f765a9041d4e25da55835cb8cc8281a2ff37922883a686b548efee168",
+    "error_patterns": "cf5f0b160e7c84eaee7dbfac54f1d59a10f1c4b2b0a5c99948c529e06f33153e",
+    "review_tasks": "426ce5e76b5c9cd0c912bc68211496750beef9bd6ac824569a83851650723197",
+    "profile_update_events": "64603ee60e26e631ad18ed7a5c3c3828744e8b6404dbef34712ed1afbe5f8ab6",
+    "evaluations": "39533c51621fd2fbb7dede03a80b408bb79c047a9c6a6d96bd8a483bb18abee5",
+    "knowledge_catalog_points": "cd83bf21de9e76891d7bc57fe952025c5df4b9bbc08b0786e0f5c63bb2f25d23"
+  },
+  "protected_table_fingerprints_after": {
+    "ability_profiles": "6620126f765a9041d4e25da55835cb8cc8281a2ff37922883a686b548efee168",
+    "error_patterns": "cf5f0b160e7c84eaee7dbfac54f1d59a10f1c4b2b0a5c99948c529e06f33153e",
+    "review_tasks": "426ce5e76b5c9cd0c912bc68211496750beef9bd6ac824569a83851650723197",
+    "profile_update_events": "64603ee60e26e631ad18ed7a5c3c3828744e8b6404dbef34712ed1afbe5f8ab6",
+    "evaluations": "39533c51621fd2fbb7dede03a80b408bb79c047a9c6a6d96bd8a483bb18abee5",
+    "knowledge_catalog_points": "cd83bf21de9e76891d7bc57fe952025c5df4b9bbc08b0786e0f5c63bb2f25d23"
+  },
+  "protected_tables_identical": true,
+  "shadow_audit_rows_before": 0,
+  "shadow_audit_rows_after": 1,
+  "shadow_audit_row_delta": 1
+}
