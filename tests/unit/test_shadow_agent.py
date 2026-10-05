@@ -51,24 +51,27 @@ class RecordingRepository:
 def decision(**overrides: Any) -> dict[str, object]:
     value: dict[str, object] = {
         "decision": "tool",
-        "reasoning": "Need the weakest knowledge point before making a recommendation.",
-        "tool_name": "get_weak_knowledge_points",
+        "reasoning": "Inspect a supplementary observation before completing the recommendation.",
+        "tool_name": "get_uncovered_topics",
         "arguments": {"limit": 3},
-        "recommendation": None,
+        "topic": None,
+        "suggested_parameters": {},
     }
     value.update(overrides)
     return value
 
 
-def recommendation() -> dict[str, object]:
-    return {
-        "recommended_action": "focused_interview",
+def finish_decision(**overrides: Any) -> dict[str, object]:
+    value: dict[str, object] = {
+        "decision": "finish",
+        "reasoning": "The observed topic is sufficient for a user-confirmed recommendation.",
+        "tool_name": None,
+        "arguments": {},
         "topic": "Redis consistency",
-        "reason": "The weakest observed topic has mastery below the training threshold.",
-        "supporting_observations": ["get_weak_knowledge_points"],
         "suggested_parameters": {"question_count": 3, "difficulty": "medium"},
-        "requires_confirmation": True,
     }
+    value.update(overrides)
+    return value
 
 
 @pytest.mark.asyncio
@@ -84,21 +87,18 @@ async def test_shadow_agent_runs_real_tool_loop_and_records_trace() -> None:
     )
     llm = FakeLLMGateway(
         structured_responses=[
-            decision(),
-            decision(
-                decision="finish",
-                tool_name=None,
-                arguments={},
-                recommendation=recommendation(),
-                reasoning="Enough grounded evidence is available.",
-            ),
+            finish_decision(),
         ]
     )
     repository = RecordingRepository()
 
     run = await ShadowAgentService(
         tools, llm, repository, default_model="test-model"
-    ).recommend(user_id=user_id, knowledge_base_id=knowledge_base_id)
+    ).recommend(
+        user_id=user_id,
+        knowledge_base_id=knowledge_base_id,
+        objective=ShadowTrainingObjective.STRENGTHEN_WEAKNESSES,
+    )
 
     assert run.status == "completed"
     assert not run.used_fallback
@@ -106,7 +106,7 @@ async def test_shadow_agent_runs_real_tool_loop_and_records_trace() -> None:
     assert [step.decision for step in run.steps] == ["tool", "finish"]
     assert tools.calls[0][0] == ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS
     assert len(repository.saved) == 1
-    assert len(llm.calls) == 2
+    assert len(llm.calls) == 1
 
 
 @pytest.mark.asyncio
@@ -121,13 +121,15 @@ async def test_shadow_agent_rejects_invalid_tool_arguments_and_falls_back() -> N
     llm = FakeLLMGateway(structured_responses=[decision(arguments={"limit": 999})])
 
     run = await ShadowAgentService(tools, llm).recommend(
-        user_id=uuid4(), knowledge_base_id=uuid4()
+        user_id=uuid4(),
+        knowledge_base_id=uuid4(),
+        objective=ShadowTrainingObjective.STRENGTHEN_WEAKNESSES,
     )
 
     assert run.status == "fallback"
     assert run.termination_reason == "agent_error:ValidationError"
     assert run.recommendation.topic == "JVM"
-    assert len(tools.calls) == 1
+    assert len(tools.calls) == 2
 
 
 @pytest.mark.asyncio
@@ -135,34 +137,33 @@ async def test_shadow_agent_enforces_three_step_budget() -> None:
     tools = FakeReadTools(
         {ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS: {"items": []}}
     )
-    llm = FakeLLMGateway(structured_responses=[decision(), decision(), decision()])
+    llm = FakeLLMGateway(
+        structured_responses=[
+            decision(),
+            decision(tool_name="get_recent_training_state"),
+        ]
+    )
 
     run = await ShadowAgentService(tools, llm).recommend(
-        user_id=uuid4(), knowledge_base_id=uuid4()
+        user_id=uuid4(),
+        knowledge_base_id=uuid4(),
+        objective=ShadowTrainingObjective.STRENGTHEN_WEAKNESSES,
     )
 
     assert run.status == "fallback"
     assert run.termination_reason == "max_steps_reached"
     assert len(run.steps) == 3
-    assert len(llm.calls) == 3
+    assert len(llm.calls) == 2
 
 
 @pytest.mark.asyncio
-async def test_shadow_agent_cannot_cite_an_observation_it_did_not_call() -> None:
+async def test_shadow_agent_replaces_hallucinated_topic_with_observed_topic() -> None:
     tools = FakeReadTools(
         {ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS: {"items": []}}
     )
-    unsupported = recommendation()
-    unsupported["supporting_observations"] = ["get_uncovered_topics"]
     llm = FakeLLMGateway(
         structured_responses=[
-            decision(
-                decision="finish",
-                tool_name=None,
-                arguments={},
-                recommendation=unsupported,
-                reasoning="Finish without evidence.",
-            )
+            finish_decision(topic="An unobserved topic"),
         ]
     )
 
@@ -170,8 +171,9 @@ async def test_shadow_agent_cannot_cite_an_observation_it_did_not_call() -> None
         user_id=uuid4(), knowledge_base_id=uuid4()
     )
 
-    assert run.status == "fallback"
-    assert run.termination_reason == "agent_error:ValueError"
+    assert run.status == "completed"
+    assert run.recommendation.recommended_action.value == "maintain_current_plan"
+    assert run.recommendation.topic is None
 
 
 @pytest.mark.asyncio
@@ -210,6 +212,67 @@ async def test_fallback_respects_read_only_training_objective() -> None:
     assert run.recommendation.recommended_action.value == "coverage_study"
     assert run.recommendation.topic == "MCP safety"
     assert tools.calls[0][0] == ShadowToolName.GET_UNCOVERED_TOPICS
+
+
+@pytest.mark.asyncio
+async def test_v2_policy_derives_coverage_action_from_coverage_objective() -> None:
+    tools = FakeReadTools(
+        {
+            ShadowToolName.GET_UNCOVERED_TOPICS: {
+                "items": [{"title": "Agent safety", "status": "uncovered"}]
+            }
+        }
+    )
+    llm = FakeLLMGateway(
+        structured_responses=[
+            finish_decision(topic="Agent safety", suggested_parameters={"study_minutes": 30})
+        ]
+    )
+
+    run = await ShadowAgentService(tools, llm).recommend(
+        user_id=uuid4(),
+        knowledge_base_id=uuid4(),
+        objective=ShadowTrainingObjective.CLOSE_COVERAGE_GAPS,
+    )
+
+    assert tools.calls[0][0] == ShadowToolName.GET_UNCOVERED_TOPICS
+    assert run.recommendation.recommended_action.value == "coverage_study"
+    assert run.recommendation.topic == "Agent safety"
+
+
+@pytest.mark.asyncio
+async def test_v2_can_use_one_dynamic_supplementary_tool_after_policy_primary() -> None:
+    tools = FakeReadTools(
+        {
+            ShadowToolName.GET_RECENT_TRAINING_STATE: {
+                "open_review_task_count": 0,
+                "open_review_tasks": [],
+            },
+            ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS: {
+                "items": [{"knowledge_point": "RAG ranking", "mastery_score": 0.43}]
+            },
+        }
+    )
+    llm = FakeLLMGateway(
+        structured_responses=[
+            decision(tool_name="get_weak_knowledge_points"),
+            finish_decision(topic="RAG ranking"),
+        ]
+    )
+
+    run = await ShadowAgentService(tools, llm).recommend(
+        user_id=uuid4(),
+        knowledge_base_id=uuid4(),
+        objective=ShadowTrainingObjective.BALANCED,
+    )
+
+    assert [call[0] for call in tools.calls] == [
+        ShadowToolName.GET_RECENT_TRAINING_STATE,
+        ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS,
+    ]
+    assert run.status == "completed"
+    assert run.recommendation.recommended_action.value == "focused_interview"
+    assert run.recommendation.topic == "RAG ranking"
 
 
 @pytest.mark.asyncio

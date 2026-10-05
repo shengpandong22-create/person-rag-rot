@@ -9,9 +9,10 @@ from uuid import UUID, uuid4
 
 from agent_mentor.application.profile_service import ProfileService
 from agent_mentor.domain.shadow_agent import (
-    ShadowAgentDecision,
+    PRIMARY_TOOL_BY_OBJECTIVE,
     ShadowAgentRun,
     ShadowAgentStep,
+    ShadowAgentV2Decision,
     ShadowRecommendation,
     ShadowRecommendationAction,
     ShadowToolArguments,
@@ -187,6 +188,26 @@ class ShadowAgentService:
         observations: list[dict[str, object]] = []
         steps: list[ShadowAgentStep] = []
         called_tools: set[ShadowToolName] = set()
+        primary_tool = PRIMARY_TOOL_BY_OBJECTIVE[objective]
+        primary_result = await self._tools.execute(
+            primary_tool,
+            user_id=user_id,
+            knowledge_base_id=knowledge_base_id,
+            arguments=ShadowToolArguments(limit=5),
+        )
+        observations.append({"tool_name": primary_tool.value, "result": primary_result})
+        called_tools.add(primary_tool)
+        steps.append(
+            ShadowAgentStep(
+                step_index=1,
+                decision="tool",
+                reasoning="Policy-selected primary read tool for the training objective.",
+                tool_name=primary_tool,
+                validated_arguments={"limit": 5},
+                tool_result=primary_result,
+                latency_ms=0,
+            )
+        )
         if self._llm is None:
             run = await self._fallback_run(
                 run_id=run_id,
@@ -202,17 +223,18 @@ class ShadowAgentService:
             return run
 
         try:
-            for step_index in range(1, self.MAX_STEPS + 1):
+            for step_index in range(2, self.MAX_STEPS + 1):
                 started = perf_counter()
-                decision = await self._decide(run_id, step_index, observations, objective)
+                decision = await self._decide_v2(run_id, step_index, observations, objective)
                 latency_ms = round((perf_counter() - started) * 1000, 3)
                 if decision.decision == "finish":
-                    recommendation = decision.recommendation
-                    if recommendation is None:
-                        raise ValueError("finish decision omitted recommendation")
-                    unsupported = set(recommendation.supporting_observations) - called_tools
-                    if unsupported:
-                        raise ValueError("recommendation cites tools that were not called")
+                    recommendation = self._policy_recommendation(
+                        objective=objective,
+                        observations=observations,
+                        reasoning=decision.reasoning,
+                        requested_topic=decision.topic,
+                        suggested_parameters=decision.suggested_parameters,
+                    )
                     steps.append(
                         ShadowAgentStep(
                             step_index=step_index,
@@ -236,6 +258,8 @@ class ShadowAgentService:
 
                 if decision.tool_name is None:
                     raise ValueError("tool decision omitted tool_name")
+                if decision.tool_name in called_tools:
+                    raise ValueError("V2 prohibits repeating a read tool within one run")
                 arguments = ShadowToolArguments.model_validate(decision.arguments)
                 tool_result = await self._tools.execute(
                     decision.tool_name,
@@ -286,13 +310,13 @@ class ShadowAgentService:
         )
         return run
 
-    async def _decide(
+    async def _decide_v2(
         self,
         run_id: str,
         step_index: int,
         observations: list[dict[str, object]],
         objective: ShadowTrainingObjective,
-    ) -> ShadowAgentDecision:
+    ) -> ShadowAgentV2Decision:
         if self._llm is None:
             raise RuntimeError("LLM is unavailable")
         available_tools = [item.value for item in ShadowToolName]
@@ -302,10 +326,12 @@ class ShadowAgentService:
                 Message(
                     role="system",
                     content=(
-                        "You are a read-only training recommendation agent. Choose exactly one "
-                        "whitelisted tool or finish with a grounded recommendation. Never claim "
-                        "to update scores, profiles, review tasks, or interviews. All recommended "
-                        "actions require user confirmation."
+                        "You are a read-only training recommendation agent. "
+                        "The policy has already selected the primary tool. "
+                        "You may inspect at most one different supplementary tool, or finish. "
+                        "Do not select a business action; the application policy derives it. "
+                        "Never claim to update scores, profiles, review tasks, or interviews. "
+                        "Any recommendation requires user confirmation."
                     ),
                 ),
                 Message(
@@ -315,7 +341,11 @@ class ShadowAgentService:
                             "step": step_index,
                             "max_steps": self.MAX_STEPS,
                             "training_objective": objective.value,
-                            "available_tools": available_tools,
+                            "available_supplementary_tools": [
+                                tool for tool in available_tools if tool not in [
+                                    item["tool_name"] for item in observations
+                                ]
+                            ],
                             "observations": observations,
                         },
                         ensure_ascii=False,
@@ -323,12 +353,100 @@ class ShadowAgentService:
                     ),
                 ),
             ),
-            response_model=ShadowAgentDecision,
+            response_model=ShadowAgentV2Decision,
             model_policy=ModelPolicy(model=self._default_model, max_retries=1),
             trace_context=TraceContext(
                 trace_id=run_id, operation="shadow_training_recommendation"
             ),
         )
+
+    def _policy_recommendation(
+        self,
+        *,
+        objective: ShadowTrainingObjective,
+        observations: list[dict[str, object]],
+        reasoning: str,
+        requested_topic: str | None,
+        suggested_parameters: dict[str, str | int | float | bool],
+    ) -> ShadowRecommendation:
+        topics_by_tool = {
+            str(observation["tool_name"]): self._topics_from_result(
+                str(observation["tool_name"]), observation["result"]
+            )
+            for observation in observations
+        }
+        review_topics = topics_by_tool.get(ShadowToolName.GET_RECENT_TRAINING_STATE.value, [])
+        weak_topics = topics_by_tool.get(ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS.value, [])
+        coverage_topics = topics_by_tool.get(ShadowToolName.GET_UNCOVERED_TOPICS.value, [])
+        if objective == ShadowTrainingObjective.CONTINUE_REVIEW:
+            action, candidates, source = (
+                ShadowRecommendationAction.REVIEW_PLAN,
+                review_topics,
+                ShadowToolName.GET_RECENT_TRAINING_STATE,
+            )
+        elif objective == ShadowTrainingObjective.CLOSE_COVERAGE_GAPS:
+            action, candidates, source = (
+                ShadowRecommendationAction.COVERAGE_STUDY,
+                coverage_topics,
+                ShadowToolName.GET_UNCOVERED_TOPICS,
+            )
+        elif objective == ShadowTrainingObjective.STRENGTHEN_WEAKNESSES:
+            action, candidates, source = (
+                ShadowRecommendationAction.FOCUSED_INTERVIEW,
+                weak_topics,
+                ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS,
+            )
+        elif review_topics:
+            action, candidates, source = (
+                ShadowRecommendationAction.REVIEW_PLAN,
+                review_topics,
+                ShadowToolName.GET_RECENT_TRAINING_STATE,
+            )
+        elif weak_topics:
+            action, candidates, source = (
+                ShadowRecommendationAction.FOCUSED_INTERVIEW,
+                weak_topics,
+                ShadowToolName.GET_WEAK_KNOWLEDGE_POINTS,
+            )
+        else:
+            action, candidates, source = (
+                ShadowRecommendationAction.COVERAGE_STUDY,
+                coverage_topics,
+                ShadowToolName.GET_UNCOVERED_TOPICS,
+            )
+        if requested_topic in candidates:
+            topic = requested_topic
+        else:
+            topic = candidates[0] if candidates else None
+        return ShadowRecommendation(
+            recommended_action=(
+                action if topic else ShadowRecommendationAction.MAINTAIN_CURRENT_PLAN
+            ),
+            topic=topic,
+            reason=reasoning,
+            supporting_observations=[source],
+            suggested_parameters=suggested_parameters if topic else {},
+            requires_confirmation=True,
+        )
+
+    @staticmethod
+    def _topics_from_result(tool_name: str, result: object) -> list[str]:
+        if not isinstance(result, dict):
+            return []
+        if tool_name == ShadowToolName.GET_RECENT_TRAINING_STATE.value:
+            rows = result.get("open_review_tasks", [])
+        else:
+            rows = result.get("items", [])
+        if not isinstance(rows, list):
+            return []
+        topics: list[str] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            value = row.get("knowledge_point") or row.get("title")
+            if isinstance(value, str) and value:
+                topics.append(value)
+        return topics
 
     async def _fallback_run(
         self,
