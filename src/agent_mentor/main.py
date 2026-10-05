@@ -23,12 +23,14 @@ from agent_mentor.api.health import router as health_router
 from agent_mentor.api.interviews import router as interviews_router
 from agent_mentor.api.knowledge import router as knowledge_router
 from agent_mentor.api.profiles import router as profiles_router
+from agent_mentor.api.shadow_agent import router as shadow_agent_router
 from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.application.demo_readiness_service import DemoReadinessService
 from agent_mentor.application.evaluation_service import EvaluationService
 from agent_mentor.application.interview_service import InterviewService
 from agent_mentor.application.knowledge_service import DEFAULT_USER_ID, KnowledgeService
 from agent_mentor.application.profile_service import ProfileService
+from agent_mentor.application.shadow_agent_service import ShadowAgentService, ShadowReadTools
 from agent_mentor.config import EmbeddingProvider, Settings, get_settings
 from agent_mentor.infrastructure.bge_embedding import BgeEmbeddingGateway
 from agent_mentor.infrastructure.database.session import (
@@ -39,6 +41,7 @@ from agent_mentor.infrastructure.database.session import (
 from agent_mentor.infrastructure.embedding import DevelopmentEmbeddingGateway
 from agent_mentor.infrastructure.llm import OpenAICompatibleLLMGateway
 from agent_mentor.infrastructure.retriever import PostgresHybridRetriever
+from agent_mentor.infrastructure.shadow_agent_repository import SqlAlchemyShadowTraceRepository
 from agent_mentor.logging import configure_logging, trace_logging_middleware
 from agent_mentor.rag.documents import DocumentParser
 
@@ -141,6 +144,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         default_model=settings.llm_default_model,
     )
     app.state.profile_service = ProfileService(session_factory)
+    app.state.shadow_agent_enabled = settings.shadow_agent_enabled
+    app.state.shadow_agent_service = ShadowAgentService(
+        ShadowReadTools(app.state.profile_service),
+        llm,
+        SqlAlchemyShadowTraceRepository(session_factory),
+        default_model=settings.llm_default_model,
+    )
     app.state.demo_readiness_service = DemoReadinessService(session_factory)
 
     app.middleware("http")(trace_logging_middleware)
@@ -153,6 +163,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(interviews_router)
     app.include_router(evaluations_router)
     app.include_router(profiles_router)
+    app.include_router(shadow_agent_router)
     app.include_router(demo_router)
 
     return app

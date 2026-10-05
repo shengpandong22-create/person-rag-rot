@@ -299,6 +299,27 @@ class ChatRetrievalExpansionModel(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class ShadowAgentRunModel(Base):
+    """Audit-only trace; shadow runs never mutate learning business state."""
+
+    __tablename__ = "shadow_agent_runs"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        ForeignKey("knowledge_bases.id"), nullable=False, index=True
+    )
+    status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    recommendation: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False)
+    trajectory: Mapped[list[dict[str, object]]] = mapped_column(JSONB, nullable=False)
+    termination_reason: Mapped[str] = mapped_column(String(120), nullable=False)
+    used_fallback: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    business_writes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
 class InterviewSessionModel(Base):
     __tablename__ = "interview_sessions"
 

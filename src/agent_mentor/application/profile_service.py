@@ -82,6 +82,22 @@ class CoverageSnapshot:
     points: tuple[CoveragePoint, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class RecentEvaluation:
+    topic: str
+    total: int
+    confidence: float
+    status: str
+    created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class TrainingStateSnapshot:
+    recent_evaluations: tuple[RecentEvaluation, ...]
+    open_review_task_count: int
+    open_review_tasks: tuple[ReviewTaskModel, ...]
+
+
 def _display_point(item: AbilityProfileModel | ReviewTaskModel) -> str:
     return item.subtopic_title or item.topic_title or item.knowledge_point
 
@@ -169,6 +185,69 @@ class ProfileService:
     async def get_snapshot(self, user_id: UUID, knowledge_base_id: UUID) -> ProfileSnapshot:
         async with self._sessions() as db:
             return await self._snapshot(db, user_id, knowledge_base_id)
+
+    async def get_recent_training_state(
+        self, user_id: UUID, knowledge_base_id: UUID, *, limit: int = 5
+    ) -> TrainingStateSnapshot:
+        """Read recent trusted inputs and open work without changing learning state."""
+        async with self._sessions() as db:
+            rows = (
+                await db.execute(
+                    select(EvaluationModel, InterviewSessionModel.topic)
+                    .join(
+                        InterviewQuestionModel,
+                        InterviewQuestionModel.id == EvaluationModel.question_id,
+                    )
+                    .join(
+                        InterviewSessionModel,
+                        InterviewSessionModel.id == InterviewQuestionModel.session_id,
+                    )
+                    .where(
+                        InterviewSessionModel.user_id == user_id,
+                        InterviewSessionModel.knowledge_base_id == knowledge_base_id,
+                    )
+                    .order_by(EvaluationModel.created_at.desc())
+                    .limit(limit)
+                )
+            ).all()
+            tasks = tuple(
+                (
+                    await db.scalars(
+                        select(ReviewTaskModel)
+                        .where(
+                            ReviewTaskModel.user_id == user_id,
+                            ReviewTaskModel.knowledge_base_id == knowledge_base_id,
+                            ReviewTaskModel.status == ReviewTaskStatus.OPEN,
+                        )
+                        .order_by(ReviewTaskModel.priority.desc(), ReviewTaskModel.due_at)
+                        .limit(limit)
+                    )
+                ).all()
+            )
+            open_count = int(
+                await db.scalar(
+                    select(func.count(ReviewTaskModel.id)).where(
+                        ReviewTaskModel.user_id == user_id,
+                        ReviewTaskModel.knowledge_base_id == knowledge_base_id,
+                        ReviewTaskModel.status == ReviewTaskStatus.OPEN,
+                    )
+                )
+                or 0
+            )
+            return TrainingStateSnapshot(
+                recent_evaluations=tuple(
+                    RecentEvaluation(
+                        topic=topic,
+                        total=evaluation.total,
+                        confidence=evaluation.confidence,
+                        status=str(evaluation.status),
+                        created_at=evaluation.created_at,
+                    )
+                    for evaluation, topic in rows
+                ),
+                open_review_task_count=open_count,
+                open_review_tasks=tasks,
+            )
 
     async def recommend_interview_plan(
         self, user_id: UUID, knowledge_base_id: UUID, *, limit: int = 5
