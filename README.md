@@ -85,6 +85,7 @@ npm.cmd run build
 - [ADR-002：关闭 Relation-Value V3 实验线](docs/decisions/ADR-002-关闭RelationValueV3实验线.md)
 - [核心 RAG：用户触发二阶段检索](docs/planning/核心RAG下一阶段-用户触发二阶段检索.md)
 - [二阶段检索 API 与预算设计](docs/design/用户触发二阶段检索API与预算设计.md)
+- [ADR-003：阶段性关闭二阶段检索生产接入](docs/decisions/ADR-003-阶段性关闭二阶段检索生产接入.md)
 - [V1 实现规格说明](docs/design/V1实现规格说明.md)
 - [V1 分阶段开发计划与验收标准](docs/planning/V1分阶段开发计划与验收标准.md)
 - [Phase 6 验收报告](docs/acceptance/phase-6.md)
