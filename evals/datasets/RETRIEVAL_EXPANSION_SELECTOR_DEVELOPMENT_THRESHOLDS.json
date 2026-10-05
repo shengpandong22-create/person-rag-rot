@@ -1,0 +1,19 @@
+{
+  "schema_version": "retrieval-expansion-selector-development-v1",
+  "candidate": "rank-capped-3-v1",
+  "positive_dataset": "evals/datasets/retrieval_expansion_development_v1.jsonl",
+  "negative_dataset": "evals/datasets/retrieval_expansion_selector_negatives_v1.jsonl",
+  "configuration": {"max_consumed_supplemental": 3, "primary_top_k": 6, "candidate_k": 20},
+  "hard_gates": {
+    "primary_order_preservation_rate_min": 1.0,
+    "combined_recall_min": 1.0,
+    "primary_miss_incremental_recovery_rate_min": 1.0,
+    "supplemental_consumption_precision_min": 0.30,
+    "average_consumed_supplemental_count_max": 3.0,
+    "consumption_reduction_vs_fixed7_min": 0.50,
+    "negative_average_consumed_count_max": 3.0,
+    "negative_consumption_reduction_vs_fixed7_min": 0.50,
+    "budget_compliance_rate_min": 1.0
+  },
+  "decision_note": "Non-blind Development only. Pass permits protocol design, not validation, Gate/generation integration, or production use."
+}
