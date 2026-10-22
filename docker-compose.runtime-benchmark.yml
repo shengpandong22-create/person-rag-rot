@@ -1,0 +1,54 @@
+services:
+  db:
+    ports: !reset []
+    volumes:
+      - runtime_benchmark_postgres:/var/lib/postgresql/data
+
+  api-fallback:
+    build:
+      context: .
+    env_file:
+      - .env
+    environment:
+      AGENT_MENTOR_APP_ENV: development
+      AGENT_MENTOR_DATABASE_URL: postgresql+asyncpg://agentmentor:agentmentor@db:5432/agentmentor
+      AGENT_MENTOR_ALEMBIC_DATABASE_URL: postgresql+psycopg://agentmentor:agentmentor@db:5432/agentmentor
+      AGENT_MENTOR_LLM_BASE_URL: ""
+      AGENT_MENTOR_LLM_API_KEY: ""
+      AGENT_MENTOR_LLM_DEFAULT_MODEL: ""
+      HF_HOME: /cache/huggingface
+    ports:
+      - "18000:8000"
+    volumes:
+      - runtime_benchmark_uploads:/app/uploads
+      - hf_cache:/cache/huggingface
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn agent_mentor.main:app --host 0.0.0.0 --port 8000
+    mem_limit: 2g
+
+  api-llm:
+    build:
+      context: .
+    env_file:
+      - .env
+    environment:
+      AGENT_MENTOR_APP_ENV: development
+      AGENT_MENTOR_DATABASE_URL: postgresql+asyncpg://agentmentor:agentmentor@db:5432/agentmentor
+      AGENT_MENTOR_ALEMBIC_DATABASE_URL: postgresql+psycopg://agentmentor:agentmentor@db:5432/agentmentor
+      HF_HOME: /cache/huggingface
+    ports:
+      - "18001:8000"
+    volumes:
+      - runtime_benchmark_uploads:/app/uploads
+      - hf_cache:/cache/huggingface
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn agent_mentor.main:app --host 0.0.0.0 --port 8000
+    mem_limit: 2g
+
+volumes:
+  runtime_benchmark_postgres:
+  runtime_benchmark_uploads:

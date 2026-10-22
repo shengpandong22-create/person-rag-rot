@@ -1,0 +1,5 @@
+{"id":"runtime-rag-evidence","question":"AgentMentor 的 RAG 回答为什么需要显式处理证据不足？"}
+{"id":"runtime-hybrid-retrieval","question":"RRF 在混合检索中解决什么问题？"}
+{"id":"runtime-interview-checkpoint","question":"面试工作流为什么需要 checkpoint？"}
+{"id":"runtime-scoring-trust","question":"为什么最终总分要由应用层而不是 LLM 直接计算？"}
+{"id":"runtime-profile-binding","question":"能力画像为什么需要与知识库绑定？"}
