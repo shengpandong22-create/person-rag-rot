@@ -340,7 +340,7 @@ V1 里是另一个 LLM 调用（用 `review_v1.md` prompt）。设计上可以�
 ### Q12：从 Evaluation 到复习任务的转化是怎么做的？
 
 #### 30 秒简短版
-评分完成后，先判断是否需要更新画像（跳过 REVIEW_PENDING 和低置信情况）；然后更新对应 topic 和 subtopic 的 mastery_score；根据最弱维度和错误类型生成 ReviewTask；下次创建面试时优先推荐 open review tasks 对应的知识点。
+评分完成后，先判断是否需要更新画像：跳过 `REVIEW_PENDING` 和 `DISPUTED`，低置信 `FINAL` 以半权重更新；然后更新对应 topic 和 subtopic 的 mastery_score；根据最弱维度和错误类型生成 ReviewTask；下次创建面试时优先推荐 open review tasks 对应的知识点。
 
 #### 90 秒深入版
 转化流程分四步：
@@ -352,14 +352,14 @@ V1 里是另一个 LLM 调用（用 `review_v1.md` prompt）。设计上可以�
 #### 追问防御
 
 **Q12.1：复习任务具体长什么样？**
-包含 task_type（如 MISSING_DETAIL）、关联的 topic/subtopic、优先级、创建时间、完成条件（如连续两次高分解锁）。
+包含 task_type（如 MISSING_DETAIL）、关联的 topic/subtopic、优先级、创建时间和 `verification_streak`。自动验证路径需连续两次可信高分才关闭；同时保留用户手动关闭入口，手动关闭不等于两次验证完成。
 
 **Q12.2：如果用户一直没完成复习任务，会不会堆积？**
 会。V2 需要任务过期和重新排序机制，避免用户被大量 open tasks 压垮。
 
 #### 质疑应对
 **质疑：画像更新会不会被一次偶然失误拉偏？**
-不会。mastery 更新用类 EMA 公式，learning_rate 最高只有 0.35，单次评分影响有限。而且 ReviewTask 有 verification streak 机制，连续两次高分解锁任务才算真正掌握。
+不会。mastery 更新用类 EMA 公式，learning_rate 最高只有 0.35，单次评分影响有限。ReviewTask 的自动验证路径有 verification streak：连续两次可信高分才自动关闭。用户也可手动关闭任务，但这不应被表述为“已验证掌握”。
 
 ---
 
@@ -766,7 +766,7 @@ RAG demo 解决的是“我问、你答”的一次性问题，AgentMentor 解�
 > 第一步是 `profile_update_decision`，根据 evaluation 的 status 和 confidence 决定这个评分能不能进入画像。比如 `DISPUTED` 或置信度太低的评分会被拒绝，只记一个 `ProfileUpdateEventModel`，但不去改画像。
 > 如果允许更新，就根据面试主题和知识点定位到 topic 和 subtopic 节点，查询或创建对应的 `AbilityProfileModel`，用 `updated_mastery` 渐进更新掌握度。更新时会把置信度作为权重，难题目权重更高。
 > 同时，对 subtopic 节点会调用 `classify_error` 识别错误类型，写入 `ErrorPatternModel`，并生成或更新 `ReviewTaskModel`。如果同一错误类型反复出现，任务优先级会上升，复习间隔会缩短。
-> 最后，如果用户在相关 subtopic 上拿到了高分，`_advance_review_tasks` 会把对应的复习任务标记为完成。"
+> 最后，相关 subtopic 的可信高分会推进 `_advance_review_tasks` 的验证 streak；连续两次才自动完成。另有独立的用户手动关闭接口，因此 `completed` 本身不等价于“自动验证通过”。"
 
 **关键步骤**：
 1. `_get_interview()` + `_evaluation_rows()` → 加载面试和评分；
