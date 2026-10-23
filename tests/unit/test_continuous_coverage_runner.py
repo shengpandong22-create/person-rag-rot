@@ -1,5 +1,4 @@
 import pytest
-
 from scripts.run_continuous_coverage_training import nearest_rank
 
 
