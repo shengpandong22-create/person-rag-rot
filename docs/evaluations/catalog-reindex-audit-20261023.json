@@ -1,0 +1,2460 @@
+{
+  "script": "scripts/audit_catalog_reindex_plan.py",
+  "write_behavior": "read_only",
+  "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "document_count": 7,
+  "orphan_catalog_point_titles": [
+    "1.1 一句话讲清这个项目是什么",
+    "1.2 六层架构（先建立系统地图）",
+    "1.4 核心闭环（整套系统如何串起来）",
+    "1.6 请求如何穿过各层（以 RAG 问答为例）",
+    "1.7 本课自测",
+    "2.1 先说结论",
+    "2.10 本课自测",
+    "2.2 上传阶段：三个安全措施",
+    "2.3 文档状态机",
+    "2.4 解析阶段：四种格式怎么处理",
+    "2.5 分块策略：为什么不是固定字数切割",
+    "2.6 Embedding 阶段：当前的真实实现",
+    "2.7 重新索引时为什么尽量保留 Chunk ID",
+    "2.8 增量知识目录：新文档如何进入查漏体系",
+    "2.9 核心链路图",
+    "3.1 先说结论",
+    "3.10 完整 RAG 链路",
+    "3.11 本课自测",
+    "3.2 为什么需要两路检索",
+    "3.4 检索代码的核心流程",
+    "3.6 第一道防线：词汇化证据判断",
+    "3.7 第二道防线：证据门禁",
+    "3.8 第三道防线：引用白名单",
+    "3.9 LLM 生成层：双路径兜底",
+    "4.1 先说结论",
+    "4.2 面试状态机",
+    "4.3 面试启动流程",
+    "4.6 用户刷新恢复的完整交互",
+    "4.7 状态流全景",
+    "4.8 故障场景",
+    "4.9 本课自测",
+    "5.1 先说结论",
+    "5.10 评分数据流全景",
+    "5.2 四维评分",
+    "5.3 应用层重算总分",
+    "5.4 三种评分状态",
+    "5.5 评分代码中的可信约束",
+    "5.6 复核路由逻辑",
+    "5.7 三种状态的完整对比",
+    "5.9 报告：逐题解析比总分更重要",
+    "6.1 先说结论",
+    "6.10 完整证据链",
+    "6.11 数据流全景",
+    "6.12 本课自测",
+    "6.2 为什么旧画像会出现问题",
+    "6.4 哪些评分允许更新画像",
+    "6.5 为什么高分后画像不会立刻满分——渐进更新",
+    "6.6 ProfileService 如何应用评分",
+    "6.7 复习任务：为什么需要两次验证",
+    "6.8 训练焦点如何排序",
+    "6.9 掌握度和覆盖度为什么必须分开",
+    "7.2 八个故障场景：必须会回答",
+    "7.4 不要使用的表述（红线清单）",
+    "7.5 最小源码定位表",
+    "7.7 学完整个项目后应该形成的认知",
+    "7.8 七课总览",
+    "BLAKE2b 哈希映射到固定维度 + L2 归一化",
+    "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？",
+    "Q1：为什么不使用 LangGraph？",
+    "Q1：为什么设计成断点重连的思路？面试中断可恢复怎么回答？",
+    "Q1：什么情况下 Reviewer 判定为不可用？",
+    "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+    "Q1：未覆盖的题目在之后会有什么推荐策略？是否会一直未被覆盖？",
+    "Q2：REVIEW_PENDING 是不是因为没有 Reviewer 就直接被弃用？",
+    "Q2：三道防线在 Embedding 强的时候是否仍然具备存在意义？",
+    "Q2：主题与子知识点分别解决什么问题？",
+    "Q2：刷新恢复的具体交互是怎样的？",
+    "Q2：应用层和领域层的区别？",
+    "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+    "一个具体例子",
+    "三、本课结论",
+    "三、自测结果",
+    "不要使用的表述（红线清单）",
+    "为什么设计成这样",
+    "为什么这么做",
+    "六个亮点",
+    "关键区分：它不是什么",
+    "关键规则",
+    "四、本课结论",
+    "它的价值",
+    "它的限制",
+    "安全措施 3：内容去重",
+    "当前项目的真实边界",
+    "数据流全景",
+    "方案 1：内容指纹（本地就能做，本质是 Hash 去重的延伸）",
+    "方案 2：结构路径匹配（当前已有 heading_path）",
+    "方案 3：版本化引用（企业级方案，说你理解思路即可）",
+    "核心结论",
+    "核心认知",
+    "流程",
+    "知识数据",
+    "自测结果：第 3 题需要加强",
+    "边界",
+    "面试必须准确描述",
+    "面试策略",
+    "面试要能讲清的三点"
+  ],
+  "documents": [
+    {
+      "document_id": "caf81d9a-f86e-44fd-bbbe-e0fdc0ad5309",
+      "logical_name": "第 1 课：项目全景与架构地图",
+      "original_filename": "第 1 课：项目全景与架构地图.md",
+      "content_hash": "23e629defa25a7f9b6a3b36ae7e3800376b8687c7556c13f390435d3d45410c2",
+      "status": "ready",
+      "active_chunk_count": 25,
+      "existing_titles": [
+        "一句话讲清这个项目是什么",
+        "三条真实边界",
+        "两条消费路径的关键区别",
+        "为什么这样分层？",
+        "为什么面试时不能回避边界？",
+        "六层架构（先建立系统地图）",
+        "应用层 vs 领域层：一句话区分",
+        "核心规则（面试必背）",
+        "核心闭环（整套系统如何串起来）",
+        "请求如何穿过各层（以 RAG 问答为例）",
+        "长期画像数据",
+        "面试和评分数据",
+        "面试重点：为什么需要 ProfileUpdateEvent？"
+      ],
+      "candidate_titles": [
+        "一句话讲清这个项目是什么",
+        "三条真实边界",
+        "两条消费路径的关键区别",
+        "为什么这样分层？",
+        "为什么面试时不能回避边界？",
+        "六层架构（先建立系统地图）",
+        "应用层 vs 领域层：一句话区分",
+        "核心规则（面试必背）",
+        "核心闭环（整套系统如何串起来）",
+        "请求如何穿过各层（以 RAG 问答为例）",
+        "长期画像数据",
+        "面试和评分数据",
+        "面试重点：为什么需要 ProfileUpdateEvent？"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 14,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 10
+      },
+      "chunks": [
+        {
+          "chunk_id": "9dfd6a46-700b-430c-aa0c-f6b8658da667",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "72d0d588-1adb-4957-b3df-bead7dfadcea",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.1 一句话讲清这个项目是什么"
+          ],
+          "candidate_title": "一句话讲清这个项目是什么",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "072b9729-4754-4bec-9c51-2bab588ec677",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "关键区分：它不是什么"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "7ad182f5-310e-47f4-a755-652af547497e",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.2 六层架构（先建立系统地图）"
+          ],
+          "candidate_title": "六层架构（先建立系统地图）",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "96140e48-a7f1-4d8c-9a92-c177bb6a0a92",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.2 六层架构（先建立系统地图）"
+          ],
+          "candidate_title": "六层架构（先建立系统地图）",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "c8b161ed-b22a-419a-8c79-d9ae611f5a2c",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "核心规则（面试必背）"
+          ],
+          "candidate_title": "核心规则（面试必背）",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "d4e8ddc0-9f9e-4717-9f82-f8ea02b20f9c",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "应用层 vs 领域层：一句话区分"
+          ],
+          "candidate_title": "应用层 vs 领域层：一句话区分",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "46283aa3-9d5a-4dc3-974a-ff1ffdde6e39",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "为什么这样分层？"
+          ],
+          "candidate_title": "为什么这样分层？",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "9dbafe6b-3c9c-43b5-bce1-6dde21ac3424",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "知识数据"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "3c082db4-68a2-4a7e-86e2-1207348655c3",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "面试和评分数据"
+          ],
+          "candidate_title": "面试和评分数据",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "01c1f648-e19d-49c0-9d48-dc188eb6e715",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.3 核心数据模型（三组实体）",
+            "长期画像数据"
+          ],
+          "candidate_title": "长期画像数据",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "646c6662-8e51-4d96-9157-937226d4ee71",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "面试重点：为什么需要 ProfileUpdateEvent？"
+          ],
+          "candidate_title": "面试重点：为什么需要 ProfileUpdateEvent？",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "34edfd35-911e-48a5-9a77-e358dfbd3485",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.4 核心闭环（整套系统如何串起来）"
+          ],
+          "candidate_title": "核心闭环（整套系统如何串起来）",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "5c78df7d-1f54-44ab-96d7-bd5d76f67e75",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "两条消费路径的关键区别"
+          ],
+          "candidate_title": "两条消费路径的关键区别",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "975c84f4-0724-441a-bea3-c549aa47f44b",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.5 面试必背：三个亮点 + 三个边界",
+            "六个亮点"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "7fb44daf-1b41-47ff-9cfb-4e1fb8437e55",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.5 面试必背：三个亮点 + 三个边界",
+            "三条真实边界"
+          ],
+          "candidate_title": "三条真实边界",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "b1f35bbb-fe2f-4e3a-a3f9-50b4de09d900",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "为什么面试时不能回避边界？"
+          ],
+          "candidate_title": "为什么面试时不能回避边界？",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "b668d853-dd74-4b70-ac33-332b8df6d12a",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.6 请求如何穿过各层（以 RAG 问答为例）"
+          ],
+          "candidate_title": "请求如何穿过各层（以 RAG 问答为例）",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "11b3bb7e-5c71-4f5c-b404-ec39028e8dff",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "一、教案正文",
+            "1.7 本课自测"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "7d01771d-160a-46fc-8f60-e20b366c35eb",
+          "chunk_index": 19,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "二、学员疑问与讨论记录",
+            "Q1：为什么不使用 LangGraph？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "507ee3f9-be1f-49c8-85c7-587eb681bf2d",
+          "chunk_index": 20,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "二、学员疑问与讨论记录",
+            "Q1：为什么不使用 LangGraph？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "15c52ee7-0de1-4949-9389-2e2d6fb696bd",
+          "chunk_index": 21,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "二、学员疑问与讨论记录",
+            "Q2：应用层和领域层的区别？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "cbead6f5-3aee-4944-a4ea-73e3053ce981",
+          "chunk_index": 22,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "二、学员疑问与讨论记录",
+            "Q2：应用层和领域层的区别？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "fdb1da69-a97a-4d34-80d9-2dc00f51c556",
+          "chunk_index": 23,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "二、学员疑问与讨论记录",
+            "自测结果：第 3 题需要加强"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "b188fd0a-1450-4706-a69d-8a7dd997faae",
+          "chunk_index": 24,
+          "heading_path": [
+            "第 1 课：项目全景与架构地图",
+            "三、本课结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        }
+      ]
+    },
+    {
+      "document_id": "ea1cc984-b237-4ed8-98cc-044a913a884b",
+      "logical_name": "第 2 课：知识入库链路——文档如何变成可检索证据",
+      "original_filename": "第 2 课：知识入库链路——文档如何变成可检索证据.md",
+      "content_hash": "b04f184e397c458d8b5b18bb9c3de0711a7701d464931ce0365676cdebb30a72",
+      "status": "ready",
+      "active_chunk_count": 35,
+      "existing_titles": [
+        "Embedding 层确实基础，但工程防御层不 LOW",
+        "Embedding 是性价比最高的单点提升",
+        "Embedding 阶段：当前的真实实现",
+        "上传阶段：三个安全措施",
+        "为什么还要加 overlap？",
+        "分块策略：为什么不是固定字数切割",
+        "增量知识目录：新文档如何进入查漏体系",
+        "已实现 vs 未实现",
+        "文档状态机",
+        "版本管理",
+        "知识入库链路——文档如何变成可检索证据",
+        "解析输出包含的结构信息",
+        "解析阶段：四种格式怎么处理",
+        "重新索引时为什么尽量保留 Chunk ID",
+        "面试时这样说的效果"
+      ],
+      "candidate_titles": [
+        "Embedding 层确实基础，但工程防御层不 LOW",
+        "Embedding 是性价比最高的单点提升",
+        "Embedding 阶段：当前的真实实现",
+        "上传阶段：三个安全措施",
+        "为什么还要加 overlap？",
+        "分块策略：为什么不是固定字数切割",
+        "增量知识目录：新文档如何进入查漏体系",
+        "已实现 vs 未实现",
+        "文档状态机",
+        "版本管理",
+        "知识入库链路——文档如何变成可检索证据",
+        "解析输出包含的结构信息",
+        "解析阶段：四种格式怎么处理",
+        "重新索引时为什么尽量保留 Chunk ID",
+        "面试时这样说的效果"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 23,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 11
+      },
+      "chunks": [
+        {
+          "chunk_id": "628f985f-6526-4cd4-bed2-d68f5f94c68b",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "6cc94468-1dfc-41c6-872a-cb541cf7b9e6",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.1 先说结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "3a8e7c16-416d-476e-9da8-ec0a470eca0c",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施"
+          ],
+          "candidate_title": "上传阶段：三个安全措施",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "f98918e3-ebe2-4f8e-b3ca-40edb4706a23",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施"
+          ],
+          "candidate_title": "上传阶段：三个安全措施",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "3860b1a2-f212-4f53-9055-d9348187e3ae",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施",
+            "面试要能讲清的三点"
+          ],
+          "candidate_title": "上传阶段：三个安全措施",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "3bde6f99-20b7-41d9-8bf3-44d29c2d40f7",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.2 上传阶段：三个安全措施",
+            "版本管理"
+          ],
+          "candidate_title": "版本管理",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "76db0a4e-953d-4b83-87cb-f654111acf9f",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.3 文档状态机"
+          ],
+          "candidate_title": "文档状态机",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "c4e982e3-a5e9-4289-8a74-a1f96697c265",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.4 解析阶段：四种格式怎么处理"
+          ],
+          "candidate_title": "解析阶段：四种格式怎么处理",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "e0f185b1-6f53-45aa-80a3-620299c2a75a",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.4 解析阶段：四种格式怎么处理",
+            "解析输出包含的结构信息"
+          ],
+          "candidate_title": "解析输出包含的结构信息",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "6175f75b-5fb9-4877-ba2d-18dcac056a36",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.4 解析阶段：四种格式怎么处理",
+            "已实现 vs 未实现"
+          ],
+          "candidate_title": "已实现 vs 未实现",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "808bccb3-53ee-47a2-a65c-42f9206ee473",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.5 分块策略：为什么不是固定字数切割"
+          ],
+          "candidate_title": "分块策略：为什么不是固定字数切割",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "322cbb6a-16c9-4087-9e86-aeceb8bacafb",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.5 分块策略：为什么不是固定字数切割",
+            "为什么还要加 overlap？"
+          ],
+          "candidate_title": "为什么还要加 overlap？",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "a599e2ef-8c03-40e3-b27f-d5c253bbb4ef",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.6 Embedding 阶段：当前的真实实现"
+          ],
+          "candidate_title": "Embedding 阶段：当前的真实实现",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "299ce1b8-bb0e-41af-bf5f-1aab8672a6af",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.6 Embedding 阶段：当前的真实实现",
+            "它的价值"
+          ],
+          "candidate_title": "Embedding 阶段：当前的真实实现",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "8719241d-2b71-4746-b36c-d99584eda1c5",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.6 Embedding 阶段：当前的真实实现",
+            "它的限制"
+          ],
+          "candidate_title": "Embedding 阶段：当前的真实实现",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "027cc00e-77cb-4f2a-b75d-86963b90a448",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.6 Embedding 阶段：当前的真实实现",
+            "面试必须准确描述"
+          ],
+          "candidate_title": "Embedding 阶段：当前的真实实现",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4db83fc0-b0b8-418b-a294-662168fb1141",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.7 重新索引时为什么尽量保留 Chunk ID"
+          ],
+          "candidate_title": "重新索引时为什么尽量保留 Chunk ID",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "03c78675-6eda-45d3-be0a-3175b2a455b3",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.7 重新索引时为什么尽量保留 Chunk ID",
+            "为什么这么做"
+          ],
+          "candidate_title": "重新索引时为什么尽量保留 Chunk ID",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "20fde7d8-b88f-4382-97b6-731c8f41ff6c",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.7 重新索引时为什么尽量保留 Chunk ID",
+            "边界"
+          ],
+          "candidate_title": "重新索引时为什么尽量保留 Chunk ID",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4cfb4a20-295e-4409-b055-8322f3ab8ef2",
+          "chunk_index": 19,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.8 增量知识目录：新文档如何进入查漏体系"
+          ],
+          "candidate_title": "增量知识目录：新文档如何进入查漏体系",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4141045f-9876-42b8-b1d1-378d7ebc71dd",
+          "chunk_index": 20,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.8 增量知识目录：新文档如何进入查漏体系",
+            "关键规则"
+          ],
+          "candidate_title": "增量知识目录：新文档如何进入查漏体系",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "b4c88ed2-dec9-4cfd-9e41-bdeda12c4132",
+          "chunk_index": 21,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.9 核心链路图"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "c83fd580-11dd-4399-a35a-b502406c34ee",
+          "chunk_index": 22,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "一、教案正文",
+            "2.10 本课自测"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "eba3a26f-b2dc-4172-ad08-4b547bf3f34d",
+          "chunk_index": 23,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "30b281b6-3e4e-4f02-bcfb-c4e0a9c8a1a0",
+          "chunk_index": 24,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+            "Embedding 层确实基础，但工程防御层不 LOW"
+          ],
+          "candidate_title": "Embedding 层确实基础，但工程防御层不 LOW",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "1a9cc3ab-a83c-4016-ae73-4cd10e314489",
+          "chunk_index": 25,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+            "Embedding 是性价比最高的单点提升"
+          ],
+          "candidate_title": "Embedding 是性价比最高的单点提升",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "1248c422-72fb-4575-a127-f2dcb0327c7f",
+          "chunk_index": 26,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q1：当前 RAG 是不是比较 LOW？Embedding 必须改造吗？",
+            "面试策略"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "3dc2db0f-aa1f-4e64-b9c4-fe8806cc8c1c",
+          "chunk_index": 27,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "cd038e3e-d8c7-4c17-b139-533e4d98d823",
+          "chunk_index": 28,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+            "方案 1：内容指纹（本地就能做，本质是 Hash 去重的延伸）"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "a595dfe9-50f9-4474-bc8a-fd2e27b41205",
+          "chunk_index": 29,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+            "方案 2：结构路径匹配（当前已有 heading_path）"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "4e4f757d-00ec-44b8-af49-149c9bede454",
+          "chunk_index": 30,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+            "方案 3：版本化引用（企业级方案，说你理解思路即可）"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "f70c1790-98ab-4b8b-8d02-6383a74c3f74",
+          "chunk_index": 31,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+            "面试时这样说的效果"
+          ],
+          "candidate_title": "面试时这样说的效果",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4e9f83ce-b95c-4dba-a321-ffb3a84907c2",
+          "chunk_index": 32,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "二、学员疑问与讨论记录",
+            "Q2：文档大幅重排问题，面试中怎么回答？没有企业经验会难吗？",
+            "核心结论"
+          ],
+          "candidate_title": "知识入库链路——文档如何变成可检索证据",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "9513bdbe-13d1-415d-a703-09571bf457f3",
+          "chunk_index": 33,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "三、自测结果"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "bb1beb07-cd79-44b1-af62-daf2cc10b12d",
+          "chunk_index": 34,
+          "heading_path": [
+            "第 2 课：知识入库链路——文档如何变成可检索证据",
+            "四、本课结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        }
+      ]
+    },
+    {
+      "document_id": "84eb5a17-a007-4a8c-a033-285cae941b2e",
+      "logical_name": "第 3 课：混合检索与可信 RAG 回答",
+      "original_filename": "第 3 课：混合检索与可信 RAG 回答.md",
+      "content_hash": "f0ef6b515c3b004b6573dbcdb16c4c821f095e05c3698aea2704bf26f29d9387",
+      "status": "ready",
+      "active_chunk_count": 27,
+      "existing_titles": [
+        "LLM 生成层：双路径兜底",
+        "RRF 公式",
+        "RRF 的三条核心价值",
+        "RRF 解决了什么，没解决什么",
+        "为什么需要两路检索",
+        "全文查询",
+        "具体计算示例",
+        "向量查询",
+        "完整 RAG 链路",
+        "引用白名单不能做什么",
+        "引用白名单能做什么",
+        "核心问题：两种分数不在同一尺度上",
+        "检索代码的核心流程",
+        "每文档限额（max_chunks_per_document）",
+        "相邻块去重",
+        "第一道防线：词汇化证据判断",
+        "第三道防线：引用白名单",
+        "第二道防线：证据门禁"
+      ],
+      "candidate_titles": [
+        "LLM 生成层：双路径兜底",
+        "RRF 公式",
+        "RRF 的三条核心价值",
+        "RRF 解决了什么，没解决什么",
+        "为什么需要两路检索",
+        "全文查询",
+        "具体计算示例",
+        "向量查询",
+        "完整 RAG 链路",
+        "引用白名单不能做什么",
+        "引用白名单能做什么",
+        "核心问题：两种分数不在同一尺度上",
+        "检索代码的核心流程",
+        "每文档限额（max_chunks_per_document）",
+        "相邻块去重",
+        "第一道防线：词汇化证据判断",
+        "第三道防线：引用白名单",
+        "第二道防线：证据门禁"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 20,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 6
+      },
+      "chunks": [
+        {
+          "chunk_id": "a96b3fe2-82ea-4708-bd19-efdfb7269e9b",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "b34bf916-6173-4769-aaed-2db2de00371d",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.1 先说结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "40456fce-4cb0-4712-aa59-fd668543f456",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.2 为什么需要两路检索"
+          ],
+          "candidate_title": "为什么需要两路检索",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "0a44b8b5-8e7f-472b-a486-341ab4203306",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.3 RRF 融合：为什么不能直接加分数",
+            "核心问题：两种分数不在同一尺度上"
+          ],
+          "candidate_title": "核心问题：两种分数不在同一尺度上",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "18c119d0-41a3-4767-83bd-f3027993a40e",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.3 RRF 融合：为什么不能直接加分数",
+            "RRF 公式"
+          ],
+          "candidate_title": "RRF 公式",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "a515edac-5d9c-49bf-8fd2-4724df5b5086",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.3 RRF 融合：为什么不能直接加分数",
+            "具体计算示例"
+          ],
+          "candidate_title": "具体计算示例",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "d829d039-7b13-4077-95b9-18e387c5d67b",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.3 RRF 融合：为什么不能直接加分数",
+            "RRF 的三条核心价值"
+          ],
+          "candidate_title": "RRF 的三条核心价值",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "662ba4d6-ba26-4787-8cfe-849bc0b32134",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.3 RRF 融合：为什么不能直接加分数",
+            "RRF 解决了什么，没解决什么"
+          ],
+          "candidate_title": "RRF 解决了什么，没解决什么",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "5c29cbe0-2e59-494b-808c-6ec825f6c449",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.4 检索代码的核心流程"
+          ],
+          "candidate_title": "检索代码的核心流程",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "07ee7bef-492a-418f-a9e3-775bd744b4b5",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.4 检索代码的核心流程",
+            "向量查询"
+          ],
+          "candidate_title": "向量查询",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "19622f5c-3f23-4362-a2dc-a16b2dc6e05b",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.4 检索代码的核心流程",
+            "全文查询"
+          ],
+          "candidate_title": "全文查询",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "0241c1d1-5036-4739-a06f-8e7587461a83",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.5 检索后处理：为什么还要限额和去重",
+            "每文档限额（max_chunks_per_document）"
+          ],
+          "candidate_title": "每文档限额（max_chunks_per_document）",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "fb47e63c-6948-434e-a1bc-f74638c220fd",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.5 检索后处理：为什么还要限额和去重",
+            "相邻块去重"
+          ],
+          "candidate_title": "相邻块去重",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "3323ef24-284f-4557-8f6f-e8552da6f827",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.6 第一道防线：词汇化证据判断"
+          ],
+          "candidate_title": "第一道防线：词汇化证据判断",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "e2177aa7-ded6-4359-87a6-66a57e21d708",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.7 第二道防线：证据门禁"
+          ],
+          "candidate_title": "第二道防线：证据门禁",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "c6478dcf-88a8-473a-bd95-e70e01f5eef6",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.8 第三道防线：引用白名单"
+          ],
+          "candidate_title": "第三道防线：引用白名单",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "32fcbe56-dde7-46f3-b935-1064086ec447",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.8 第三道防线：引用白名单",
+            "引用白名单能做什么"
+          ],
+          "candidate_title": "引用白名单能做什么",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "bb13b4db-c322-4414-b7cc-c70048218628",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.8 第三道防线：引用白名单",
+            "引用白名单不能做什么"
+          ],
+          "candidate_title": "引用白名单不能做什么",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "b5b0139a-049b-40fb-88d0-e168dd9e5564",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.9 LLM 生成层：双路径兜底"
+          ],
+          "candidate_title": "LLM 生成层：双路径兜底",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "8cce11b3-2587-46f7-b7ca-3795815dfed4",
+          "chunk_index": 19,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.9 LLM 生成层：双路径兜底"
+          ],
+          "candidate_title": "LLM 生成层：双路径兜底",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "e373a214-e53c-4d8c-aaca-9e56fe683c89",
+          "chunk_index": 20,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.10 完整 RAG 链路"
+          ],
+          "candidate_title": "完整 RAG 链路",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "a897424b-4acd-4e44-9f35-93e2e28fb295",
+          "chunk_index": 21,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.10 完整 RAG 链路"
+          ],
+          "candidate_title": "完整 RAG 链路",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "9260bbc2-c702-42c1-9f1b-d781baa442e3",
+          "chunk_index": 22,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "一、教案正文",
+            "3.11 本课自测"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "99c43980-32f2-46aa-ab19-5b728ca1a8a0",
+          "chunk_index": 23,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "二、学员疑问与讨论记录",
+            "Q1：RRF 排名融合是怎么计算的，为什么要使用 RRF 融合？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "d90b61cd-9bff-4b7d-836d-f095401b29e5",
+          "chunk_index": 24,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "二、学员疑问与讨论记录",
+            "Q2：三道防线在 Embedding 强的时候是否仍然具备存在意义？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "10adda9d-2734-483b-b337-97426ac42f23",
+          "chunk_index": 25,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "三、自测结果"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "54d8791b-007e-4e84-b911-4ded2566dc15",
+          "chunk_index": 26,
+          "heading_path": [
+            "第 3 课：混合检索与可信 RAG 回答",
+            "四、本课结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        }
+      ]
+    },
+    {
+      "document_id": "0ee3393d-92dc-411d-b215-757eb9c21a75",
+      "logical_name": "第 4 课：可恢复模拟面试工作流",
+      "original_filename": "第 4 课：可恢复模拟面试工作流.md",
+      "content_hash": "4dbcb6c46f07886fd3971a1f47fb1385365ea6aae50cab22e3b53d00721e5611",
+      "status": "ready",
+      "active_chunk_count": 20,
+      "existing_titles": [
+        "Checkpoint 不能做什么",
+        "Checkpoint 能做什么",
+        "三层防护总结",
+        "故障场景",
+        "用户刷新恢复的完整交互",
+        "第一层：Idempotency-Key 查询",
+        "第三层：提交前业务校验",
+        "第二层：数据库唯一约束",
+        "面试启动流程",
+        "面试必须准确表述",
+        "面试状态机"
+      ],
+      "candidate_titles": [
+        "Checkpoint 不能做什么",
+        "Checkpoint 能做什么",
+        "三层防护总结",
+        "故障场景",
+        "用户刷新恢复的完整交互",
+        "第一层：Idempotency-Key 查询",
+        "第三层：提交前业务校验",
+        "第二层：数据库唯一约束",
+        "面试启动流程",
+        "面试必须准确表述",
+        "面试状态机"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 12,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 7
+      },
+      "chunks": [
+        {
+          "chunk_id": "9e124174-dacf-4569-b311-cdf90dda68ae",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "c5a6f5f8-0046-48ee-947b-0184f6a94681",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.1 先说结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "774e1602-ccde-42c6-b8e0-756cb8c5b099",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.2 面试状态机"
+          ],
+          "candidate_title": "面试状态机",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "88a57b99-4f7b-4dbd-94f7-31ad1abd9367",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.3 面试启动流程"
+          ],
+          "candidate_title": "面试启动流程",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4c728abf-9881-49a0-b68a-e99e05a60025",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.3 面试启动流程"
+          ],
+          "candidate_title": "面试启动流程",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "3b51147a-9da3-42da-8a10-95bee2cd04d6",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "Checkpoint 能做什么"
+          ],
+          "candidate_title": "Checkpoint 能做什么",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4880f36b-c43c-47bc-981d-10992e825ccd",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "Checkpoint 不能做什么"
+          ],
+          "candidate_title": "Checkpoint 不能做什么",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "da031b6f-c815-4c5e-85b4-7ec046cf50fa",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.4 Checkpoint：它是什么，能做什么，不能做什么",
+            "面试必须准确表述"
+          ],
+          "candidate_title": "面试必须准确表述",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "1b0399be-f394-444b-ad59-16b30ef302be",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.5 幂等答题：三层防护",
+            "第一层：Idempotency-Key 查询"
+          ],
+          "candidate_title": "第一层：Idempotency-Key 查询",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "b54c06a9-e790-4273-ba94-89929c43c336",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.5 幂等答题：三层防护",
+            "第二层：数据库唯一约束"
+          ],
+          "candidate_title": "第二层：数据库唯一约束",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "6e1a71c5-301a-4b0c-9ffb-7a5aa167d7e0",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.5 幂等答题：三层防护",
+            "第三层：提交前业务校验"
+          ],
+          "candidate_title": "第三层：提交前业务校验",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "ad43ce0c-40a2-4712-a7c0-e7c3963081ea",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.5 幂等答题：三层防护",
+            "三层防护总结"
+          ],
+          "candidate_title": "三层防护总结",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "5cd2458b-909e-403e-a554-5cb5bbe3f726",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.6 用户刷新恢复的完整交互"
+          ],
+          "candidate_title": "用户刷新恢复的完整交互",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "a1d5eda0-e2dd-429f-93eb-585ee3a0bafd",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.7 状态流全景"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "1b0925ed-649e-49f1-85af-9eee61e0e56a",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.8 故障场景"
+          ],
+          "candidate_title": "故障场景",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "d5c4629c-3536-40bc-8761-435633d62e7e",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "一、教案正文",
+            "4.9 本课自测"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "ca12bf65-90fb-497c-a844-169883f1c855",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "二、学员疑问与讨论记录",
+            "Q1：为什么设计成断点重连的思路？面试中断可恢复怎么回答？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "7a32e78a-091b-45e8-87a5-47b56e35ecf2",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "二、学员疑问与讨论记录",
+            "Q2：刷新恢复的具体交互是怎样的？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "f2cc81da-de2a-47b7-8281-0b112e5b2fa9",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "三、自测结果"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "ad0db19c-2b4b-40f3-8ad8-3b9498d7de1f",
+          "chunk_index": 19,
+          "heading_path": [
+            "第 4 课：可恢复模拟面试工作流",
+            "四、本课结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        }
+      ]
+    },
+    {
+      "document_id": "d64940b2-7852-4b7a-b7cf-780ca290430d",
+      "logical_name": "第 5 课：可信评分与报告",
+      "original_filename": "第 5 课：可信评分与报告.md",
+      "content_hash": "62e9d7eb7a9dd7c12ec9ff93ac7fd07794e7e1f51b15890620db7defe44fe87b",
+      "status": "ready",
+      "active_chunk_count": 19,
+      "existing_titles": [
+        "Reviewer 什么时候不可用？",
+        "三种状态对画像的影响",
+        "三种状态的完整对比",
+        "三种评分状态",
+        "判定流程",
+        "四维评分",
+        "复核路由逻辑",
+        "应用层重算总分",
+        "报告：逐题解析比总分更重要",
+        "消除不了的",
+        "能缓解的",
+        "评分代码中的可信约束"
+      ],
+      "candidate_titles": [
+        "Reviewer 什么时候不可用？",
+        "三种状态对画像的影响",
+        "三种状态的完整对比",
+        "三种评分状态",
+        "判定流程",
+        "四维评分",
+        "复核路由逻辑",
+        "应用层重算总分",
+        "报告：逐题解析比总分更重要",
+        "消除不了的",
+        "能缓解的",
+        "评分代码中的可信约束"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 12,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 6
+      },
+      "chunks": [
+        {
+          "chunk_id": "d3e3977c-6d1b-4133-9ff7-0e821f844023",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 5 课：可信评分与报告"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "9e8eed04-61c9-45fd-9007-23ae9427eada",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.1 先说结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "106c124a-3103-461c-854b-69addeca2864",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.2 四维评分"
+          ],
+          "candidate_title": "四维评分",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "141180c3-1581-420e-aabc-aa107e3a7083",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.3 应用层重算总分"
+          ],
+          "candidate_title": "应用层重算总分",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "18560df2-6c08-4474-9753-16931b293701",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.4 三种评分状态"
+          ],
+          "candidate_title": "三种评分状态",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "1611a710-2824-4cee-9369-dacff533ecec",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.4 三种评分状态",
+            "判定流程"
+          ],
+          "candidate_title": "判定流程",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "50dda48c-555c-4c30-bba3-babef969c88e",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.4 三种评分状态",
+            "Reviewer 什么时候不可用？"
+          ],
+          "candidate_title": "Reviewer 什么时候不可用？",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4ba9d8ca-b5a2-40cb-a329-5bbc6545527c",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.4 三种评分状态",
+            "三种状态对画像的影响"
+          ],
+          "candidate_title": "三种状态对画像的影响",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "67633c00-04ff-40fc-9c84-e0f44b0d6452",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.5 评分代码中的可信约束"
+          ],
+          "candidate_title": "评分代码中的可信约束",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "1cd77702-71fe-40cf-8827-cfe4f9987589",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.6 复核路由逻辑"
+          ],
+          "candidate_title": "复核路由逻辑",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "ebf3a3e1-a860-4503-9bf6-ac056a201918",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.7 三种状态的完整对比"
+          ],
+          "candidate_title": "三种状态的完整对比",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "9dbd430d-ada9-4264-aa68-1440d4e155a5",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.8 同源模型偏差",
+            "能缓解的"
+          ],
+          "candidate_title": "能缓解的",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "ee7d4982-3195-4395-b4e6-8db383d3eed9",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.8 同源模型偏差",
+            "消除不了的"
+          ],
+          "candidate_title": "消除不了的",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "942855b6-d2ee-4ec5-8334-85cca03558ae",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.9 报告：逐题解析比总分更重要"
+          ],
+          "candidate_title": "报告：逐题解析比总分更重要",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "995e3d19-b544-4636-93e6-bd45bf2a52b5",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "一、教案正文",
+            "5.10 评分数据流全景"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "e8f8427c-c193-4368-ac21-f7bb57172364",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "二、学员疑问与讨论记录",
+            "Q1：什么情况下 Reviewer 判定为不可用？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "f912f3c9-50f8-41bd-9a3b-ac8366f25de8",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "二、学员疑问与讨论记录",
+            "Q2：REVIEW_PENDING 是不是因为没有 Reviewer 就直接被弃用？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "08814292-825f-4552-82ab-59c15d55a6d1",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "三、自测结果"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "5f11d52e-1547-4977-8a0a-b23874c3b4c3",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 5 课：可信评分与报告",
+            "四、本课结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        }
+      ]
+    },
+    {
+      "document_id": "d9bd6251-54b7-484e-a2dd-8e18447aaafc",
+      "logical_name": "第 6 课：两层画像与复习闭环",
+      "original_filename": "第 6 课：两层画像与复习闭环.md",
+      "content_hash": "df1c34601fe13e54931a228bd1de781a36f1ca1073c3c374882b0c7ef393f8f9",
+      "status": "ready",
+      "active_chunk_count": 30,
+      "existing_titles": [
+        "ProfileService 如何应用评分",
+        "为什么不是一次高分就完成",
+        "为什么旧画像会出现问题",
+        "为什么高分后画像不会立刻满分——渐进更新",
+        "公式解读",
+        "分别解决什么问题",
+        "哪些评分允许更新画像",
+        "复习任务：为什么需要两次验证",
+        "完整证据链",
+        "掌握度和覆盖度为什么必须分开",
+        "第一层：稳定主题",
+        "第二层：动态诊断子知识点",
+        "覆盖度六种状态",
+        "覆盖缺口内部优先级",
+        "训练焦点如何排序"
+      ],
+      "candidate_titles": [
+        "ProfileService 如何应用评分",
+        "为什么不是一次高分就完成",
+        "为什么旧画像会出现问题",
+        "为什么高分后画像不会立刻满分——渐进更新",
+        "公式解读",
+        "分别解决什么问题",
+        "哪些评分允许更新画像",
+        "复习任务：为什么需要两次验证",
+        "完整证据链",
+        "掌握度和覆盖度为什么必须分开",
+        "第一层：稳定主题",
+        "第二层：动态诊断子知识点",
+        "覆盖度六种状态",
+        "覆盖缺口内部优先级",
+        "训练焦点如何排序"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 17,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 12
+      },
+      "chunks": [
+        {
+          "chunk_id": "6cd6bb43-691f-4451-8a9e-e2c680ca073f",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "b57c69b9-24cb-462c-9382-e5657f4fb24a",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.1 先说结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "dc265b12-2dc7-4fba-a906-9c7bc7333b37",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.2 为什么旧画像会出现问题"
+          ],
+          "candidate_title": "为什么旧画像会出现问题",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "c815eb24-6c0d-4ec1-bf5e-1f9dc0397b73",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.3 两层模型",
+            "第一层：稳定主题"
+          ],
+          "candidate_title": "第一层：稳定主题",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4df526c6-ab98-4b59-a382-ca0e9f31de4e",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.3 两层模型",
+            "第二层：动态诊断子知识点"
+          ],
+          "candidate_title": "第二层：动态诊断子知识点",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4340ac7c-b480-46ab-b18f-1941356eea2d",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.3 两层模型",
+            "分别解决什么问题"
+          ],
+          "candidate_title": "分别解决什么问题",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "0c42fe6b-d36f-481b-901f-3701992e55ff",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.4 哪些评分允许更新画像"
+          ],
+          "candidate_title": "哪些评分允许更新画像",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "0dcad2df-2d23-4ce3-a735-0a3419cfa7ab",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.4 哪些评分允许更新画像"
+          ],
+          "candidate_title": "哪些评分允许更新画像",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "0f83382d-b522-4948-ac5f-adacaee276e4",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.5 为什么高分后画像不会立刻满分——渐进更新"
+          ],
+          "candidate_title": "为什么高分后画像不会立刻满分——渐进更新",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "a6cf2e7c-fd47-46ea-9baa-e1b5a8ee440c",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.5 为什么高分后画像不会立刻满分——渐进更新",
+            "公式解读"
+          ],
+          "candidate_title": "公式解读",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "fd64b352-84d4-478e-8281-3f4b65e6c923",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.5 为什么高分后画像不会立刻满分——渐进更新",
+            "一个具体例子"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "3edfe888-f61e-44d1-a789-31c1b20ec390",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.5 为什么高分后画像不会立刻满分——渐进更新",
+            "为什么设计成这样"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "96cf927e-cc53-44d9-a9dd-9b9ce3302879",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.6 ProfileService 如何应用评分"
+          ],
+          "candidate_title": "ProfileService 如何应用评分",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "f2c986d1-944b-45e8-b769-3e3a77ab130b",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.6 ProfileService 如何应用评分"
+          ],
+          "candidate_title": "ProfileService 如何应用评分",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "a4282558-4dae-4b4a-8c02-371db9390a70",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.7 复习任务：为什么需要两次验证"
+          ],
+          "candidate_title": "复习任务：为什么需要两次验证",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "5032d30b-c39d-4a99-b2f3-77cc4be703f1",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.7 复习任务：为什么需要两次验证",
+            "流程"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "875f34a8-794d-4464-b1e5-3a75dd9084ce",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.7 复习任务：为什么需要两次验证",
+            "为什么不是一次高分就完成"
+          ],
+          "candidate_title": "为什么不是一次高分就完成",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "e4237f63-134b-4f62-92f1-76c552e82f8c",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.8 训练焦点如何排序"
+          ],
+          "candidate_title": "训练焦点如何排序",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "2f31a1e3-d97d-492f-9a6b-d3a38162ff5d",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.8 训练焦点如何排序",
+            "覆盖缺口内部优先级"
+          ],
+          "candidate_title": "覆盖缺口内部优先级",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "962cc6cd-7b45-4473-b6fa-680cc04224f1",
+          "chunk_index": 19,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.9 掌握度和覆盖度为什么必须分开"
+          ],
+          "candidate_title": "掌握度和覆盖度为什么必须分开",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "ea706a5c-382c-4493-b2b5-61a0acca6c21",
+          "chunk_index": 20,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.9 掌握度和覆盖度为什么必须分开",
+            "覆盖度六种状态"
+          ],
+          "candidate_title": "覆盖度六种状态",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "fb9ccd83-6484-4ca6-8ab3-88b6ed995b83",
+          "chunk_index": 21,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.9 掌握度和覆盖度为什么必须分开",
+            "核心认知"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "3edf8348-7b11-4343-8143-60cdf29e361f",
+          "chunk_index": 22,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.10 完整证据链"
+          ],
+          "candidate_title": "完整证据链",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "e17e3acf-51c9-4543-a8dd-b358bab0073f",
+          "chunk_index": 23,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.11 数据流全景"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "0a0a957a-4897-4f09-b5d9-1121478e82e7",
+          "chunk_index": 24,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "一、教案正文",
+            "6.12 本课自测"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "3167388c-0809-4102-b7e1-ea3907eaad46",
+          "chunk_index": 25,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "二、学员疑问与讨论记录",
+            "Q1：未覆盖的题目在之后会有什么推荐策略？是否会一直未被覆盖？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "38cfe0b4-4a7a-4e94-879b-e3b94a868381",
+          "chunk_index": 26,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "二、学员疑问与讨论记录",
+            "Q1：未覆盖的题目在之后会有什么推荐策略？是否会一直未被覆盖？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "f695d031-fa43-4132-850f-b4327eb5901f",
+          "chunk_index": 27,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "二、学员疑问与讨论记录",
+            "Q2：主题与子知识点分别解决什么问题？"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "ef60fbe4-c453-46ef-81c3-a29af271152a",
+          "chunk_index": 28,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "三、自测结果"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "1edcb521-2164-4e63-ba13-c212c1acd91d",
+          "chunk_index": 29,
+          "heading_path": [
+            "第 6 课：两层画像与复习闭环",
+            "四、本课结论"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        }
+      ]
+    },
+    {
+      "document_id": "f99f3cf3-a34f-4b24-a46e-52f90e3f3623",
+      "logical_name": "第 7 课：工程化专题 + 面试实战",
+      "original_filename": "第 7 课：工程化专题 + 面试实战.md",
+      "content_hash": "ef0ab6bdde4cdd1972bb8535c0e6afd9172fc5ede2b75b72bec28239ce729c11",
+      "status": "ready",
+      "active_chunk_count": 22,
+      "existing_titles": [
+        "Agent 工作流",
+        "RAG",
+        "七课总览",
+        "专题 1：幂等 ≠ 按钮防抖",
+        "专题 2：Checkpoint ≠ 完整工作流引擎",
+        "专题 3：降级必须可观测",
+        "专题 4：事务边界比\"调用顺序正确\"更重要",
+        "专题 5：历史可追溯需要稳定标识和版本",
+        "为什么不能一开始就拆微服务",
+        "企业化五阶段",
+        "八个故障场景：必须会回答",
+        "学完整个项目后应该形成的认知",
+        "工程化与企业化",
+        "评分与画像",
+        "项目介绍"
+      ],
+      "candidate_titles": [
+        "Agent 工作流",
+        "RAG",
+        "七课总览",
+        "专题 1：幂等 ≠ 按钮防抖",
+        "专题 2：Checkpoint ≠ 完整工作流引擎",
+        "专题 3：降级必须可观测",
+        "专题 4：事务边界比\"调用顺序正确\"更重要",
+        "专题 5：历史可追溯需要稳定标识和版本",
+        "为什么不能一开始就拆微服务",
+        "企业化五阶段",
+        "八个故障场景：必须会回答",
+        "学完整个项目后应该形成的认知",
+        "工程化与企业化",
+        "评分与画像",
+        "项目介绍"
+      ],
+      "would_add_titles": [],
+      "would_unlink_titles": [],
+      "candidate_decisions": {
+        "accepted_heading": 16,
+        "rejected_container_heading": 1,
+        "rejected_non_knowledge_leaf": 5
+      },
+      "chunks": [
+        {
+          "chunk_id": "feec7513-f43b-4260-877a-6adaba55c397",
+          "chunk_index": 0,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_container_heading"
+        },
+        {
+          "chunk_id": "0af1b9a3-8d45-4189-bff1-e8c4c6f71d54",
+          "chunk_index": 1,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 1：幂等 ≠ 按钮防抖"
+          ],
+          "candidate_title": "专题 1：幂等 ≠ 按钮防抖",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "289fae4b-7298-4de3-b89e-112603faa5e9",
+          "chunk_index": 2,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 2：Checkpoint ≠ 完整工作流引擎"
+          ],
+          "candidate_title": "专题 2：Checkpoint ≠ 完整工作流引擎",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "4b4eeb3c-68b7-432e-9386-864c86b4a8f8",
+          "chunk_index": 3,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 3：降级必须可观测"
+          ],
+          "candidate_title": "专题 3：降级必须可观测",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "d41dc330-b673-432c-a1a6-ecb3452652fd",
+          "chunk_index": 4,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 4：事务边界比\"调用顺序正确\"更重要"
+          ],
+          "candidate_title": "专题 4：事务边界比\"调用顺序正确\"更重要",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "cb6f15f2-fdf8-47b9-ac9d-c45e7c80c49d",
+          "chunk_index": 5,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.1 五个最能体现工程能力的专题",
+            "专题 5：历史可追溯需要稳定标识和版本"
+          ],
+          "candidate_title": "专题 5：历史可追溯需要稳定标识和版本",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "18a1c845-dc5c-4966-bedd-187ff2e68342",
+          "chunk_index": 6,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "candidate_title": "八个故障场景：必须会回答",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "630f5e60-a903-4e39-8226-47c79785ac5f",
+          "chunk_index": 7,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.2 八个故障场景：必须会回答"
+          ],
+          "candidate_title": "八个故障场景：必须会回答",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "7eeb094b-2097-432c-8fe1-3fe063c69237",
+          "chunk_index": 8,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.3 企业级 RAG 演进路线",
+            "当前项目的真实边界"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "463ed815-bf9b-49d4-8dfb-702a1a425a72",
+          "chunk_index": 9,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.3 企业级 RAG 演进路线",
+            "企业化五阶段"
+          ],
+          "candidate_title": "企业化五阶段",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "5390287f-8767-4000-b19c-7dbca6a7a1b4",
+          "chunk_index": 10,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.3 企业级 RAG 演进路线",
+            "为什么不能一开始就拆微服务"
+          ],
+          "candidate_title": "为什么不能一开始就拆微服务",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "c2680ad2-451b-47a5-843b-3ae7110e42da",
+          "chunk_index": 11,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.4 不要使用的表述（红线清单）"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "c8788423-49c2-4f87-b3f2-f4c3ab01e39b",
+          "chunk_index": 12,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.5 最小源码定位表"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "83d90d02-f509-461d-a739-5a4c03e1a801",
+          "chunk_index": 13,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.5 最小源码定位表"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "f49ca7a7-41f9-4ecc-ae43-6ee2e0cc3b81",
+          "chunk_index": 14,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.5 最小源码定位表"
+          ],
+          "candidate_title": null,
+          "decision": "rejected_non_knowledge_leaf"
+        },
+        {
+          "chunk_id": "b22d9117-b6c8-4942-b044-1d80fcc86108",
+          "chunk_index": 15,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "项目介绍"
+          ],
+          "candidate_title": "项目介绍",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "d9ec0fab-b2f3-43ac-8c15-2f2fe7feaf92",
+          "chunk_index": 16,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "RAG"
+          ],
+          "candidate_title": "RAG",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "655093a1-ebea-4788-ad1b-354154d2e777",
+          "chunk_index": 17,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "Agent 工作流"
+          ],
+          "candidate_title": "Agent 工作流",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "8c35c35f-600c-414a-817b-f13884f6b3fc",
+          "chunk_index": 18,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "评分与画像"
+          ],
+          "candidate_title": "评分与画像",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "9e0fd232-bd45-4b56-b641-e7fd24b67718",
+          "chunk_index": 19,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.6 最终自测清单",
+            "工程化与企业化"
+          ],
+          "candidate_title": "工程化与企业化",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "be386c48-2c17-426c-90db-7baa8e007d7f",
+          "chunk_index": 20,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.7 学完整个项目后应该形成的认知"
+          ],
+          "candidate_title": "学完整个项目后应该形成的认知",
+          "decision": "accepted_heading"
+        },
+        {
+          "chunk_id": "dcd2a52e-3e51-4d46-a7d1-12956fbbb6f0",
+          "chunk_index": 21,
+          "heading_path": [
+            "第 7 课：工程化专题 + 面试实战",
+            "一、教案正文",
+            "7.8 七课总览"
+          ],
+          "candidate_title": "七课总览",
+          "decision": "accepted_heading"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "would_add_title_count": 0,
+    "would_unlink_title_count": 0,
+    "orphan_catalog_point_count": 96
+  }
+}

@@ -14,6 +14,8 @@
 
 每名评审对每条填写 correctness、completeness、reasoning、communication（每项 0–5）和 `needs_review`，再提供一句理由。总分由比较器重算，禁止手填总分。
 
+提交前运行 `scripts/validate_human_scoring_responses.py <reviewer-worksheet>`；它只校验盲审表的完整性、分数范围和理由，不会读取作者标签。
+
 ## 预声明判断
 
 1. 先测两名人工评审在总分上的一致性与 `needs_review` 一致性；一致性不足时不比较模型。

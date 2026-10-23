@@ -1,0 +1,244 @@
+{
+  "protocol": "continuous-coverage-training-v1",
+  "executed_at": "2026-10-23T00:30:24.696302+00:00",
+  "runtime": {
+    "status": "ok",
+    "app_version": "0.1.0",
+    "started_at": "2026-10-22T15:09:38.946212+00:00",
+    "llm_enabled": true,
+    "llm_model": "deepseek-chat",
+    "embedding_provider": "bge",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_dimension": 512
+  },
+  "fixture": "evals\\fixtures\\continuous-coverage-training-v1.md",
+  "fixture_sha256": "c2322feff698fb994958cf465cfc674aa6a98b41b4f19ab8c9e4ea733cf50ce8",
+  "knowledge_base_id": "a524d1bc-dec9-428b-94dc-a7b05f29049a",
+  "initial_coverage": {
+    "total": 6,
+    "uncovered": 6,
+    "attempted": 0,
+    "verified": 0,
+    "points": [
+      {
+        "id": "975cca17-bbc6-4d27-baf6-9b01e6546985",
+        "title": "RRF 公式",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d54579a2-8eaf-4f74-b22e-422262fa0c6a",
+        "title": "Rubric 重算",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "c2532c4f-1e5c-41f7-8cd7-60cab38b8be5",
+        "title": "checkpoint 恢复",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "57a7e769-d608-45d4-b82d-40d97aeb0255",
+        "title": "低置信复核路由",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "aad6dcb3-9371-4948-bdd8-9518576b13b9",
+        "title": "幂等提交",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ddbe16e4-3978-4dd4-a20f-09ad1ccd59af",
+        "title": "引用白名单",
+        "status": "uncovered",
+        "source_count": 1,
+        "attempt_count": 0,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      }
+    ]
+  },
+  "final_coverage": {
+    "total": 6,
+    "uncovered": 0,
+    "attempted": 6,
+    "verified": 0,
+    "points": [
+      {
+        "id": "975cca17-bbc6-4d27-baf6-9b01e6546985",
+        "title": "RRF 公式",
+        "status": "attempted",
+        "source_count": 1,
+        "attempt_count": 3,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "d54579a2-8eaf-4f74-b22e-422262fa0c6a",
+        "title": "Rubric 重算",
+        "status": "attempted",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "c2532c4f-1e5c-41f7-8cd7-60cab38b8be5",
+        "title": "checkpoint 恢复",
+        "status": "attempted",
+        "source_count": 1,
+        "attempt_count": 2,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "57a7e769-d608-45d4-b82d-40d97aeb0255",
+        "title": "低置信复核路由",
+        "status": "attempted",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "aad6dcb3-9371-4948-bdd8-9518576b13b9",
+        "title": "幂等提交",
+        "status": "attempted",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      },
+      {
+        "id": "ddbe16e4-3978-4dd4-a20f-09ad1ccd59af",
+        "title": "引用白名单",
+        "status": "attempted",
+        "source_count": 1,
+        "attempt_count": 1,
+        "trusted_evaluation_count": 0,
+        "average_score": null
+      }
+    ]
+  },
+  "runs": [
+    {
+      "sequence": 1,
+      "target_title": "RRF 公式",
+      "target_id": "975cca17-bbc6-4d27-baf6-9b01e6546985",
+      "session_id": "83cee0ad-a8a0-463f-8408-d4375d1c4848",
+      "question_id": "53e20382-e1f6-4e54-b32d-89be27894342",
+      "generation_mode": "llm",
+      "question_text": "在混合检索里，我们常需要把多路检索结果融合成一个排序。请对比“直接把不同检索器的分数加权相加”和“使用 RRF（倒数排名融合）1/(k+rank)”这两种方案：RRF 解决的核心问题是什么？在什么情况下你会选 RRF、什么情况下不选它？",
+      "latency_ms": 3736.93,
+      "citation_ids": [
+        "06bae269-6f40-4e56-a33f-9763bb0260d3",
+        "46fa0f4f-6c6b-4cf7-a515-dd03b14ef2fa"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "sequence": 2,
+      "target_title": "引用白名单",
+      "target_id": "ddbe16e4-3978-4dd4-a20f-09ad1ccd59af",
+      "session_id": "f5af92c9-380e-4351-aad5-343008a0176a",
+      "question_id": "77275a31-89ef-49f6-9fc5-29c279d84b5b",
+      "generation_mode": "llm",
+      "question_text": "在 RAG 或 Agent 回答中，我们常需要约束模型只能引用允许的来源。请对比“引用白名单”和“让模型自由引用检索结果”这两种做法：引用白名单具体解决什么问题？为什么在需要可信引用的场景下选择白名单而不是自由引用？请结合“模型编造文档、页码或链接”以及“引用不一致”的边界情况说明。",
+      "latency_ms": 4129.58,
+      "citation_ids": [
+        "06bae269-6f40-4e56-a33f-9763bb0260d3",
+        "68a3ed2e-0017-42c7-8b0d-f323e3562aea"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "sequence": 3,
+      "target_title": "checkpoint 恢复",
+      "target_id": "c2532c4f-1e5c-41f7-8cd7-60cab38b8be5",
+      "session_id": "5510ced7-205d-4ff5-92d1-73c226dee68d",
+      "question_id": "d7515d48-68d8-40b3-a81b-b66b9bb7911f",
+      "generation_mode": "llm",
+      "question_text": "在一个面试工作流里，出题、答题、报告三个节点都会写数据。现在要加入 checkpoint 恢复机制：失败后从最近的一致 checkpoint 继续，而不是重放已完成的写操作。请从架构取舍角度说明：这个 checkpoint 应该由哪个组件负责保存和推进？恢复时数据流怎么走？相比“失败后整体重跑”或“逐条重放写操作”，它解决了什么问题、又引入了哪些代价？",
+      "latency_ms": 3834.94,
+      "citation_ids": [
+        "06bae269-6f40-4e56-a33f-9763bb0260d3",
+        "206ad3a6-1617-4f82-9b9f-fccb1929a765"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "sequence": 4,
+      "target_title": "幂等提交",
+      "target_id": "aad6dcb3-9371-4948-bdd8-9518576b13b9",
+      "session_id": "3ad929d9-3899-4d0a-9f6f-b2f66a681bd8",
+      "question_id": "b8976ef3-9ac6-47d6-abde-5adacbf5077b",
+      "generation_mode": "llm",
+      "question_text": "在答题提交环节，系统用 idempotency key 保证幂等：重复请求必须返回第一次处理的结果，不能重复写入答案、评分或画像更新。现在考虑失败场景：客户端提交答题后网络超时，客户端自动重试；但第一次请求其实已经在服务端写入了答案并触发了评分和画像更新，只是响应丢了。请说明：这个场景下如果不做幂等会出什么问题？幂等 key 应该在哪一层、以什么粒度生效？如果第一次请求处理到一半（比如答案已写、评分未完成）就失败了，重试请求应该怎么处理才既不重复写入、又不把半成品当成最终结果返回？请结合兜底与风险控制说明你的设计。",
+      "latency_ms": 5638.34,
+      "citation_ids": [
+        "206ad3a6-1617-4f82-9b9f-fccb1929a765",
+        "2ed9a8bf-0207-4cbb-8f38-82e313105cd9"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "sequence": 5,
+      "target_title": "Rubric 重算",
+      "target_id": "d54579a2-8eaf-4f74-b22e-422262fa0c6a",
+      "session_id": "629f184e-9874-4e8c-93f1-cc8f7e416903",
+      "question_id": "110842ad-a073-4f96-8cec-afd279213037",
+      "generation_mode": "llm",
+      "question_text": "在面试评分系统中，模型会输出多个维度的分项分数和一个总分。系统要求应用服务按照固定权重重算总分，并拒绝与分项不一致的模型总分。请从架构取舍角度说明：为什么不让模型直接决定总分，而要由应用服务重算？重算逻辑应该放在哪一层？如果未来权重需要动态调整，你会如何设计？请结合数据流和替代方案展开。",
+      "latency_ms": 3457.05,
+      "citation_ids": [
+        "1aa34a06-9e5b-4016-85d9-958812131af4",
+        "46fa0f4f-6c6b-4cf7-a515-dd03b14ef2fa"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "sequence": 6,
+      "target_title": "低置信复核路由",
+      "target_id": "57a7e769-d608-45d4-b82d-40d97aeb0255",
+      "session_id": "31563430-705a-492e-ab4d-4117f75981b6",
+      "question_id": "dee5d977-64e0-4eaf-a8ed-343e72bbeb66",
+      "generation_mode": "llm",
+      "question_text": "在面试评分系统里，评分输出可能置信度不足、引用不一致或结构校验失败。系统会保留结果并标记 reviewer 路由，而不是直接丢弃。请从概念边界角度说明：什么是“低置信复核路由”？它解决什么问题？它和“直接丢弃低质量结果”“直接采信并写入画像”这两种做法在边界上有什么区别？另外，它和“人工审核”是不是同一个概念？请说明容易混淆的地方。",
+      "latency_ms": 3731.79,
+      "citation_ids": [
+        "46fa0f4f-6c6b-4cf7-a515-dd03b14ef2fa",
+        "cb4e015f-c5b0-40c8-b981-edbc26390078"
+      ],
+      "target_source_citation_present": true
+    }
+  ],
+  "metrics": {
+    "run_count": 6,
+    "unique_target_count": 6,
+    "duplicate_target_count": 0,
+    "all_llm": true,
+    "all_target_sources_cited": true,
+    "all_targets_attempted": true,
+    "p50_latency_ms": 3834.94,
+    "p95_latency_ms": 4129.58
+  },
+  "pass": true
+}
