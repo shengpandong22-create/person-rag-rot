@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "generated_at": "2026-10-23T10:29:14.144007+00:00",
+    "git_commit": "1a9c2359bed09a96f2501f0ce80f094e570b032d",
+    "git_short_commit": "1a9c2359bed0",
+    "git_dirty": true,
+    "git_branch": "codex/eval-foundation-rebuild",
+    "dataset": "evals\\datasets\\evaluation_discrimination_v1.jsonl",
+    "dataset_sha256": "91361bd24fd42baafec2a338f4d8fe53f6b753f84f5916d9b6c6ef0d6ee06571",
+    "case_id": "disc-rag-boundary-low",
+    "llm_model": "deepseek-chat",
+    "run_count": 5,
+    "reviewer_available": false,
+    "scope": "single fixed-answer repeatability observation, not human agreement"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "elapsed_ms": 2759.523,
+      "correctness": 1,
+      "completeness": 1,
+      "reasoning": 1,
+      "communication": 2,
+      "total": 5,
+      "confidence": 0.9,
+      "needs_review": true,
+      "status": "review_pending",
+      "review_decision": "pending",
+      "model_name": "deepseek-chat"
+    },
+    {
+      "run": 2,
+      "elapsed_ms": 3135.145,
+      "correctness": 1,
+      "completeness": 1,
+      "reasoning": 1,
+      "communication": 2,
+      "total": 5,
+      "confidence": 0.9,
+      "needs_review": true,
+      "status": "review_pending",
+      "review_decision": "pending",
+      "model_name": "deepseek-chat"
+    },
+    {
+      "run": 3,
+      "elapsed_ms": 2424.326,
+      "correctness": 1,
+      "completeness": 1,
+      "reasoning": 1,
+      "communication": 2,
+      "total": 5,
+      "confidence": 0.9,
+      "needs_review": true,
+      "status": "review_pending",
+      "review_decision": "pending",
+      "model_name": "deepseek-chat"
+    },
+    {
+      "run": 4,
+      "elapsed_ms": 2302.357,
+      "correctness": 1,
+      "completeness": 1,
+      "reasoning": 0,
+      "communication": 2,
+      "total": 4,
+      "confidence": 0.9,
+      "needs_review": true,
+      "status": "review_pending",
+      "review_decision": "pending",
+      "model_name": "deepseek-chat"
+    },
+    {
+      "run": 5,
+      "elapsed_ms": 2731.109,
+      "correctness": 1,
+      "completeness": 1,
+      "reasoning": 1,
+      "communication": 2,
+      "total": 5,
+      "confidence": 0.9,
+      "needs_review": true,
+      "status": "review_pending",
+      "review_decision": "pending",
+      "model_name": "deepseek-chat"
+    }
+  ],
+  "metrics": {
+    "run_count": 5,
+    "total_score": {
+      "min": 4,
+      "max": 5,
+      "mean": 4.8,
+      "population_stddev": 0.4
+    },
+    "dimensions": {
+      "correctness": {
+        "min": 1,
+        "max": 1,
+        "mean": 1.0,
+        "population_stddev": 0.0
+      },
+      "completeness": {
+        "min": 1,
+        "max": 1,
+        "mean": 1.0,
+        "population_stddev": 0.0
+      },
+      "reasoning": {
+        "min": 0,
+        "max": 1,
+        "mean": 0.8,
+        "population_stddev": 0.4
+      },
+      "communication": {
+        "min": 2,
+        "max": 2,
+        "mean": 2.0,
+        "population_stddev": 0.0
+      }
+    },
+    "exact_score_shape_stable": false,
+    "unique_score_shape_count": 2,
+    "review_routing_stable": true,
+    "unique_review_routing_count": 1
+  }
+}

@@ -5,10 +5,15 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from evals.scoring_stability import run_scoring_stability
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from evals.scoring_stability import run_scoring_stability  # noqa: E402
 
 CASE_IDS = (
     "disc-rag-boundary-low",
