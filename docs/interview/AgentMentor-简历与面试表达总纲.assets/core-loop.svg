@@ -1,102 +1,131 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="840" viewBox="0 0 1280 840" role="img">
-  <title>AgentMentor 核心训练闭环</title>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 712" width="680" height="712">
   <defs>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
-    </filter>
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#d97706"/>
-    </marker>
-    <marker id="grayArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b"/>
+    <marker id="arr-d" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M1 2L8 5L1 8" fill="#888"/>
     </marker>
     <style>
-      .bg { fill: #f8fafc; }
-      .title { font: 700 36px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
-      .subtitle { font: 500 18px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #64748b; }
-      .node-title { font: 700 24px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #0f172a; }
-      .node-text { font: 500 17px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #475569; }
-      .small { font: 500 14px Consolas, "Microsoft YaHei", monospace; fill: #64748b; }
-      .blue { fill: #e8f3ff; stroke: #2f80c9; stroke-width: 3; rx: 20; filter: url(#shadow); }
-      .green { fill: #e2f6ef; stroke: #0f766e; stroke-width: 3; rx: 20; filter: url(#shadow); }
-      .orange { fill: #fff3df; stroke: #d97706; stroke-width: 3; rx: 20; filter: url(#shadow); }
-      .coral { fill: #fff0eb; stroke: #c05621; stroke-width: 3; rx: 20; filter: url(#shadow); }
-      .purple { fill: #f1edff; stroke: #7c3aed; stroke-width: 3; rx: 20; filter: url(#shadow); }
-      .risk { fill: #fff0f0; stroke: #b91c1c; stroke-width: 3; rx: 18; }
-      .main { stroke: #d97706; stroke-width: 4; fill: none; marker-end: url(#arrow); }
-      .side { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#grayArrow); }
-      .dash { stroke: #0f766e; stroke-width: 4; fill: none; stroke-dasharray: 10 9; marker-end: url(#grayArrow); }
+      .bg { fill: #ffffff; }
+      .t { font: 13px sans-serif; fill: #2C2C2A; }
+      .ts { font: 11px sans-serif; fill: #5F5E5A; }
+      .th { font: 500 13px sans-serif; fill: #2C2C2A; }
+      .title { font: 700 17px sans-serif; fill: #2C2C2A; }
+      .subtitle { font: 12px sans-serif; fill: #5F5E5A; }
+      .arr { stroke: #888; stroke-width: 1.8; fill: none; marker-end: url(#arr-d); }
+      .arr-dash { stroke: #888; stroke-width: 1.8; fill: none; stroke-dasharray: 6 3; marker-end: url(#arr-d); }
+      .loop { stroke: #1D9E75; stroke-width: 1.8; fill: none; stroke-dasharray: 6 3; marker-end: url(#arr-d); }
+      .node-blue { fill: #E6F1FB; stroke: #378ADD; stroke-width: 1.4; }
+      .node-purple { fill: #EEEDFE; stroke: #7F77DD; stroke-width: 1.4; }
+      .node-green { fill: #E1F5EE; stroke: #1D9E75; stroke-width: 1.4; }
+      .node-orange { fill: #FAECE7; stroke: #D85A30; stroke-width: 1.4; }
+      .node-gray { fill: #F1EFE8; stroke: #888780; stroke-width: 1.2; }
+      .txt-blue { fill: #042C53; }
+      .txt-purple { fill: #26215C; }
+      .txt-green { fill: #04342C; }
+      .txt-orange { fill: #712B13; }
+      .txt-gray { fill: #2C2C2A; }
     </style>
   </defs>
-  <rect class="bg" width="1280" height="840"/>
-  <text x="640" y="54" text-anchor="middle" class="title">学习训练系统 · 核心闭环</text>
-  <text x="640" y="86" text-anchor="middle" class="subtitle">资料摄入 → 检索召回 → 问答/面试 → 评分 → 画像 → 下一轮训练</text>
 
-  <rect x="55" y="135" width="210" height="115" class="blue"/>
-  <text x="160" y="174" text-anchor="middle" class="node-title">1 上传资料</text>
-  <text x="160" y="205" text-anchor="middle" class="node-text">Markdown / TXT</text>
-  <text x="160" y="230" text-anchor="middle" class="node-text">PDF / DOCX</text>
+  <rect class="bg" width="680" height="668"/>
+  <text class="title" x="340" y="26" text-anchor="middle">学习训练系统 · 核心闭环</text>
+  <text class="subtitle" x="340" y="46" text-anchor="middle">资料摄入 → 检索召回 → 问答 / 面试 → 评分 → 画像 → 下一轮训练</text>
 
-  <rect x="320" y="135" width="210" height="115" class="blue"/>
-  <text x="425" y="174" text-anchor="middle" class="node-title">2 解析切分</text>
-  <text x="425" y="205" text-anchor="middle" class="node-text">DocumentParser</text>
-  <text x="425" y="230" text-anchor="middle" class="node-text">heading + chunk</text>
+  <!-- Row A -->
+  <rect class="node-blue" x="30" y="62" width="143" height="76" rx="8"/>
+  <text class="th txt-blue" x="101" y="82" text-anchor="middle">1 上传资料</text>
+  <text class="ts" x="101" y="102" text-anchor="middle">Markdown / TXT</text>
+  <text class="ts" x="101" y="120" text-anchor="middle">PDF / DOCX</text>
 
-  <rect x="585" y="135" width="210" height="115" class="green"/>
-  <text x="690" y="174" text-anchor="middle" class="node-title">3 存储索引</text>
-  <text x="690" y="205" text-anchor="middle" class="node-text">PostgreSQL</text>
-  <text x="690" y="230" text-anchor="middle" class="node-text">pgvector + BGE</text>
+  <rect class="node-blue" x="189" y="62" width="143" height="76" rx="8"/>
+  <text class="th txt-blue" x="260" y="82" text-anchor="middle">2 解析切分</text>
+  <text class="ts" x="260" y="102" text-anchor="middle">DocumentParser</text>
+  <text class="ts" x="260" y="120" text-anchor="middle">heading + chunk</text>
 
-  <rect x="850" y="135" width="210" height="115" class="green"/>
-  <text x="955" y="174" text-anchor="middle" class="node-title">4 检索召回</text>
-  <text x="955" y="205" text-anchor="middle" class="node-text">向量为主</text>
-  <text x="955" y="230" text-anchor="middle" class="node-text">全文 / RRF 扩展</text>
+  <rect class="node-blue" x="348" y="62" width="143" height="76" rx="8"/>
+  <text class="th txt-blue" x="419" y="82" text-anchor="middle">3 存储索引</text>
+  <text class="ts" x="419" y="102" text-anchor="middle">pgvector + Embedding</text>
+  <text class="ts" x="419" y="120" text-anchor="middle">dev 默认 / BGE 部署</text>
 
-  <path d="M265 193 L320 193" class="main"/>
-  <path d="M530 193 L585 193" class="main"/>
-  <path d="M795 193 L850 193" class="main"/>
+  <rect class="node-blue" x="507" y="62" width="143" height="76" rx="8"/>
+  <text class="th txt-blue" x="578" y="82" text-anchor="middle">4 检索召回</text>
+  <text class="ts" x="578" y="102" text-anchor="middle">全文 + 向量</text>
+  <text class="ts" x="578" y="120" text-anchor="middle">RRF 融合</text>
 
-  <rect x="730" y="325" width="230" height="125" class="purple"/>
-  <text x="845" y="365" text-anchor="middle" class="node-title">5A RAG 问答</text>
-  <text x="845" y="398" text-anchor="middle" class="node-text">带引用回答</text>
-  <text x="845" y="423" text-anchor="middle" class="node-text">证据不足显式降级</text>
+  <line x1="173" y1="100" x2="187" y2="100" class="arr"/>
+  <line x1="332" y1="100" x2="346" y2="100" class="arr"/>
+  <line x1="491" y1="100" x2="505" y2="100" class="arr"/>
 
-  <rect x="1010" y="325" width="230" height="125" class="coral"/>
-  <text x="1125" y="365" text-anchor="middle" class="node-title">5B 生成题目</text>
-  <text x="1125" y="398" text-anchor="middle" class="node-text">题目 / 参考答案</text>
-  <text x="1125" y="423" text-anchor="middle" class="node-text">Rubric / 检索片段</text>
+  <!-- Row B -->
+  <rect class="node-orange" x="348" y="196" width="143" height="88" rx="8"/>
+  <text class="th txt-orange" x="419" y="216" text-anchor="middle">5B 生成题目</text>
+  <text class="ts" x="419" y="236" text-anchor="middle">题目 / 答案 / Rubric</text>
+  <text class="ts" x="419" y="254" text-anchor="middle">训练：3 题 medium</text>
+  <text class="ts" x="419" y="272" text-anchor="middle">practice：1/3/5 题</text>
 
-  <path d="M955 250 L845 325" class="side"/>
-  <path d="M955 250 L1125 325" class="main"/>
+  <rect class="node-purple" x="507" y="196" width="143" height="76" rx="8"/>
+  <text class="th txt-purple" x="578" y="216" text-anchor="middle">5A RAG 问答</text>
+  <text class="ts" x="578" y="236" text-anchor="middle">带引用回答</text>
+  <text class="ts" x="578" y="254" text-anchor="middle">证据不足显式降级</text>
 
-  <rect x="1010" y="560" width="230" height="115" class="blue"/>
-  <text x="1125" y="599" text-anchor="middle" class="node-title">6 用户回答</text>
-  <text x="1125" y="631" text-anchor="middle" class="node-text">真实回答或参考答案</text>
-  <text x="1125" y="656" text-anchor="middle" class="node-text">Idempotency-Key</text>
+  <line x1="578" y1="138" x2="578" y2="194" class="arr"/>
+  <line x1="520" y1="138" x2="440" y2="194" class="arr"/>
 
-  <rect x="730" y="560" width="230" height="115" class="orange"/>
-  <text x="845" y="599" text-anchor="middle" class="node-title">7 可信评分</text>
-  <text x="845" y="631" text-anchor="middle" class="node-text">四维 Rubric</text>
-  <text x="845" y="656" text-anchor="middle" class="node-text">引用白名单 / 降级</text>
+  <!-- Row C -->
+  <rect class="node-blue" x="348" y="324" width="143" height="68" rx="8"/>
+  <text class="th txt-blue" x="419" y="344" text-anchor="middle">6 用户回答</text>
+  <text class="ts" x="419" y="364" text-anchor="middle">Idempotency-Key</text>
+  <text class="ts" x="419" y="382" text-anchor="middle">真实回答或参考答案</text>
 
-  <rect x="460" y="560" width="220" height="115" class="orange"/>
-  <text x="570" y="599" text-anchor="middle" class="node-title">8 面试报告</text>
-  <text x="570" y="631" text-anchor="middle" class="node-text">总分与逐题解析</text>
-  <text x="570" y="656" text-anchor="middle" class="node-text">历史趋势</text>
+  <rect class="node-orange" x="189" y="324" width="143" height="68" rx="8"/>
+  <text class="th txt-orange" x="260" y="344" text-anchor="middle">7 可信评分</text>
+  <text class="ts" x="260" y="364" text-anchor="middle">四维 Rubric</text>
+  <text class="ts" x="260" y="382" text-anchor="middle">引用白名单校验</text>
 
-  <rect x="185" y="560" width="220" height="115" class="green"/>
-  <text x="295" y="599" text-anchor="middle" class="node-title">9 更新画像</text>
-  <text x="295" y="631" text-anchor="middle" class="node-text">稳定主题 + 动态证据</text>
-  <text x="295" y="656" text-anchor="middle" class="node-text">复习任务 / 查漏</text>
+  <rect class="node-orange" x="30" y="324" width="143" height="68" rx="8"/>
+  <text class="th txt-orange" x="101" y="344" text-anchor="middle">8 面试报告</text>
+  <text class="ts" x="101" y="364" text-anchor="middle">总分与逐题解析</text>
+  <text class="ts" x="101" y="382" text-anchor="middle">历史趋势</text>
 
-  <path d="M1125 450 L1125 560" class="main"/>
-  <path d="M1010 618 L960 618" class="main"/>
-  <path d="M730 618 L680 618" class="main"/>
-  <path d="M460 618 L405 618" class="main"/>
-  <path d="M295 560 C365 500 780 492 1010 500 C1080 503 1125 487 1125 450" class="dash"/>
-  <text x="720" y="488" text-anchor="middle" class="node-text" fill="#0f766e">画像与覆盖率反哺下一轮出题</text>
+  <line x1="419" y1="284" x2="419" y2="322" class="arr"/>
+  <line x1="348" y1="358" x2="334" y2="358" class="arr"/>
+  <line x1="189" y1="358" x2="175" y2="358" class="arr"/>
 
-  <rect x="185" y="720" width="910" height="75" class="risk"/>
-  <text x="320" y="766" text-anchor="middle" class="node-title">关键可信边界</text>
-  <text x="700" y="764" text-anchor="middle" class="node-text">证据不足不能硬答；伪造引用不进入可信结果；低置信评分降权更新画像</text>
+  <!-- Row D -->
+  <rect class="node-green" x="30" y="436" width="143" height="68" rx="8"/>
+  <text class="th txt-green" x="101" y="456" text-anchor="middle">9 更新画像</text>
+  <text class="ts" x="101" y="476" text-anchor="middle">稳定主题 + 动态证据</text>
+  <text class="ts" x="101" y="494" text-anchor="middle">复习 / 可验证查漏</text>
+
+  <rect class="node-gray" x="189" y="436" width="143" height="68" rx="8"/>
+  <text class="th txt-gray" x="260" y="456" text-anchor="middle">practice 终点</text>
+  <text class="ts" x="260" y="476" text-anchor="middle">报告保留模式标签</text>
+  <text class="ts" x="260" y="494" text-anchor="middle">不写画像 / coverage</text>
+
+  <line x1="101" y1="392" x2="101" y2="434" class="arr"/>
+  <text class="ts" x="108" y="416">profile_training</text>
+  <line x1="150" y1="392" x2="240" y2="434" class="arr-dash"/>
+  <text class="ts" x="206" y="406" text-anchor="middle">practice</text>
+
+  <!-- 反馈环 -->
+  <path d="M101 504 L101 524 L20 524 L20 178 L419 178 L419 192" class="loop"/>
+  <text class="ts" x="219" y="170" text-anchor="middle">画像与可验证 coverage 反哺下一轮训练（仅正式训练）</text>
+
+  <!-- 关键可信边界 -->
+  <rect class="node-gray" x="30" y="548" width="620" height="56" rx="8"/>
+  <text class="th txt-gray" x="340" y="568" text-anchor="middle">关键可信边界</text>
+  <text class="ts" x="340" y="590" text-anchor="middle">证据不足不能硬答；伪造引用不进可信结果；低置信评分降权更新；practice 不写画像与 coverage</text>
+
+  <!-- 图例 -->
+  <rect x="28" y="630" width="624" height="22" rx="4" fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+  <rect x="40" y="635" width="14" height="12" rx="2" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+  <text class="ts" x="58" y="645" dominant-baseline="central">流程步骤</text>
+  <rect x="104" y="635" width="14" height="12" rx="2" fill="#EEEDFE" stroke="#7F77DD" stroke-width="1"/>
+  <text class="ts" x="122" y="645" dominant-baseline="central">RAG 问答</text>
+  <rect x="172" y="635" width="14" height="12" rx="2" fill="#FAECE7" stroke="#D85A30" stroke-width="1"/>
+  <text class="ts" x="190" y="645" dominant-baseline="central">LLM 生成与评分</text>
+  <rect x="272" y="635" width="14" height="12" rx="2" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+  <text class="ts" x="290" y="645" dominant-baseline="central">画像闭环</text>
+  <rect x="346" y="635" width="14" height="12" rx="2" fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+  <text class="ts" x="364" y="645" dominant-baseline="central">practice 边界与提示</text>
 </svg>
