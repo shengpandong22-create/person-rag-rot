@@ -16,12 +16,18 @@ from agent_mentor.api.errors import AppError
 from agent_mentor.application.coverage_catalog import map_question_coverage
 from agent_mentor.application.knowledge_service import DEFAULT_USER_ID
 from agent_mentor.domain.interview import (
+    PRACTICE_DIFFICULTIES,
+    PRACTICE_QUESTION_COUNTS,
+    PROFILE_TRAINING_DIFFICULTY,
+    PROFILE_TRAINING_QUESTION_COUNT,
     AnswerKind,
     Difficulty,
     FollowUpStatus,
     InterviewStatus,
     QuestionType,
+    TrainingMode,
     assert_transition,
+    is_practice_training_mode,
 )
 from agent_mentor.infrastructure.database.models import (
     InterviewFollowUpModel,
@@ -59,6 +65,41 @@ from agent_mentor.workflows.interview import (
 
 QUESTION_PROMPT_VERSION = "interview_question_v1"
 RECENT_QUESTION_COOLDOWN_LIMIT = 12
+
+
+def resolve_training_plan(
+    *,
+    training_mode: TrainingMode,
+    difficulty: Difficulty,
+    question_count: int,
+) -> tuple[TrainingMode, Difficulty, int]:
+    """Enforce the per-mode interview contract at the service boundary.
+
+    ``profile_training`` is always the official 3-question medium-difficulty
+    run regardless of what the caller sends. ``practice`` only accepts the
+    controlled question counts and difficulties; anything else is rejected
+    instead of silently coerced, so a drill can never impersonate a training
+    run or vice versa.
+    """
+    if training_mode is TrainingMode.PRACTICE:
+        if question_count not in PRACTICE_QUESTION_COUNTS:
+            raise AppError(
+                "PRACTICE_QUESTION_COUNT_INVALID",
+                "Practice mode only supports 1, 3 or 5 questions.",
+                422,
+            )
+        if difficulty not in PRACTICE_DIFFICULTIES:
+            raise AppError(
+                "PRACTICE_DIFFICULTY_INVALID",
+                "Practice mode only supports easy, medium or hard difficulty.",
+                422,
+            )
+        return TrainingMode.PRACTICE, difficulty, question_count
+    return (
+        TrainingMode.PROFILE_TRAINING,
+        PROFILE_TRAINING_DIFFICULTY,
+        PROFILE_TRAINING_QUESTION_COUNT,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,9 +235,23 @@ class InterviewService:
         coverage_catalog_point_id: UUID | None = None,
         difficulty: Difficulty,
         question_count: int,
+        training_mode: TrainingMode = TrainingMode.PROFILE_TRAINING,
     ) -> InterviewSessionModel:
         now = datetime.now(UTC)
         session_id = uuid4()
+        resolved_mode, resolved_difficulty, resolved_question_count = resolve_training_plan(
+            training_mode=training_mode,
+            difficulty=difficulty,
+            question_count=question_count,
+        )
+        if resolved_mode is TrainingMode.PRACTICE and coverage_catalog_point_id is not None:
+            # Coverage-gap targeting belongs to profile_training only; a
+            # practice drill must never advance catalog coverage accounting.
+            raise AppError(
+                "PRACTICE_COVERAGE_POINT_NOT_ALLOWED",
+                "Practice mode cannot target a knowledge coverage catalog point.",
+                422,
+            )
         async with self._sessions() as db:
             if coverage_catalog_point_id is not None:
                 focus_exists = await db.scalar(
@@ -228,8 +283,9 @@ class InterviewService:
             profile_subtopic_key=profile_subtopic_key,
             profile_subtopic_title=profile_subtopic_title,
             coverage_catalog_point_id=coverage_catalog_point_id,
-            difficulty=difficulty,
-            question_count=question_count,
+            difficulty=resolved_difficulty,
+            question_count=resolved_question_count,
+            training_mode=resolved_mode.value,
             status=InterviewStatus.CREATED,
             current_question_index=0,
             workflow_thread_id=str(session_id),
@@ -809,7 +865,10 @@ class InterviewService:
                     created_at=datetime.now(UTC),
                 )
             )
-        await map_question_coverage(db, question_id=question.id, chunk_ids=citation_ids)
+        if not is_practice_training_mode(interview.training_mode):
+            # Only profile_training advances knowledge coverage accounting;
+            # practice questions keep citations but never create coverage rows.
+            await map_question_coverage(db, question_id=question.id, chunk_ids=citation_ids)
         return question
 
     async def _generate_question_output(
@@ -1017,6 +1076,10 @@ class InterviewService:
     async def _coverage_gap_focus(
         self, db: AsyncSession, interview: InterviewSessionModel, *, sequence: int
     ) -> CoverageFocus | None:
+        if is_practice_training_mode(interview.training_mode):
+            # Coverage-gap selection is a profile_training capability; a
+            # practice drill must not treat a catalog point as a target.
+            return None
         selected_point_id = getattr(interview, "coverage_catalog_point_id", None)
         if selected_point_id is not None:
             if sequence != 1:

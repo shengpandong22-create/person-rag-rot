@@ -63,6 +63,9 @@ function App() {
   const [askResult, setAskResult] = useState(null);
   const [allowModelKnowledge, setAllowModelKnowledge] = useState(false);
   const [interviewTopic, setInterviewTopic] = useState("AI Agent");
+  const [trainingMode, setTrainingMode] = useState("profile_training");
+  const [practiceQuestionCount, setPracticeQuestionCount] = useState(3);
+  const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
   const [selectedTrainingFocus, setSelectedTrainingFocus] = useState(null);
   const [topicEdited, setTopicEdited] = useState(false);
   const [interview, setInterview] = useState(null);
@@ -388,7 +391,8 @@ function App() {
     });
 
   const startInterview = () =>
-    run("创建并启动三题面试", async () => {
+    run("创建并启动面试", async () => {
+      const isPractice = trainingMode === "practice";
       const routedTopic = selectedTrainingFocus
         ? [
             selectedTrainingFocus.topic_title,
@@ -402,13 +406,19 @@ function App() {
         body: JSON.stringify({
           knowledge_base_id: knowledgeBase.id,
           topic: routedTopic || inferInterviewTopic(documents, profile),
-          profile_topic_key: selectedTrainingFocus?.topic_key ?? null,
-          profile_topic_title: selectedTrainingFocus?.topic_title ?? null,
-          profile_subtopic_key: selectedTrainingFocus?.subtopic_key ?? null,
-          profile_subtopic_title: selectedTrainingFocus?.subtopic_title ?? null,
-          coverage_catalog_point_id: selectedTrainingFocus?.coverage_catalog_point_id ?? null,
-          difficulty: "medium",
-          question_count: 3,
+          // 练习模式不携带画像路由与覆盖选点，避免被误当成训练目标。
+          profile_topic_key: isPractice ? null : (selectedTrainingFocus?.topic_key ?? null),
+          profile_topic_title: isPractice ? null : (selectedTrainingFocus?.topic_title ?? null),
+          profile_subtopic_key: isPractice ? null : (selectedTrainingFocus?.subtopic_key ?? null),
+          profile_subtopic_title: isPractice
+            ? null
+            : (selectedTrainingFocus?.subtopic_title ?? null),
+          coverage_catalog_point_id: isPractice
+            ? null
+            : (selectedTrainingFocus?.coverage_catalog_point_id ?? null),
+          training_mode: trainingMode,
+          difficulty: isPractice ? practiceDifficulty : "medium",
+          question_count: isPractice ? practiceQuestionCount : 3,
         }),
       });
       const started = await api(`/api/v1/interviews/${created.id}/start`, { method: "POST" });
@@ -476,7 +486,7 @@ function App() {
     });
 
   const evaluateAndReport = () =>
-    run("生成评分报告与画像闭环", async () => {
+    run("生成评分报告", async () => {
       await api(`/api/v1/interviews/${interview.id}/evaluations`, {
         method: "POST",
         body: JSON.stringify({ reviewer_available: true }),
@@ -485,7 +495,9 @@ function App() {
         method: "POST",
         body: JSON.stringify({ reviewer_available: true }),
       });
-      await api(`/api/v1/interviews/${interview.id}/profile-updates`, { method: "POST" });
+      if (interview.training_mode !== "practice") {
+        await api(`/api/v1/interviews/${interview.id}/profile-updates`, { method: "POST" });
+      }
       setWorkflowTrace(await loadWorkflowTrace(interview.id));
       await loadKnowledgeBaseLearningState(knowledgeBase.id);
       setReport(builtReport);
@@ -607,6 +619,9 @@ function App() {
             documents={documents}
             profile={profile}
             interviewTopic={interviewTopic}
+            trainingMode={trainingMode}
+            practiceQuestionCount={practiceQuestionCount}
+            practiceDifficulty={practiceDifficulty}
             interview={interview}
             answerDraft={answerDraft}
             busy={busy}
@@ -619,6 +634,9 @@ function App() {
             followUpDraft={followUpDraft}
             workflowTrace={workflowTrace}
             onTopicChange={changeInterviewTopic}
+            onTrainingModeChange={setTrainingMode}
+            onPracticeQuestionCountChange={setPracticeQuestionCount}
+            onPracticeDifficultyChange={setPracticeDifficulty}
             onStartInterview={startInterview}
             onAnswerDraftChange={setAnswerDraft}
             onFollowUpDraftChange={setFollowUpDraft}

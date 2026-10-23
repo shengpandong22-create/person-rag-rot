@@ -14,7 +14,7 @@ from agent_mentor.application.interview_service import (
     InterviewSnapshot,
     WorkflowTraceItem,
 )
-from agent_mentor.domain.interview import Difficulty
+from agent_mentor.domain.interview import Difficulty, TrainingMode
 from agent_mentor.infrastructure.database.models import (
     InterviewFollowUpModel,
     InterviewQuestionModel,
@@ -32,6 +32,7 @@ class InterviewCreateRequest(BaseModel):
     profile_subtopic_key: str | None = Field(default=None, max_length=80)
     profile_subtopic_title: str | None = Field(default=None, max_length=120)
     coverage_catalog_point_id: UUID | None = None
+    training_mode: TrainingMode = TrainingMode.PROFILE_TRAINING
     difficulty: Difficulty = Difficulty.MEDIUM
     question_count: int = Field(default=3, ge=1, le=10)
 
@@ -76,6 +77,7 @@ class InterviewResponse(BaseModel):
     profile_subtopic_key: str | None
     profile_subtopic_title: str | None
     coverage_catalog_point_id: UUID | None
+    training_mode: str
     difficulty: str
     question_count: int
     status: str
@@ -168,6 +170,7 @@ def interview_response(snapshot: InterviewSnapshot) -> InterviewResponse:
         profile_subtopic_key=session.profile_subtopic_key,
         profile_subtopic_title=session.profile_subtopic_title,
         coverage_catalog_point_id=session.coverage_catalog_point_id,
+        training_mode=str(session.training_mode),
         difficulty=str(session.difficulty),
         question_count=session.question_count,
         status=str(session.status),
@@ -206,6 +209,7 @@ async def create_interview(payload: InterviewCreateRequest, request: Request) ->
         profile_subtopic_key=payload.profile_subtopic_key,
         profile_subtopic_title=payload.profile_subtopic_title,
         coverage_catalog_point_id=payload.coverage_catalog_point_id,
+        training_mode=payload.training_mode,
         difficulty=payload.difficulty,
         question_count=payload.question_count,
     )

@@ -4,9 +4,13 @@ import { Empty, FeedbackGroup, FeedbackItem, StepCard, TagRow } from "./common.j
 
 export function EvaluationPanel({ report }) {
   const view = buildReportView(report);
+  const isPractice = report?.training_mode === "practice";
   return (
     <StepCard number="04" title="本轮面试报告" tone="orange">
       <p>把模型评分转译成可执行反馈，不再直接堆砌重复的维度模板。</p>
+      {isPractice ? (
+        <p className="practice-warning">练习模式，不计入画像和覆盖统计</p>
+      ) : null}
       {view ? (
         <div className="score-card">
           <div className="score-total">

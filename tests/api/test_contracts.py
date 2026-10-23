@@ -9,7 +9,11 @@ from fastapi.testclient import TestClient
 from agent_mentor.api.errors import AppError
 from agent_mentor.application.answer_service import AnswerResult
 from agent_mentor.application.evaluation_service import ReportSnapshot
-from agent_mentor.infrastructure.database.models import InterviewReportModel
+from agent_mentor.application.interview_service import InterviewSnapshot
+from agent_mentor.infrastructure.database.models import (
+    InterviewReportModel,
+    InterviewSessionModel,
+)
 from agent_mentor.ports.knowledge_retriever import RetrievedChunk
 
 
@@ -154,3 +158,99 @@ def test_report_endpoint_allows_empty_evaluation_list_contract(app: Any) -> None
     assert body["max_score"] == 0
     assert body["evaluations"] == []
     assert body["next_steps"] == ["完成面试后继续训练。"]
+    assert body["training_mode"] == "profile_training"
+
+
+class _PracticeInterviewService:
+    async def get(self, _interview_id: UUID) -> InterviewSnapshot:
+        session = InterviewSessionModel(
+            id=uuid4(),
+            user_id=uuid4(),
+            knowledge_base_id=uuid4(),
+            topic="RAG 练习",
+            difficulty="hard",
+            question_count=5,
+            training_mode="practice",
+            status="waiting_for_answer",
+            current_question_index=0,
+            workflow_thread_id="thread-practice",
+        )
+        return InterviewSnapshot(session, None, None, (), ())
+
+
+class _PracticeRejectingInterviewService:
+    async def create_interview(self, **_fields: object) -> object:
+        raise AppError(
+            "PRACTICE_QUESTION_COUNT_INVALID",
+            "Practice mode only supports 1, 3 or 5 questions.",
+            422,
+        )
+
+
+class _PracticeReportService:
+    async def build_report(
+        self, _interview_id: UUID, *, reviewer_available: bool
+    ) -> ReportSnapshot:
+        del reviewer_available
+        report = SimpleNamespace(
+            id=uuid4(),
+            session_id=uuid4(),
+            total_score=40,
+            max_score=60,
+            dimension_summary={},
+            knowledge_point_summary={"topic": "RAG"},
+            error_summary=[],
+            low_confidence_items=[],
+            disputed_items=[],
+            next_steps=["继续练习。"],
+        )
+        return ReportSnapshot(
+            report=cast(InterviewReportModel, report),
+            evaluations=(),
+            training_mode="practice",
+        )
+
+
+def test_interview_response_exposes_training_mode(app: Any) -> None:
+    app.state.interview_service = _PracticeInterviewService()
+    client = TestClient(app)
+
+    response = client.get(f"/api/v1/interviews/{uuid4()}")
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["training_mode"] == "practice"
+    assert body["question_count"] == 5
+    assert body["difficulty"] == "hard"
+
+
+def test_practice_invalid_question_count_uses_stable_error_contract(app: Any) -> None:
+    app.state.interview_service = _PracticeRejectingInterviewService()
+    client = TestClient(app)
+
+    response = client.post(
+        "/api/v1/interviews",
+        json={
+            "knowledge_base_id": str(uuid4()),
+            "topic": "RAG",
+            "training_mode": "practice",
+            "question_count": 2,
+        },
+    )
+
+    assert response.status_code == 422
+    assert response.json()["code"] == "PRACTICE_QUESTION_COUNT_INVALID"
+
+
+def test_report_response_exposes_training_mode(app: Any) -> None:
+    app.state.evaluation_service = _PracticeReportService()
+    client = TestClient(app)
+
+    response = client.post(
+        f"/api/v1/interviews/{uuid4()}/report",
+        json={"reviewer_available": True},
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["training_mode"] == "practice"

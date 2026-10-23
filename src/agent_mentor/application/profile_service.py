@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from agent_mentor.api.errors import AppError
+from agent_mentor.domain.interview import is_practice_training_mode
 from agent_mentor.domain.profile import (
     ReviewTaskStatus,
     TrainingFocusCandidate,
@@ -111,6 +112,11 @@ class ProfileService:
     async def apply_interview_evaluations(self, interview_id: UUID) -> ProfileSnapshot:
         async with self._sessions() as db:
             interview = await self._get_interview(db, interview_id)
+            if is_practice_training_mode(interview.training_mode):
+                # Practice interviews never feed ability profiles, profile
+                # update events or review tasks; return the current snapshot
+                # without touching any learning state.
+                return await self._snapshot(db, interview.user_id, interview.knowledge_base_id)
             rows = await self._evaluation_rows(db, interview.id)
             for evaluation, question, answer in rows:
                 existing = await db.scalar(

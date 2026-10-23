@@ -600,6 +600,96 @@ textarea::placeholder,
   font-size: 13px;
 }
 
+.mode-switch {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.mode-switch button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #aebdd6;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mode-switch button.active {
+  border-color: rgba(24, 210, 167, 0.55);
+  background: rgba(24, 210, 167, 0.16);
+  color: #eafff8;
+}
+
+.mode-switch button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.practice-config {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  border: 1px solid rgba(250, 186, 84, 0.25);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(250, 186, 84, 0.07);
+}
+
+.practice-warning {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #ffd9a0;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.5;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.option-label {
+  min-width: 34px;
+  color: #c8d6ee;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.option-chip {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 6px 13px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #aebdd6;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.option-chip.active {
+  border-color: rgba(250, 186, 84, 0.6);
+  background: rgba(250, 186, 84, 0.18);
+  color: #ffe9c4;
+}
+
+.option-chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .mini-list {
   position: relative;
   z-index: 1;

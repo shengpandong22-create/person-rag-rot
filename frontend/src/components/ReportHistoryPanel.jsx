@@ -52,7 +52,10 @@ export function ReportHistoryPanel({ history, trends, onOpenReport }) {
         <div className="trend-bars">
           {trendItems.map((item, index) => (
             <div className="trend-row" key={item.report_id}>
-              <span>{index + 1}. {item.topic}</span>
+              <span>
+                {index + 1}. {item.topic}
+                {item.training_mode === "practice" ? "（练习）" : ""}
+              </span>
               <div className="trend-track">
                 <i style={{ width: ratioLabel(item.score_ratio) }} />
               </div>
@@ -74,6 +77,7 @@ export function ReportHistoryPanel({ history, trends, onOpenReport }) {
               <span>{formatDate(item.created_at)} · {item.difficulty}</span>
               <TagRow
                 tags={[
+                  item.training_mode === "practice" ? "练习模式" : "画像训练",
                   `总分 ${item.total_score}/${item.max_score}`,
                   ratioLabel(item.score_ratio),
                   item.low_confidence_count ? `低置信 ${item.low_confidence_count}` : "置信正常",

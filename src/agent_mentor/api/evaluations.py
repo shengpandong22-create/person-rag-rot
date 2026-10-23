@@ -56,6 +56,7 @@ class EvaluationResponse(BaseModel):
 class ReportResponse(BaseModel):
     id: UUID
     session_id: UUID
+    training_mode: str
     total_score: int
     max_score: int
     dimension_summary: dict[str, object]
@@ -72,6 +73,7 @@ class ReportHistoryResponse(BaseModel):
     session_id: UUID
     topic: str
     difficulty: str
+    training_mode: str
     total_score: int
     max_score: int
     score_ratio: float
@@ -85,6 +87,7 @@ class ScoreTrendResponse(BaseModel):
     session_id: UUID
     topic: str
     difficulty: str
+    training_mode: str
     total_score: int
     max_score: int
     score_ratio: float
@@ -138,6 +141,7 @@ def report_response(snapshot: ReportSnapshot) -> ReportResponse:
     return ReportResponse(
         id=report.id,
         session_id=report.session_id,
+        training_mode=snapshot.training_mode,
         total_score=report.total_score,
         max_score=report.max_score,
         dimension_summary=report.dimension_summary,
@@ -157,6 +161,7 @@ def history_response(item: ReportHistoryItem) -> ReportHistoryResponse:
         session_id=report.session_id,
         topic=item.interview.topic,
         difficulty=str(item.interview.difficulty),
+        training_mode=str(item.interview.training_mode),
         total_score=report.total_score,
         max_score=report.max_score,
         score_ratio=round(report.total_score / max(1, report.max_score), 4),
@@ -172,6 +177,7 @@ def trend_response(item: ScoreTrendPoint) -> ScoreTrendResponse:
         session_id=item.session_id,
         topic=item.topic,
         difficulty=str(item.difficulty),
+        training_mode=item.training_mode,
         total_score=item.total_score,
         max_score=item.max_score,
         score_ratio=item.score_ratio,

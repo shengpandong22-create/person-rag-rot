@@ -1,9 +1,23 @@
 import { Info, Progress, ResultBox, StepCard } from "./common.jsx";
 
+const practiceCounts = [1, 3, 5];
+const difficultyOptions = [
+  { value: "easy", label: "简单 easy" },
+  { value: "medium", label: "中等 medium" },
+  { value: "hard", label: "困难 hard" },
+];
+
+function difficultyLabel(value) {
+  return difficultyOptions.find((item) => item.value === value)?.label ?? value;
+}
+
 export function InterviewPanel({
   documents,
   profile,
   interviewTopic,
+  trainingMode,
+  practiceQuestionCount,
+  practiceDifficulty,
   interview,
   answerDraft,
   busy,
@@ -16,6 +30,9 @@ export function InterviewPanel({
   followUpDraft,
   workflowTrace,
   onTopicChange,
+  onTrainingModeChange,
+  onPracticeQuestionCountChange,
+  onPracticeDifficultyChange,
   onStartInterview,
   onAnswerDraftChange,
   onFollowUpDraftChange,
@@ -26,11 +43,67 @@ export function InterviewPanel({
 }) {
   const interviewPolicy = currentQuestion?.rubric?.interview_policy;
   const isWaitingForFollowUp = Boolean(currentFollowUp);
+  const isPractice = trainingMode === "practice";
+  const runningPractice = interview?.training_mode === "practice";
   return (
     <StepCard number="03" title="可恢复模拟面试" tone="green">
       <p>
-        三题面试会保存 checkpoint；主题默认优先来自待覆盖知识点，也可以手动指定。
+        画像训练固定 3 题中等难度，计入能力画像与知识覆盖；自定义练习可自选题数和难度，
+        仅用于演练，不计入任何统计。
       </p>
+      <div className="mode-switch" role="group" aria-label="面试模式">
+        <button
+          type="button"
+          className={isPractice ? "" : "active"}
+          onClick={() => onTrainingModeChange("profile_training")}
+          disabled={busy}
+        >
+          画像训练
+        </button>
+        <button
+          type="button"
+          className={isPractice ? "active" : ""}
+          onClick={() => onTrainingModeChange("practice")}
+          disabled={busy}
+        >
+          自定义练习
+        </button>
+      </div>
+      {isPractice ? (
+        <div className="practice-config">
+          <p className="practice-warning">本次练习不计入能力画像和知识覆盖统计</p>
+          <div className="option-row">
+            <span className="option-label">题数</span>
+            {practiceCounts.map((count) => (
+              <button
+                key={count}
+                type="button"
+                className={`option-chip ${practiceQuestionCount === count ? "active" : ""}`}
+                onClick={() => onPracticeQuestionCountChange(count)}
+                disabled={busy}
+              >
+                {count} 题
+              </button>
+            ))}
+          </div>
+          <div className="option-row">
+            <span className="option-label">难度</span>
+            {difficultyOptions.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                className={`option-chip ${practiceDifficulty === item.value ? "active" : ""}`}
+                onClick={() => onPracticeDifficultyChange(item.value)}
+                disabled={busy}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="hint">画像训练：固定 3 题 / 中等难度，计入画像与覆盖</p>
+      )}
       <label className="field-label" htmlFor="interview-topic">
         本轮面试主题
       </label>
@@ -53,12 +126,18 @@ export function InterviewPanel({
         onClick={onStartInterview}
         disabled={!canUseKnowledgeBase || busy || !interviewTopic.trim()}
       >
-        启动三题面试
+        {isPractice
+          ? `开始自定义练习（${practiceQuestionCount} 题 · ${difficultyLabel(practiceDifficulty)}）`
+          : "开始画像训练（3 题 · 中等难度）"}
       </button>
       {interview && (
         <div className="interview-box">
           <Progress value={completion} />
           <Info label="Workflow Status" value={interview.status} />
+          <Info label="Training Mode" value={runningPractice ? "practice" : "profile_training"} />
+          {runningPractice ? (
+            <p className="practice-warning">练习模式，不计入画像和覆盖统计</p>
+          ) : null}
           {workflowTrace.length > 0 ? (
             <details className="workflow-trace">
               <summary>Agent 工作流轨迹（{workflowTrace.length} 个 checkpoint）</summary>
@@ -156,7 +235,7 @@ export function InterviewPanel({
             </ResultBox>
           ) : (
             <button onClick={onEvaluateAndReport} disabled={busy || !isCompleted}>
-              生成评分报告和画像
+              {runningPractice ? "生成练习报告（不计入画像）" : "生成评分报告和画像"}
             </button>
           )}
         </div>

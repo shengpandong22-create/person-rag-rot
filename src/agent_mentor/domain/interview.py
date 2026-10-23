@@ -9,6 +9,33 @@ class Difficulty(StrEnum):
     HARD = "hard"
 
 
+class TrainingMode(StrEnum):
+    """Whether an interview feeds the official ability profile.
+
+    ``PROFILE_TRAINING`` is the default, fully accounted training path.
+    ``PRACTICE`` is a controlled drill that may generate questions, answers
+    and reports but must never mutate profile or coverage accounting.
+    """
+
+    PROFILE_TRAINING = "profile_training"
+    PRACTICE = "practice"
+
+
+PROFILE_TRAINING_QUESTION_COUNT = 3
+PROFILE_TRAINING_DIFFICULTY = Difficulty.MEDIUM
+PRACTICE_QUESTION_COUNTS: tuple[int, ...] = (1, 3, 5)
+PRACTICE_DIFFICULTIES: tuple[Difficulty, ...] = (
+    Difficulty.EASY,
+    Difficulty.MEDIUM,
+    Difficulty.HARD,
+)
+
+
+def is_practice_training_mode(training_mode: str | TrainingMode) -> bool:
+    """Tell whether a persisted or in-memory training mode is practice."""
+    return str(training_mode) == TrainingMode.PRACTICE.value
+
+
 class InterviewStatus(StrEnum):
     CREATED = "created"
     WAITING_FOR_ANSWER = "waiting_for_answer"

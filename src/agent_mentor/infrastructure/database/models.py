@@ -20,6 +20,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from agent_mentor.domain.interview import TrainingMode
 from agent_mentor.domain.knowledge import DocumentStatus, IngestionJobStatus, TrustLevel
 
 
@@ -338,6 +339,12 @@ class InterviewSessionModel(Base):
     )
     difficulty: Mapped[str] = mapped_column(String(32), nullable=False)
     question_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    training_mode: Mapped[str] = mapped_column(
+        String(32),
+        nullable=False,
+        default=TrainingMode.PROFILE_TRAINING.value,
+        server_default=TrainingMode.PROFILE_TRAINING.value,
+    )
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     current_question_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     workflow_thread_id: Mapped[str] = mapped_column(String(80), nullable=False, unique=True)

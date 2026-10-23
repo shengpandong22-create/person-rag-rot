@@ -53,6 +53,7 @@ class EvaluationItem:
 class ReportSnapshot:
     report: InterviewReportModel
     evaluations: tuple[EvaluationItem, ...]
+    training_mode: str = "profile_training"
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,6 +68,7 @@ class ScoreTrendPoint:
     session_id: UUID
     topic: str
     difficulty: str
+    training_mode: str
     total_score: int
     max_score: int
     score_ratio: float
@@ -149,7 +151,11 @@ class EvaluationService:
                 report.created_at = generated.created_at
             await db.commit()
             await db.refresh(report)
-            return ReportSnapshot(report=report, evaluations=evaluations)
+            return ReportSnapshot(
+                report=report,
+                evaluations=evaluations,
+                training_mode=str(interview.training_mode),
+            )
 
     async def get_report(self, interview_id: UUID) -> ReportSnapshot:
         async with self._sessions() as db:
@@ -160,7 +166,11 @@ class EvaluationService:
             if report is None:
                 raise AppError("REPORT_NOT_FOUND", "Interview report was not found.", 404)
             evaluations = await self._evaluation_items(db, interview.id)
-            return ReportSnapshot(report=report, evaluations=evaluations)
+            return ReportSnapshot(
+                report=report,
+                evaluations=evaluations,
+                training_mode=str(interview.training_mode),
+            )
 
     async def list_report_history(
         self, user_id: UUID, knowledge_base_id: UUID, *, limit: int = 10
@@ -531,6 +541,7 @@ class EvaluationService:
             session_id=report.session_id,
             topic=item.interview.topic,
             difficulty=item.interview.difficulty,
+            training_mode=str(item.interview.training_mode),
             total_score=report.total_score,
             max_score=report.max_score,
             score_ratio=round(report.total_score / max(1, report.max_score), 4),
