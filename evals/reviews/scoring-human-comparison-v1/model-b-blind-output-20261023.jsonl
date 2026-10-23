@@ -1,0 +1,12 @@
+{"blind_id":"blind-01","quality":"差","needs_review":false,"rationale":"让模型自行回答即放任幻觉，结论错误且危险"}
+{"blind_id":"blind-02","quality":"一般","needs_review":false,"rationale":"提到防幻觉与证据提示，缺降级机制关键步骤"}
+{"blind_id":"blind-03","quality":"好","needs_review":false,"rationale":"结论正确，说明降级、引用限制与审计取舍"}
+{"blind_id":"blind-04","quality":"差","needs_review":false,"rationale":"误把 checkpoint 当日志，未答状态恢复问题"}
+{"blind_id":"blind-05","quality":"一般","needs_review":false,"rationale":"答出刷新恢复防丢失，缺一致性与可观测性"}
+{"blind_id":"blind-06","quality":"好","needs_review":false,"rationale":"完整说明状态机、bounded state 与工程问题"}
+{"blind_id":"blind-07","quality":"差","needs_review":false,"rationale":"认为评分不可靠无需处理，核心结论错误"}
+{"blind_id":"blind-08","quality":"一般","needs_review":false,"rationale":"答出 rubric 与应用层计分，缺复核隔离细节"}
+{"blind_id":"blind-09","quality":"好","needs_review":false,"rationale":"结论完整，涵盖计分规则与低置信处理边界"}
+{"blind_id":"blind-10","quality":"差","needs_review":false,"rationale":"误解画像为单一分数，否认知识库绑定"}
+{"blind_id":"blind-11","quality":"一般","needs_review":false,"rationale":"方向正确，缺两层结构与排除机制说明"}
+{"blind_id":"blind-12","quality":"好","needs_review":false,"rationale":"结论正确，解释绑定原因与更新门槛取舍"}

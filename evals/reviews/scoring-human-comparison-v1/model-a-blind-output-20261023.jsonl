@@ -1,0 +1,12 @@
+{"blind_id":"blind-01","quality":"差","needs_review":false,"rationale":"让模型自答正是幻觉根源，结论与问题相反"}
+{"blind_id":"blind-02","quality":"一般","needs_review":false,"rationale":"方向对，但未说明降级边界与引用约束"}
+{"blind_id":"blind-03","quality":"好","needs_review":false,"rationale":"含白名单、fallback_reason 与可追溯取舍"}
+{"blind_id":"blind-04","quality":"差","needs_review":false,"rationale":"仅当日志，未回答任何工程问题"}
+{"blind_id":"blind-05","quality":"一般","needs_review":false,"rationale":"提到恢复，但漏一致性、排障与状态范围"}
+{"blind_id":"blind-06","quality":"好","needs_review":false,"rationale":"状态机与 bounded state 及一致性解释清楚"}
+{"blind_id":"blind-07","quality":"差","needs_review":false,"rationale":"分数差不多就行属危险误导，未答如何提可信度"}
+{"blind_id":"blind-08","quality":"一般","needs_review":false,"rationale":"rubric 与应用层算分方向对，但过于简略"}
+{"blind_id":"blind-09","quality":"好","needs_review":false,"rationale":"rubric、白名单、复核路由与降权均覆盖"}
+{"blind_id":"blind-10","quality":"差","needs_review":false,"rationale":"把画像等同分数并整体调高，结论错误"}
+{"blind_id":"blind-11","quality":"一般","needs_review":false,"rationale":"方向对但偏浅，未说明分层与防污染机制"}
+{"blind_id":"blind-12","quality":"好","needs_review":false,"rationale":"绑定理由、双层画像与可信消费条件完整"}

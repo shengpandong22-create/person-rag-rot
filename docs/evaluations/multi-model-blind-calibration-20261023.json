@@ -1,0 +1,116 @@
+{
+  "sample_count": 12,
+  "quality_agreement_count": 12,
+  "review_agreement_count": 12,
+  "exact_pair_agreement_count": 12,
+  "details": [
+    {
+      "blind_id": "blind-01",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "差",
+      "right_quality": "差",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-02",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "一般",
+      "right_quality": "一般",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-03",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "好",
+      "right_quality": "好",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-04",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "差",
+      "right_quality": "差",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-05",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "一般",
+      "right_quality": "一般",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-06",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "好",
+      "right_quality": "好",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-07",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "差",
+      "right_quality": "差",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-08",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "一般",
+      "right_quality": "一般",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-09",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "好",
+      "right_quality": "好",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-10",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "差",
+      "right_quality": "差",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-11",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "一般",
+      "right_quality": "一般",
+      "left_needs_review": false,
+      "right_needs_review": false
+    },
+    {
+      "blind_id": "blind-12",
+      "quality_agrees": true,
+      "review_agrees": true,
+      "left_quality": "好",
+      "right_quality": "好",
+      "left_needs_review": false,
+      "right_needs_review": false
+    }
+  ]
+}
