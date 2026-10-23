@@ -168,7 +168,7 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
             knowledge_base_id=base.id,
             topic="LangGraph checkpoint",
             difficulty=Difficulty.MEDIUM,
-            question_count=2,
+            question_count=3,
         )
         snapshot = await interviews.start(interview.id)
         first_question = snapshot.current_question
@@ -213,8 +213,23 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
                 answer_text=completed.current_follow_up.reference_answer,
                 idempotency_key="integration-follow-up-2",
             )
+        third_question = completed.current_question
+        assert third_question is not None
+        completed = await interviews.submit_answer(
+            session_id=interview.id,
+            question_id=third_question.id,
+            answer_text=third_question.reference_answer,
+            idempotency_key="integration-answer-3",
+        )
+        if completed.current_follow_up is not None:
+            completed = await interviews.submit_follow_up_answer(
+                session_id=interview.id,
+                follow_up_id=completed.current_follow_up.id,
+                answer_text=completed.current_follow_up.reference_answer,
+                idempotency_key="integration-follow-up-3",
+            )
         assert completed.session.status == InterviewStatus.COMPLETED
-        assert sum(answer.answer_kind == "primary" for answer in completed.answers) == 2
+        assert sum(answer.answer_kind == "primary" for answer in completed.answers) == 3
         assert (await interviews.get(interview.id)).session.status == InterviewStatus.COMPLETED
 
         first_report = await evaluations.build_report(interview.id)

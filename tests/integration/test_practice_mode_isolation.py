@@ -12,7 +12,7 @@ from agent_mentor.application.interview_service import InterviewService, Intervi
 from agent_mentor.application.knowledge_service import KnowledgeService
 from agent_mentor.application.profile_service import ProfileService
 from agent_mentor.config import PGVECTOR_DIMENSION
-from agent_mentor.domain.interview import Difficulty, InterviewStatus, TrainingMode
+from agent_mentor.domain.interview import AnswerKind, Difficulty, InterviewStatus, TrainingMode
 from agent_mentor.domain.knowledge import TrustLevel
 from agent_mentor.infrastructure.database.models import (
     InterviewQuestionModel,
@@ -112,7 +112,7 @@ async def test_practice_mode_never_pollutes_profile_or_coverage(tmp_path) -> Non
         )
         assert not duplicate
         await knowledge.ingest(document.id)
-        assert (await knowledge.get_document(document.id)).status.value == "ready"
+        assert (await knowledge.get_document(document.id)).status == "ready"
 
         coverage_before = await profiles.get_coverage(base.id)
         assert coverage_before.attempted == 0
@@ -132,7 +132,7 @@ async def test_practice_mode_never_pollutes_profile_or_coverage(tmp_path) -> Non
 
         completed = await _complete_interview(interviews, practice.id)
         assert completed.session.status == InterviewStatus.COMPLETED
-        assert len(completed.answers) == 5
+        assert sum(answer.answer_kind == AnswerKind.PRIMARY for answer in completed.answers) == 5
 
         practice_report = await evaluations.build_report(practice.id)
         assert practice_report.training_mode == "practice"
