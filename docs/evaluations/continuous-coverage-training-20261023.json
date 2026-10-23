@@ -237,8 +237,9 @@
     "all_llm": true,
     "all_target_sources_cited": true,
     "all_targets_attempted": true,
-    "p50_latency_ms": 3834.94,
-    "p95_latency_ms": 4129.58
+    "latency_percentile_method": "nearest_rank",
+    "p50_latency_ms": 3736.93,
+    "p95_latency_ms": 5638.34
   },
   "pass": true
 }

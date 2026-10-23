@@ -10,6 +10,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import math
 import time
 import uuid
 from datetime import UTC, datetime
@@ -34,6 +35,16 @@ TARGET_TITLES = (
     "Rubric 重算",
     "低置信复核路由",
 )
+
+
+def nearest_rank(values: list[float], percentile: float) -> float:
+    """Return an explicit nearest-rank percentile for a small acceptance run."""
+    if not values:
+        raise ValueError("cannot calculate a percentile from no values")
+    if not 0 < percentile <= 1:
+        raise ValueError("percentile must be in (0, 1]")
+    ordered = sorted(values)
+    return ordered[math.ceil(len(ordered) * percentile) - 1]
 
 
 def request_json(
@@ -181,6 +192,7 @@ def main() -> None:
     attempted_all = all(
         int(final_points[title].get("attempt_count", 0)) >= 1 for title in TARGET_TITLES
     )
+    latencies = [float(row["latency_ms"]) for row in runs]
     passed = (
         len(runs) == len(TARGET_TITLES)
         and all(row["target_source_citation_present"] for row in runs)
@@ -205,10 +217,9 @@ def main() -> None:
             "all_llm": all_llm,
             "all_target_sources_cited": all(row["target_source_citation_present"] for row in runs),
             "all_targets_attempted": attempted_all,
-            "p50_latency_ms": sorted(row["latency_ms"] for row in runs)[len(runs) // 2],
-            "p95_latency_ms": sorted(row["latency_ms"] for row in runs)[
-                max(0, int(len(runs) * 0.95) - 1)
-            ],
+            "latency_percentile_method": "nearest_rank",
+            "p50_latency_ms": nearest_rank(latencies, 0.50),
+            "p95_latency_ms": nearest_rank(latencies, 0.95),
         },
         "pass": passed,
     }

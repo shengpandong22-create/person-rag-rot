@@ -25,8 +25,8 @@
 | `generation.mode=llm` | 6/6 |
 | 目标 source chunk 被实际引用 | 6/6 |
 | 目标获得至少一次 attempted 记录 | 6/6 |
-| 题目生成 P50 | 3834.94 ms |
-| 题目生成 P95 | 4129.58 ms |
+| 题目生成 P50（nearest-rank） | 3736.93 ms |
+| 题目生成 P95（nearest-rank） | 5638.34 ms |
 
 ## 目标明细
 
