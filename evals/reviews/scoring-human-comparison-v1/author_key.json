@@ -1,0 +1,54 @@
+{
+  "dataset": "evals\\datasets\\evaluation_discrimination_v1.jsonl",
+  "dataset_sha256": "91361bd24fd42baafec2a338f4d8fe53f6b753f84f5916d9b6c6ef0d6ee06571",
+  "mapping": [
+    {
+      "blind_id": "blind-01",
+      "case_id": "disc-rag-boundary-low"
+    },
+    {
+      "blind_id": "blind-02",
+      "case_id": "disc-rag-boundary-mid"
+    },
+    {
+      "blind_id": "blind-03",
+      "case_id": "disc-rag-boundary-high"
+    },
+    {
+      "blind_id": "blind-04",
+      "case_id": "disc-checkpoint-low"
+    },
+    {
+      "blind_id": "blind-05",
+      "case_id": "disc-checkpoint-mid"
+    },
+    {
+      "blind_id": "blind-06",
+      "case_id": "disc-checkpoint-high"
+    },
+    {
+      "blind_id": "blind-07",
+      "case_id": "disc-evaluation-low"
+    },
+    {
+      "blind_id": "blind-08",
+      "case_id": "disc-evaluation-mid"
+    },
+    {
+      "blind_id": "blind-09",
+      "case_id": "disc-evaluation-high"
+    },
+    {
+      "blind_id": "blind-10",
+      "case_id": "disc-profile-low"
+    },
+    {
+      "blind_id": "blind-11",
+      "case_id": "disc-profile-mid"
+    },
+    {
+      "blind_id": "blind-12",
+      "case_id": "disc-profile-high"
+    }
+  ]
+}
