@@ -1,0 +1,1401 @@
+{
+  "script": "scripts/audit_coverage_health.py",
+  "write_behavior": "read_only",
+  "knowledge_base_id": "b2d70e40-02d1-4a78-af5a-22df85a82693",
+  "total_catalog_points": 112,
+  "qualified_catalog_points": 99,
+  "review_required_catalog_points": 13,
+  "qualified_uncovered_points": 65,
+  "current_three_question_rounds_to_visit_each_qualified_gap": 65,
+  "catalog_source_decisions": {
+    "accepted_heading": 114,
+    "rejected_non_knowledge_leaf": 13
+  },
+  "coverage_mappings": 503,
+  "provenance_verified_coverage_mappings": 270,
+  "provenance_mismatch_coverage_mappings": 16,
+  "provenance_missing_reference_coverage_mappings": 217,
+  "untrusted_historical_coverage_mappings": 233,
+  "provenance_mismatch_samples": [
+    {
+      "point_id": "4b225fac-db13-48fb-ba73-1c96a47f8e7e",
+      "question_id": "129480c4-28d6-4fc0-9962-d322145a2275"
+    },
+    {
+      "point_id": "47565147-338c-40c5-bc20-24bc5b27cf78",
+      "question_id": "1e14cdb7-2c9a-461b-a79d-1d17ca969161"
+    },
+    {
+      "point_id": "80c3e512-7f94-4b7c-a49d-3753c5c938af",
+      "question_id": "090d775f-c158-4402-9a68-86da4386e8f5"
+    },
+    {
+      "point_id": "e993809f-9d33-4201-9556-f779572581f5",
+      "question_id": "6b3a4877-3912-4687-94d5-a73ce87f1f34"
+    },
+    {
+      "point_id": "e993809f-9d33-4201-9556-f779572581f5",
+      "question_id": "129480c4-28d6-4fc0-9962-d322145a2275"
+    },
+    {
+      "point_id": "8e7d7416-5211-4636-a4bb-c4d94003b325",
+      "question_id": "b40151de-7d55-45d1-954f-c4df75b1f3f0"
+    },
+    {
+      "point_id": "5d65b3b9-be4a-429a-80e5-95b4362968bb",
+      "question_id": "e05f6ba6-47f9-4098-8fbc-39c29809c4bd"
+    },
+    {
+      "point_id": "af5ba0c8-a7f7-47d7-b148-776d55b2a8e8",
+      "question_id": "3f700c33-2f05-40d5-a7df-818c4243eb17"
+    },
+    {
+      "point_id": "d2ee0532-b8ad-448c-bc49-cfd80cfde68d",
+      "question_id": "b0aab48d-6a0c-4773-aa22-228a37c1a8e2"
+    },
+    {
+      "point_id": "e993809f-9d33-4201-9556-f779572581f5",
+      "question_id": "629a394c-95ae-4f20-8e86-ff3bfe51c3f4"
+    },
+    {
+      "point_id": "0174fe73-c581-403e-9e0c-7235e02b22b6",
+      "question_id": "f327039f-527a-4281-813d-17732f814add"
+    },
+    {
+      "point_id": "f2527044-7a45-4340-b4a6-9bc3c3c836e5",
+      "question_id": "3c7c9a27-7bb3-4d0d-9bde-162b311a44af"
+    },
+    {
+      "point_id": "a5b7cc2b-9bd1-4ade-9bd3-e5487bb08c99",
+      "question_id": "09f679b5-fc5e-4d30-93e4-314fc9460c9e"
+    },
+    {
+      "point_id": "08f7cd51-f3bc-4e4e-b6f1-3df41bd6ba05",
+      "question_id": "c68e2529-16f9-4e2f-974c-86d755d46224"
+    },
+    {
+      "point_id": "836fc9cb-e95f-422b-ab64-b0ce455566ab",
+      "question_id": "0fb401e3-7375-4afd-8808-0409681f765c"
+    },
+    {
+      "point_id": "31740f47-66c8-43cd-a7be-bfde1be4a622",
+      "question_id": "6b3a4877-3912-4687-94d5-a73ce87f1f34"
+    }
+  ],
+  "provenance_missing_reference_samples": [
+    {
+      "point_id": "ed4c86eb-ee4e-4867-99de-5069d3c56646",
+      "question_id": "03101e53-2bff-49f6-a619-8dfac10ffea7"
+    },
+    {
+      "point_id": "2549eb40-facf-4ae4-86d7-c2c36784dd48",
+      "question_id": "1c0bbc25-ec9d-464c-97c3-a7f8a785bf2c"
+    },
+    {
+      "point_id": "9fe8f316-7171-435c-851f-7e1bd7e0fbfe",
+      "question_id": "12141adb-cc41-43eb-b9ca-8bc9979f33fe"
+    },
+    {
+      "point_id": "a6b23cfa-f05f-45ba-b420-87616d0c0dee",
+      "question_id": "3a3e3104-5401-4be3-9422-a85583c1c0ae"
+    },
+    {
+      "point_id": "b7fe7b86-03ae-47ef-a21f-1454873b093d",
+      "question_id": "84dfa249-8f28-4823-bd91-836157487686"
+    },
+    {
+      "point_id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
+      "question_id": "868358b4-cc2d-44b8-b5e9-25147bba528e"
+    },
+    {
+      "point_id": "830aeb9e-ee8e-4a88-a52e-19627c8db457",
+      "question_id": "9e84e4fe-80b7-4579-8d27-7e7474c64fa6"
+    },
+    {
+      "point_id": "c1cd9617-94d8-4d85-815b-6417a950addb",
+      "question_id": "017274aa-cfe1-4c8d-9c81-4b52f2220710"
+    },
+    {
+      "point_id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
+      "question_id": "4f7b3262-902a-414c-a95f-67c7d25a1733"
+    },
+    {
+      "point_id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
+      "question_id": "c454350a-315e-4269-a4ce-aa3ce3ed1de0"
+    },
+    {
+      "point_id": "b7fe7b86-03ae-47ef-a21f-1454873b093d",
+      "question_id": "33a8bf9c-9b87-413c-8875-461bdeee80c4"
+    },
+    {
+      "point_id": "b7fe7b86-03ae-47ef-a21f-1454873b093d",
+      "question_id": "e4a7b7f7-c8c7-46bb-a82c-1311af7bd124"
+    },
+    {
+      "point_id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
+      "question_id": "aa185388-b4ba-49d8-a786-62c6fdc36031"
+    },
+    {
+      "point_id": "a6b23cfa-f05f-45ba-b420-87616d0c0dee",
+      "question_id": "08704daf-d15d-495e-a573-34e6d1d1b5cc"
+    },
+    {
+      "point_id": "2549eb40-facf-4ae4-86d7-c2c36784dd48",
+      "question_id": "cb6fbd9a-6dc6-45fc-a39f-40d904285fa8"
+    },
+    {
+      "point_id": "b7eb8b73-6b1f-4e32-9e21-a04a8fd2db11",
+      "question_id": "5b20e17d-c63b-477d-b108-81694fedef6d"
+    },
+    {
+      "point_id": "96d09f3a-d044-4ca5-9c53-63f0cd88772b",
+      "question_id": "d5ea34ec-b6ac-44bf-aba0-2ba41c097128"
+    },
+    {
+      "point_id": "b7fe7b86-03ae-47ef-a21f-1454873b093d",
+      "question_id": "c8a37f5c-a24e-4a77-a626-ef36d5ec893e"
+    },
+    {
+      "point_id": "2549eb40-facf-4ae4-86d7-c2c36784dd48",
+      "question_id": "9450fb95-6710-480c-b46b-9e619842998f"
+    },
+    {
+      "point_id": "ed4c86eb-ee4e-4867-99de-5069d3c56646",
+      "question_id": "3e3b12ba-a481-46d8-89ea-a28ec214fca7"
+    }
+  ],
+  "points": [
+    {
+      "id": "80c3e512-7f94-4b7c-a49d-3753c5c938af",
+      "title": "Agent 工作流",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "0174fe73-c581-403e-9e0c-7235e02b22b6",
+      "title": "Checkpoint 不能做什么",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "8e7d7416-5211-4636-a4bb-c4d94003b325",
+      "title": "Checkpoint 能做什么",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e993809f-9d33-4201-9556-f779572581f5",
+      "title": "Embedding 层确实基础，但工程防御层不 LOW",
+      "quality": "qualified",
+      "attempt_count": 3,
+      "trusted_evaluation_count": 3,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "4b225fac-db13-48fb-ba73-1c96a47f8e7e",
+      "title": "Embedding 是性价比最高的单点提升",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "08f7cd51-f3bc-4e4e-b6f1-3df41bd6ba05",
+      "title": "Embedding 阶段：当前的真实实现",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 4,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "31740f47-66c8-43cd-a7be-bfde1be4a622",
+      "title": "LLM 生成层：双路径兜底",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "47565147-338c-40c5-bc20-24bc5b27cf78",
+      "title": "ProfileService 如何应用评分",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "b01124e4-c7b2-432f-8750-58e053912b3d",
+      "title": "RAG",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "3fefb990-b65e-4c21-96c9-5fb578c70fc1",
+      "title": "RRF 公式",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "14863dd1-81b5-4719-868a-25c12e51839a",
+      "title": "RRF 的三条核心价值",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "0b699372-397d-456f-9ed4-fa715325e72a",
+      "title": "RRF 解决了什么，没解决什么",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "a30c547c-fbca-4528-be04-274577a90240",
+      "title": "Reviewer 什么时候不可用？",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "2ec527db-7a2f-4c42-97d7-f017600b6dbd",
+      "title": "一句话讲清这个项目是什么",
+      "quality": "qualified",
+      "attempt_count": 11,
+      "trusted_evaluation_count": 11,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "cbda30d7-327b-4fba-8a02-8cc69288e32e",
+      "title": "七课总览",
+      "quality": "qualified",
+      "attempt_count": 7,
+      "trusted_evaluation_count": 7,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "2b3f6c61-888f-48ff-8ffe-40d51849f13f",
+      "title": "三层防护总结",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "207a09c4-ffa3-4a3a-b002-6b659c2eb749",
+      "title": "三条真实边界",
+      "quality": "qualified",
+      "attempt_count": 14,
+      "trusted_evaluation_count": 14,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "c524647e-2695-4c39-b2cc-4c3dfac16fdf",
+      "title": "三种状态对画像的影响",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "c65f271e-f5f7-4cf2-b9c9-14681767656f",
+      "title": "三种状态的完整对比",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "49b09b14-c613-4b21-ab65-dcfef10c692e",
+      "title": "三种评分状态",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d2ee0532-b8ad-448c-bc49-cfd80cfde68d",
+      "title": "上传阶段：三个安全措施",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 3,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "894f7ed9-28de-4792-913a-e49f0bd8b9e1",
+      "title": "专题 1：幂等 ≠ 按钮防抖",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "17ff0c8a-9009-4690-afd1-4e269a99b82f",
+      "title": "专题 2：Checkpoint ≠ 完整工作流引擎",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "9dd5d60a-d501-42ca-a4de-473fcd7cb259",
+      "title": "专题 3：降级必须可观测",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "240cafb2-28d4-4ded-823e-6e710d610a9b",
+      "title": "专题 4：事务边界比\"调用顺序正确\"更重要",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "35f2ed9c-c5ed-491d-a5c5-1c97fe1253cd",
+      "title": "专题 5：历史可追溯需要稳定标识和版本",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "5825de71-7d33-4bd6-b820-675d96ef696d",
+      "title": "两条消费路径的关键区别",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "74e0f70d-1049-4df5-9230-7e3ad177b343",
+      "title": "为什么不是一次高分就完成",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "156e2f38-068d-4ea7-8be0-93fa5e747f57",
+      "title": "为什么不能一开始就拆微服务",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "462f61e7-7bce-4be5-9dc8-4dc81ff7d467",
+      "title": "为什么旧画像会出现问题",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d3f5d1f3-e7a8-4531-8989-d27cb9a4458c",
+      "title": "为什么还要加 overlap？",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "57d870e3-7014-4538-8336-5d03ff57e289",
+      "title": "为什么这样分层？",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "f7e069ff-39a4-40f3-903c-edfba5aaeeea",
+      "title": "为什么需要两路检索",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "811edb21-7763-4780-bd9f-056b1dfdf69e",
+      "title": "为什么面试时不能回避边界？",
+      "quality": "qualified",
+      "attempt_count": 20,
+      "trusted_evaluation_count": 19,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "b41c3f82-8828-4f48-a9cf-dbdbcdc8842d",
+      "title": "为什么高分后画像不会立刻满分——渐进更新",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "213aa7b3-8ab3-4d87-8952-05910591c529",
+      "title": "企业化五阶段",
+      "quality": "qualified",
+      "attempt_count": 24,
+      "trusted_evaluation_count": 24,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "57e151ae-f197-4616-bca7-3d464d92e608",
+      "title": "全文查询",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e7f20a24-ef77-429b-8d0b-f173abbad6cc",
+      "title": "八个故障场景：必须会回答",
+      "quality": "qualified",
+      "attempt_count": 15,
+      "trusted_evaluation_count": 14,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d25648ea-3173-43ab-ae7a-083cbf9d3a87",
+      "title": "公式解读",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e331a829-eb6d-4cad-b479-31543c2e0c41",
+      "title": "六层架构（先建立系统地图）",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "38587cd9-808e-48b3-9ba6-853342da6345",
+      "title": "具体计算示例",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "60790b33-d36a-4a93-9294-6375a64530dd",
+      "title": "分别解决什么问题",
+      "quality": "qualified",
+      "attempt_count": 12,
+      "trusted_evaluation_count": 12,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "15d7c3d0-943e-4b95-acd0-f8f4b0b3b1fa",
+      "title": "分块策略：为什么不是固定字数切割",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "3487059c-ad24-4ce1-a9ad-ae43b30f9247",
+      "title": "判定流程",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e2c4289e-24b3-4162-a805-9d5ca26c2cb1",
+      "title": "向量查询",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "cc0e3982-56a7-49e3-b27d-488d713ddc33",
+      "title": "哪些评分允许更新画像",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d1b7459f-5e0c-4d73-a0e1-b9aebc3bab93",
+      "title": "四维评分",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "5d65b3b9-be4a-429a-80e5-95b4362968bb",
+      "title": "增量知识目录：新文档如何进入查漏体系",
+      "quality": "qualified",
+      "attempt_count": 6,
+      "trusted_evaluation_count": 6,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "09828f95-02fa-46ca-b8f6-399caf169c0f",
+      "title": "复习任务：为什么需要两次验证",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "a429f940-bffb-413e-9183-d61598c64701",
+      "title": "复核路由逻辑",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "ccb46ffb-22bf-4e73-80b6-de01e9a78707",
+      "title": "学完整个项目后应该形成的认知",
+      "quality": "qualified",
+      "attempt_count": 42,
+      "trusted_evaluation_count": 42,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "f2527044-7a45-4340-b4a6-9bc3c3c836e5",
+      "title": "完整 RAG 链路",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 0,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "bbc57dcf-35ae-4074-ac15-f3053849e984",
+      "title": "完整证据链",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "4993c5a0-1079-48c9-b8b5-097cf99ca53e",
+      "title": "工程化与企业化",
+      "quality": "qualified",
+      "attempt_count": 44,
+      "trusted_evaluation_count": 44,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "918a3e0d-e962-44c9-a5f7-bb8a6a66123b",
+      "title": "已实现 vs 未实现",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "9c3631ff-6a33-4739-b0a6-5190236e17a2",
+      "title": "应用层 vs 领域层：一句话区分",
+      "quality": "qualified",
+      "attempt_count": 5,
+      "trusted_evaluation_count": 5,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e6096617-74ab-4c8d-ad48-e64ddfd67f03",
+      "title": "应用层重算总分",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "af37d2d2-3fb2-48b7-a993-e3b21e46b487",
+      "title": "引用白名单不能做什么",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d8266786-ec72-4387-b2d0-37ffafdc512f",
+      "title": "引用白名单能做什么",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "af5ba0c8-a7f7-47d7-b148-776d55b2a8e8",
+      "title": "报告：逐题解析比总分更重要",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "c81c32c1-efed-4636-86ef-76040dbd9eda",
+      "title": "掌握度和覆盖度为什么必须分开",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "de40d677-c1d9-4c0d-8494-b54cf1edeb9d",
+      "title": "故障场景",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d8a1e296-a74e-45b7-a907-1b74de939012",
+      "title": "文档状态机",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "59b584a4-ea69-467e-95be-aa22c5d5aa25",
+      "title": "核心规则（面试必背）",
+      "quality": "qualified",
+      "attempt_count": 5,
+      "trusted_evaluation_count": 5,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "7a11cecf-0f4a-4c6d-ab0b-f6735ce1d71e",
+      "title": "核心闭环（整套系统如何串起来）",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "59d02dfa-b5fe-4be2-9b7a-14a1090c7586",
+      "title": "核心问题：两种分数不在同一尺度上",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "29716c07-c9ff-4bf9-83e5-c890fe086591",
+      "title": "检索代码的核心流程",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "ed9703a1-7788-4571-963b-30d26f5feb44",
+      "title": "每文档限额（max_chunks_per_document）",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "797cddaa-c048-4105-86ae-a801f9c32e0a",
+      "title": "消除不了的",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e04f330f-dbe5-43c2-963e-693b738c441d",
+      "title": "版本管理",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "3c79c9f8-8976-47b3-8a00-28cd20b35560",
+      "title": "用户刷新恢复的完整交互",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d2dab15e-82ca-4047-bda5-71c9929decd2",
+      "title": "相邻块去重",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "ba2332da-5132-4c1e-81c4-8b6e7f8f8aff",
+      "title": "知识入库链路——文档如何变成可检索证据",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "402b245a-a8b8-4c2c-ba9b-087dddf9c75a",
+      "title": "第一层：Idempotency-Key 查询",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e24c6e08-9c0a-4c5a-9c62-693af16ea069",
+      "title": "第一层：稳定主题",
+      "quality": "qualified",
+      "attempt_count": 9,
+      "trusted_evaluation_count": 9,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "36292266-feb6-4b86-b38d-6749130436d1",
+      "title": "第一道防线：词汇化证据判断",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "2245c24d-2171-492d-85cc-fa891fe75df5",
+      "title": "第三层：提交前业务校验",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "ba2247b1-077b-4f0c-9c3f-db623fc93f3e",
+      "title": "第三道防线：引用白名单",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "2c2609fe-b7a4-41ac-9061-d9016a9ac2c7",
+      "title": "第二层：动态诊断子知识点",
+      "quality": "qualified",
+      "attempt_count": 23,
+      "trusted_evaluation_count": 22,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "622d0ae0-9ae8-409f-802f-8dc7897fbc49",
+      "title": "第二层：数据库唯一约束",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "5deba2bd-2659-432c-809d-b72df1317eef",
+      "title": "第二道防线：证据门禁",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "c52d0056-864d-4bde-9782-fdbc7ce70559",
+      "title": "能缓解的",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "e63f8fe3-fdea-4316-8197-9bb2e9f59eed",
+      "title": "覆盖度六种状态",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "d678d97e-48e4-445f-867e-34df01ebad96",
+      "title": "覆盖缺口内部优先级",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "fb2414f3-17d8-4458-9bb9-144445545f97",
+      "title": "解析输出包含的结构信息",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "972750cd-6a43-49d4-aa03-7009c6d7e03d",
+      "title": "解析阶段：四种格式怎么处理",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "1e697e0d-a179-4fdb-8c14-c1980609dba2",
+      "title": "训练焦点如何排序",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "67bb4a44-b0eb-44ac-b9a0-672474d3828c",
+      "title": "评分与画像",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "87f67b43-2bce-426b-8282-7fef899bc54f",
+      "title": "评分代码中的可信约束",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "07c8d34c-a32c-4039-8cf2-44aeda8e2090",
+      "title": "请求如何穿过各层（以 RAG 问答为例）",
+      "quality": "qualified",
+      "attempt_count": 25,
+      "trusted_evaluation_count": 25,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "836fc9cb-e95f-422b-ab64-b0ce455566ab",
+      "title": "重新索引时为什么尽量保留 Chunk ID",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 3,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "8d54e293-7d64-4fac-b854-f6c739dbc55a",
+      "title": "长期画像数据",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "a5b7cc2b-9bd1-4ade-9bd3-e5487bb08c99",
+      "title": "面试启动流程",
+      "quality": "qualified",
+      "attempt_count": 1,
+      "trusted_evaluation_count": 1,
+      "source_count": 2,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "b3b1f59b-e34c-4b86-acc9-8dd4ae230597",
+      "title": "面试和评分数据",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "55d05e51-f0de-4d15-ac3e-3b00c2ee2c2f",
+      "title": "面试必须准确表述",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "238e0411-46eb-425c-98e5-6222d6209c98",
+      "title": "面试时这样说的效果",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "a7a92312-4c73-4cf5-8c36-439de1c6dce7",
+      "title": "面试状态机",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "81e10acc-c557-4dc0-9d9b-fa492c362771",
+      "title": "面试重点：为什么需要 ProfileUpdateEvent？",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "9f4bb7d9-5bcf-4244-8ce9-6ab6f509cea3",
+      "title": "项目介绍",
+      "quality": "qualified",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "accepted_heading"
+      ]
+    },
+    {
+      "id": "87a6648c-3bd4-4a71-99fc-6c8136b06596",
+      "title": "一个具体例子",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "71877c5f-5fce-42a8-85e3-b5fc0a40a754",
+      "title": "不要使用的表述（红线清单）",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "66106170-4c2e-4d91-9614-9165fe31f36e",
+      "title": "为什么设计成这样",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "7e96de68-05f5-446f-9cdc-4a8b3d02a33f",
+      "title": "六个亮点",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "66fa970b-e737-4ad6-85d8-3714f4b8279e",
+      "title": "关键区分：它不是什么",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "7900136d-0663-4571-86af-12845306ce97",
+      "title": "当前项目的真实边界",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "62297ded-d34a-465c-aaab-f574e5b65c87",
+      "title": "数据流全景",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "287ba958-ff08-4c20-b751-7074d9451bf3",
+      "title": "方案 1：内容指纹（本地就能做，本质是 Hash 去重的延伸）",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "9d5c8864-7f05-4fcb-86fa-4e96bc697ef9",
+      "title": "方案 2：结构路径匹配（当前已有 heading_path）",
+      "quality": "review",
+      "attempt_count": 3,
+      "trusted_evaluation_count": 3,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "7a7cca06-cca5-49c9-a300-e3d48f589bf9",
+      "title": "方案 3：版本化引用（企业级方案，说你理解思路即可）",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "488f0d3a-cfd2-4146-a4d9-8982b69caa58",
+      "title": "核心认知",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "e24712ee-a2ee-49cd-b954-0ad98c2f3ff2",
+      "title": "流程",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    },
+    {
+      "id": "3ab6f035-3c0b-4da2-9eab-a94e1f8e5fa2",
+      "title": "知识数据",
+      "quality": "review",
+      "attempt_count": 0,
+      "trusted_evaluation_count": 0,
+      "source_count": 1,
+      "source_decisions": [
+        "rejected_non_knowledge_leaf"
+      ]
+    }
+  ]
+}

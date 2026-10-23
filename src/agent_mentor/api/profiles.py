@@ -88,6 +88,7 @@ class RecommendedKnowledgePointResponse(BaseModel):
     priority: int
     mastery_score: float | None
     source_type: str = "profile"
+    coverage_catalog_point_id: UUID | None = None
 
 
 class CoveragePointResponse(BaseModel):
@@ -189,6 +190,7 @@ def recommendation_response(
         priority=recommendation.priority,
         mastery_score=recommendation.mastery_score,
         source_type=recommendation.source_type,
+        coverage_catalog_point_id=recommendation.coverage_catalog_point_id,
     )
 
 

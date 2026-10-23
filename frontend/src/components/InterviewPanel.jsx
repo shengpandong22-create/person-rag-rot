@@ -29,7 +29,7 @@ export function InterviewPanel({
   return (
     <StepCard number="03" title="可恢复模拟面试" tone="green">
       <p>
-        三题面试会保存 checkpoint；主题默认根据已入库资料和画像推荐生成，也可以手动指定。
+        三题面试会保存 checkpoint；主题默认优先来自待覆盖知识点，也可以手动指定。
       </p>
       <label className="field-label" htmlFor="interview-topic">
         本轮面试主题
@@ -43,10 +43,10 @@ export function InterviewPanel({
       />
       <p className="hint">
         当前推荐来源：
-        {documents.some((item) => item.status === "ready")
-          ? "已入库资料"
-          : profile.plan.length > 0
-            ? "用户画像与复习计划"
+        {profile.plan.length > 0
+          ? "知识覆盖计划、用户画像与复习计划"
+          : documents.some((item) => item.status === "ready")
+            ? "已入库资料"
             : "默认 AI Agent 主题"}
       </p>
       <button

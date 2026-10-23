@@ -4,25 +4,26 @@ function scoreLabel(value) {
 }
 
 function sourceLabel(sourceType) {
+  if (sourceType === "coverage_gap") return "来自知识覆盖缺口";
   if (sourceType === "review_task") return "来自复习任务";
   if (sourceType === "ability") return "来自能力画像";
   return "来自训练计划";
 }
 
-export function TrainingFocusPanel({ focuses, disabled, onSelect }) {
-  const items = focuses ?? [];
+export function TrainingFocusPanel({ focuses, plan, disabled, onSelect }) {
+  const items = [...(plan ?? []), ...(focuses ?? [])];
   return (
     <section className="training-focus-panel" aria-label="画像驱动专项训练">
       <div className="section-heading">
         <span>画像驱动专项训练</span>
-        <small>优先使用复习任务和低掌握度知识点生成下一轮面试主题</small>
+        <small>优先展示未覆盖知识点；选择后题目必须引用该知识点的资料块才会推进覆盖。</small>
       </div>
       {items.length > 0 ? (
         <div className="focus-grid">
           {items.slice(0, 3).map((item) => (
             <button
               className="focus-card"
-              key={`${item.source_type}-${item.knowledge_point}`}
+              key={`${item.source_type}-${item.coverage_catalog_point_id ?? item.knowledge_point}`}
               type="button"
               disabled={disabled}
               onClick={() => onSelect(item)}

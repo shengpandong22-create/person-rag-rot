@@ -29,8 +29,10 @@ from agent_mentor.infrastructure.database.models import (
     InterviewSessionModel,
     KnowledgeCatalogPointModel,
     KnowledgeCatalogSourceModel,
+    KnowledgeChunkModel,
     QuestionCoverageModel,
     QuestionReferenceModel,
+    SourceDocumentModel,
     UserAnswerModel,
     WorkflowCheckpointModel,
 )
@@ -189,12 +191,34 @@ class InterviewService:
         profile_topic_title: str | None = None,
         profile_subtopic_key: str | None = None,
         profile_subtopic_title: str | None = None,
+        coverage_catalog_point_id: UUID | None = None,
         difficulty: Difficulty,
         question_count: int,
     ) -> InterviewSessionModel:
         now = datetime.now(UTC)
         session_id = uuid4()
-        interview = InterviewSessionModel(
+        async with self._sessions() as db:
+            if coverage_catalog_point_id is not None:
+                focus_exists = await db.scalar(
+                    select(KnowledgeCatalogPointModel.id)
+                    .join(
+                        KnowledgeCatalogSourceModel,
+                        KnowledgeCatalogSourceModel.knowledge_point_id
+                        == KnowledgeCatalogPointModel.id,
+                    )
+                    .where(
+                        KnowledgeCatalogPointModel.id == coverage_catalog_point_id,
+                        KnowledgeCatalogPointModel.knowledge_base_id == knowledge_base_id,
+                    )
+                    .limit(1)
+                )
+                if focus_exists is None:
+                    raise AppError(
+                        "COVERAGE_POINT_NOT_FOUND",
+                        "Coverage point does not belong to this knowledge base.",
+                        404,
+                    )
+            interview = InterviewSessionModel(
             id=session_id,
             user_id=DEFAULT_USER_ID,
             knowledge_base_id=knowledge_base_id,
@@ -203,6 +227,7 @@ class InterviewService:
             profile_topic_title=profile_topic_title,
             profile_subtopic_key=profile_subtopic_key,
             profile_subtopic_title=profile_subtopic_title,
+            coverage_catalog_point_id=coverage_catalog_point_id,
             difficulty=difficulty,
             question_count=question_count,
             status=InterviewStatus.CREATED,
@@ -213,7 +238,6 @@ class InterviewService:
             created_at=now,
             updated_at=now,
         )
-        async with self._sessions() as db:
             db.add(interview)
             await db.commit()
             await db.refresh(interview)
@@ -677,6 +701,13 @@ class InterviewService:
                 candidate_k=self._retrieval_candidate_k,
             )
         )
+        if coverage_focus is not None:
+            source_chunk = await self._coverage_source_chunk(db, coverage_focus)
+            if source_chunk is not None:
+                chunks = [
+                    source_chunk,
+                    *[chunk for chunk in chunks if chunk.chunk_id != source_chunk.chunk_id],
+                ]
         citation_ids = [chunk.chunk_id for chunk in chunks[:2]]
         validate_citations(citation_ids, chunks)
         generated = await self._generate_question_output(
@@ -779,12 +810,6 @@ class InterviewService:
                 )
             )
         await map_question_coverage(db, question_id=question.id, chunk_ids=citation_ids)
-        if coverage_focus is not None:
-            await self._ensure_question_coverage(
-                db,
-                question_id=question.id,
-                knowledge_point_id=coverage_focus.point_id,
-            )
         return question
 
     async def _generate_question_output(
@@ -992,6 +1017,26 @@ class InterviewService:
     async def _coverage_gap_focus(
         self, db: AsyncSession, interview: InterviewSessionModel, *, sequence: int
     ) -> CoverageFocus | None:
+        selected_point_id = getattr(interview, "coverage_catalog_point_id", None)
+        if selected_point_id is not None:
+            if sequence != 1:
+                return None
+            point = await db.scalar(
+                select(KnowledgeCatalogPointModel)
+                .join(
+                    KnowledgeCatalogSourceModel,
+                    KnowledgeCatalogSourceModel.knowledge_point_id
+                    == KnowledgeCatalogPointModel.id,
+                )
+                .where(
+                    KnowledgeCatalogPointModel.id == selected_point_id,
+                    KnowledgeCatalogPointModel.knowledge_base_id == interview.knowledge_base_id,
+                )
+                .limit(1)
+            )
+            if point is not None:
+                return CoverageFocus(point_id=point.id, title=point.title)
+            return None
         if sequence != self._coverage_gap_sequence(interview.question_count):
             return None
         point = await db.scalar(self._coverage_gap_focus_statement(interview.knowledge_base_id))
@@ -1017,24 +1062,47 @@ class InterviewService:
             .limit(1)
         )
 
-    async def _ensure_question_coverage(
-        self, db: AsyncSession, *, question_id: UUID, knowledge_point_id: UUID
-    ) -> None:
-        existing = await db.scalar(
-            select(QuestionCoverageModel.id).where(
-                QuestionCoverageModel.question_id == question_id,
-                QuestionCoverageModel.knowledge_point_id == knowledge_point_id,
+    async def _coverage_source_chunk(
+        self, db: AsyncSession, focus: CoverageFocus
+    ) -> RetrievedChunk | None:
+        """Load an auditable source chunk for a selected coverage target.
+
+        A coverage recommendation is allowed to advance only when this exact
+        catalog source becomes one of the question's persisted citations.
+        """
+        row = (
+            await db.execute(
+                select(KnowledgeChunkModel, SourceDocumentModel)
+                .join(
+                    KnowledgeCatalogSourceModel,
+                    KnowledgeCatalogSourceModel.chunk_id == KnowledgeChunkModel.id,
+                )
+                .join(
+                    SourceDocumentModel,
+                    SourceDocumentModel.id == KnowledgeChunkModel.document_id,
+                )
+                .where(KnowledgeCatalogSourceModel.knowledge_point_id == focus.point_id)
+                .order_by(KnowledgeChunkModel.chunk_index, KnowledgeChunkModel.id)
+                .limit(1)
             )
-        )
-        if existing is not None:
-            return
-        db.add(
-            QuestionCoverageModel(
-                id=uuid4(),
-                question_id=question_id,
-                knowledge_point_id=knowledge_point_id,
-                created_at=datetime.now(UTC),
-            )
+        ).first()
+        if row is None:
+            return None
+        chunk, document = row
+        return RetrievedChunk(
+            chunk_id=chunk.id,
+            document_id=document.id,
+            document_title=document.title,
+            source_url=document.source_url,
+            trust_level=str(document.trust_level),
+            heading_path=tuple(chunk.heading_path),
+            page_number=chunk.page_number,
+            block_type="paragraph",
+            chunk_index=chunk.chunk_index,
+            content=chunk.content,
+            score=0.0,
+            retrieval_explanation="coverage_catalog_source",
+            document_logical_name=document.logical_name,
         )
 
     def _coverage_gap_sequence(self, question_count: int) -> int:

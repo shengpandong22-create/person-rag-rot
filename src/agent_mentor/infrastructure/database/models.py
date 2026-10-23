@@ -333,6 +333,9 @@ class InterviewSessionModel(Base):
     profile_topic_title: Mapped[str | None] = mapped_column(String(120), nullable=True)
     profile_subtopic_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
     profile_subtopic_title: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    coverage_catalog_point_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("knowledge_catalog_points.id"), nullable=True, index=True
+    )
     difficulty: Mapped[str] = mapped_column(String(32), nullable=False)
     question_count: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)

@@ -13,6 +13,14 @@ export const statusLabels = {
 };
 
 export function inferInterviewTopic(documents, profile) {
+  const selectedCoverage = profile.plan?.find(
+    (item) => item.source_type === "coverage_gap",
+  )?.knowledge_point;
+  if (selectedCoverage) return selectedCoverage;
+
+  const focused = profile.focuses?.[0]?.knowledge_point;
+  if (focused) return focused;
+
   const readyDocuments = documents.filter((item) => item.status === "ready");
   const fileTopic = readyDocuments
     .map((item) => item.original_filename ?? "")
@@ -25,9 +33,6 @@ export function inferInterviewTopic(documents, profile) {
     )
     .find((name) => name.length >= 2);
   if (fileTopic) return fileTopic.slice(0, 60);
-
-  const focused = profile.focuses?.[0]?.knowledge_point;
-  if (focused) return focused;
 
   const recommended = profile.plan?.[0]?.knowledge_point;
   if (recommended) return recommended;

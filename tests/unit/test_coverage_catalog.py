@@ -1,4 +1,8 @@
-from agent_mentor.application.coverage_catalog import catalog_point_key, catalog_title
+from agent_mentor.application.coverage_catalog import (
+    catalog_point_key,
+    catalog_title,
+    classify_catalog_candidate,
+)
 
 
 def test_catalog_title_prefers_specific_deep_heading() -> None:
@@ -38,3 +42,17 @@ def test_catalog_title_falls_back_from_vague_modifier_to_parent_topic() -> None:
 
 def test_catalog_key_is_stable_across_spacing_and_punctuation() -> None:
     assert catalog_point_key("Cache-Aside 模式") == catalog_point_key("cache aside模式")
+
+
+def test_catalog_rejects_presentation_headings_instead_of_counting_them_as_coverage_debt() -> None:
+    candidate = classify_catalog_candidate(["RAG", "一个具体例子"], "示例正文")
+
+    assert candidate.title is None
+    assert candidate.decision == "rejected_non_knowledge_leaf"
+
+
+def test_catalog_keeps_independently_trainable_heading() -> None:
+    candidate = classify_catalog_candidate(["RAG", "RRF 公式"], "RRF 的公式和排序意义。")
+
+    assert candidate.title == "RRF 公式"
+    assert candidate.decision == "accepted_heading"

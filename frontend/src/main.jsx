@@ -406,6 +406,7 @@ function App() {
           profile_topic_title: selectedTrainingFocus?.topic_title ?? null,
           profile_subtopic_key: selectedTrainingFocus?.subtopic_key ?? null,
           profile_subtopic_title: selectedTrainingFocus?.subtopic_title ?? null,
+          coverage_catalog_point_id: selectedTrainingFocus?.coverage_catalog_point_id ?? null,
           difficulty: "medium",
           question_count: 3,
         }),
@@ -598,6 +599,7 @@ function App() {
         <div className="task-split interview-layout">
           <TrainingFocusPanel
             focuses={profile.focuses}
+            plan={profile.plan}
             disabled={busy || !canUseKnowledgeBase}
             onSelect={selectTrainingFocus}
           />

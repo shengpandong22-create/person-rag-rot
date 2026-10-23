@@ -4,6 +4,7 @@ import os
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from sqlalchemy import select
 
 from agent_mentor.application.answer_service import AnswerService
 from agent_mentor.application.evaluation_service import EvaluationService
@@ -13,6 +14,11 @@ from agent_mentor.application.profile_service import ProfileService
 from agent_mentor.config import PGVECTOR_DIMENSION
 from agent_mentor.domain.interview import Difficulty, InterviewStatus
 from agent_mentor.domain.knowledge import DocumentStatus, TrustLevel
+from agent_mentor.infrastructure.database.models import (
+    KnowledgeCatalogSourceModel,
+    QuestionCoverageModel,
+    QuestionReferenceModel,
+)
 from agent_mentor.infrastructure.database.session import (
     create_database_engine,
     create_session_factory,
@@ -79,6 +85,49 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
         await knowledge.ingest(document.id)
         assert (await knowledge.get_document(document.id)).status == DocumentStatus.READY
 
+        coverage = await profiles.get_coverage(base.id)
+        coverage_target = next(point for point in coverage.points if point.title == "可靠性")
+        selected_coverage_interview = await interviews.create_interview(
+            knowledge_base_id=base.id,
+            topic=coverage_target.title,
+            coverage_catalog_point_id=coverage_target.id,
+            difficulty=Difficulty.MEDIUM,
+            question_count=1,
+        )
+        selected_snapshot = await interviews.start(selected_coverage_interview.id)
+        selected_question = selected_snapshot.current_question
+        assert selected_question is not None
+        async with sessions() as db:
+            cited_chunk_ids = set(
+                (
+                    await db.scalars(
+                        select(QuestionReferenceModel.chunk_id).where(
+                            QuestionReferenceModel.question_id == selected_question.id
+                        )
+                    )
+                ).all()
+            )
+            target_source_ids = set(
+                (
+                    await db.scalars(
+                        select(KnowledgeCatalogSourceModel.chunk_id).where(
+                            KnowledgeCatalogSourceModel.knowledge_point_id == coverage_target.id
+                        )
+                    )
+                ).all()
+            )
+            mapped_point_ids = set(
+                (
+                    await db.scalars(
+                        select(QuestionCoverageModel.knowledge_point_id).where(
+                            QuestionCoverageModel.question_id == selected_question.id
+                        )
+                    )
+                ).all()
+            )
+        assert cited_chunk_ids & target_source_ids
+        assert coverage_target.id in mapped_point_ids
+
         interrupted, _ = await knowledge.add_document(
             base.id,
             "interrupted.md",
@@ -141,6 +190,13 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
             idempotency_key="integration-answer-1",
         )
         assert len(first.answers) == len(duplicate_submit.answers) == 1
+        if first.current_follow_up is not None:
+            first = await interviews.submit_follow_up_answer(
+                session_id=interview.id,
+                follow_up_id=first.current_follow_up.id,
+                answer_text=first.current_follow_up.reference_answer,
+                idempotency_key="integration-follow-up-1",
+            )
 
         second_question = first.current_question
         assert second_question is not None
@@ -150,8 +206,15 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
             answer_text=second_question.reference_answer,
             idempotency_key="integration-answer-2",
         )
+        if completed.current_follow_up is not None:
+            completed = await interviews.submit_follow_up_answer(
+                session_id=interview.id,
+                follow_up_id=completed.current_follow_up.id,
+                answer_text=completed.current_follow_up.reference_answer,
+                idempotency_key="integration-follow-up-2",
+            )
         assert completed.session.status == InterviewStatus.COMPLETED
-        assert len(completed.answers) == 2
+        assert sum(answer.answer_kind == "primary" for answer in completed.answers) == 2
         assert (await interviews.get(interview.id)).session.status == InterviewStatus.COMPLETED
 
         first_report = await evaluations.build_report(interview.id)
@@ -190,7 +253,7 @@ async def test_database_backed_learning_loop_is_idempotent_and_recoverable(tmp_p
         assert isolated_profile.abilities == ()
         assert isolated_profile.errors == ()
         assert isolated_profile.review_tasks == ()
-        assert await evaluations.list_report_history(interview.user_id, isolated_base.id) == []
+        assert await evaluations.list_report_history(interview.user_id, isolated_base.id) == ()
 
         scoped_profile = await profiles.get_snapshot(interview.user_id, base.id)
         scoped_history = await evaluations.list_report_history(interview.user_id, base.id)

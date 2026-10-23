@@ -1,0 +1,65 @@
+{
+  "protocol": "coverage-loop-acceptance-v1",
+  "executed_at": "2026-10-22T15:03:15.303609+00:00",
+  "runtime": {
+    "status": "ok",
+    "app_version": "0.1.0",
+    "started_at": "2026-10-22T15:01:51.748679+00:00",
+    "llm_enabled": true,
+    "llm_model": "deepseek-chat",
+    "embedding_provider": "bge",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_dimension": 512
+  },
+  "fixture": "evals\\fixtures\\coverage-loop-acceptance-v1.md",
+  "fixture_sha256": "6be8b4eba3b36878c7ea4d6316dd9b3b62c938f2b1565007dce55864574aeda7",
+  "knowledge_base_id": "95933b8d-c888-4f00-be08-fb9b234ab478",
+  "target": {
+    "id": "f780ed35-47eb-4775-9f98-3d15423e6cea",
+    "title": "RRF 公式",
+    "source_chunk_ids": [
+      "1e453b94-651a-44b3-92c9-2436439fbf15"
+    ]
+  },
+  "runs": [
+    {
+      "run": 1,
+      "session_id": "61492c35-1411-40f9-bf1d-8a4e5aa2da94",
+      "question_id": "28befd54-dee9-419d-aa3f-e36b2d2bcd56",
+      "generation_mode": "llm",
+      "question_text": "在混合检索中，RRF（Reciprocal Rank Fusion）公式常被用来融合多路召回结果。请从概念边界角度说明：RRF 公式的核心定义是什么？它主要解决什么问题？在什么场景下适用、什么场景下不适用？并指出一个容易与 RRF 混淆的相邻概念，说明二者的关键区别。",
+      "citation_ids": [
+        "1e453b94-651a-44b3-92c9-2436439fbf15",
+        "35ea6c61-5cae-4792-ae64-d752b0f80c61"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "run": 2,
+      "session_id": "e2d72964-b95f-441c-bab0-4c0a006963e9",
+      "question_id": "c2142715-e412-4b78-a5a2-9de9bb57f2f0",
+      "generation_mode": "llm",
+      "question_text": "在混合检索架构中，RRF 常被放在多路召回与重排之间。请从架构取舍角度说明：RRF 这一层在数据流中承担什么职责？为什么它选择融合名次而不是直接融合各检索器的原始分数？如果团队考虑用加权分数融合或学习型融合替代 RRF，你会如何权衡？请结合 `score(d) = 1/(k + rank_vector(d)) + 1/(k + rank_text(d))` 说明。",
+      "citation_ids": [
+        "1e453b94-651a-44b3-92c9-2436439fbf15",
+        "35ea6c61-5cae-4792-ae64-d752b0f80c61"
+      ],
+      "target_source_citation_present": true
+    },
+    {
+      "run": 3,
+      "session_id": "a091ef8f-ecfe-4604-91ce-cc00c2abe991",
+      "question_id": "ed681019-b21e-4c9f-b77a-d0ef14145550",
+      "generation_mode": "llm",
+      "question_text": "在混合检索系统中，团队使用 RRF 公式 `score(d) = 1/(k + rank_vector(d)) + 1/(k + rank_text(d))` 融合向量检索和文本检索的结果。现在需要评估 RRF 融合后的整体检索质量是否比单路检索有提升。请从质量评估角度回答：你会如何设计评测方案？包括需要构造什么样的评测数据、选择哪些指标、如何对比 RRF 与单路检索的效果，以及如何判断提升是否具有实际意义。",
+      "citation_ids": [
+        "1e453b94-651a-44b3-92c9-2436439fbf15",
+        "35ea6c61-5cae-4792-ae64-d752b0f80c61"
+      ],
+      "target_source_citation_present": true
+    }
+  ],
+  "run_count": 3,
+  "pass": true,
+  "criterion": "every selected-target question must cite an exact catalog source chunk"
+}

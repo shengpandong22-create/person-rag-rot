@@ -37,6 +37,7 @@ from agent_mentor.infrastructure.database.models import (
     KnowledgeCatalogSourceModel,
     ProfileUpdateEventModel,
     QuestionCoverageModel,
+    QuestionReferenceModel,
     ReviewTaskModel,
     UserAnswerModel,
 )
@@ -60,6 +61,7 @@ class RecommendedKnowledgePoint:
     priority: int
     mastery_score: float | None
     source_type: str = "profile"
+    coverage_catalog_point_id: UUID | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -318,6 +320,7 @@ class ProfileService:
                     priority=coverage_priority,
                     mastery_score=point.average_score,
                     source_type="coverage_gap",
+                    coverage_catalog_point_id=point.id,
                 ),
                 source_weight=240,
             )
@@ -387,11 +390,27 @@ class ProfileService:
             question_rows = (
                 await db.execute(
                     select(
-                        QuestionCoverageModel.knowledge_point_id, QuestionCoverageModel.question_id
-                    ).where(
+                        QuestionCoverageModel.knowledge_point_id,
+                        QuestionCoverageModel.question_id,
+                    )
+                    .join(
+                        QuestionReferenceModel,
+                        QuestionReferenceModel.question_id == QuestionCoverageModel.question_id,
+                    )
+                    .join(
+                        KnowledgeCatalogSourceModel,
+                        (KnowledgeCatalogSourceModel.knowledge_point_id
+                         == QuestionCoverageModel.knowledge_point_id)
+                        & (KnowledgeCatalogSourceModel.chunk_id == QuestionReferenceModel.chunk_id),
+                    )
+                    .where(
                         QuestionCoverageModel.knowledge_point_id.in_(
                             tuple(source_counts) or (UUID(int=0),)
                         )
+                    )
+                    .group_by(
+                        QuestionCoverageModel.knowledge_point_id,
+                        QuestionCoverageModel.question_id,
                     )
                 )
             ).all()
@@ -410,10 +429,27 @@ class ProfileService:
                         EvaluationModel,
                         EvaluationModel.question_id == QuestionCoverageModel.question_id,
                     )
+                    .join(
+                        QuestionReferenceModel,
+                        QuestionReferenceModel.question_id == QuestionCoverageModel.question_id,
+                    )
+                    .join(
+                        KnowledgeCatalogSourceModel,
+                        (KnowledgeCatalogSourceModel.knowledge_point_id
+                         == QuestionCoverageModel.knowledge_point_id)
+                        & (KnowledgeCatalogSourceModel.chunk_id == QuestionReferenceModel.chunk_id),
+                    )
                     .where(
                         QuestionCoverageModel.knowledge_point_id.in_(
                             tuple(source_counts) or (UUID(int=0),)
                         )
+                    )
+                    .group_by(
+                        QuestionCoverageModel.knowledge_point_id,
+                        EvaluationModel.id,
+                        EvaluationModel.total,
+                        EvaluationModel.confidence,
+                        EvaluationModel.status,
                     )
                 )
             ).all()

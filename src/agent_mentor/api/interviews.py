@@ -31,6 +31,7 @@ class InterviewCreateRequest(BaseModel):
     profile_topic_title: str | None = Field(default=None, max_length=120)
     profile_subtopic_key: str | None = Field(default=None, max_length=80)
     profile_subtopic_title: str | None = Field(default=None, max_length=120)
+    coverage_catalog_point_id: UUID | None = None
     difficulty: Difficulty = Difficulty.MEDIUM
     question_count: int = Field(default=3, ge=1, le=10)
 
@@ -74,6 +75,7 @@ class InterviewResponse(BaseModel):
     profile_topic_title: str | None
     profile_subtopic_key: str | None
     profile_subtopic_title: str | None
+    coverage_catalog_point_id: UUID | None
     difficulty: str
     question_count: int
     status: str
@@ -165,6 +167,7 @@ def interview_response(snapshot: InterviewSnapshot) -> InterviewResponse:
         profile_topic_title=session.profile_topic_title,
         profile_subtopic_key=session.profile_subtopic_key,
         profile_subtopic_title=session.profile_subtopic_title,
+        coverage_catalog_point_id=session.coverage_catalog_point_id,
         difficulty=str(session.difficulty),
         question_count=session.question_count,
         status=str(session.status),
@@ -202,6 +205,7 @@ async def create_interview(payload: InterviewCreateRequest, request: Request) ->
         profile_topic_title=payload.profile_topic_title,
         profile_subtopic_key=payload.profile_subtopic_key,
         profile_subtopic_title=payload.profile_subtopic_title,
+        coverage_catalog_point_id=payload.coverage_catalog_point_id,
         difficulty=payload.difficulty,
         question_count=payload.question_count,
     )

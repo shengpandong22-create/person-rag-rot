@@ -21,7 +21,6 @@ from agent_mentor.domain.interview import Difficulty, QuestionType
 from agent_mentor.infrastructure.database.models import (
     InterviewFollowUpModel,
     InterviewSessionModel,
-    QuestionCoverageModel,
     UserAnswerModel,
 )
 
@@ -427,35 +426,5 @@ def test_follow_up_is_limited_to_one_per_question_by_database_constraint() -> No
     )
 
 
-@pytest.mark.asyncio
-async def test_ensure_question_coverage_adds_missing_focus_point() -> None:
-    service = InterviewService.__new__(InterviewService)
-    db = _FakeSession()
-    question_id = uuid4()
-    knowledge_point_id = uuid4()
-
-    await service._ensure_question_coverage(
-        cast(Any, db),
-        question_id=question_id,
-        knowledge_point_id=knowledge_point_id,
-    )
-
-    assert len(db.added) == 1
-    coverage = db.added[0]
-    assert isinstance(coverage, QuestionCoverageModel)
-    assert coverage.question_id == question_id
-    assert coverage.knowledge_point_id == knowledge_point_id
-
-
-@pytest.mark.asyncio
-async def test_ensure_question_coverage_keeps_existing_focus_point() -> None:
-    service = InterviewService.__new__(InterviewService)
-    db = _FakeSession(existing=uuid4())
-
-    await service._ensure_question_coverage(
-        cast(Any, db),
-        question_id=uuid4(),
-        knowledge_point_id=uuid4(),
-    )
-
-    assert db.added == []
+def test_coverage_target_has_no_unproven_forced_mapping_hook() -> None:
+    assert not hasattr(InterviewService, "_ensure_question_coverage")

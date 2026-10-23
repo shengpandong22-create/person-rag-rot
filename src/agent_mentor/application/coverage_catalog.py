@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
@@ -61,24 +62,53 @@ _NON_KNOWLEDGE_HEADINGS = {
     "状态流全景",
     "评分数据流全景",
     "最小源码定位表",
+    "一个具体例子",
+    "为什么设计成这样",
+    "核心认知",
+    "数据流全景",
+    "六个亮点",
+    "流程",
+    "知识数据",
+    "已实现 vs 未实现",
+    "当前项目的真实边界",
+    "关键区分：它不是什么",
+    "不要使用的表述（红线清单）",
 }
+
+
+@dataclass(frozen=True, slots=True)
+class CatalogCandidate:
+    """Explain why a document section can or cannot become a coverage point."""
+
+    title: str | None
+    decision: str
 
 
 def catalog_title(heading_path: list[str], content: str) -> str | None:
     """Choose a deterministic point title without asking the LLM to invent identifiers."""
+    return classify_catalog_candidate(heading_path, content).title
+
+
+def classify_catalog_candidate(heading_path: list[str], content: str) -> CatalogCandidate:
+    """Classify a parsed section before it enters the coverage catalog.
+
+    The catalog intentionally contains only independently trainable headings;
+    diagrams, presentation notes, examples, and self-tests remain retrievable
+    evidence but are not counted as coverage debt.
+    """
     if heading_path and _is_non_knowledge_title(_clean_catalog_title(heading_path[-1])):
-        return None
+        return CatalogCandidate(None, "rejected_non_knowledge_leaf")
     for heading in reversed(heading_path):
         title = _clean_catalog_title(heading)
         if _is_specific_catalog_title(title, max_length=120):
-            return title
+            return CatalogCandidate(title, "accepted_heading")
     if _is_non_knowledge_path(heading_path):
-        return None
+        return CatalogCandidate(None, "rejected_non_knowledge_path")
     first_line = content.strip().splitlines()[0].lstrip("# ").strip() if content.strip() else ""
     first_line = _clean_catalog_title(first_line)
     if _is_specific_catalog_title(first_line, max_length=80):
-        return first_line
-    return None
+        return CatalogCandidate(first_line, "accepted_content_fallback")
+    return CatalogCandidate(None, "rejected_missing_specific_title")
 
 
 def _clean_catalog_title(title: str) -> str:
@@ -105,6 +135,8 @@ _GENERIC_HEADING_PATTERNS = (
     re.compile(r".*自测.*"),
     re.compile(r".*源码定位.*"),
     re.compile(r".*(链路图|流程图|全景图)$"),
+    re.compile(r"^方案\s*\d+[：:]"),
+    re.compile(r"^第\s*\d+\s*课"),
 )
 
 
